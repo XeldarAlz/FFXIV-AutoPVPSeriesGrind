@@ -14,6 +14,8 @@ public sealed class SessionStats
     // Set true when the run's stop condition (mode goal) was met, vs a manual Stop; gates the follow-up command.
     public bool CompletedByGoal { get; set; }
     public bool Recorded { get; set; }
+    // Guards the post-goal "Then" action so it dispatches at most once per session.
+    public bool AfterActionDispatched { get; set; }
 
     public uint JobId { get; private set; }
     public string JobAbbr { get; private set; } = "";

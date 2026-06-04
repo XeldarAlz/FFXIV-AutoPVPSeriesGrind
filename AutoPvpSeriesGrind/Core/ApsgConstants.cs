@@ -17,10 +17,6 @@ internal static class ApsgConstants
     public const uint StatusSpawnProtection = 895; // active in the spawn pen before the gate opens
     public const uint StatusSprint = 1342;         // PvP sprint already up
 
-    // Garo collaboration titles, flipped on start when the option is enabled (kept verbatim from the script).
-    public const string GaroTitle1 = "barago";
-    public const string GaroTitle2 = "garo";
-
     public const int SaveThrottleMs = 500;
 
     internal static class ThrottleKeys
@@ -31,5 +27,7 @@ internal static class ApsgConstants
     internal static class AddonNames
     {
         public const string MatchResults = "MKSRecord"; // PvP results screen
+        public const string SelectYesno = "SelectYesno"; // generic yes/no confirm (e.g. logout)
+        public const string DutyReady = "ContentsFinderConfirm"; // "Duty Ready" popup with the Commence button
     }
 }

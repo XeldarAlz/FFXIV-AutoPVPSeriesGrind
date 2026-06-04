@@ -11,7 +11,7 @@ namespace AutoPvpSeriesGrind.Windows;
 
 public sealed class ConfigWindow : Window, IDisposable
 {
-    private enum Tab { Session, Match, Integrations }
+    private enum Tab { Session, Match }
 
     private readonly Plugin plugin;
     private Tab activeTab = Tab.Session;
@@ -52,7 +52,6 @@ public sealed class ConfigWindow : Window, IDisposable
         ImGui.Spacing();
         if (SidebarTab.Draw("Session", FontAwesomeIcon.Flag, Styling.AccentViolet, activeTab == Tab.Session)) activeTab = Tab.Session;
         if (SidebarTab.Draw("In match", FontAwesomeIcon.CommentDots, Styling.AccentViolet, activeTab == Tab.Match)) activeTab = Tab.Match;
-        if (SidebarTab.Draw("Integrations", FontAwesomeIcon.Plug, Styling.AccentViolet, activeTab == Tab.Integrations)) activeTab = Tab.Integrations;
     }
 
     private void DrawContent(Configuration cfg)
@@ -67,10 +66,6 @@ public sealed class ConfigWindow : Window, IDisposable
             case Tab.Match:
                 DrawHeader("In match", "The social touches the bot performs during each match.");
                 MatchSettings.Draw(cfg);
-                break;
-            case Tab.Integrations:
-                DrawHeader("Integrations", "Optional Lifestream travel and a follow-up command when the run ends.");
-                IntegrationSettings.Draw(cfg);
                 break;
         }
     }

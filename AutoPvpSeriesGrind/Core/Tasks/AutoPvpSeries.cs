@@ -18,11 +18,8 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
     private static readonly Random rng = new();
 
     // Snapshot of the config at start, so changing settings mid-run can't tear the loop.
-    private bool setGaroTitles;
     private bool sendHello;
     private bool sendGoodMatch;
-    private string lifestreamCommand = "";
-    private int gearsetSlot;
 
     // Per-duty match state.
     private bool inMatchLive;
@@ -61,11 +58,8 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
     protected override async Task Execute()
     {
         var cfg = Plugin.Cfg;
-        setGaroTitles = cfg.SetGaroTitles;
         sendHello = cfg.SendHelloOnEntry;
         sendGoodMatch = cfg.SendGoodMatchOnResults;
-        lifestreamCommand = cfg.LifestreamCommand?.Trim() ?? "";
-        gearsetSlot = cfg.GearsetSlot;
 
         Svc.Chat.Print($"{ApsgConstants.LogPrefix} Starting PvP Series grind ({Plugin.Cfg.ActiveMode.DisplayName}).");
 
@@ -79,6 +73,15 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
             }
             else
             {
+                // Catch the "Duty Ready" popup the instant it appears, on any cycle — before the queue
+                // branch's own poll — so a match pop is always commenced and never times out in queue.
+                if (TryCommenceDuty())
+                {
+                    Diag("duty ready popup -> commenced");
+                    await NextFrame(1000);
+                    continue;
+                }
+
                 if (await TickOutOfDuty()) return; // stopped on match limit
                 continue;
             }
@@ -114,7 +117,7 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
         Diag($"reset: {reason}");
     }
 
-    // RotationSolver drops its rotation on death; re-arm "/rotation auto nearest" once we're up again.
+    // RotationSolver drops its rotation on death; re-arm "/rotation auto LowHP" once we're up again.
     private void CheckDeathAndReapplyRotation()
     {
         if (IsDead())
@@ -135,7 +138,7 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
             wasDead = false;
             if (rotationNeedsReset && Environment.TickCount64 - deadSinceMs >= 10_000 && IsNormal())
             {
-                Cmd("/rotation auto nearest");
+                Cmd("/rotation auto LowHP");
                 rotationNeedsReset = false;
                 Diag("respawn detected -> rotation re-applied");
             }
@@ -143,7 +146,7 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
 
         if (rotationNeedsReset && IsNormal())
         {
-            Cmd("/rotation auto nearest");
+            Cmd("/rotation auto LowHP");
             rotationNeedsReset = false;
             Diag("rotation re-applied (failsafe)");
         }

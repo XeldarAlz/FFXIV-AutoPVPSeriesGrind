@@ -21,7 +21,7 @@ public sealed partial class AutoPvpSeries
 
         if (IsNormal() && !IsDead() && !hasEnabledRotationThisLife)
         {
-            Cmd("/rotation auto nearest");
+            Cmd("/rotation auto LowHP");
             hasEnabledRotationThisLife = true;
             Diag("rotation enabled (live failsafe)");
         }

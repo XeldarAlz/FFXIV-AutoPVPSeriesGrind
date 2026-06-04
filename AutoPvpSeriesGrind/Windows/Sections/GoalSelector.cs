@@ -22,6 +22,7 @@ internal static class GoalSelector
 
     public static void Draw(Configuration cfg)
     {
+        ImGui.Spacing();
         Styling.SectionLabel("Run until");
         ImGui.Spacing();
 
@@ -29,8 +30,54 @@ internal static class GoalSelector
         ImGui.Spacing();
         DrawTargetRow(cfg);
         ImGui.Spacing();
+        DrawThen(cfg);
         DrawPlan(cfg);
     }
+
+    private static readonly AfterRunAction[] afterRunOrder =
+        [AfterRunAction.StayLoggedIn, AfterRunAction.ReturnToInn, AfterRunAction.Logout, AfterRunAction.CloseGame];
+
+    private static void DrawThen(Configuration cfg)
+    {
+        // Endless never completes by goal, so there's no "after" — hide the section rather than imply one.
+        if (cfg.ActiveMode.Id == EndlessMode.ModeId) return;
+
+        Styling.SectionLabel("Then");
+        ImGui.Spacing();
+
+        ImGui.SetNextItemWidth(220f * ImGuiHelpers.GlobalScale);
+        using (var combo = ImRaii.Combo("##afterrun", AfterRunLabel(cfg.AfterRun)))
+            if (combo)
+                foreach (var a in afterRunOrder)
+                {
+                    if (ImGui.Selectable(AfterRunLabel(a), a == cfg.AfterRun))
+                    {
+                        cfg.AfterRun = a;
+                        cfg.SaveDebounced();
+                    }
+                    if (ImGui.IsItemHovered()) ImGui.SetTooltip(AfterRunTooltip(a));
+                }
+
+        ImGui.Spacing();
+    }
+
+    private static string AfterRunLabel(AfterRunAction a) => a switch
+    {
+        AfterRunAction.StayLoggedIn => "Stay where you are",
+        AfterRunAction.ReturnToInn  => "Return to the inn",
+        AfterRunAction.Logout       => "Log out to title",
+        AfterRunAction.CloseGame    => "Close the game",
+        _                           => a.ToString(),
+    };
+
+    private static string AfterRunTooltip(AfterRunAction a) => a switch
+    {
+        AfterRunAction.StayLoggedIn => "Just stop. You're left standing wherever the last match dropped you.",
+        AfterRunAction.ReturnToInn  => "Travel to the inn and enter your room (via Lifestream).",
+        AfterRunAction.Logout       => "Log out to the title screen.",
+        AfterRunAction.CloseGame    => "Close FFXIV entirely (via XIVLauncher's /xlkill).",
+        _                           => "",
+    };
 
     private static void DrawSelector(Configuration cfg)
     {
@@ -39,7 +86,7 @@ internal static class GoalSelector
         var avail = ImGui.GetContentRegionAvail().X;
         var gap = 6f * ImGuiHelpers.GlobalScale;
         var segW = (avail - gap * (modes.Count - 1)) / modes.Count;
-        var segH = ImGui.GetFrameHeight() * 1.95f;
+        var segH = ImGui.GetFrameHeight() * 1.3f;
 
         for (var i = 0; i < modes.Count; i++)
         {
@@ -70,33 +117,23 @@ internal static class GoalSelector
         dl.AddRectFilled(origin, end, ImGui.GetColorU32(bg), 6f);
         dl.AddRect(origin, end, ImGui.GetColorU32(border), 6f, ImDrawFlags.None, selected ? 2f : 1f);
 
-        var s = ImGuiHelpers.GlobalScale;
         var iconStr = icon.ToIconString();
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))
             iconSize = ImGui.CalcTextSize(iconStr);
-
         var labelSize = ImGui.CalcTextSize(label);
-        var maxLabelW = size.X - 8f * s;
-        var scale = labelSize.X > maxLabelW ? maxLabelW / labelSize.X : 1f;
-        var scaledLabelW = labelSize.X * scale;
-        var scaledLabelH = labelSize.Y * scale;
+        var innerGap = 6f * ImGuiHelpers.GlobalScale;
+        var startX = origin.X + (size.X - (iconSize.X + innerGap + labelSize.X)) * 0.5f;
+        var midY = origin.Y + size.Y * 0.5f;
 
-        // Icon stacked over label, the whole block vertically centred in the segment.
-        var innerGap = 3f * s;
-        var blockH = iconSize.Y + innerGap + scaledLabelH;
-        var top = origin.Y + (size.Y - blockH) * 0.5f;
-
-        ImGui.SetCursorScreenPos(new Vector2(origin.X + (size.X - iconSize.X) * 0.5f, top));
+        ImGui.SetCursorScreenPos(new Vector2(startX, midY - iconSize.Y * 0.5f));
         using (ImRaii.PushFont(UiBuilder.IconFont))
         using (ImRaii.PushColor(ImGuiCol.Text, selected ? Styling.AccentViolet : textColor))
             ImGui.TextUnformatted(iconStr);
 
-        if (scale < 1f) ImGui.SetWindowFontScale(scale);
-        ImGui.SetCursorScreenPos(new Vector2(origin.X + (size.X - scaledLabelW) * 0.5f, top + iconSize.Y + innerGap));
+        ImGui.SetCursorScreenPos(new Vector2(startX + iconSize.X + innerGap, midY - labelSize.Y * 0.5f));
         using (ImRaii.PushColor(ImGuiCol.Text, textColor))
             ImGui.TextUnformatted(label);
-        if (scale < 1f) ImGui.SetWindowFontScale(1f);
 
         ImGui.SetCursorScreenPos(origin);
         ImGui.Dummy(size);
@@ -130,16 +167,20 @@ internal static class GoalSelector
             }
             case SeriesRankMode.ModeId:
             {
+                var current = PvpProfileReader.SeriesCurrentRank();
+                var min = Math.Clamp(current + 1, 1, 30);
                 Caption("Reach rank");
                 ImGui.SameLine();
-                var v = cfg.TargetSeriesRank;
-                if (Stepper("rank", ref v, 1, 30, 1))
+                // You can only target a rank above your current one — anything at or below is already done.
+                var v = Math.Max(cfg.TargetSeriesRank, min);
+                var changed = Stepper("rank", ref v, min, 30, 1);
+                if (changed || v != cfg.TargetSeriesRank)
                 {
                     cfg.TargetSeriesRank = v;
                     cfg.SaveDebounced();
                 }
                 ImGui.SameLine();
-                Dim($"·  currently rank {PvpProfileReader.SeriesCurrentRank()}");
+                Dim($"·  currently rank {current}");
                 break;
             }
             case TimeBoxedMode.ModeId:
@@ -219,15 +260,24 @@ internal static class GoalSelector
 
     private static string PlanSentence(Configuration cfg)
     {
+        if (cfg.ActiveMode.Id == EndlessMode.ModeId)
+            return "Queue Casual Match after match until you press Stop.";
+
         var until = cfg.ActiveMode.Id switch
         {
             MatchCountMode.ModeId => $"for {cfg.TargetMatchCount} matches",
             SeriesRankMode.ModeId => $"until you hit Series rank {cfg.TargetSeriesRank}",
             TimeBoxedMode.ModeId  => $"for {cfg.TargetMinutes} minutes",
-            _                     => "until you press Stop",
+            _                     => "until done",
         };
-        var tail = string.IsNullOrWhiteSpace(cfg.FollowUpCommand) ? "" : $", then run \"{cfg.FollowUpCommand.Trim()}\"";
-        return $"Queue Casual Match {until}{tail}.";
+        var then = cfg.AfterRun switch
+        {
+            AfterRunAction.ReturnToInn => "head to the inn",
+            AfterRunAction.Logout      => "log out to the title screen",
+            AfterRunAction.CloseGame   => "close the game",
+            _                          => "stop and stay where you are",
+        };
+        return $"Queue Casual Match {until}, then {then}.";
     }
 
     private static void Caption(string text)

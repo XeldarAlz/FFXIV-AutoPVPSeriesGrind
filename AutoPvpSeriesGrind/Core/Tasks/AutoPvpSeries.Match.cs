@@ -110,9 +110,9 @@ public sealed partial class AutoPvpSeries
                 {
                     Diag($"gate open detected by ContentTimeLeft -> {tLeft}");
                     inMatchLive = true;
-                    Cmd("/rotation Settings TargetingTypes add Nearest");
+                    Cmd("/rotation Settings TargetingTypes add LowHP");
                     await NextFrame(PollMs);
-                    Cmd("/rotation auto nearest");
+                    Cmd("/rotation auto LowHP");
                     hasEnabledRotationThisLife = true;
                     rotationNeedsReset = false;
                     Diag("rotation enabled (match start)");

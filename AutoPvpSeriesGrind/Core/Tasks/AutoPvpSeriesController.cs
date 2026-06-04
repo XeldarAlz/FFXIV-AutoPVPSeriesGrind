@@ -1,7 +1,6 @@
 using AutoPvpSeriesGrind.Core.External;
 using AutoPvpSeriesGrind.Core.Stats;
 using clib.Services;
-using ECommons.Automation;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
@@ -55,9 +54,35 @@ internal sealed class AutoPvpSeriesController
     private void EndRun(SessionStats s)
     {
         FinalizeRun(s);
-        if (s == session) session = null;
         Phase = AutoPhase.Idle;
-        MaybeRunFollowUp(s);
+        MaybeRunAfterAction(s);
+        // Keep the session live while a "Then" action runs so the Finishing card still shows its stats;
+        // the after-action's OnCompleted clears it. Otherwise drop it now, as before.
+        if (s == session && Phase != AutoPhase.Finishing) session = null;
+    }
+
+    // Post-goal "Then" action (Return to inn / Logout / Close game). Gated on an actual goal completion and
+    // dispatched at most once; manual Stop and faults never reach here.
+    private void MaybeRunAfterAction(SessionStats s)
+    {
+        if (!s.CompletedByGoal || s.AfterActionDispatched) return;
+        s.AfterActionDispatched = true;
+
+        var action = Plugin.Cfg.AfterRun;
+        if (action == AfterRunAction.StayLoggedIn)
+        {
+            Diag("Goal reached; after-run action = stay where you are (no-op).");
+            return;
+        }
+
+        Diag($"Goal reached; starting after-run action {action}.");
+        Phase = AutoPhase.Finishing;
+        Svc.Automation.Start(new AutoAfterRun(action), OnCompleted: () =>
+        {
+            Diag($"After-run action {action} finished.");
+            Phase = AutoPhase.Idle;
+            if (s == session) session = null;
+        });
     }
 
     // Records a finished session to history exactly once (idempotent via Recorded). Never touches control
@@ -87,14 +112,4 @@ internal sealed class AutoPvpSeriesController
         }
     }
 
-    // Optional command on a match-limit stop (the script's "Follow-up script", repurposed as a chat command).
-    private static void MaybeRunFollowUp(SessionStats s)
-    {
-        if (!s.CompletedByGoal) return;
-        var cmd = Plugin.Cfg.FollowUpCommand?.Trim();
-        if (string.IsNullOrEmpty(cmd)) return;
-        Diag($"Goal reached; running follow-up command -> {cmd}");
-        try { Chat.ExecuteCommand(cmd); }
-        catch (Exception ex) { Diag($"Follow-up command failed: {ex.Message}"); }
-    }
 }

@@ -33,7 +33,7 @@ public static class ExternalPlugins
             InternalName: "RotationSolver",
             DisplayName: "RotationSolver Reborn",
             RepoUrl: "https://raw.githubusercontent.com/FFXIV-CombatReborn/RotationSolverReborn/main/pluginmaster.json",
-            Purpose: "Drives combat during the match (/rotation auto nearest).",
+            Purpose: "Drives combat during the match (/rotation auto LowHP).",
             Required: true,
             Aliases: ["RotationSolverReborn"]),
         [ExternalPlugin.Lifestream] = new(

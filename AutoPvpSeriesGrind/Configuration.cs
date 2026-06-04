@@ -22,19 +22,12 @@ public sealed class Configuration : IPluginConfiguration
     public int TargetSeriesRank { get; set; } = 15;
     public int TargetMinutes { get; set; } = 60;
 
-    // Optional gearset slot (1-based, as shown in the gear set list) to equip before queueing; 0 disables.
-    public int GearsetSlot { get; set; } = 0;
-
     // Match social touches (ported from the script).
     public bool SendHelloOnEntry { get; set; } = true;
     public bool SendGoodMatchOnResults { get; set; } = true;
-    public bool SetGaroTitles { get; set; } = false;
 
-    // Optional Lifestream command run once before the first queue (e.g. travel to your PvP hub).
-    public string LifestreamCommand { get; set; } = "";
-
-    // Optional chat command executed once the match limit is reached (the script's "Follow-up script").
-    public string FollowUpCommand { get; set; } = "";
+    // What to do once the run's goal is met (never fires on a manual Stop).
+    public AfterRunAction AfterRun { get; set; } = AfterRunAction.StayLoggedIn;
 
     public void Save() => Plugin.PluginInterface.SavePluginConfig(this);
 
@@ -43,4 +36,12 @@ public sealed class Configuration : IPluginConfiguration
         if (EzThrottler.Throttle(Core.ApsgConstants.ThrottleKeys.Save, Core.ApsgConstants.SaveThrottleMs))
             Save();
     }
+}
+
+public enum AfterRunAction
+{
+    StayLoggedIn,
+    ReturnToInn,
+    Logout,
+    CloseGame,
 }

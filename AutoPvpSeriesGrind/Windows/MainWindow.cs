@@ -14,10 +14,10 @@ public sealed class MainWindow : Window, IDisposable
         this.plugin = plugin;
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(440, 460),
+            MinimumSize = new Vector2(480, 480),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue),
         };
-        Size = new Vector2(500, 540);
+        Size = new Vector2(560, 580);
         SizeCondition = ImGuiCond.FirstUseEver;
         Flags = ImGuiWindowFlags.NoCollapse;
     }
@@ -37,5 +37,7 @@ public sealed class MainWindow : Window, IDisposable
             RunningPanel.Draw(cfg, ctrl);
         else
             IdlePanel.Draw(cfg, plugin, ctrl);
+
+        Footer.Draw();
     }
 }

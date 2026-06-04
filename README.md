@@ -28,9 +28,6 @@ Grinds the **PvP Series Malmstones** by looping Casual Match. Press **Start** an
 - **Spawn-aware movement**: leaves the spawn pen toward the right side and contests the objective, holding the point when it's contested instead of re-pathing.
 - **Auto Limit Break**: fires the correct PvP LB for your job on a throttle.
 - **Social touches**: optional `Hello` during portraits and `Good Match` on results.
-- **Gearset swap**: equip a chosen gear set before the first queue.
-- **Lifestream travel**: optional command run once before queueing.
-- **Follow-up command**: run a chat command (e.g. `/logout`) when the match limit is reached.
 - **Run history**: matches, deaths, and time tracked per session.
 - **Resilient**: cancellable mid-run, settings persist across reloads.
 
@@ -48,7 +45,7 @@ The plugin drives a few helpers for movement and combat. Open `/apsg deps` after
 
 - **vnavmesh** — pathfinding/movement (required)
 - **RotationSolver Reborn** — combat (required)
-- **Lifestream** — optional travel before queueing
+- **Lifestream** — optional, only for the "Return to the inn" after-run action
 
 The match loop also fires `/pvpac` (Limit Breaks, sprint) and `/quickchat` commands when available, exactly as the original SND script does — these are best-effort and not gated as dependencies.
 

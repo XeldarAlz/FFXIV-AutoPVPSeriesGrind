@@ -1,30 +1,18 @@
 using AutoPvpSeriesGrind.Core.Game;
-using AutoPvpSeriesGrind.Core.Ipc;
 using Dalamud.Game.ClientState.Conditions;
+using ECommons;
 using ECommons.DalamudServices;
+using ECommons.UIHelpers.AddonMasterImplementations;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
 public sealed partial class AutoPvpSeries
 {
-    private const int StartupZoneWaitMs = 300_000;
-
     private async Task Startup()
     {
-        if (setGaroTitles)
-        {
-            Diag($"setting titles: {ApsgConstants.GaroTitle1} -> {ApsgConstants.GaroTitle2}");
-            Cmd($"/title set {ApsgConstants.GaroTitle1}");
-            await NextFrame(3000);
-            Cmd($"/title set {ApsgConstants.GaroTitle2}");
-            await NextFrame(3000);
-        }
-
-        GearsetOps.EquipSlot(gearsetSlot);
         await NextFrame(1000);
-
-        await RunStartupLifestream();
 
         Controller_SetPhaseQueueing();
         DutyOps.QueueCasualMatch();
@@ -32,38 +20,6 @@ public sealed partial class AutoPvpSeries
 
     private void Controller_SetPhaseQueueing()
         => Plugin.Instance.Controller.Phase = AutoPhase.Queueing;
-
-    private async Task RunStartupLifestream()
-    {
-        if (lifestreamCommand.Length == 0 || lifestreamCommand.Equals("none", StringComparison.OrdinalIgnoreCase))
-            return;
-        if (!LifestreamIPC.Instance.IsAvailable)
-        {
-            Warn("Lifestream command configured but Lifestream IPC is unavailable; skipping.");
-            return;
-        }
-
-        Diag($"issuing lifestream command -> {lifestreamCommand}");
-        LifestreamIPC.Instance.ExecuteCommand(lifestreamCommand);
-
-        var started = await WaitUntilTimed(() =>
-            Svc.Condition[ConditionFlag.Casting]
-            || Svc.Condition[ConditionFlag.BetweenAreas]
-            || Svc.Condition[ConditionFlag.BetweenAreas51]
-            || LifestreamIPC.Instance.IsBusy(), 2_000, "lifestream-start");
-        if (!started)
-        {
-            Diag("no lifestream activity detected after command; continuing");
-            return;
-        }
-
-        await WaitUntilTimed(() =>
-            !LifestreamIPC.Instance.IsBusy()
-            && !Svc.Condition[ConditionFlag.BetweenAreas]
-            && !Svc.Condition[ConditionFlag.BetweenAreas51]
-            && Svc.Objects.LocalPlayer is not null, StartupZoneWaitMs, "lifestream-complete");
-        Diag("lifestream zoning complete");
-    }
 
     // Out of duty: reset, stop if the limit was reached, otherwise (re)queue the casual roulette.
     private async Task<bool> TickOutOfDuty()
@@ -78,7 +34,16 @@ public sealed partial class AutoPvpSeries
         }
 
         Plugin.Instance.Controller.Phase = AutoPhase.Queueing;
-        await NextFrame(5000);
+
+        // When a match pops, the game shows the "Duty Ready" popup and waits for us to press Commence.
+        // The source script left this to an external plugin; here we click it ourselves, otherwise the
+        // popup just times out and we never enter the instance. Poll for it during the requeue interval.
+        if (await WaitUntilTimed(TryCommenceDuty, 5000, "duty-ready-commence", checkMs: 200))
+        {
+            Diag("duty ready popup -> commenced");
+            await NextFrame(1000);
+            return false;
+        }
 
         if (!Svc.Condition[ConditionFlag.InDutyQueue] && !DutyOps.IsQueued())
         {
@@ -88,5 +53,17 @@ public sealed partial class AutoPvpSeries
 
         await NextFrame(500);
         return false;
+    }
+
+    // True once the "Duty Ready" confirmation is up and its Commence button has been clicked. Returns false
+    // when the popup is absent/not ready so the caller keeps polling until the match actually pops.
+    private static unsafe bool TryCommenceDuty()
+    {
+        if (!GenericHelpers.TryGetAddonByName<AtkUnitBase>(ApsgConstants.AddonNames.DutyReady, out var a)
+            || !GenericHelpers.IsAddonReady(a))
+            return false;
+
+        new AddonMaster.ContentsFinderConfirm((nint)a).Commence();
+        return true;
     }
 }

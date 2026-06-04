@@ -18,7 +18,7 @@ internal static class RunningPanel
     // Crystalline Conflict casual matches run 5 minutes; used to scale the live timer bar.
     private const float MatchClockSeconds = 300f;
 
-    private enum Display { Queueing, Portraits, Fighting, InMatch, Finishing }
+    private enum Display { Preparing, Queueing, Portraits, Fighting, InMatch, Finishing }
 
     public static void Draw(Configuration cfg, AutoPvpSeriesController ctrl)
     {
@@ -48,9 +48,10 @@ internal static class RunningPanel
     {
         var inDuty = Svc.Condition[ConditionFlag.BoundByDuty];
         var inCombat = Svc.Condition[ConditionFlag.InCombat];
+        var inQueue = Svc.Condition[ConditionFlag.InDutyQueue] || DutyOps.IsQueued();
         var timeLeft = inDuty ? DutyOps.ContentTimeLeft() : 0;
 
-        var phase = ResolvePhase(ctrl, inDuty, inCombat, timeLeft);
+        var phase = ResolvePhase(ctrl, inDuty, inCombat, inQueue, timeLeft);
         var (accent, accentSoft, label) = Palette(phase);
 
         var fast = phase is Display.Fighting;
@@ -94,10 +95,10 @@ internal static class RunningPanel
         }
     }
 
-    private static Display ResolvePhase(AutoPvpSeriesController ctrl, bool inDuty, bool inCombat, int timeLeft)
+    private static Display ResolvePhase(AutoPvpSeriesController ctrl, bool inDuty, bool inCombat, bool inQueue, int timeLeft)
     {
         if (ctrl.Phase == AutoPhase.Finishing) return Display.Finishing;
-        if (!inDuty) return Display.Queueing;
+        if (!inDuty) return inQueue ? Display.Queueing : Display.Preparing;
         if (timeLeft is > 1 and < 32) return Display.Portraits;
         if (inCombat) return Display.Fighting;
         return Display.InMatch;
@@ -105,6 +106,7 @@ internal static class RunningPanel
 
     private static (Vector4 accent, Vector4 accentSoft, string label) Palette(Display phase) => phase switch
     {
+        Display.Preparing => (Styling.AccentBlue,   Styling.AccentBlueSoft,   "STARTING"),
         Display.Queueing  => (Styling.AccentBlue,   Styling.AccentBlueSoft,   "IN QUEUE"),
         Display.Portraits => (Styling.AccentAmber,  Styling.AccentAmberSoft,  "PORTRAITS"),
         Display.Fighting  => (Styling.AccentViolet, Styling.AccentVioletSoft, "FIGHTING"),
@@ -118,7 +120,8 @@ internal static class RunningPanel
         var jobPrefix = string.IsNullOrEmpty(job) ? "" : $"{job}  ·  ";
         return phase switch
         {
-            Display.Queueing  => "Waiting for Casual Match…",
+            Display.Preparing => "Preparing to queue…",
+            Display.Queueing  => "In queue for Casual Match…",
             Display.Portraits => $"Match starting  ·  {CurrentMapName()}",
             Display.Fighting  => $"{jobPrefix}{CurrentMapName()}",
             Display.Finishing => "Wrapping up the session",
