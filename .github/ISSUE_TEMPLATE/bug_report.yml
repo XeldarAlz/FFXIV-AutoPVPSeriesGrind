@@ -1,0 +1,104 @@
+name: Bug report
+description: Something's broken or behaving unexpectedly.
+title: "[Bug] "
+labels: ["bug"]
+assignees: ["XeldarAlz"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please fill out as much as you can; it makes a huge difference.
+
+        If you're not sure whether it's a bug or expected behavior, prefer [Help & troubleshooting discussions](https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/discussions/new?category=help-troubleshooting); triage is faster there.
+
+        For security issues, please use [private vulnerability reporting](https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/security/advisories/new) instead.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you see? What did you expect to see instead?
+      placeholder: "The match started but the character never moved onto the crystal / never fired the Limit Break..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to trigger the bug. If it's intermittent, say so.
+      placeholder: |
+        1. Open `/apsg`
+        2. Set a match limit
+        3. Press Start
+        4. ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      description: Shown in `/xlplugins` next to "Auto PVP Series Grind".
+      options:
+        - 1.0.0.0
+        - Older / not sure
+    validations:
+      required: true
+
+  - type: input
+    id: job-affected
+    attributes:
+      label: Job(s) affected
+      description: Which job(s) were you on? Limit Break handling is per-job.
+      placeholder: "WAR, PLD, ..."
+
+  - type: input
+    id: map-affected
+    attributes:
+      label: Crystalline Conflict map(s) affected
+      description: Which map(s) were involved, if the issue is map-specific?
+      placeholder: "Palaistra, Cloud Nine, ..."
+
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Where in the run did it fail?
+      description: The loop runs queue -> enter match -> portraits/hello -> fight on crystal -> Limit Break -> results -> leave -> requeue.
+      options:
+        - Queue (didn't queue / wrong content)
+        - Match entry (didn't detect the match / portraits)
+        - Movement (vnavmesh issue, stuck, didn't reach the crystal)
+        - Combat (RotationSolver didn't take over)
+        - Limit Break (didn't fire / wrong action)
+        - Results / leave (didn't leave the duty after the match)
+        - Requeue (didn't queue the next match)
+        - Selection / UI (issue before pressing Start)
+        - Other / not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Attachments
+      description: |
+        **If you can provide any of these, it turns guesswork into a fix.**
+
+        - **Dalamud log**: open `/xllog`, click the *Open log folder* button at the bottom-right, attach `dalamud.log`. Filter by `[APSG]` if you want to trim it down.
+        - **Screenshots / short clip** if the issue is visual.
+        - **Other plugins active** that touch PvP, combat, movement, or input — helps rule out conflicts.
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Inline log excerpt (optional)
+      description: |
+        Short snippets (chat-log tail, Dalamud error text) belong here. For full log files, use **Attachments** above; don't paste them inline.
+      render: text
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Character class/job, current Series rank, hunches, anything that helps the bug land.

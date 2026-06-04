@@ -1,0 +1,33 @@
+[
+  {
+    "Author": "XeldarAlz",
+    "Name": "Auto PVP Series Grind",
+    "InternalName": "AutoPvpSeriesGrind",
+    "AssemblyVersion": "1.0.0.0",
+    "TestingAssemblyVersion": "1.0.0.0",
+    "Description": "Farms the PvP Series Malmstones for you: queues Casual Match, fights on the objective with RotationSolver, fires your Limit Break, and requeues in a loop until your match limit.",
+    "Punchline": "Casual Match PvP, on autopilot.",
+    "RepoUrl": "https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind",
+    "ApplicableVersion": "any",
+    "Tags": [
+      "PVP",
+      "PvP",
+      "Crystalline Conflict",
+      "Series Malmstones",
+      "Casual Match",
+      "Automation"
+    ],
+    "CategoryTags": [
+      "utility"
+    ],
+    "DalamudApiLevel": 15,
+    "IconUrl": "https://raw.githubusercontent.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/master/AutoPvpSeriesGrind/Images/Icon.png",
+    "DownloadLinkInstall": "https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/releases/latest/download/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/releases/latest/download/latest.zip",
+    "DownloadLinkTesting": "https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/releases/latest/download/latest.zip",
+    "IsTestingExclusive": false,
+    "AcceptsFeedback": true,
+    "DownloadCount": 0,
+    "LastUpdate": "0"
+  }
+]
