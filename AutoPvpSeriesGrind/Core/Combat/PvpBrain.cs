@@ -4,8 +4,7 @@ namespace AutoPvpSeriesGrind.Core.Combat;
 
 internal enum MoveKind { Hold, Engage, Retreat }
 
-// High-level intent behind a MovePlan, surfaced in the debug overlay. MoveKind stays the low-level
-// execution semantics (stop-when-arrived vs always-move); Posture is what a watcher would call the play.
+// Posture is the high-level intent shown in the overlay; MoveKind is how the executor actually moves.
 internal enum Posture { Idle, Hold, Push, Stage, Reposition, Regroup, Retreat }
 
 internal readonly record struct MovePlan(
@@ -31,11 +30,19 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float AllyBlendMinDot = -0.15f; // below this the team is behind the enemy line — flee to spawn instead
     private const float RepositionAwayWeight = 0.6f;
     private const float RepositionTeamWeight = 0.4f;
+    private const float FocusFalloffMult = 2f;    // a focuser past ThreatRadius*this contributes no pressure
+    private const float MeleeFocusBump = 0.5f;    // a melee in your face commits harder than a ranged poke
+    private const long MinDwellMs = 700;          // hold a defensive stance this long before relaxing it (anti-thrash)
+
+    // Ordered by urgency — ApplyDwell compares ranks via (int), so the order matters.
+    private enum Stance { Engage, Stage, Reposition, Regroup, Retreat }
 
     private StrategyProfile profile = StrategyProfile.For(strategy);
     private bool retreating;
     private float lastHp = 1f;
     private long lastHpTick;
+    private Stance committedStance = Stance.Engage;
+    private long committedAtMs;
 
     public void SetStrategy(PvpStrategy s, CustomStrategyProfile? custom = null) => profile = StrategyProfile.For(s, custom);
 
@@ -44,6 +51,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         retreating = false;
         lastHp = 1f;
         lastHpTick = 0;
+        committedStance = Stance.Engage;
+        committedAtMs = 0;
     }
 
     public MovePlan Decide(PvpSnapshot s, Vector3 safeAnchor)
@@ -52,7 +61,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
         var focal = s.Objective ?? s.AllyCentroid ?? s.Self;
 
-        // Force balance around ME, not the crystal — being alone past the point is the thing that gets bots killed.
         var enemiesNear = CountWithin(s.Enemies, s.Self, profile.ThreatRadius);
         var alliesNear = CountWithin(s.Allies, s.Self, profile.SupportRadius);
         var localForce = (1 + alliesNear) - enemiesNear;
@@ -61,39 +69,84 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         var enemiesAtPoint = CountWithin(s.Enemies, focal, profile.EngageRadius);
         var alliesAtPoint = CountWithin(s.Allies, focal, profile.EngageRadius);
 
-        var heavyFocus = s.FocusCount >= profile.FocusRepositionCount;
-        var critFocus = s.FocusCount >= profile.FocusRetreatCount;
+        var focus = WeightedFocus(s);
 
         if (!retreating)
         {
             if (s.SelfHp <= profile.PanicHp)
                 retreating = true;
-            else if (s.SelfHp <= profile.DisengageHp && (critFocus || localForce < 0 || bursting))
+            else if (s.SelfHp <= profile.DisengageHp && (focus >= profile.FocusRetreatCount || localForce < 0 || bursting))
                 retreating = true;
         }
-        else if (s.SelfHp >= profile.ReengageHp && localForce >= 0 && s.FocusCount < profile.FocusRetreatCount)
+        else if (s.SelfHp >= profile.ReengageHp && localForce >= 0 && focus < profile.FocusRetreatCount)
         {
             retreating = false;
         }
 
-        if (retreating)
-            return FallBack(s, safeAnchor, Posture.Retreat, $"retreat hp={s.SelfHp:P0} focus={s.FocusCount}");
+        var desired = ChooseStance(localForce, isolated, enemiesNear, enemiesAtPoint, alliesAtPoint, focus, bursting,
+            s.AllyCentroid is not null);
+        var stance = ApplyDwell(desired);
 
-        // Number-aware disengage even at full HP: never 1vN the point, never solo a pick while isolated.
+        return stance switch
+        {
+            Stance.Retreat => FallBack(s, safeAnchor, Posture.Retreat, $"retreat hp={s.SelfHp:P0} focus={s.FocusCount}"),
+            Stance.Regroup => FallBack(s, safeAnchor, Posture.Regroup, $"regroup {1 + alliesNear}v{enemiesNear} on you"),
+            Stance.Reposition => Reposition(s, bursting, $"focused x{s.FocusCount} — reposition"),
+            Stance.Stage => Stage(s, focal, $"staging {1 + alliesNear}v{enemiesNear} — wait for team"),
+            _ => Engage(s, focal, alliesNear, enemiesNear),
+        };
+    }
+
+    private Stance ChooseStance(int localForce, bool isolated, int enemiesNear, int enemiesAtPoint, int alliesAtPoint,
+        float focus, bool bursting, bool hasTeam)
+    {
+        if (retreating)
+            return Stance.Retreat;
+
         var soloFeed = isolated && enemiesNear >= SoloFeedEnemies;
         var overwhelmed = enemiesNear >= 1 && localForce < -profile.OutnumberMargin;
         if (soloFeed || overwhelmed)
-            return FallBack(s, safeAnchor, Posture.Regroup, $"regroup {1 + alliesNear}v{enemiesNear} on you");
+            return Stance.Regroup;
 
-        // React to focus before the burst lands — peel toward the team and make the melee chase.
-        if (heavyFocus && (localForce <= 0 || isolated || bursting))
-            return Reposition(s, bursting, $"focused x{s.FocusCount} — reposition");
+        if (focus >= profile.FocusRepositionCount && (localForce <= 0 || isolated || bursting))
+            return Stance.Reposition;
 
-        // Don't be the first one onto a contested point — wait for the team, then commit together.
-        if (s.AllyCentroid is not null && enemiesAtPoint > 0 && alliesAtPoint == 0 && localForce < 0)
-            return Stage(s, focal, $"staging {1 + alliesNear}v{enemiesNear} — wait for team");
+        if (hasTeam && enemiesAtPoint > 0 && alliesAtPoint == 0 && localForce < 0)
+            return Stance.Stage;
 
-        return Engage(s, focal, alliesNear, enemiesNear);
+        return Stance.Engage;
+    }
+
+    // Escalation is immediate; relaxing out of a defensive stance waits MinDwellMs so it can't thrash at a boundary.
+    private Stance ApplyDwell(Stance desired)
+    {
+        var now = Environment.TickCount64;
+        if (desired == committedStance)
+            return committedStance;
+
+        var escalating = (int)desired > (int)committedStance;
+        if (!escalating && committedStance != Stance.Engage && now - committedAtMs < MinDwellMs)
+            return committedStance;
+
+        committedStance = desired;
+        committedAtMs = now;
+        return desired;
+    }
+
+    private float WeightedFocus(PvpSnapshot s)
+    {
+        var start = profile.ThreatRadius;
+        var end = MathF.Max(start * FocusFalloffMult, start + 0.01f);
+        var sum = 0f;
+        foreach (var e in s.Enemies)
+        {
+            if (e.TargetId != s.SelfId) continue;
+            var d = e.DistanceToSelf;
+            var w = d <= start ? 1f : d >= end ? 0f : 1f - (d - start) / (end - start);
+            if (e.IsMelee && d <= start) w += MeleeFocusBump;
+            sum += w;
+        }
+        return sum;
     }
 
     private MovePlan Engage(PvpSnapshot s, Vector3 focal, int alliesNear, int enemiesNear)
@@ -127,7 +180,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         }
         else
         {
-            // Even fight or no push: hold the point rather than diving — chasing off-point is a classic feed.
             dest = focal;
             stop = profile.MeleeHoldRange;
             label = "hold";
@@ -141,8 +193,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         return new MovePlan(kind, dest, dest, stop, sprint, $"{label} {1 + alliesNear}v{enemiesNear}{tdesc}", pursue, posture);
     }
 
-    // Sprinting disengage shared by Retreat (HP/panic) and Regroup (numbers): move away from the threat,
-    // fold in the ally direction only when the team isn't on the far side of the enemy, else flee to spawn.
     private MovePlan FallBack(PvpSnapshot s, Vector3 safeAnchor, Posture posture, string reason)
     {
         var threat = NearestEnemyPos(s) ?? s.EnemyCentroid;
@@ -170,7 +220,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         return new MovePlan(MoveKind.Retreat, safeAnchor, safeAnchor, RetreatStopRange, true, reason, false, posture);
     }
 
-    // Stay in the fight but get off the focus: peel toward the team while keeping distance from the focuser.
     private MovePlan Reposition(PvpSnapshot s, bool sprint, string reason)
     {
         var dir = Vector3.Zero;
@@ -194,7 +243,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         return new MovePlan(MoveKind.Retreat, dest, dest, RepositionStopRange, sprint, reason, false, Posture.Reposition);
     }
 
-    // Wait near the team, nudged toward the point and held off the enemy mass, ready to push as a group.
     private MovePlan Stage(PvpSnapshot s, Vector3 focal, string reason)
     {
         var anchor = s.AllyCentroid ?? s.Self;
