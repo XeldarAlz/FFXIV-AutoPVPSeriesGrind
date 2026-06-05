@@ -41,7 +41,7 @@ https://raw.githubusercontent.com/XeldarAlz/DalamudPlugins/main/repo.json
 
 Tick **Enabled**, click **+**, then **Save and Close**. Open `/xlplugins` → **All Plugins**, search for **Auto PVP Series Grind**, and install.
 
-The plugin drives a few helpers for movement and combat. Open `/apsg deps` after install to see the list and one-click each missing one:
+The plugin drives a few helpers for movement and combat. Open `/apsg deps` after install to see the list and one-click each missing one.
 
 ## Commands
 
