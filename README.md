@@ -67,10 +67,6 @@ If you liked this plugin, take a look at my other Dalamud work. You might find s
 
 → [XeldarAlz Dalamud Plugins](https://github.com/XeldarAlz/DalamudPlugins)
 
-## Acknowledgements
-
-The match loop is a C# port of the community **"Casual Match PVP"** SND script by **baanderson40** (with improvements credited there to SudoStitch). Credit to those authors for the original automation flow.
-
 ## License
 
 AGPL-3.0-or-later. See [LICENSE.md](LICENSE.md).
