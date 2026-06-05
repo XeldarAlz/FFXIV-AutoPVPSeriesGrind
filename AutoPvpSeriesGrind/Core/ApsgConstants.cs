@@ -18,6 +18,10 @@ internal static class ApsgConstants
     public const uint StatusSpawnProtection = 895; // active in the spawn pen before the gate opens
     public const uint StatusSprint = 1342;         // PvP sprint
 
+    // Standard-issue Elixir (PvP): 4.5s cast that refills HP and MP to full. Any movement cancels it,
+    // so the brain must hold still whenever the rotation solver is casting it.
+    public const uint ActionStandardIssueElixir = 29055;
+
     public const int SaveThrottleMs = 500;
 
     internal static class ThrottleKeys

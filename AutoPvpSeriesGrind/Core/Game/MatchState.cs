@@ -53,6 +53,9 @@ internal static class MatchState
     public static Vector3? PlayerPosition()
         => Svc.Objects.LocalPlayer?.Position;
 
+    public static bool LocalIsCasting(uint actionId)
+        => Svc.Objects.LocalPlayer is { } me && me.IsCasting(actionId);
+
     public static bool HasStatus(uint statusId)
     {
         var me = Svc.Objects.LocalPlayer;
@@ -74,6 +77,10 @@ internal static class MatchState
         var role = Svc.Objects.LocalPlayer?.ClassJob.ValueNullable?.Role ?? 0;
         return role is ApsgConstants.JobRoles.RangedDps or ApsgConstants.JobRoles.Healer;
     }
+
+    public static bool LocalIsMelee()
+        => (Svc.Objects.LocalPlayer?.ClassJob.ValueNullable?.Role ?? 0)
+            is ApsgConstants.JobRoles.Tank or ApsgConstants.JobRoles.MeleeDps;
 
     public static Vector3? CrystalPosition()
     {
@@ -103,6 +110,7 @@ internal static class MatchState
         var me = Svc.Objects.LocalPlayer;
         var self = me?.Position ?? Vector3.Zero;
         var selfId = me?.GameObjectId ?? 0;
+        var selfTargetId = me?.TargetObjectId ?? 0;
         var objective = CrystalPosition();
 
         var enemies = new List<PvpActor>();
@@ -110,6 +118,7 @@ internal static class MatchState
         var enemySum = Vector3.Zero;
         var allySum = Vector3.Zero;
         var focus = 0;
+        PvpActor? currentTarget = null;
 
         foreach (var obj in Svc.Objects)
         {
@@ -122,6 +131,7 @@ internal static class MatchState
                 enemies.Add(actor);
                 enemySum += pc.Position;
                 if (actor.TargetId == selfId) focus++;
+                if (selfTargetId != 0 && actor.Id == selfTargetId) currentTarget = actor;
             }
             else
             {
@@ -138,6 +148,7 @@ internal static class MatchState
             SelfRole = RoleFromByte(me?.ClassJob.ValueNullable?.Role ?? 0),
             PrefersBackline = LocalPrefersBackline(),
             Objective = objective,
+            CurrentTarget = currentTarget,
             Enemies = enemies,
             Allies = allies,
             EnemyCentroid = enemies.Count > 0 ? enemySum / enemies.Count : null,

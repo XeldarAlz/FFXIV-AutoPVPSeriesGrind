@@ -67,6 +67,7 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
 
     private const int PollMs = 100;
     private const int MainLoopIdleMs = 500;
+    private const int LiveTickMs = 150;
     private const int DutyCommencedSettleMs = 1000;
     // Grace period after death before re-applying the rotation, so it lands after the respawn completes.
     private const int RespawnRotationDelayMs = 10_000;
@@ -139,7 +140,7 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
             if (inMatchLive)
                 await TickLiveMatch();
 
-            await NextFrame(MainLoopIdleMs);
+            await NextFrame(inMatchLive ? LiveTickMs : MainLoopIdleMs);
         }
     }
 

@@ -4,7 +4,7 @@ namespace AutoPvpSeriesGrind.Core.Combat;
 
 internal enum MoveKind { Hold, Engage, Retreat }
 
-internal readonly record struct MovePlan(MoveKind Kind, Vector3 Destination, Vector3 Fallback, float StopRange, bool Sprint, string Reason);
+internal readonly record struct MovePlan(MoveKind Kind, Vector3 Destination, Vector3 Fallback, float StopRange, bool Sprint, string Reason, bool Pursue = false);
 
 internal sealed class PvpBrain(PvpStrategy strategy)
 {
@@ -13,6 +13,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float BacklineStopRange = 2f;
     private const float RegroupStepBack = 10f;   // yalms off the point toward safety when no allies remain
     private const float MinVectorSq = 0.01f;     // below this a direction vector is treated as degenerate
+    private const float PursuitSprintGap = 8f;
 
     private StrategyProfile profile = StrategyProfile.For(strategy);
     private bool retreating;
@@ -48,27 +49,40 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             return new MovePlan(MoveKind.Engage, regroup, safeAnchor, RegroupStopRange, false, $"regroup {localAllies}v{localEnemies}");
         }
 
-        var target = ChooseTarget(s, focal);
         var push = advantage >= profile.PushAdvantage;
+        var target = s.PrefersBackline ? ChooseTarget(s, focal) : (s.CurrentTarget ?? ChooseTarget(s, focal));
 
         Vector3 dest;
         float stop;
+        var pursue = false;
+        var sprint = false;
+        string label;
+
         if (s.PrefersBackline)
         {
             dest = push && target is { } bt ? BacklineOnTarget(s, bt) : BacklineHold(s, focal);
             stop = BacklineStopRange;
+            label = push ? "push" : "hold";
+        }
+        else if (target is { } mt)
+        {
+            dest = mt.Position;
+            stop = profile.MeleeReach;
+            pursue = true;
+            sprint = mt.DistanceToSelf > profile.MeleeReach + PursuitSprintGap;
+            label = "chase";
         }
         else
         {
-            dest = push && target is { } mt ? mt.Position : focal;
-            stop = push ? profile.MeleeReach : profile.MeleeHoldRange;
+            dest = focal;
+            stop = profile.MeleeHoldRange;
+            label = "hold";
         }
 
         dest = ClampCohesion(dest, s.AllyCentroid, profile.CohesionRadius);
 
-        var label = push ? "push" : "hold";
         var tdesc = target is { } t ? $" → {(int)(t.Hp * 100)}%@{t.DistanceToSelf:F0}y" : "";
-        return new MovePlan(MoveKind.Engage, dest, dest, stop, false, $"{label} {localAllies}v{localEnemies}{tdesc}");
+        return new MovePlan(MoveKind.Engage, dest, dest, stop, sprint, $"{label} {localAllies}v{localEnemies}{tdesc}", pursue);
     }
 
     private MovePlan Retreat(PvpSnapshot s, Vector3 safeAnchor)

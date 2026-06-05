@@ -11,6 +11,7 @@ internal sealed class PvpSnapshot
     public required CombatRole SelfRole { get; init; }
     public required bool PrefersBackline { get; init; }
     public required Vector3? Objective { get; init; }
+    public required PvpActor? CurrentTarget { get; init; }
     public required IReadOnlyList<PvpActor> Enemies { get; init; }
     public required IReadOnlyList<PvpActor> Allies { get; init; }
     public required Vector3? EnemyCentroid { get; init; }

@@ -14,7 +14,7 @@ public sealed partial class AutoPvpSeries
 
     private const int PostQuickChatMs = 500;
     private const int LeaveDutyTimeoutMs = 10_000;
-    private const int PortraitPhasePollMs = 1000;
+    private const int PortraitPhasePollMs = 250;
 
     // ContentTimeLeft (seconds) bands used to read the pre-match flow. During the portrait/intro phase
     // the timer counts down inside the intro band; once the gate opens it jumps back up past GateOpenSec.
@@ -156,7 +156,7 @@ public sealed partial class AutoPvpSeries
                     }
                 }
 
-                Cmd(GameCommands.NavStop);
+                if (Nav.IsRunning()) Nav.Stop();
                 await NextFrame(PortraitPhasePollMs);
             }
             else

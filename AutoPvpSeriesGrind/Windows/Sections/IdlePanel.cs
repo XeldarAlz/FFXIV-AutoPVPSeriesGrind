@@ -37,6 +37,7 @@ internal static class IdlePanel
 
         Styling.VSpace(6);
         DrawActivity(x0, colW, s);
+        DrawJobHint(s);
         Styling.VSpace(16);
         DrawModeRow(cfg, x0, colW, s);
         Styling.VSpace(12);
@@ -58,6 +59,32 @@ internal static class IdlePanel
         ImGui.SameLine(0, gap);
         Segment("##act_fl", FontAwesomeIcon.Flag, "Frontline", Styling.AccentVioletSoft,
             selected: false, disabled: true, size, "Frontline queueing is on the way.\nComing soon, stay tuned!");
+    }
+
+    private static void DrawJobHint(float s)
+    {
+        if (!MatchState.LocalIsMelee()) return;
+
+        Styling.VSpace(8);
+
+        const string text = "Ranged jobs grind more efficiently than melee";
+        var icon = FontAwesomeIcon.Lightbulb.ToIconString();
+        var col = Styling.AccentAmberSoft;
+        var gap = 6f * s;
+
+        Vector2 iconSize;
+        using (ImRaii.PushFont(UiBuilder.IconFont))
+            iconSize = ImGui.CalcTextSize(icon);
+        var totalW = iconSize.X + gap + ImGui.CalcTextSize(text).X;
+        var availX = ImGui.GetContentRegionAvail().X;
+        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, (availX - totalW) * 0.5f));
+
+        using (ImRaii.PushFont(UiBuilder.IconFont))
+        using (ImRaii.PushColor(ImGuiCol.Text, col))
+            ImGui.TextUnformatted(icon);
+        ImGui.SameLine(0, gap);
+        using (ImRaii.PushColor(ImGuiCol.Text, col))
+            ImGui.TextUnformatted(text);
     }
 
     private static void DrawModeRow(Configuration cfg, float x0, float colW, float s)

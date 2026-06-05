@@ -11,16 +11,13 @@ namespace AutoPvpSeriesGrind.Core.Tasks;
 
 public sealed partial class AutoPvpSeries
 {
-    // Distance (yalms) at which the player counts as having reached a spawn-side safe anchor.
-    private const float AnchorArriveRadius = 40f;
     // Radius (yalms) around the crystal used for "on point" engagement checks.
     private const float CrystalEngageRadius = 10f;
-    private const int SpawnSafetyPollMs = 300;
 
     private const float RepathThreshold = 2.5f;     // skip re-issuing a path if the new dest is this close to the last
+    private const float PursuitRepathThreshold = 1f;
     private const float MinStopRange = 0.5f;        // below this we MoveTo exactly instead of MoveCloseTo
     private const float HoldSlack = 1.5f;           // extra slack before we bother re-pathing while holding
-    private const float SpawnMoveStopRange = 2f;
     private const float LegacyCrystalStopRange = 1.5f;
 
     // Minimum gap before re-pathing to an unchanged, not-yet-reached destination (avoids per-tick pathfind spam when stuck).
@@ -56,7 +53,15 @@ public sealed partial class AutoPvpSeries
 
         if (MatchState.HasStatus(StatusSpawnProtection))
         {
-            await RunSpawnSafetyLoop(territory);
+            if (!MatchState.HasStatus(StatusSprint))
+                Cmd(GameCommands.Sprint);
+            ranSafetyMoveThisDuty = true;
+        }
+
+        if (MatchState.LocalIsCasting(ActionStandardIssueElixir))
+        {
+            StopMoving();
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, "wait: elixir cast (hp/mp refill)");
             return;
         }
 
@@ -107,14 +112,25 @@ public sealed partial class AutoPvpSeries
 
             case MoveKind.Engage:
             case MoveKind.Retreat:
-                IssueMove(plan.Destination, plan.Fallback, plan.StopRange);
+                IssueMove(plan.Destination, plan.Fallback, plan.StopRange, plan.Pursue);
                 break;
         }
     }
 
-    private void IssueMove(Vector3 dest, Vector3 fallback, float stopRange)
+    private void IssueMove(Vector3 dest, Vector3 fallback, float stopRange, bool pursue = false)
     {
-        if (Vector3.Distance(dest, lastMoveDest) < RepathThreshold)
+        var drift = Vector3.Distance(dest, lastMoveDest);
+
+        if (pursue)
+        {
+            if (drift < PursuitRepathThreshold)
+            {
+                if (Nav.IsRunning()) return;
+                if (DistanceToSelf(dest) <= stopRange) return;
+                if (Environment.TickCount64 - lastMoveAtMs < RepathCooldownMs) return;
+            }
+        }
+        else if (drift < RepathThreshold)
         {
             if (Nav.IsRunning()) return;
             if (DistanceToSelf(dest) <= stopRange + RepathThreshold) return;
@@ -139,31 +155,6 @@ public sealed partial class AutoPvpSeries
 
     private static float DistanceToSelf(Vector3 p)
         => MatchState.PlayerPosition() is { } self ? Vector3.Distance(self, p) : float.MaxValue;
-
-    private async Task RunSpawnSafetyLoop(uint territory)
-    {
-        while (MatchState.HasStatus(StatusSpawnProtection)
-               && InDuty() && inMatchLive
-               && !CancelToken.IsCancellationRequested)
-        {
-            CheckDeathAndReapplyRotation();
-            if (!MatchState.HasStatus(StatusSprint))
-                Cmd(GameCommands.Sprint);
-
-            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Engage, "leaving spawn");
-
-            if (MatchState.SafeAnchors.TryGetValue(territory, out var anchors)
-                && MatchState.PlayerPosition() is { } pos
-                && anchors.WithinArrival(pos, AnchorArriveRadius) is { } dest)
-            {
-                ranSafetyMoveThisDuty = true;
-                IssueMove(dest, dest, SpawnMoveStopRange);
-                break;
-            }
-
-            await NextFrame(SpawnSafetyPollMs);
-        }
-    }
 
     private void LegacyCrystalMove()
     {
