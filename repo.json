@@ -5,7 +5,7 @@
     "InternalName": "AutoPvpSeriesGrind",
     "AssemblyVersion": "1.0.0.0",
     "TestingAssemblyVersion": "1.0.0.0",
-    "Description": "Farms the PvP Series Malmstones for you: queues Casual Match, fights on the objective with RotationSolver, fires your Limit Break, and requeues in a loop until your match limit.",
+    "Description": "Farms PvP Series Malmstones for you: queues and plays PvP matches in a loop until your goal is met.",
     "Punchline": "Casual Match PvP, on autopilot.",
     "RepoUrl": "https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind",
     "ApplicableVersion": "any",

@@ -7,6 +7,7 @@ public enum ExternalPlugin
     Vnavmesh,
     RotationSolver,
     Lifestream,
+    PvpAutoLb,
 }
 
 public sealed record ExternalPluginInfo(
@@ -15,7 +16,6 @@ public sealed record ExternalPluginInfo(
     string RepoUrl,
     string Purpose,
     bool Required,
-    // Alternate InternalNames (community forks with the same command/IPC surface).
     string[]? Aliases = null);
 
 public static class ExternalPlugins
@@ -42,6 +42,12 @@ public static class ExternalPlugins
             RepoUrl: "https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json",
             Purpose: "Optional: runs your configured travel command before the first queue.",
             Required: false),
+        [ExternalPlugin.PvpAutoLb] = new(
+            InternalName: "PvpAutoLb",
+            DisplayName: "Auto PVP LB",
+            RepoUrl: "https://raw.githubusercontent.com/XeldarAlz/FFXIV-AutoPVPLimitBreak/master/repo.json",
+            Purpose: "Fires your PvP Limit Break. This plugin pushes proven per-class settings to it automatically.",
+            Required: true),
     };
 
     public static IEnumerable<ExternalPlugin> All => Catalog.Keys;
@@ -58,6 +64,5 @@ public static class ExternalPlugins
     public static bool AllRequiredInstalled()
         => All.Where(p => Catalog[p].Required).All(IsInstalled);
 
-    // No advisory "installed but disabled" state for these dependencies; kept for the DependencyRow contract.
     public static bool IsInstalledButDisabled(ExternalPlugin plugin) => false;
 }

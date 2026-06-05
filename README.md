@@ -45,9 +45,10 @@ The plugin drives a few helpers for movement and combat. Open `/apsg deps` after
 
 - **vnavmesh** — pathfinding/movement (required)
 - **RotationSolver Reborn** — combat (required)
+- **Auto PVP LB** — optional, fires your PvP Limit Break with HP-aware targeting. If it isn't installed, this plugin fires a basic Limit Break itself (lowest-HP enemy in range); see the **Combat** settings tab.
 - **Lifestream** — optional, only for the "Return to the inn" after-run action
 
-The match loop also fires `/pvpac` (Limit Breaks, sprint) and `/quickchat` commands when available, exactly as the original SND script does — these are best-effort and not gated as dependencies.
+The match loop also fires `/pvpac` (sprint) and `/quickchat` commands when available, exactly as the original SND script does — these are best-effort and not gated as dependencies.
 
 ## Commands
 
