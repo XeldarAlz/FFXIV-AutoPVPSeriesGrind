@@ -16,6 +16,14 @@ internal static class HumanTiming
 
     public static bool Maybe(double probability) => Rng.NextDouble() < probability;
 
+    // Random whole seconds in [minSec, maxSec], clamped to be non-negative and well-ordered.
+    public static int RandSecInclusive(int minSec, int maxSec)
+    {
+        var min = Math.Max(0, minSec);
+        var max = Math.Max(min, maxSec);
+        return min == max ? min : Rng.Next(min, max + 1);
+    }
+
     public static float Offset(float max) => (float)((Rng.NextDouble() * 2.0 - 1.0) * max);
 
     public static (int Min, int Max) ReactionBand(HumanizeLevel level) => level switch

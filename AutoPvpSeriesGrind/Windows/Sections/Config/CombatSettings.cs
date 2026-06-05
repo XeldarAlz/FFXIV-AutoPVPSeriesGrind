@@ -15,9 +15,9 @@ internal static class CombatSettings
     private static readonly BehaviorChoice[] BehaviorChoices =
     [
         new("Rush the crystal", "No tactics — just run to the objective and stand on it. Never retreats, never picks targets. Simplest to reason about, but it will feed when outnumbered.", BrainEnabled: false, PvpStrategy.Moderate),
-        new("Defensive", "Play smart, cautious: hold the point but back off early (below 50% HP) and never dive. Ranged DPS and healers hold far behind the point.", true, PvpStrategy.Defensive),
-        new("Moderate", "Play smart, balanced: hold the point, take short chases, regroup when outnumbered, retreat below 30% HP. A good default.", true, PvpStrategy.Moderate),
-        new("Aggressive", "Play smart, aggressive: push the enemy line and chase kills; regroup only when badly outnumbered and retreat only when nearly dead (below 15% HP).", true, PvpStrategy.Aggressive),
+        new("Defensive", "Play smart, cautious: hold the point but never dive, wait for the team before committing, and kite away the moment it's focused. Backs off on any deficit; retreats below ~55% HP. Ranged DPS and healers hold far behind the point.", true, PvpStrategy.Defensive),
+        new("Moderate", "Play smart, balanced: hold the point, take short chases when ahead, fall back to the team when outnumbered, and kite out when two enemies focus it. Retreats below ~35% HP. A good default.", true, PvpStrategy.Moderate),
+        new("Aggressive", "Play smart, aggressive: push the enemy line and chase kills, but still won't solo a lost fight — falls back only when badly outnumbered and retreats only when nearly dead (below ~18% HP).", true, PvpStrategy.Aggressive),
         new("Custom", "Play smart, hand-tuned: every threshold below is yours to set. Starts from the Moderate baseline.", true, PvpStrategy.Custom),
     ];
 
@@ -78,14 +78,14 @@ internal static class CombatSettings
             () => c.ReengageHpPercent, v => c.ReengageHpPercent = v, 0, 100, "%d%%");
         Row(cfg, "Panic HP", "Always flee below this HP, no matter the situation.",
             () => c.PanicHpPercent, v => c.PanicHpPercent = v, 0, 100, "%d%%");
-        Row(cfg, "Pressure count", "How many enemies targeting you counts as 'under pressure'.",
+        Row(cfg, "Pressure count", "How many enemies targeting you counts as 'under pressure' (gates the HP retreat).",
             () => c.FocusRetreatCount, v => c.FocusRetreatCount = v, 1, 8, "%d enemies");
 
         Group("Aggression");
-        Row(cfg, "Push advantage", "Ally-minus-enemy edge around the fight needed before pushing a target. Lower is bolder; 0 pushes on an even fight.",
+        Row(cfg, "Push advantage", "Ally-minus-enemy edge around you needed before pushing a target. Lower is bolder; 0 pushes on an even fight.",
             () => c.PushAdvantage, v => c.PushAdvantage = v, -2, 4, "%d");
-        Row(cfg, "Outnumber margin", "How far behind in numbers before falling back to regroup with the team.",
-            () => c.OutnumberMargin, v => c.OutnumberMargin = v, 1, 6, "%d");
+        Row(cfg, "Outnumber margin", "How far behind in local numbers before falling back to the team. 0 = back off on any deficit.",
+            () => c.OutnumberMargin, v => c.OutnumberMargin = v, 0, 6, "%d");
 
         Group("Positioning");
         Row(cfg, "Melee hold", "Yalms a melee holds off the point when not pushing.",
@@ -106,6 +106,20 @@ internal static class CombatSettings
             () => c.CohesionRadius, v => c.CohesionRadius = v, 5, 40, "%d yd");
         Row(cfg, "Kite distance", "Yalms peeled away each step while retreating.",
             () => c.KiteDistance, v => c.KiteDistance = v, 5, 30, "%d yd");
+
+        Group("Teamplay & focus");
+        Row(cfg, "Support radius", "Yalms around you a teammate must be to count as backup. Outside this you're 'alone'.",
+            () => c.SupportRadius, v => c.SupportRadius = v, 5, 40, "%d yd");
+        Row(cfg, "Threat radius", "Yalms around you used to count nearby enemies when weighing whether you're outnumbered.",
+            () => c.ThreatRadius, v => c.ThreatRadius = v, 5, 40, "%d yd");
+        Row(cfg, "Focus reposition", "Enemies targeting you that trigger a kite-to-safety before your HP drops.",
+            () => c.FocusRepositionCount, v => c.FocusRepositionCount = v, 1, 8, "%d enemies");
+        Row(cfg, "Burst sensitivity", "How fast your HP must fall (per second) to count as being bursted and bail early.",
+            () => c.BurstSensitivityPercent, v => c.BurstSensitivityPercent = v, 5, 100, "%d%%/s");
+        Row(cfg, "Stage standoff", "Yalms to keep from the enemy group while waiting to commit with the team.",
+            () => c.StageStandoff, v => c.StageStandoff = v, 5, 40, "%d yd");
+        Row(cfg, "Reposition step", "Yalms to peel toward your team when focused.",
+            () => c.RepositionDistance, v => c.RepositionDistance = v, 5, 30, "%d yd");
 
         ImGui.Spacing();
     }

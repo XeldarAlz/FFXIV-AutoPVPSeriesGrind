@@ -17,8 +17,8 @@ internal static class BrainTelemetry
         UpdatedTick = Environment.TickCount64;
     }
 
-    public static void RecordStatus(PvpSnapshot snapshot, MoveKind kind, string reason)
-        => Record(snapshot, new MovePlan(kind, snapshot.Self, snapshot.Self, 0f, false, reason));
+    public static void RecordStatus(PvpSnapshot snapshot, MoveKind kind, string reason, Posture posture = Posture.Idle)
+        => Record(snapshot, new MovePlan(kind, snapshot.Self, snapshot.Self, 0f, false, reason, false, posture));
 
     public static void Clear()
     {

@@ -16,6 +16,7 @@ public sealed class BrainDebugWindow : Window, IDisposable
 {
     private const float HpHealthy = 0.5f;
     private const float HpWounded = 0.25f;
+    private const float NearYou = 20f; // display radius for the "near you" force readout
 
     public BrainDebugWindow() : base("Auto PVP Series Grind: Brain###AutoPvpSeriesGrindBrain")
     {
@@ -83,14 +84,9 @@ public sealed class BrainDebugWindow : Window, IDisposable
     private static void DrawDecision(in MovePlan plan)
     {
         var s = ImGuiHelpers.GlobalScale;
-        var col = PlanColor(plan.Kind);
-        var icon = plan.Kind switch
-        {
-            MoveKind.Engage => FontAwesomeIcon.Crosshairs,
-            MoveKind.Retreat => FontAwesomeIcon.Running,
-            _ => FontAwesomeIcon.ShieldAlt,
-        };
-        var label = plan.Kind.ToString().ToUpperInvariant();
+        var col = PostureColor(plan.Posture);
+        var icon = PostureIcon(plan.Posture);
+        var label = plan.Posture.ToString().ToUpperInvariant();
 
         ImGui.SetWindowFontScale(1.3f);
         var iconStr = icon.ToIconString();
@@ -147,8 +143,8 @@ public sealed class BrainDebugWindow : Window, IDisposable
         if (plan.Kind != MoveKind.Hold)
         {
             var d = Project(plan.Destination, snap.Self, radius, maxR, center, edge);
-            dl.AddLine(center, d, ImGui.GetColorU32(Styling.WithAlpha(PlanColor(plan.Kind), 0.5f)), 1.5f * s);
-            ProgressRing.Track(d, 5f * s, 1.5f * s, PlanColor(plan.Kind));
+            dl.AddLine(center, d, ImGui.GetColorU32(Styling.WithAlpha(PostureColor(plan.Posture), 0.5f)), 1.5f * s);
+            ProgressRing.Track(d, 5f * s, 1.5f * s, PostureColor(plan.Posture));
         }
 
         if (snap.Objective is { } obj)
@@ -241,9 +237,16 @@ public sealed class BrainDebugWindow : Window, IDisposable
         ImGui.TableSetupColumn("##k", ImGuiTableColumnFlags.WidthFixed, 140f * ImGuiHelpers.GlobalScale);
         ImGui.TableSetupColumn("##v", ImGuiTableColumnFlags.WidthStretch);
 
+        var alliesNear = snap.AlliesWithin(NearYou);
+        var enemiesNear = snap.EnemiesWithin(NearYou);
+        var nearColor = 1 + alliesNear >= enemiesNear ? Styling.AccentMint : Styling.AccentRose;
+
         Row("Forces", $"{snap.Enemies.Count} enemy  ·  {snap.Allies.Count} ally", Styling.TextStrong);
+        Row($"Near you (≤{(int)NearYou}y)", $"{1 + alliesNear} ally  ·  {enemiesNear} enemy", nearColor);
         Row("Focused by", snap.FocusCount.ToString(), snap.FocusCount > 0 ? Styling.AccentRose : Styling.TextStrong);
-        Row("Nearest enemy", snap.Enemies.Count == 0 ? "—" : $"{snap.Enemies.Min(e => e.DistanceToSelf):F1}y", Styling.TextStrong);
+        Row("Nearest ally", snap.Allies.Count == 0 ? "—" : $"{snap.NearestAllyDistance:F1}y",
+            snap.Allies.Count == 0 ? Styling.AccentRose : Styling.TextStrong);
+        Row("Nearest enemy", snap.Enemies.Count == 0 ? "—" : $"{snap.NearestEnemyDistance:F1}y", Styling.TextStrong);
         Row("Position", snap.PrefersBackline ? "backline" : "frontline", Styling.TextStrong);
         Row("Objective", snap.HasObjective ? $"located  ·  {Horiz(snap.Self, snap.Objective!.Value):F0}y" : "not found",
             snap.HasObjective ? Styling.AccentMint : Styling.TextMuted);
@@ -264,11 +267,25 @@ public sealed class BrainDebugWindow : Window, IDisposable
             ImGui.TextUnformatted(value);
     }
 
-    private static Vector4 PlanColor(MoveKind kind) => kind switch
+    private static Vector4 PostureColor(Posture posture) => posture switch
     {
-        MoveKind.Retreat => Styling.AccentRose,
-        MoveKind.Engage => Styling.AccentAmber,
-        _ => Styling.AccentMint,
+        Posture.Retreat => Styling.AccentRose,
+        Posture.Regroup => Styling.AccentAmberSoft,
+        Posture.Reposition => Styling.AccentAmber,
+        Posture.Stage => Styling.AccentVioletSoft,
+        Posture.Push => Styling.AccentAmber,
+        Posture.Hold => Styling.AccentMint,
+        _ => Styling.TextMuted,
+    };
+
+    private static FontAwesomeIcon PostureIcon(Posture posture) => posture switch
+    {
+        Posture.Retreat => FontAwesomeIcon.Running,
+        Posture.Regroup => FontAwesomeIcon.Users,
+        Posture.Reposition => FontAwesomeIcon.Walking,
+        Posture.Stage => FontAwesomeIcon.HourglassHalf,
+        Posture.Push => FontAwesomeIcon.Crosshairs,
+        _ => FontAwesomeIcon.ShieldAlt,
     };
 
     private static float Horiz(Vector3 a, Vector3 b)

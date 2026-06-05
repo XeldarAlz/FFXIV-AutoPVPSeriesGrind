@@ -45,6 +45,14 @@ internal static class MatchState
         => SafeAnchors.ContainsKey(Svc.ClientState.TerritoryType)
         || Svc.Condition[ConditionFlag.PvPDisplayActive];
 
+    public static bool InDuty() => Svc.Condition[ConditionFlag.BoundByDuty];
+
+    public static bool IsNormalConditions() => Svc.Condition[ConditionFlag.NormalConditions];
+
+    public static bool LocalIsDead()
+        => Svc.Condition[ConditionFlag.Unconscious]
+        || (Svc.Objects.LocalPlayer is { } me && me.MaxHp > 0 && me.CurrentHp == 0);
+
     public static uint LocalJobId()
         => Svc.Objects.LocalPlayer?.ClassJob.RowId ?? 0;
 

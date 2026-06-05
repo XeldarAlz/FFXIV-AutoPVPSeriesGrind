@@ -11,8 +11,6 @@ public sealed partial class AutoPvpSeries
 {
     private const int PvpAreaWaitMs = 90_000;
 
-    private const double EmoteChance = 0.35;
-
     private const int PostQuickChatMs = 500;
     private const int LeaveDutyTimeoutMs = 10_000;
     private const int PortraitPhasePollMs = 250;
@@ -45,23 +43,18 @@ public sealed partial class AutoPvpSeries
         var lingerMs = Math.Max(0, settings.LeaveDutyDelayMs);
         var waitedMs = 0;
 
-        if (settings.SendGoodMatch && !goodMatchSent)
+        if (greeting.PlanGoodMatchDelayMs(settings) is { } goodbyeAtMs)
         {
-            goodMatchSent = true;
-            if (HumanTiming.Maybe(settings.GoodMatchChance))
+            if (goodbyeAtMs <= lingerMs)
             {
-                var goodbyeAtMs = RandSecInclusive(settings.GoodMatchDelayMinSec, settings.GoodMatchDelayMaxSec) * 1000;
-                if (goodbyeAtMs <= lingerMs)
-                {
-                    if (goodbyeAtMs > 0) await NextFrame(goodbyeAtMs);
-                    Cmd(GameCommands.QuickChatGoodMatch);
-                    await NextFrame(PostQuickChatMs);
-                    waitedMs = goodbyeAtMs + PostQuickChatMs;
-                }
-                else
-                {
-                    Diag($"leaving early -> skipped \"Good Match\" (delay {goodbyeAtMs}ms > leave delay {lingerMs}ms)");
-                }
+                if (goodbyeAtMs > 0) await NextFrame(goodbyeAtMs);
+                Cmd(GameCommands.QuickChatGoodMatch);
+                await NextFrame(PostQuickChatMs);
+                waitedMs = goodbyeAtMs + PostQuickChatMs;
+            }
+            else
+            {
+                Diag($"leaving early -> skipped \"Good Match\" (delay {goodbyeAtMs}ms > leave delay {lingerMs}ms)");
             }
         }
 
@@ -74,42 +67,26 @@ public sealed partial class AutoPvpSeries
         await WaitUntilTimed(() => !InDuty(), LeaveDutyTimeoutMs, "left-duty", checkMs: 100);
     }
 
-    private static int RandSecInclusive(int minSec, int maxSec)
-    {
-        var min = Math.Max(0, minSec);
-        var max = Math.Max(min, maxSec);
-        return min == max ? min : rng.Next(min, max + 1);
-    }
-
     private async Task CaptureBaseline()
     {
         Cmd(GameCommands.NavStop);
         Diag("in duty -> waiting for PvP area before baseline capture");
         await WaitUntilTimed(MatchState.InPvpArea, PvpAreaWaitMs, "in-pvp-area", checkMs: PollMs);
 
+        ResetMatchFlow();
         dutyBaselineTime = DutyOps.ContentTimeLeft();
         baselineCaptured = true;
-        timerMovedFromBaseline = false;
-        sawIntroBand = false;
-        announcedEntered = false;
-        announcedPortrait = false;
-        inMatchLive = false;
-        ranSafetyMoveThisDuty = false;
-        hasEnabledRotationThisLife = false;
-        var helloDelay = RandSecInclusive(settings.HelloDelayMinSec, settings.HelloDelayMaxSec);
-        portraitHelloThreshold = Math.Clamp(IntroBandUpperSec - helloDelay, IntroBandLowerSec + 1, IntroBandUpperSec - 1);
-        portraitHelloSent = false;
+        greeting.PrepareForMatch(settings);
         Plugin.Instance.Controller.Phase = AutoPhase.InMatch;
 
         Diag($"duty entry baseline ContentTimeLeft -> {dutyBaselineTime}");
-        Diag($"portrait hello threshold set -> {portraitHelloThreshold}s");
     }
 
     private async Task RunWaitingPhase()
     {
         while (InDuty() && !inMatchLive && !CancelToken.IsCancellationRequested)
         {
-            CheckDeathAndReapplyRotation();
+            rotation.TickDeathAndRespawn();
 
             if (!announcedEntered)
             {
@@ -133,24 +110,9 @@ public sealed partial class AutoPvpSeries
                     announcedPortrait = true;
                 }
 
-                var greetMoment = !portraitHelloSent && tLeft <= portraitHelloThreshold && tLeft > IntroBandLowerSec;
-                if (greetMoment && (settings.SendHello || settings.RandomEmotes))
-                {
-                    portraitHelloSent = true;
-                    if (settings.SendHello && HumanTiming.Maybe(settings.HelloChance))
-                    {
-                        Cmd(GameCommands.QuickChatHello);
-                        Diag($"quickchat Hello sent at tLeft={tLeft} (threshold={portraitHelloThreshold})");
-                    }
-                    if (settings.RandomEmotes && HumanTiming.Maybe(EmoteChance))
-                    {
-                        var emote = GameCommands.GreetEmotes[rng.Next(GameCommands.GreetEmotes.Length)];
-                        Cmd(emote);
-                        Diag($"random emote '{emote}' sent at tLeft={tLeft}");
-                    }
-                }
+                greeting.TryPortraitGreeting(tLeft, settings);
 
-                if (Nav.IsRunning()) Nav.Stop();
+                movement.HaltPathing();
                 await NextFrame(PortraitPhasePollMs);
             }
             else
@@ -163,8 +125,7 @@ public sealed partial class AutoPvpSeries
                     Cmd(GameCommands.AddLowHpTargeting);
                     await NextFrame(PollMs);
                     Cmd(GameCommands.EnableRotation);
-                    hasEnabledRotationThisLife = true;
-                    rotationNeedsReset = false;
+                    rotation.MarkRotationEnabled();
                     Diag("rotation enabled (match start)");
                     break;
                 }

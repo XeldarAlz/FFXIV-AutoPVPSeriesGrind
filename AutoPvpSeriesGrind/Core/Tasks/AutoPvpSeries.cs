@@ -1,25 +1,29 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Stats;
-using AutoPvpSeriesGrind.Core.Util;
-using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 using ECommons.Automation;
-using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using System.Numerics;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
+public sealed partial class AutoPvpSeries : AutoCommon
 {
-    private readonly SessionStats session = session;
-    private static readonly Random rng = HumanTiming.Rng;
+    private readonly SessionStats session;
 
     private RunSettings settings;
     private readonly PvpBrain brain = new(PvpStrategy.Moderate);
+    private readonly MovementExecutor movement = new();
+    private readonly RotationController rotation;
+    private readonly GreetingDirector greeting = new();
+
+    public AutoPvpSeries(SessionStats session)
+    {
+        this.session = session;
+        rotation = new RotationController(brain);
+    }
 
     private long nextQueueAllowedAtMs;
     private int matchesSinceBreak;
@@ -32,20 +36,7 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
     private bool timerMovedFromBaseline;
     private bool announcedEntered;
     private bool announcedPortrait;
-    private int portraitHelloThreshold;
-    private bool portraitHelloSent;
-    private bool goodMatchSent;
     private bool ranSafetyMoveThisDuty;
-    private bool hasEnabledRotationThisLife;
-    private bool clearedSignThisLife;
-
-    private Vector3 lastMoveDest;
-    private long lastMoveAtMs;
-    private MoveKind? lastPlanKind;
-
-    private bool wasDead;
-    private long deadSinceMs;
-    private bool rotationNeedsReset;
 
     private bool stopAfterCurrentMatch;
 
@@ -53,16 +44,10 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
     private const int MainLoopIdleMs = 500;
     private const int LiveTickMs = 150;
     private const int DutyCommencedSettleMs = 1000;
-    // Grace period after death before re-applying the rotation, so it lands after the respawn completes.
-    private const int RespawnRotationDelayMs = 10_000;
 
-    private static bool InDuty() => Svc.Condition[ConditionFlag.BoundByDuty];
+    private static bool InDuty() => MatchState.InDuty();
 
-    private static bool IsDead()
-        => Svc.Condition[ConditionFlag.Unconscious]
-        || (Svc.Objects.LocalPlayer is { } me && me.MaxHp > 0 && me.CurrentHp == 0);
-
-    private static bool IsNormal() => Svc.Condition[ConditionFlag.NormalConditions];
+    private static bool IsDead() => MatchState.LocalIsDead();
 
     private static void Cmd(string command) => Chat.ExecuteCommand(command);
 
@@ -113,60 +98,26 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
 
     private void ResetDutyState(string reason)
     {
+        ResetMatchFlow();
+        movement.Reset();
+        rotation.Reset();
+        greeting.Reset();
+        brain.Reset();
+        BrainTelemetry.Clear();
+        Diag($"reset: {reason}");
+    }
+
+    // The per-duty flow latches. Lives in one place so leaving a duty and capturing a fresh baseline
+    // can never reset different subsets and drift apart.
+    private void ResetMatchFlow()
+    {
         inMatchLive = false;
         baselineCaptured = false;
+        dutyBaselineTime = 0;
         sawIntroBand = false;
         timerMovedFromBaseline = false;
         announcedEntered = false;
         announcedPortrait = false;
-        portraitHelloSent = false;
-        goodMatchSent = false;
         ranSafetyMoveThisDuty = false;
-        hasEnabledRotationThisLife = false;
-        clearedSignThisLife = false;
-        lastMoveDest = default;
-        lastMoveAtMs = 0;
-        lastPlanKind = null;
-        brain.Reset();
-        BrainTelemetry.Clear();
-        wasDead = false;
-        deadSinceMs = 0;
-        rotationNeedsReset = false;
-        Diag($"reset: {reason}");
-    }
-
-    private void CheckDeathAndReapplyRotation()
-    {
-        if (IsDead())
-        {
-            if (!wasDead)
-            {
-                wasDead = true;
-                deadSinceMs = Environment.TickCount64;
-                rotationNeedsReset = true;
-                clearedSignThisLife = false;
-                brain.Reset();
-                Diag("death detected -> rotation will be re-applied after respawn");
-            }
-            return;
-        }
-
-        if (wasDead)
-        {
-            wasDead = false;
-            if (rotationNeedsReset && Environment.TickCount64 - deadSinceMs >= RespawnRotationDelayMs && IsNormal())
-            {
-                Cmd(GameCommands.EnableRotation);
-                rotationNeedsReset = false;
-                Diag("respawn detected -> rotation re-applied");
-            }
-        }
-
-        if (rotationNeedsReset && IsNormal())
-        {
-            Cmd(GameCommands.EnableRotation);
-            rotationNeedsReset = false;
-            Diag("rotation re-applied (failsafe)");
-        }
     }
 }

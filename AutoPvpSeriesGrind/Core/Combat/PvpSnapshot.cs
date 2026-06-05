@@ -20,4 +20,26 @@ internal sealed class PvpSnapshot
     public required uint Territory { get; init; }
 
     public bool HasObjective => Objective.HasValue;
+
+    public float NearestEnemyDistance => MinDistanceToSelf(Enemies);
+    public float NearestAllyDistance => MinDistanceToSelf(Allies);
+
+    public int AlliesWithin(float radius) => CountWithin(Allies, radius);
+    public int EnemiesWithin(float radius) => CountWithin(Enemies, radius);
+
+    private static float MinDistanceToSelf(IReadOnlyList<PvpActor> actors)
+    {
+        var min = float.MaxValue;
+        foreach (var a in actors)
+            if (a.DistanceToSelf < min) min = a.DistanceToSelf;
+        return min;
+    }
+
+    private static int CountWithin(IReadOnlyList<PvpActor> actors, float radius)
+    {
+        var n = 0;
+        foreach (var a in actors)
+            if (a.DistanceToSelf <= radius) n++;
+        return n;
+    }
 }
