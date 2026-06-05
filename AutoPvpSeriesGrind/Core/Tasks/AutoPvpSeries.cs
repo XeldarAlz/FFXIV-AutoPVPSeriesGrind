@@ -109,7 +109,7 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
         breakEvery = cfg.BreakEveryMatches;
         breakMinutes = cfg.BreakMinutes;
 
-        Svc.Chat.Print($"{ApsgConstants.LogPrefix} Starting PvP Series grind ({Plugin.Cfg.ActiveMode.DisplayName}).");
+        ApsgLog.Chat($"Starting PvP Series grind ({Plugin.Cfg.ActiveMode.DisplayName}).");
 
         await Startup();
 

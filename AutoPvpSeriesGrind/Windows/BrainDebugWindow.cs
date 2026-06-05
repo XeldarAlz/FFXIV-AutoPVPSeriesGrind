@@ -100,8 +100,7 @@ public sealed class BrainDebugWindow : Window, IDisposable
         var labelSize = ImGui.CalcTextSize(label);
         var gap = 9f * s;
         var total = iconSize.X + gap + labelSize.X;
-        var avail = ImGui.GetContentRegionAvail().X;
-        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, (avail - total) * 0.5f));
+        Styling.CenterNextItem(total);
 
         using (ImRaii.PushFont(UiBuilder.IconFont))
         using (ImRaii.PushColor(ImGuiCol.Text, col))
@@ -198,8 +197,7 @@ public sealed class BrainDebugWindow : Window, IDisposable
             if (i > 0) total += gap;
             total += ImGui.CalcTextSize(parts[i].Txt).X;
         }
-        var avail = ImGui.GetContentRegionAvail().X;
-        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, (avail - total) * 0.5f));
+        Styling.CenterNextItem(total);
         for (var i = 0; i < parts.Length; i++)
         {
             if (i > 0) ImGui.SameLine(0, gap);

@@ -3,6 +3,7 @@ using AutoPvpSeriesGrind.Core.Util;
 using Dalamud.Game.ClientState.Conditions;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
+using static AutoPvpSeriesGrind.Core.ApsgConstants.CrystallineConflict;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
@@ -15,13 +16,6 @@ public sealed partial class AutoPvpSeries
     private const int PostQuickChatMs = 500;
     private const int LeaveDutyTimeoutMs = 10_000;
     private const int PortraitPhasePollMs = 250;
-
-    // ContentTimeLeft (seconds) bands used to read the pre-match flow. During the portrait/intro phase
-    // the timer counts down inside the intro band; once the gate opens it jumps back up past GateOpenSec.
-    private const int IntroBandUpperSec = 32;
-    private const int IntroBandLowerSec = 1;
-    private const int GateOpenSec = 100;
-    private const int BaselineMovedThresholdSec = 10;
 
     private async Task<bool> TryHandleMatchEnd()
     {

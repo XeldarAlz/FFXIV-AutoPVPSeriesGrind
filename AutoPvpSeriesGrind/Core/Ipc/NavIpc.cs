@@ -35,7 +35,7 @@ internal sealed class NavIpc
     public void MoveTo(Vector3 dest, bool fly = false)
     {
         if (moveTo.HasFunction)
-            IpcGate.Run(true, () => { _ = moveTo.InvokeFunc(dest, fly); }, "[NavIpc] PathfindAndMoveTo failed");
+            IpcGate.Run(true, () => { _ = moveTo.InvokeFunc(dest, fly); }, "NavIpc: PathfindAndMoveTo failed");
         else
             Chat.ExecuteCommand(GameCommands.NavMoveTo(dest));
     }
@@ -43,7 +43,7 @@ internal sealed class NavIpc
     public void MoveCloseTo(Vector3 dest, float range, bool fly = false)
     {
         if (moveCloseTo.HasFunction)
-            IpcGate.Run(true, () => { _ = moveCloseTo.InvokeFunc(dest, fly, range); }, "[NavIpc] PathfindAndMoveCloseTo failed");
+            IpcGate.Run(true, () => { _ = moveCloseTo.InvokeFunc(dest, fly, range); }, "NavIpc: PathfindAndMoveCloseTo failed");
         else
             Chat.ExecuteCommand(GameCommands.NavMoveTo(dest));
     }
@@ -51,19 +51,19 @@ internal sealed class NavIpc
     public void Stop()
     {
         if (stop.HasFunction)
-            IpcGate.Run(true, stop.InvokeAction, "[NavIpc] Path.Stop failed");
+            IpcGate.Run(true, stop.InvokeAction, "NavIpc: Path.Stop failed");
         else
             Chat.ExecuteCommand(GameCommands.NavStop);
     }
 
     public bool IsRunning()
-        => IpcGate.Invoke(isRunning.HasFunction, isRunning.InvokeFunc, false, "[NavIpc] IsRunning failed")
-        || IpcGate.Invoke(pathfindInProgress.HasFunction, pathfindInProgress.InvokeFunc, false, "[NavIpc] PathfindInProgress failed");
+        => IpcGate.Invoke(isRunning.HasFunction, isRunning.InvokeFunc, false, "NavIpc: IsRunning failed")
+        || IpcGate.Invoke(pathfindInProgress.HasFunction, pathfindInProgress.InvokeFunc, false, "NavIpc: PathfindInProgress failed");
 
-    public bool IsReady() => IpcGate.Invoke(navIsReady.HasFunction, navIsReady.InvokeFunc, true, "[NavIpc] IsReady failed");
+    public bool IsReady() => IpcGate.Invoke(navIsReady.HasFunction, navIsReady.InvokeFunc, true, "NavIpc: IsReady failed");
 
     public Vector3? NearestPointReachable(Vector3 point, float halfExtentXZ = 5f, float halfExtentY = 5f)
         => IpcGate.Invoke(nearestPointReachable.HasFunction,
             () => nearestPointReachable.InvokeFunc(point, halfExtentXZ, halfExtentY), (Vector3?)null,
-            "[NavIpc] NearestPointReachable failed");
+            "NavIpc: NearestPointReachable failed");
 }

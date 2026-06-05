@@ -67,12 +67,12 @@ public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
         if (!LifestreamIPC.Instance.IsAvailable)
         {
             Warn("Return to inn requested but Lifestream is not installed; staying put.");
-            Svc.Chat.PrintError($"{ApsgConstants.LogPrefix} Install Lifestream to use \"Return to the inn\".");
+            ApsgLog.ChatError("Install Lifestream to use \"Return to the inn\".");
             return;
         }
 
         Diag("After-run: returning to the inn via Lifestream.");
-        Svc.Chat.Print($"{ApsgConstants.LogPrefix} Run complete — retiring to the inn.");
+        ApsgLog.Chat("Run complete — retiring to the inn.");
         await NextFrame(PreCommandSettleMs);
         LifestreamIPC.Instance.ExecuteCommand(ApsgConstants.LifestreamCommands.ReturnToInn);
 

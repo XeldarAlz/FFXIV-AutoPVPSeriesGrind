@@ -200,7 +200,7 @@ public sealed class AboutWindow : Window, IDisposable
             ImGui.TextUnformatted("Click to open · right-click to copy");
         if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
             UrlActions.OpenInBrowser(url, ex =>
-                Svc.Log.Warning(ex, "[AutoPvpSeriesGrind] failed to launch browser for {0}, copied to clipboard instead", url));
+                Core.ApsgLog.Warn(ex, $"failed to launch browser for {url}, copied to clipboard instead"));
         else if (ImGui.IsMouseClicked(ImGuiMouseButton.Right)) ImGui.SetClipboardText(url);
     }
 }

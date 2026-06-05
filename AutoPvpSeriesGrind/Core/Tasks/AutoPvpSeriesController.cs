@@ -24,8 +24,7 @@ internal sealed class AutoPvpSeriesController
         => lastResultTick != NoResult && unchecked(Environment.TickCount - lastResultTick) is var age && age >= 0 && age < withinMs;
     public void ClearLastResult() => lastResultTick = NoResult;
 
-    private static void Diag(string message)
-        => ECommons.DalamudServices.Svc.Log.Info($"{ApsgConstants.LogPrefix} {message}");
+    private static void Diag(string message) => ApsgLog.Info(message);
 
     public void Start()
     {
@@ -37,7 +36,7 @@ internal sealed class AutoPvpSeriesController
                 .Where(p => ExternalPlugins.Catalog[p].Required && !ExternalPlugins.IsInstalled(p))
                 .Select(p => ExternalPlugins.Catalog[p].DisplayName));
             Diag($"Start aborted: required plugins missing ({missing}).");
-            ECommons.DalamudServices.Svc.Chat.PrintError($"{ApsgConstants.LogPrefix} Cannot start — install all required plugins first: {missing}.");
+            ApsgLog.ChatError($"Cannot start — install all required plugins first: {missing}.");
             return;
         }
 

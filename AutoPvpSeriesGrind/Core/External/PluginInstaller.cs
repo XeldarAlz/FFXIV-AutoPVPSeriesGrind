@@ -23,17 +23,17 @@ public static class PluginInstaller
         try
         {
             var info = ExternalPlugins.Catalog[plugin];
-            Svc.Log.Info($"[ExternalPlugin] Installing {info.DisplayName} from {info.RepoUrl}");
+            ApsgLog.Info($"Installing {info.DisplayName} from {info.RepoUrl}");
             var ok = await AddPlugin(info.RepoUrl, info.InternalName);
-            Svc.Log.Info(ok
-                ? $"[ExternalPlugin] {info.DisplayName} installed."
-                : $"[ExternalPlugin] {info.DisplayName} install reported failure — repo may need to be added manually.");
+            ApsgLog.Info(ok
+                ? $"{info.DisplayName} installed."
+                : $"{info.DisplayName} install reported failure — repo may need to be added manually.");
             if (!ok) Failed.Add(plugin);
             return ok;
         }
         catch (Exception ex)
         {
-            Svc.Log.Warning(ex, "[ExternalPlugin] install threw");
+            ApsgLog.Warn(ex, "plugin install threw");
             Failed.Add(plugin);
             return false;
         }
@@ -52,21 +52,21 @@ public static class PluginInstaller
         var plugins = await DalamudReflector.GetPluginMaster(masterUrl);
         if (plugins is null || plugins.Count == 0)
         {
-            Svc.Log.Warning($"[ExternalPlugin] No manifests fetched from {masterUrl}");
+            ApsgLog.Warn($"No manifests fetched from {masterUrl}");
             return false;
         }
 
         var manifest = plugins.FirstOrDefault(x => (string)x.GetFoP("InternalName") == internalName);
         if (manifest is null)
         {
-            Svc.Log.Warning($"[ExternalPlugin] '{internalName}' not found in {masterUrl}");
+            ApsgLog.Warn($"'{internalName}' not found in {masterUrl}");
             return false;
         }
 
         var pm = DalamudReflector.GetPluginManager();
         if (pm is null)
         {
-            Svc.Log.Warning("[ExternalPlugin] Could not resolve Dalamud PluginManager");
+            ApsgLog.Warn("Could not resolve Dalamud PluginManager");
             return false;
         }
 
@@ -79,7 +79,7 @@ public static class PluginInstaller
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         if (method is null)
         {
-            Svc.Log.Warning("[ExternalPlugin] PluginManager.InstallPluginAsync not found");
+            ApsgLog.Warn("PluginManager.InstallPluginAsync not found");
             return false;
         }
 

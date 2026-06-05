@@ -15,8 +15,7 @@ namespace AutoPvpSeriesGrind.Windows.Sections;
 
 internal static class RunningPanel
 {
-    // Crystalline Conflict casual matches run 5 minutes.
-    private const float MatchClockSeconds = 300f;
+    private const float MatchClockSeconds = Core.ApsgConstants.CrystallineConflict.MatchLengthSec;
 
     private enum Display { Preparing, Queueing, Portraits, Fighting, InMatch, Finishing }
 
@@ -72,7 +71,7 @@ internal static class RunningPanel
         Styling.VSpace(16);
 
         var colW = MathF.Min(ImGui.GetContentRegionAvail().X, 320f * s);
-        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + (ImGui.GetContentRegionAvail().X - colW) * 0.5f);
+        Styling.CenterNextItem(colW);
         if (PrimaryButton.Draw("STOP", Styling.AccentRose, true, colW))
             ctrl.Stop();
     }
@@ -151,9 +150,7 @@ internal static class RunningPanel
         var textW = ImGui.CalcTextSize(text).X;
         var total = dotR * 2f + gap + textW;
 
-        var leftX = ImGui.GetCursorPosX();
-        var availX = ImGui.GetContentRegionAvail().X;
-        ImGui.SetCursorPosX(leftX + MathF.Max(0f, (availX - total) * 0.5f));
+        Styling.CenterNextItem(total);
 
         var p = ImGui.GetCursorScreenPos();
         var alpha = 0.35f + 0.65f * Styling.Pulse(Styling.PulseBreath);
@@ -173,8 +170,7 @@ internal static class RunningPanel
         var h = 7f * s;
 
         var leftX = ImGui.GetCursorPosX();
-        var availX = ImGui.GetContentRegionAvail().X;
-        ImGui.SetCursorPosX(leftX + (availX - w) * 0.5f);
+        Styling.CenterNextItem(w);
 
         var origin = ImGui.GetCursorScreenPos();
         var dl = ImGui.GetWindowDrawList();
@@ -207,7 +203,9 @@ internal static class RunningPanel
     {
         if (ctrl.Phase == AutoPhase.Finishing) return Display.Finishing;
         if (!inDuty) return inQueue ? Display.Queueing : Display.Preparing;
-        if (timeLeft is > 1 and < 32) return Display.Portraits;
+        if (timeLeft > Core.ApsgConstants.CrystallineConflict.IntroBandLowerSec
+            && timeLeft < Core.ApsgConstants.CrystallineConflict.IntroBandUpperSec)
+            return Display.Portraits;
         if (inCombat) return Display.Fighting;
         return Display.InMatch;
     }

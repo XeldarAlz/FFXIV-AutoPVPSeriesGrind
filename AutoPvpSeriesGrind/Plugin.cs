@@ -39,6 +39,8 @@ public sealed class Plugin : IDalamudPlugin
 
     private readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskHandler;
 
+    private readonly Dictionary<string, Action> subcommands;
+
     public Plugin()
     {
         Instance = this;
@@ -68,6 +70,19 @@ public sealed class Plugin : IDalamudPlugin
         WindowSystem.AddWindow(runHistoryWindow);
         WindowSystem.AddWindow(brainWindow);
 
+        subcommands = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["config"] = ToggleConfigUi,
+            ["about"] = ToggleAboutUi,
+            ["deps"] = ToggleDependenciesUi,
+            ["dependencies"] = ToggleDependenciesUi,
+            ["stats"] = ToggleHistoryUi,
+            ["history"] = ToggleHistoryUi,
+            ["brain"] = ToggleBrainUi,
+            ["target"] = TargetDumper.Dump,
+            ["objects"] = TargetDumper.DumpObjects,
+        };
+
         CommandManager.AddHandler(ApsgConstants.PrimaryCommand, new CommandInfo(OnCommand)
         {
             HelpMessage = "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | about | brain | target | objects.",
@@ -96,7 +111,7 @@ public sealed class Plugin : IDalamudPlugin
         if (e.Exception.ToString().Contains("Navmesh.IPCProvider"))
         {
             e.SetObserved();
-            Log.Debug($"[APSG] Observed vnavmesh IPC task fault: {e.Exception.GetBaseException().Message}");
+            Core.ApsgLog.Debug($"Observed vnavmesh IPC task fault: {e.Exception.GetBaseException().Message}");
         }
     }
 
@@ -129,21 +144,8 @@ public sealed class Plugin : IDalamudPlugin
 
     private void OnCommand(string command, string args)
     {
-        var trimmed = args.Trim();
-        if (trimmed.Equals("config", StringComparison.OrdinalIgnoreCase))
-            ToggleConfigUi();
-        else if (trimmed.Equals("about", StringComparison.OrdinalIgnoreCase))
-            ToggleAboutUi();
-        else if (trimmed.Equals("deps", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("dependencies", StringComparison.OrdinalIgnoreCase))
-            ToggleDependenciesUi();
-        else if (trimmed.Equals("stats", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("history", StringComparison.OrdinalIgnoreCase))
-            ToggleHistoryUi();
-        else if (trimmed.Equals("brain", StringComparison.OrdinalIgnoreCase))
-            ToggleBrainUi();
-        else if (trimmed.Equals("target", StringComparison.OrdinalIgnoreCase))
-            TargetDumper.Dump();
-        else if (trimmed.Equals("objects", StringComparison.OrdinalIgnoreCase))
-            TargetDumper.DumpObjects();
+        if (subcommands.TryGetValue(args.Trim(), out var action))
+            action();
         else
             ToggleMainUi();
     }

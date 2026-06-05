@@ -13,29 +13,27 @@ internal static class DependencyRow
     {
         var info = ExternalPlugins.Catalog[plugin];
         var installed = ExternalPlugins.IsInstalled(plugin);
-        var disabled = ExternalPlugins.IsInstalledButDisabled(plugin);
         var installing = PluginInstaller.IsInstalling(plugin);
 
         ImGui.TableNextRow();
 
         ImGui.TableSetColumnIndex(0);
-        DrawStatusIcon(installed, disabled, info.Required);
+        DrawStatusIcon(installed, info.Required);
 
         ImGui.TableSetColumnIndex(1);
         DrawName(info);
 
         ImGui.TableSetColumnIndex(2);
-        DrawAction(plugin, info, installed, disabled, installing);
+        DrawAction(plugin, info, installed, installing);
     }
 
-    private static void DrawStatusIcon(bool installed, bool disabled, bool required)
+    private static void DrawStatusIcon(bool installed, bool required)
     {
-        var (icon, color) = (installed, disabled, required) switch
+        var (icon, color) = (installed, required) switch
         {
-            (true,  true,  _    ) => (FontAwesomeIcon.ExclamationCircle, Styling.AccentAmber),
-            (true,  false, _    ) => (FontAwesomeIcon.CheckCircle,       Styling.AccentMint),
-            (false, _,     true ) => (FontAwesomeIcon.TimesCircle,       Styling.AccentRose),
-            (false, _,     false) => (FontAwesomeIcon.Circle,            Styling.TextDim),
+            (true,  _    ) => (FontAwesomeIcon.CheckCircle, Styling.AccentMint),
+            (false, true ) => (FontAwesomeIcon.TimesCircle, Styling.AccentRose),
+            (false, false) => (FontAwesomeIcon.Circle,      Styling.TextDim),
         };
         using (ImRaii.PushFont(UiBuilder.IconFont))
         using (ImRaii.PushColor(ImGuiCol.Text, color))
@@ -60,20 +58,16 @@ internal static class DependencyRow
         }
     }
 
-    private static void DrawAction(ExternalPlugin plugin, ExternalPluginInfo info, bool installed, bool disabled, bool installing)
+    private static void DrawAction(ExternalPlugin plugin, ExternalPluginInfo info, bool installed, bool installing)
     {
         var size = new Vector2(110 * ImGuiHelpers.GlobalScale, 0);
         if (installed)
         {
-            var (text, color) = disabled ? ("disabled", Styling.AccentAmber) : ("installed", Styling.AccentMint);
-            using (ImRaii.PushColor(ImGuiCol.Text, color))
+            using (ImRaii.PushColor(ImGuiCol.Text, Styling.AccentMint))
             {
                 ImGui.AlignTextToFramePadding();
-                ImGui.TextUnformatted(text);
+                ImGui.TextUnformatted("installed");
             }
-            if (disabled && ImGui.IsItemHovered())
-                using (ImRaii.Tooltip())
-                    ImGui.TextUnformatted("Loaded, but the plugin's own \"Enable\" toggle is off.");
             return;
         }
 

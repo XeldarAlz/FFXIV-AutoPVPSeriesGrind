@@ -26,23 +26,23 @@ internal sealed class PvpAutoLbIpc
     {
         if (!apply.HasFunction)
         {
-            Svc.Log.Info($"{ApsgConstants.LogPrefix} PvpAutoLb preset IPC not available — skipping push.");
+            ApsgLog.Info("PvpAutoLb preset IPC not available — skipping push.");
             return;
         }
 
-        var api = IpcGate.Invoke(apiVersion.HasFunction, apiVersion.InvokeFunc, 0, "[PvpAutoLbIpc] ApiVersion failed");
+        var api = IpcGate.Invoke(apiVersion.HasFunction, apiVersion.InvokeFunc, 0, "PvpAutoLbIpc: ApiVersion failed");
         if (api != ApsgConstants.PvpAutoLbPresetApiVersion)
         {
-            Svc.Log.Warning($"{ApsgConstants.LogPrefix} PvpAutoLb preset API mismatch (theirs {api}, ours {ApsgConstants.PvpAutoLbPresetApiVersion}) — skipping push.");
+            ApsgLog.Warn($"PvpAutoLb preset API mismatch (theirs {api}, ours {ApsgConstants.PvpAutoLbPresetApiVersion}) — skipping push.");
             return;
         }
 
-        var current = IpcGate.Invoke(getVersion.HasFunction, getVersion.InvokeFunc, -1, "[PvpAutoLbIpc] GetVersion failed");
+        var current = IpcGate.Invoke(getVersion.HasFunction, getVersion.InvokeFunc, -1, "PvpAutoLbIpc: GetVersion failed");
         if (current == LbPresets.Version)
             return;
 
         var ok = IpcGate.Invoke(apply.HasFunction, () => apply.InvokeFunc(LbPresets.ToJson(), LbPresets.Version), false,
-            "[PvpAutoLbIpc] Apply failed");
-        Svc.Log.Info($"{ApsgConstants.LogPrefix} pushed LB presets v{LbPresets.Version} to PvpAutoLb (was v{current}): {(ok ? "ok" : "failed")}");
+            "PvpAutoLbIpc: Apply failed");
+        ApsgLog.Info($"pushed LB presets v{LbPresets.Version} to PvpAutoLb (was v{current}): {(ok ? "ok" : "failed")}");
     }
 }

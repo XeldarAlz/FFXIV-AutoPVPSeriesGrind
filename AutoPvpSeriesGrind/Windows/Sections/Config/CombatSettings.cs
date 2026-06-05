@@ -8,41 +8,44 @@ namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class CombatSettings
 {
-    private static readonly string[] BehaviorNames = ["Rush the crystal", "Defensive", "Moderate", "Aggressive", "Custom"];
-    private static readonly string[] BehaviorBlurbs =
+    // Brain off is its own choice; the rest map to a PvpStrategy. Name + blurb live together so they
+    // cannot drift, and the enum binding means reordering PvpStrategy can't misalign the labels.
+    private readonly record struct BehaviorChoice(string Name, string Blurb, bool BrainEnabled, PvpStrategy Strategy);
+
+    private static readonly BehaviorChoice[] BehaviorChoices =
     [
-        "No tactics — just run to the objective and stand on it. Never retreats, never picks targets. Simplest to reason about, but it will feed when outnumbered.",
-        "Play smart, cautious: hold the point but back off early (below 50% HP) and never dive. Ranged DPS and healers hold far behind the point.",
-        "Play smart, balanced: hold the point, take short chases, regroup when outnumbered, retreat below 30% HP. A good default.",
-        "Play smart, aggressive: push the enemy line and chase kills; regroup only when badly outnumbered and retreat only when nearly dead (below 15% HP).",
-        "Play smart, hand-tuned: every threshold below is yours to set. Starts from the Moderate baseline.",
+        new("Rush the crystal", "No tactics — just run to the objective and stand on it. Never retreats, never picks targets. Simplest to reason about, but it will feed when outnumbered.", BrainEnabled: false, PvpStrategy.Moderate),
+        new("Defensive", "Play smart, cautious: hold the point but back off early (below 50% HP) and never dive. Ranged DPS and healers hold far behind the point.", true, PvpStrategy.Defensive),
+        new("Moderate", "Play smart, balanced: hold the point, take short chases, regroup when outnumbered, retreat below 30% HP. A good default.", true, PvpStrategy.Moderate),
+        new("Aggressive", "Play smart, aggressive: push the enemy line and chase kills; regroup only when badly outnumbered and retreat only when nearly dead (below 15% HP).", true, PvpStrategy.Aggressive),
+        new("Custom", "Play smart, hand-tuned: every threshold below is yours to set. Starts from the Moderate baseline.", true, PvpStrategy.Custom),
     ];
 
-    private static readonly string[] HumanizeNames = ["Off", "Light", "Realistic", "Heavy"];
-    private static readonly string[] HumanizeBlurbs =
+    private readonly record struct HumanizeChoice(string Name, string Blurb, HumanizeLevel Level);
+
+    private static readonly HumanizeChoice[] HumanizeChoices =
     [
-        "React instantly. Movement is frame-perfect.",
-        "A small reaction delay (~80–220ms) before changing what it's doing.",
-        "A natural reaction delay (~140–380ms). A good default.",
-        "A slow, deliberate reaction (~260–650ms) — clearly unhurried.",
+        new("Off", "React instantly. Movement is frame-perfect.", HumanizeLevel.Off),
+        new("Light", "A small reaction delay (~80–220ms) before changing what it's doing.", HumanizeLevel.Light),
+        new("Realistic", "A natural reaction delay (~140–380ms). A good default.", HumanizeLevel.Realistic),
+        new("Heavy", "A slow, deliberate reaction (~260–650ms) — clearly unhurried.", HumanizeLevel.Heavy),
     ];
+
+    private static readonly string[] BehaviorNames = BehaviorChoices.Select(c => c.Name).ToArray();
+    private static readonly string[] HumanizeNames = HumanizeChoices.Select(c => c.Name).ToArray();
 
     public static void Draw(Configuration cfg)
     {
-        var mode = cfg.EnableCombatBrain ? (int)cfg.Strategy + 1 : 0;
+        var mode = cfg.EnableCombatBrain
+            ? Math.Max(0, Array.FindIndex(BehaviorChoices, c => c.BrainEnabled && c.Strategy == cfg.Strategy))
+            : 0;
 
-        SettingsRow.Draw("Combat behavior", BehaviorBlurbs[mode], () =>
+        SettingsRow.Draw("Combat behavior", BehaviorChoices[mode].Blurb, () =>
             SettingsControls.DrawCombo("##behavior", BehaviorNames[mode], BehaviorNames, mode, i =>
             {
-                if (i == 0)
-                {
-                    cfg.EnableCombatBrain = false;
-                }
-                else
-                {
-                    cfg.EnableCombatBrain = true;
-                    cfg.Strategy = (PvpStrategy)(i - 1);
-                }
+                var choice = BehaviorChoices[i];
+                cfg.EnableCombatBrain = choice.BrainEnabled;
+                if (choice.BrainEnabled) cfg.Strategy = choice.Strategy;
                 cfg.SaveDebounced();
             }));
 
@@ -54,10 +57,11 @@ internal static class CombatSettings
         if (cfg.EnableCombatBrain && cfg.Strategy == PvpStrategy.Custom)
             DrawCustomStrategy(cfg);
 
-        SettingsRow.Draw("Humanize timing", HumanizeBlurbs[(int)cfg.Humanize], () =>
-            SettingsControls.DrawCombo("##humanize", HumanizeNames[(int)cfg.Humanize], HumanizeNames, (int)cfg.Humanize, i =>
+        var humanizeIdx = Math.Max(0, Array.FindIndex(HumanizeChoices, c => c.Level == cfg.Humanize));
+        SettingsRow.Draw("Humanize timing", HumanizeChoices[humanizeIdx].Blurb, () =>
+            SettingsControls.DrawCombo("##humanize", HumanizeNames[humanizeIdx], HumanizeNames, humanizeIdx, i =>
             {
-                cfg.Humanize = (HumanizeLevel)i;
+                cfg.Humanize = HumanizeChoices[i].Level;
                 cfg.SaveDebounced();
             }));
     }

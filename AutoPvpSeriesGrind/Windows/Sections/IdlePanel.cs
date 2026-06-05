@@ -76,8 +76,7 @@ internal static class IdlePanel
         using (ImRaii.PushFont(UiBuilder.IconFont))
             iconSize = ImGui.CalcTextSize(icon);
         var totalW = iconSize.X + gap + ImGui.CalcTextSize(text).X;
-        var availX = ImGui.GetContentRegionAvail().X;
-        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, (availX - totalW) * 0.5f));
+        Styling.CenterNextItem(totalW);
 
         using (ImRaii.PushFont(UiBuilder.IconFont))
         using (ImRaii.PushColor(ImGuiCol.Text, col))
@@ -179,8 +178,7 @@ internal static class IdlePanel
         Styling.VSpace(4);
         var preview = $"When done  ·  {AfterRunLabel(cfg.AfterRun)}";
         var w = ImGui.CalcTextSize(preview).X + ImGui.GetFrameHeight() + 18f * s;
-        var availX = ImGui.GetContentRegionAvail().X;
-        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, (availX - w) * 0.5f));
+        Styling.CenterNextItem(w);
         ImGui.SetNextItemWidth(w);
 
         using (ImRaii.PushColor(ImGuiCol.FrameBg, Styling.CardBgSoft)
@@ -243,8 +241,7 @@ internal static class IdlePanel
         var inputW = 58f * s;
         var inner = 4f * s;
         var width = h + inner + inputW + inner + h;
-        var availX = ImGui.GetContentRegionAvail().X;
-        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, (availX - width) * 0.5f));
+        Styling.CenterNextItem(width);
 
         var changed = false;
         using (ImRaii.PushColor(ImGuiCol.Button, Styling.CardBgSoft)

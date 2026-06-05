@@ -13,7 +13,7 @@ internal static unsafe class TargetDumper
         var me = Svc.Objects.LocalPlayer;
         if (me is null)
         {
-            Svc.Chat.Print($"{ApsgConstants.LogPrefix} No local player; enter a match first.");
+            ApsgLog.Chat("No local player; enter a match first.");
             return;
         }
 
@@ -26,7 +26,7 @@ internal static unsafe class TargetDumper
             .Take(25)
             .ToList();
 
-        Svc.Chat.Print($"{ApsgConstants.LogPrefix} Territory {Svc.ClientState.TerritoryType} — {rows.Count} nearby event/battle objects (nearest first):");
+        ApsgLog.Chat($"Territory {Svc.ClientState.TerritoryType} — {rows.Count} nearby event/battle objects (nearest first):");
         foreach (var (o, dist) in rows)
             Svc.Chat.Print($"  [{o.ObjectKind}] BaseId={o.BaseId} \"{o.Name.TextValue}\" d={dist:F1}");
     }
@@ -38,12 +38,12 @@ internal static unsafe class TargetDumper
             ?.GetRowOrDefault(territoryId)
             ?.PlaceName.Value.Name.ToString() ?? "?";
 
-        Svc.Chat.Print($"{ApsgConstants.LogPrefix} Territory: {territoryId} ({territoryName})");
+        ApsgLog.Chat($"Territory: {territoryId} ({territoryName})");
 
         var target = TargetSystem.Instance()->Target;
         if (target == null)
         {
-            Svc.Chat.Print($"{ApsgConstants.LogPrefix} No target. Click an NPC or FATE marker first, then re-run /apsg target.");
+            ApsgLog.Chat("No target. Click an NPC or FATE marker first, then re-run /apsg target.");
             return;
         }
 
@@ -52,7 +52,7 @@ internal static unsafe class TargetDumper
         var residentName = Svc.Data.GetExcelSheet<ENpcResident>()
             ?.GetRowOrDefault(baseId)?.Singular.ToString() ?? name;
 
-        Svc.Chat.Print($"{ApsgConstants.LogPrefix} Target: BaseId={baseId}  Name=\"{residentName}\"");
-        Svc.Log.Info($"[TargetDumper] territory={territoryId} BaseId={baseId} name='{residentName}'");
+        ApsgLog.Chat($"Target: BaseId={baseId}  Name=\"{residentName}\"");
+        ApsgLog.Info($"TargetDumper: territory={territoryId} BaseId={baseId} name='{residentName}'");
     }
 }

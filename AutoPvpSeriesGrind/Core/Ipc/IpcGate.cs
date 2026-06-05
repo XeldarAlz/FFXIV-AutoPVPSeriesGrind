@@ -1,5 +1,3 @@
-using ECommons.DalamudServices;
-
 namespace AutoPvpSeriesGrind.Core.Ipc;
 
 internal static class IpcGate
@@ -8,13 +6,13 @@ internal static class IpcGate
     {
         if (!hasFunction) return fallback;
         try { return call(); }
-        catch (Exception ex) { Svc.Log.Warning(ex, label); return fallback; }
+        catch (Exception ex) { ApsgLog.Warn(ex, label); return fallback; }
     }
 
     public static void Run(bool hasFunction, Action call, string label)
     {
         if (!hasFunction) return;
         try { call(); }
-        catch (Exception ex) { Svc.Log.Warning(ex, label); }
+        catch (Exception ex) { ApsgLog.Warn(ex, label); }
     }
 }

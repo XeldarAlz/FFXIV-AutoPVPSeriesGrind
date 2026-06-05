@@ -72,6 +72,13 @@ internal static class Styling
     public static void VSpace(float pixels)
         => ImGui.Dummy(new Vector2(0, pixels * ImGuiHelpers.GlobalScale));
 
+    // Advances the cursor so an item of the given width sits centered in the available content region.
+    public static void CenterNextItem(float width)
+    {
+        var avail = ImGui.GetContentRegionAvail().X;
+        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, (avail - width) * 0.5f));
+    }
+
     public static IDisposable PushCardStyle()
     {
         var p = ImRaii.PushStyle(ImGuiStyleVar.ChildRounding, CardRounding * ImGuiHelpers.GlobalScale);

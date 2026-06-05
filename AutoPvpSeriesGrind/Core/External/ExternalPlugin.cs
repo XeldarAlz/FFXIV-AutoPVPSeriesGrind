@@ -74,6 +74,4 @@ public static class ExternalPlugins
             _ = PluginInstaller.Install(plugin);
         }
     }
-
-    public static bool IsInstalledButDisabled(ExternalPlugin plugin) => false;
 }

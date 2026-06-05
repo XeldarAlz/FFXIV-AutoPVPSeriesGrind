@@ -36,7 +36,7 @@ internal sealed class RunHistory
         }
         catch (Exception ex)
         {
-            Svc.Log.Warning(ex, $"{ApsgConstants.LogPrefix} RunHistory load failed; starting empty");
+            ApsgLog.Warn(ex, "RunHistory load failed; starting empty");
         }
     }
 
@@ -79,7 +79,7 @@ internal sealed class RunHistory
         }
         catch (Exception ex)
         {
-            Svc.Log.Warning(ex, $"{ApsgConstants.LogPrefix} RunHistory save failed");
+            ApsgLog.Warn(ex, "RunHistory save failed");
         }
     }
 

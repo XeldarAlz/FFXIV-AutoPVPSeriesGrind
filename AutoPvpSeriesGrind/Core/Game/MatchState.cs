@@ -41,8 +41,6 @@ internal static class MatchState
         return map;
     }
 
-    private static readonly IReadOnlyDictionary<uint, uint[]> ObjectiveDataIds = new Dictionary<uint, uint[]>();
-
     public static bool InPvpArea()
         => SafeAnchors.ContainsKey(Svc.ClientState.TerritoryType)
         || Svc.Condition[ConditionFlag.PvPDisplayActive];
@@ -84,15 +82,9 @@ internal static class MatchState
 
     public static Vector3? CrystalPosition()
     {
-        var territory = Svc.ClientState.TerritoryType;
-        var haveIds = ObjectiveDataIds.TryGetValue(territory, out var ids);
         foreach (var obj in Svc.Objects)
-        {
-            if (haveIds && obj is IEventObj && Array.IndexOf(ids!, obj.BaseId) >= 0)
-                return obj.Position;
             if (obj.Name.TextValue == ApsgConstants.CrystalName)
                 return obj.Position;
-        }
         return null;
     }
 

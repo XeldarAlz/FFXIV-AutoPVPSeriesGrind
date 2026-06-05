@@ -6,9 +6,9 @@ namespace AutoPvpSeriesGrind.Core.Tasks;
 
 public abstract class AutoCommon : TaskBase
 {
-    protected void Diag(string message) => Svc.Log.Info($"{ApsgConstants.LogPrefix} {message}");
+    protected void Diag(string message) => ApsgLog.Info(message);
 
-    protected void Warn(string message) => Svc.Log.Warning($"{ApsgConstants.LogPrefix} {message}");
+    protected void Warn(string message) => ApsgLog.Warn(message);
 
     protected async Task<bool> WaitUntilTimed(Func<bool> condition, int timeoutMs, string scope, int checkMs = 30)
     {

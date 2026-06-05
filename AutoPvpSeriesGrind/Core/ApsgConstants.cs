@@ -24,6 +24,20 @@ internal static class ApsgConstants
 
     public const int SaveThrottleMs = 500;
 
+    // Crystalline Conflict match timing, read from ContentTimeLeft (seconds). Shared between the
+    // pre-match flow (AutoPvpSeries.Match) and the live UI (RunningPanel) so the two never disagree.
+    internal static class CrystallineConflict
+    {
+        public const int MatchLengthSec = 300; // casual match clock
+
+        // During the portrait/intro phase the timer counts down inside this band; once the gate opens
+        // it jumps back up past GateOpenSec.
+        public const int IntroBandUpperSec = 32;
+        public const int IntroBandLowerSec = 1;
+        public const int GateOpenSec = 100;
+        public const int BaselineMovedThresholdSec = 10;
+    }
+
     internal static class ThrottleKeys
     {
         public const string Save = "AutoPvpSeriesGrind.Save";

@@ -15,7 +15,7 @@ internal static unsafe class PvpProfileReader
         }
         catch (Exception ex)
         {
-            Svc.Log.Warning(ex, $"{ApsgConstants.LogPrefix} SeriesCurrentRank read failed");
+            ApsgLog.Warn(ex, "SeriesCurrentRank read failed");
             return 0;
         }
     }
@@ -34,7 +34,7 @@ internal static unsafe class PvpProfileReader
         }
         catch (Exception ex)
         {
-            Svc.Log.Warning(ex, $"{ApsgConstants.LogPrefix} SeriesRankProgress read failed");
+            ApsgLog.Warn(ex, "SeriesRankProgress read failed");
             return 0f;
         }
     }
@@ -56,7 +56,7 @@ internal static unsafe class PvpProfileReader
         }
         catch (Exception ex)
         {
-            Svc.Log.Warning(ex, $"{ApsgConstants.LogPrefix} SeriesTotalExperience read failed");
+            ApsgLog.Warn(ex, "SeriesTotalExperience read failed");
             return 0;
         }
     }
