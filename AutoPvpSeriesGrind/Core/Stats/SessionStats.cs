@@ -2,19 +2,25 @@ using ECommons.DalamudServices;
 
 namespace AutoPvpSeriesGrind.Core.Stats;
 
-// Live state for the current grind session. Mutated by the running task, read by the UI, finalized into a
-// RunRecord by the controller.
 public sealed class SessionStats
 {
     public DateTime StartedAt { get; } = DateTime.UtcNow;
 
     public int MatchesCompleted { get; set; }
-    public int Deaths { get; set; }
 
-    // Set true when the run's stop condition (mode goal) was met, vs a manual Stop; gates the follow-up command.
+    public long SeriesExpStart { get; private set; }
+
+    public long SeriesExpGained
+    {
+        get
+        {
+            var now = Core.Game.PvpProfileReader.SeriesTotalExperience();
+            return now > SeriesExpStart ? now - SeriesExpStart : 0;
+        }
+    }
+
     public bool CompletedByGoal { get; set; }
     public bool Recorded { get; set; }
-    // Guards the post-goal "Then" action so it dispatches at most once per session.
     public bool AfterActionDispatched { get; set; }
 
     public uint JobId { get; private set; }
@@ -36,4 +42,7 @@ public sealed class SessionStats
         JobId = me.ClassJob.RowId;
         JobAbbr = me.ClassJob.ValueNullable?.Abbreviation.ExtractText() ?? "";
     }
+
+    public void CaptureSeriesBaseline()
+        => SeriesExpStart = Core.Game.PvpProfileReader.SeriesTotalExperience();
 }

@@ -15,6 +15,15 @@ internal sealed class AutoPvpSeriesController
     private SessionStats? session;
     public SessionStats? SessionSnapshot => session;
 
+    public int LastMatches { get; private set; }
+    public long LastSeriesExp { get; private set; }
+    public bool LastByGoal { get; private set; }
+    private const int NoResult = int.MinValue / 2;
+    private int lastResultTick = NoResult;
+    public bool HasRecentResult(int withinMs)
+        => lastResultTick != NoResult && unchecked(Environment.TickCount - lastResultTick) is var age && age >= 0 && age < withinMs;
+    public void ClearLastResult() => lastResultTick = NoResult;
+
     private static void Diag(string message)
         => ECommons.DalamudServices.Svc.Log.Info($"{ApsgConstants.LogPrefix} {message}");
 
@@ -32,8 +41,10 @@ internal sealed class AutoPvpSeriesController
             return;
         }
 
+        ClearLastResult();
         var s = new SessionStats();
         s.CaptureJob();
+        s.CaptureSeriesBaseline();
         session = s;
         Phase = AutoPhase.Queueing;
         Diag($"Run starting: mode {Plugin.Cfg.ActiveMode.DisplayName}.");
@@ -56,13 +67,9 @@ internal sealed class AutoPvpSeriesController
         FinalizeRun(s);
         Phase = AutoPhase.Idle;
         MaybeRunAfterAction(s);
-        // Keep the session live while a "Then" action runs so the Finishing card still shows its stats;
-        // the after-action's OnCompleted clears it. Otherwise drop it now, as before.
         if (s == session && Phase != AutoPhase.Finishing) session = null;
     }
 
-    // Post-goal "Then" action (Return to inn / Logout / Close game). Gated on an actual goal completion and
-    // dispatched at most once; manual Stop and faults never reach here.
     private void MaybeRunAfterAction(SessionStats s)
     {
         if (!s.CompletedByGoal || s.AfterActionDispatched) return;
@@ -81,17 +88,22 @@ internal sealed class AutoPvpSeriesController
         {
             Diag($"After-run action {action} finished.");
             Phase = AutoPhase.Idle;
+            ClearLastResult();
             if (s == session) session = null;
         });
     }
 
-    // Records a finished session to history exactly once (idempotent via Recorded). Never touches control
-    // flow, so a history failure can't wedge automation.
     private void FinalizeRun(SessionStats? s)
     {
         if (s is null || s.Recorded) return;
         s.Recorded = true;
         if (s.MatchesCompleted == 0) return;
+
+        LastMatches = s.MatchesCompleted;
+        LastSeriesExp = s.SeriesExpGained;
+        LastByGoal = s.CompletedByGoal;
+        lastResultTick = Environment.TickCount;
+
         try
         {
             Plugin.Instance.History.Append(new RunRecord
@@ -100,11 +112,11 @@ internal sealed class AutoPvpSeriesController
                 EndedAtUtc = DateTime.UtcNow,
                 DurationSeconds = s.Elapsed.TotalSeconds,
                 MatchesCompleted = s.MatchesCompleted,
-                Deaths = s.Deaths,
+                SeriesExpGained = s.SeriesExpGained,
                 JobId = s.JobId,
                 JobAbbr = s.JobAbbr,
             });
-            Diag($"Run recorded: {s.MatchesCompleted} matches, {s.Deaths} deaths over {s.Elapsed:hh\\:mm\\:ss}.");
+            Diag($"Run recorded: {s.MatchesCompleted} matches, {s.SeriesExpGained} Series EXP over {s.Elapsed:hh\\:mm\\:ss}.");
         }
         catch (Exception ex)
         {

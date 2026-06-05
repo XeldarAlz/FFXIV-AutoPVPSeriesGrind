@@ -65,7 +65,7 @@ public sealed class RunHistoryWindow : Window, IDisposable
         ImGui.SameLine(0, gap);
         StatTile(FontAwesomeIcon.Trophy, t.Matches.ToString("N0"), "Matches", Styling.AccentBlue, size);
         ImGui.SameLine(0, gap);
-        StatTile(FontAwesomeIcon.Skull, t.Deaths.ToString("N0"), "Deaths", Styling.AccentRose, size);
+        StatTile(FontAwesomeIcon.Gem, Formatting.Exp(t.SeriesExp), "Series EXP", Styling.AccentAmber, size);
         ImGui.SameLine(0, gap);
         StatTile(FontAwesomeIcon.ChartLine, $"{t.MatchesPerHour:F1}", "Matches/h", Styling.AccentMint, size);
 
@@ -151,14 +151,14 @@ public sealed class RunHistoryWindow : Window, IDisposable
         ImGui.TableSetupColumn("Job", ImGuiTableColumnFlags.WidthStretch, 0.7f);
         ImGui.TableSetupColumn("Time", ImGuiTableColumnFlags.WidthStretch, 0.9f);
         ImGui.TableSetupColumn("Matches", ImGuiTableColumnFlags.WidthStretch, 0.8f);
-        ImGui.TableSetupColumn("Deaths", ImGuiTableColumnFlags.WidthStretch, 0.7f);
+        ImGui.TableSetupColumn("Series EXP", ImGuiTableColumnFlags.WidthStretch, 0.9f);
 
         ImGui.TableNextRow(ImGuiTableRowFlags.Headers);
         HeaderCell(FontAwesomeIcon.Clock, "When");
         HeaderCell(FontAwesomeIcon.User, "Job");
         HeaderCell(FontAwesomeIcon.Stopwatch, "Time");
         HeaderCell(FontAwesomeIcon.Trophy, "Matches");
-        HeaderCell(FontAwesomeIcon.Skull, "Deaths");
+        HeaderCell(FontAwesomeIcon.Gem, "Series EXP");
 
         var i = 0;
         foreach (var r in history.Records)
@@ -184,8 +184,8 @@ public sealed class RunHistoryWindow : Window, IDisposable
                 ImGui.TextUnformatted(r.MatchesCompleted.ToString());
 
             ImGui.TableNextColumn();
-            using (ImRaii.PushColor(ImGuiCol.Text, r.Deaths > 0 ? Styling.AccentRose : Styling.TextMuted))
-                ImGui.TextUnformatted(r.Deaths > 0 ? r.Deaths.ToString() : "—");
+            using (ImRaii.PushColor(ImGuiCol.Text, r.SeriesExpGained > 0 ? Styling.AccentAmber : Styling.TextMuted))
+                ImGui.TextUnformatted(r.SeriesExpGained > 0 ? $"+{Formatting.Exp(r.SeriesExpGained)}" : "—");
         }
     }
 

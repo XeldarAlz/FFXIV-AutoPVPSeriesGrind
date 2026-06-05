@@ -4,9 +4,6 @@ using System.IO;
 
 namespace AutoPvpSeriesGrind.Core.Stats;
 
-// Persists completed sessions to a JSON file in the plugin config directory, separate from the main config
-// so a large history can't bloat (or corrupt) the settings file. Owned and constructed by Plugin. All disk
-// access is best-effort and guarded; a read/write failure degrades to an empty/unsaved history.
 internal sealed class RunHistory
 {
     private const int MaxRecords = 500;
@@ -66,7 +63,7 @@ internal sealed class RunHistory
         foreach (var r in Records)
         {
             totals.Matches += r.MatchesCompleted;
-            totals.Deaths += r.Deaths;
+            totals.SeriesExp += r.SeriesExpGained;
             totals.Seconds += r.DurationSeconds;
         }
         Lifetime = totals;
@@ -90,7 +87,7 @@ internal sealed class RunHistory
     {
         public int Runs;
         public int Matches;
-        public int Deaths;
+        public long SeriesExp;
         public double Seconds;
 
         public readonly double MatchesPerHour => Seconds > 0 ? Matches / (Seconds / 3600.0) : 0;

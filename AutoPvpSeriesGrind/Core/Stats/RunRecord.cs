@@ -1,6 +1,5 @@
 namespace AutoPvpSeriesGrind.Core.Stats;
 
-// One completed (or stopped) grind session, persisted to history. Plain serializable scalars only.
 [Serializable]
 public sealed class RunRecord
 {
@@ -9,7 +8,7 @@ public sealed class RunRecord
     public double DurationSeconds { get; set; }
 
     public int MatchesCompleted { get; set; }
-    public int Deaths { get; set; }
+    public long SeriesExpGained { get; set; }
 
     public uint JobId { get; set; }
     public string JobAbbr { get; set; } = "";
