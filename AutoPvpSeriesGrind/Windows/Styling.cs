@@ -72,7 +72,6 @@ internal static class Styling
     public static void VSpace(float pixels)
         => ImGui.Dummy(new Vector2(0, pixels * ImGuiHelpers.GlobalScale));
 
-    // Advances the cursor so an item of the given width sits centered in the available content region.
     public static void CenterNextItem(float width)
     {
         var avail = ImGui.GetContentRegionAvail().X;

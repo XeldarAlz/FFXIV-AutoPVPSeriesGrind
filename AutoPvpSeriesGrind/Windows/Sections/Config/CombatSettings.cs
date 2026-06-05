@@ -8,8 +8,6 @@ namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class CombatSettings
 {
-    // Brain off is its own choice; the rest map to a PvpStrategy. Name + blurb live together so they
-    // cannot drift, and the enum binding means reordering PvpStrategy can't misalign the labels.
     private readonly record struct BehaviorChoice(string Name, string Blurb, bool BrainEnabled, PvpStrategy Strategy);
 
     private static readonly BehaviorChoice[] BehaviorChoices =

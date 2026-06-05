@@ -107,8 +107,6 @@ public sealed partial class AutoPvpSeries : AutoCommon
         Diag($"reset: {reason}");
     }
 
-    // The per-duty flow latches. Lives in one place so leaving a duty and capturing a fresh baseline
-    // can never reset different subsets and drift apart.
     private void ResetMatchFlow()
     {
         inMatchLive = false;

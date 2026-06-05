@@ -10,7 +10,7 @@ namespace AutoPvpSeriesGrind.Core.Tasks;
 
 public sealed partial class AutoPvpSeries
 {
-    // Radius (yalms) around the crystal used for "on point" engagement checks (legacy mover only).
+    // Radius (yalms) around the crystal used for "on point" engagement checks.
     private const float CrystalEngageRadius = 10f;
     private const float LegacyCrystalStopRange = 1.5f;
 

@@ -5,8 +5,6 @@ using static AutoPvpSeriesGrind.Core.ApsgConstants.CrystallineConflict;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-// Handles the "human" social touches: a quick-chat hello (and optional emote) during the portrait
-// phase, and a "Good Match" on the results screen. Owns its own once-per-match latches.
 internal sealed class GreetingDirector
 {
     private const double EmoteChance = 0.35;
@@ -22,7 +20,6 @@ internal sealed class GreetingDirector
         goodMatchSent = false;
     }
 
-    // Picks the in-band moment (seconds left) at which to greet, offset by the configured hello delay.
     public void PrepareForMatch(in RunSettings s)
     {
         var helloDelay = HumanTiming.RandSecInclusive(s.HelloDelayMinSec, s.HelloDelayMaxSec);
@@ -31,7 +28,6 @@ internal sealed class GreetingDirector
         ApsgLog.Info($"portrait hello threshold set -> {portraitHelloThreshold}s");
     }
 
-    // During the portrait band, fires the hello/emote once the timer reaches the chosen moment.
     public void TryPortraitGreeting(int tLeft, in RunSettings s)
     {
         var greetMoment = !portraitHelloSent && tLeft <= portraitHelloThreshold && tLeft > IntroBandLowerSec;
@@ -51,9 +47,6 @@ internal sealed class GreetingDirector
         }
     }
 
-    // Decides whether/when to say "Good Match" on the results screen. Returns the delay (ms) before
-    // sending, or null to skip. The latch flips on the first call regardless of the chance roll, so a
-    // single results screen never double-greets. The caller owns the actual wait + send.
     public int? PlanGoodMatchDelayMs(in RunSettings s)
     {
         if (!s.SendGoodMatch || goodMatchSent) return null;

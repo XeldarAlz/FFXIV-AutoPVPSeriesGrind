@@ -1,8 +1,5 @@
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-// Immutable snapshot of the configuration a run is started with. Captured once at run start so the
-// run's behavior can't shift mid-flight if the user edits settings, and so there is a single source
-// of truth rather than a fan of mirror fields.
 internal readonly record struct RunSettings(
     bool SendHello,
     bool SendGoodMatch,

@@ -7,8 +7,6 @@ using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-// Owns navmesh movement and the repath de-bounce state. Translates a MovePlan into vnav calls and
-// avoids re-issuing a path to an unchanged destination every tick.
 internal sealed class MovementExecutor
 {
     private const float RepathThreshold = 2.5f;     // skip re-issuing a path if the new dest is this close to the last
@@ -32,8 +30,6 @@ internal sealed class MovementExecutor
         lastPosture = null;
     }
 
-    // Records the latest posture and reports whether it changed since the previous tick — used to
-    // gate the reaction delay so we only "hesitate" when actually switching tactics.
     public bool UpdatePosture(Posture posture)
     {
         var changed = lastPosture != posture;
@@ -41,13 +37,11 @@ internal sealed class MovementExecutor
         return changed;
     }
 
-    // Stops pathing without clearing the last destination (a transient pause).
     public void HaltPathing()
     {
         if (Nav.IsRunning()) Nav.Stop();
     }
 
-    // Stops pathing and forgets the last destination so the next move always re-paths.
     public void Stop()
     {
         if (!Nav.IsRunning()) return;

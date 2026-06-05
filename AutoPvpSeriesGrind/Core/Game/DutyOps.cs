@@ -55,7 +55,6 @@ internal static unsafe class DutyOps
         catch (Exception ex) { ApsgLog.Warn(ex, $"{label} failed"); return fallback; }
     }
 
-    // Swallows failures silently — used for hot-path polling reads that run every frame.
     private static T TrySilent<T>(Func<T> body, T fallback)
     {
         try { return body(); }

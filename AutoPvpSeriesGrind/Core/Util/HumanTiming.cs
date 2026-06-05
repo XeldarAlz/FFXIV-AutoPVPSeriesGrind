@@ -16,7 +16,6 @@ internal static class HumanTiming
 
     public static bool Maybe(double probability) => Rng.NextDouble() < probability;
 
-    // Random whole seconds in [minSec, maxSec], clamped to be non-negative and well-ordered.
     public static int RandSecInclusive(int minSec, int maxSec)
     {
         var min = Math.Max(0, minSec);

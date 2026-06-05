@@ -2,7 +2,6 @@ using ECommons.DalamudServices;
 
 namespace AutoPvpSeriesGrind.Core;
 
-// Single entry point for all plugin logging so the LogPrefix is applied in exactly one place.
 internal static class ApsgLog
 {
     public static void Debug(string message) => Svc.Log.Debug(Prefix(message));
