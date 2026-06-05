@@ -2,11 +2,35 @@ using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using Lumina.Excel.Sheets;
+using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Core.Debug;
 
 internal static unsafe class TargetDumper
 {
+    public static void DumpObjects()
+    {
+        var me = Svc.Objects.LocalPlayer;
+        if (me is null)
+        {
+            Svc.Chat.Print($"{ApsgConstants.LogPrefix} No local player; enter a match first.");
+            return;
+        }
+
+        var self = me.Position;
+        var rows = Svc.Objects
+            .Where(o => o.ObjectKind is Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj
+                or Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)
+            .Select(o => (o, dist: Vector3.Distance(self, o.Position)))
+            .OrderBy(t => t.dist)
+            .Take(25)
+            .ToList();
+
+        Svc.Chat.Print($"{ApsgConstants.LogPrefix} Territory {Svc.ClientState.TerritoryType} — {rows.Count} nearby event/battle objects (nearest first):");
+        foreach (var (o, dist) in rows)
+            Svc.Chat.Print($"  [{o.ObjectKind}] BaseId={o.BaseId} \"{o.Name.TextValue}\" d={dist:F1}");
+    }
+
     public static void Dump()
     {
         var territoryId = Svc.ClientState.TerritoryType;

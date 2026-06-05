@@ -1,95 +1,185 @@
+using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Ipc;
+using AutoPvpSeriesGrind.Core.Util;
 using ECommons.DalamudServices;
 using System.Numerics;
 using System.Threading.Tasks;
+using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
 public sealed partial class AutoPvpSeries
 {
-    // Distance from the spawn anchor at which we consider ourselves on that side and stop fleeing.
+    // Distance (yalms) at which the player counts as having reached a spawn-side safe anchor.
     private const float AnchorArriveRadius = 40f;
+    // Radius (yalms) around the crystal used for "on point" engagement checks.
     private const float CrystalEngageRadius = 10f;
     private const int SpawnSafetyPollMs = 300;
-    private const int LbFireEveryTicks = 5;
+
+    private const float RepathThreshold = 2.5f;     // skip re-issuing a path if the new dest is this close to the last
+    private const float MinStopRange = 0.5f;        // below this we MoveTo exactly instead of MoveCloseTo
+    private const float HoldSlack = 1.5f;           // extra slack before we bother re-pathing while holding
+    private const float SpawnMoveStopRange = 2f;
+    private const float LegacyCrystalStopRange = 1.5f;
+
+    // Minimum gap before re-pathing to an unchanged, not-yet-reached destination (avoids per-tick pathfind spam when stuck).
+    private const int RepathCooldownMs = 2000;
+
+    private static NavIpc Nav => NavIpc.Instance;
 
     private async Task TickLiveMatch()
     {
         CheckDeathAndReapplyRotation();
-        if (!IsDead())
-            Cmd("/enemysign clear <me>");
-
-        if (IsNormal() && !IsDead() && !hasEnabledRotationThisLife)
+        if (IsDead())
         {
-            Cmd("/rotation auto LowHP");
+            hasEnabledRotationThisLife = false;
+            StopMoving();
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead — waiting to respawn");
+            return;
+        }
+
+        if (!clearedSignThisLife)
+        {
+            Cmd(GameCommands.ClearEnemySignOnSelf);
+            clearedSignThisLife = true;
+        }
+
+        if (IsNormal() && !hasEnabledRotationThisLife)
+        {
+            Cmd(GameCommands.EnableRotation);
             hasEnabledRotationThisLife = true;
             Diag("rotation enabled (live failsafe)");
         }
-        if (IsDead())
-            hasEnabledRotationThisLife = false;
 
         var territory = Svc.ClientState.TerritoryType;
 
-        var crystal = MatchState.CrystalPosition();
-        if (crystal is { } c)
+        if (MatchState.HasStatus(StatusSpawnProtection))
         {
-            var player = MatchState.PlayerPosition();
-            var crystalNear = player is { } p && Vector3.Distance(p, c) < CrystalEngageRadius;
-            var shouldHold = crystalNear && MatchState.CrystalContested(c, CrystalEngageRadius);
-            if (!shouldHold)
-            {
-                var rX = rng.Next(0, 3);
-                var rZ = rng.Next(0, 3);
-                MoveTo(c.X + rX, c.Y, c.Z + rZ);
-            }
+            await RunSpawnSafetyLoop(territory);
+            return;
         }
 
-        await RunSpawnSafetyLoop(territory);
+        if (enableBrain)
+            await RunBrainTick(territory);
+        else
+            LegacyCrystalMove();
+    }
 
-        lbTick++;
-        if (lbTick > LbFireEveryTicks && InDuty() && !IsDead())
+    private async Task RunBrainTick(uint territory)
+    {
+        var snap = MatchState.Capture();
+
+        if (!snap.HasObjective)
         {
-            lbTick = 0;
-            foreach (var name in LimitBreakCatalog.NamesForJob(MatchState.LocalJobId()))
-            {
-                Cmd($"/pvpac \"{name}\"");
-                await NextFrame(PollMs);
-            }
+            BrainTelemetry.Record(snap, new MovePlan(MoveKind.Hold, snap.Self, snap.Self, 0f, false, "no objective"));
+            if (Nav.IsRunning()) Nav.Stop();
+            return;
+        }
+
+        var anchor = MatchState.NearestSafeAnchor(territory, snap.Self) ?? snap.Self;
+        var plan = brain.Decide(snap, anchor);
+        BrainTelemetry.Record(snap, plan);
+
+        if (humanize != HumanizeLevel.Off && lastPlanKind != plan.Kind)
+        {
+            var (min, max) = HumanTiming.ReactionBand(humanize);
+            await NextFrame(HumanTiming.Reaction(min, max));
+        }
+        lastPlanKind = plan.Kind;
+
+        ExecutePlan(plan);
+    }
+
+    private void ExecutePlan(in MovePlan plan)
+    {
+        if (plan.Sprint && !MatchState.HasStatus(StatusSprint))
+            Cmd(GameCommands.Sprint);
+
+        switch (plan.Kind)
+        {
+            case MoveKind.Hold:
+                if (DistanceToSelf(plan.Destination) > plan.StopRange + HoldSlack)
+                    IssueMove(plan.Destination, plan.Fallback, plan.StopRange);
+                else
+                    StopMoving();
+                break;
+
+            case MoveKind.Engage:
+            case MoveKind.Retreat:
+                IssueMove(plan.Destination, plan.Fallback, plan.StopRange);
+                break;
         }
     }
 
-    // While spawn protection (status 895) is up, sprint and walk to the nearest spawn-side anchor so we
-    // leave the pen before the gate drops.
+    private void IssueMove(Vector3 dest, Vector3 fallback, float stopRange)
+    {
+        if (Vector3.Distance(dest, lastMoveDest) < RepathThreshold)
+        {
+            if (Nav.IsRunning()) return;
+            if (DistanceToSelf(dest) <= stopRange + RepathThreshold) return;
+            if (Environment.TickCount64 - lastMoveAtMs < RepathCooldownMs) return;
+        }
+
+        lastMoveDest = dest;
+        lastMoveAtMs = Environment.TickCount64;
+        var target = Nav.NearestPointReachable(dest)
+                     ?? (fallback != dest ? Nav.NearestPointReachable(fallback) : null)
+                     ?? fallback;
+        if (stopRange > MinStopRange) Nav.MoveCloseTo(target, stopRange);
+        else Nav.MoveTo(target);
+    }
+
+    private void StopMoving()
+    {
+        if (!Nav.IsRunning()) return;
+        Nav.Stop();
+        lastMoveDest = default;
+    }
+
+    private static float DistanceToSelf(Vector3 p)
+        => MatchState.PlayerPosition() is { } self ? Vector3.Distance(self, p) : float.MaxValue;
+
     private async Task RunSpawnSafetyLoop(uint territory)
     {
-        var spawnSide = -1;
-        while (MatchState.HasStatus(ApsgConstants.StatusSpawnProtection)
-               && InDuty() && spawnSide == -1 && inMatchLive
+        while (MatchState.HasStatus(StatusSpawnProtection)
+               && InDuty() && inMatchLive
                && !CancelToken.IsCancellationRequested)
         {
             CheckDeathAndReapplyRotation();
-            if (!MatchState.HasStatus(ApsgConstants.StatusSprint))
-                Cmd("/pvpac sprint");
-            Cmd("/vnav stop");
+            if (!MatchState.HasStatus(StatusSprint))
+                Cmd(GameCommands.Sprint);
 
-            if (MatchState.SafeAnchors.TryGetValue(territory, out var a) && MatchState.PlayerPosition() is { } pos)
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Engage, "leaving spawn");
+
+            if (MatchState.SafeAnchors.TryGetValue(territory, out var anchors)
+                && MatchState.PlayerPosition() is { } pos
+                && anchors.WithinArrival(pos, AnchorArriveRadius) is { } dest)
             {
-                var dA = Vector3.Distance(pos, new Vector3(a[0], a[1], a[2]));
-                var dB = Vector3.Distance(pos, new Vector3(a[3], a[4], a[5]));
-                if (dA < AnchorArriveRadius) spawnSide = 0;
-                if (dB < AnchorArriveRadius) spawnSide = 3;
-                if (spawnSide > -1)
-                {
-                    ranSafetyMoveThisDuty = true;
-                    MoveTo(a[spawnSide], a[spawnSide + 1], a[spawnSide + 2]);
-                }
+                ranSafetyMoveThisDuty = true;
+                IssueMove(dest, dest, SpawnMoveStopRange);
+                break;
             }
 
             await NextFrame(SpawnSafetyPollMs);
         }
     }
 
-    // Invariant formatting so locales with comma decimals don't corrupt the vnavmesh coordinates.
-    private static void MoveTo(float x, float y, float z)
-        => Cmd(FormattableString.Invariant($"/vnavmesh moveto {x} {y} {z}"));
+    private void LegacyCrystalMove()
+    {
+        var snap = MatchState.Capture();
+        if (snap.Objective is not { } c)
+        {
+            BrainTelemetry.RecordStatus(snap, MoveKind.Hold, "no objective (legacy)");
+            return;
+        }
+
+        var enemyOnPoint = snap.Enemies.Any(e => Vector3.Distance(e.Position, c) < CrystalEngageRadius);
+        var hold = Vector3.Distance(snap.Self, c) < CrystalEngageRadius && enemyOnPoint;
+        BrainTelemetry.RecordStatus(snap, hold ? MoveKind.Hold : MoveKind.Engage, hold ? "hold (legacy)" : "to crystal (legacy)");
+        if (!hold)
+            IssueMove(c, c, LegacyCrystalStopRange);
+        else
+            StopMoving();
+    }
 }

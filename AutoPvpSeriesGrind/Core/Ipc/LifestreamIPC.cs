@@ -3,8 +3,6 @@ using ECommons.DalamudServices;
 
 namespace AutoPvpSeriesGrind.Core.Ipc;
 
-// Optional Lifestream integration for the startup "go to your PvP hub" command. Absent Lifestream, every
-// call no-ops via IpcGate.
 internal sealed class LifestreamIPC
 {
     private static LifestreamIPC? instance;
@@ -15,8 +13,8 @@ internal sealed class LifestreamIPC
 
     private LifestreamIPC()
     {
-        executeCommand = Svc.PluginInterface.GetIpcSubscriber<string, object>("Lifestream.ExecuteCommand");
-        isBusy = Svc.PluginInterface.GetIpcSubscriber<bool>("Lifestream.IsBusy");
+        executeCommand = Svc.PluginInterface.GetIpcSubscriber<string, object>(ApsgConstants.IpcGates.LifestreamExecuteCommand);
+        isBusy = Svc.PluginInterface.GetIpcSubscriber<bool>(ApsgConstants.IpcGates.LifestreamIsBusy);
     }
 
     public bool IsAvailable => executeCommand.HasFunction;

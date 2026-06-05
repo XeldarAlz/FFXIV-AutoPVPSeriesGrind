@@ -11,7 +11,7 @@ namespace AutoPvpSeriesGrind.Windows;
 
 public sealed class ConfigWindow : Window, IDisposable
 {
-    private enum Tab { Session, Match }
+    private enum Tab { Session, Combat, Match }
 
     private readonly Plugin plugin;
     private Tab activeTab = Tab.Session;
@@ -51,6 +51,7 @@ public sealed class ConfigWindow : Window, IDisposable
     {
         ImGui.Spacing();
         if (SidebarTab.Draw("Session", FontAwesomeIcon.Flag, Styling.AccentViolet, activeTab == Tab.Session)) activeTab = Tab.Session;
+        if (SidebarTab.Draw("Combat", FontAwesomeIcon.Brain, Styling.AccentViolet, activeTab == Tab.Combat)) activeTab = Tab.Combat;
         if (SidebarTab.Draw("In match", FontAwesomeIcon.CommentDots, Styling.AccentViolet, activeTab == Tab.Match)) activeTab = Tab.Match;
     }
 
@@ -62,6 +63,10 @@ public sealed class ConfigWindow : Window, IDisposable
             case Tab.Session:
                 DrawHeader("Session", "How a run starts and when it stops.");
                 GeneralSettings.Draw(cfg);
+                break;
+            case Tab.Combat:
+                DrawHeader("Combat", "How the bot positions and picks its fights.");
+                CombatSettings.Draw(cfg);
                 break;
             case Tab.Match:
                 DrawHeader("In match", "The social touches the bot performs during each match.");

@@ -1,27 +1,46 @@
+using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Stats;
+using AutoPvpSeriesGrind.Core.Util;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 using ECommons.Automation;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using System.Numerics;
 using System.Threading.Tasks;
+using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-// Faithful port of the "Casual Match PVP" SND script: queue the casual roulette, ride out the match while
-// RotationSolver + vnavmesh fight on the crystal, fire the job Limit Break, send quickchat, leave on the
-// results screen, then requeue — stopping after the configured match limit.
 public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
 {
     private readonly SessionStats session = session;
-    private static readonly Random rng = new();
+    private static readonly Random rng = HumanTiming.Rng;
 
-    // Snapshot of the config at start, so changing settings mid-run can't tear the loop.
     private bool sendHello;
     private bool sendGoodMatch;
+    private double helloChance;
+    private double goodMatchChance;
+    private int helloDelayMinSec;
+    private int helloDelayMaxSec;
+    private int goodMatchDelayMinSec;
+    private int goodMatchDelayMaxSec;
+    private bool randomEmotes;
+    private bool enableBrain;
+    private HumanizeLevel humanize;
+    private readonly PvpBrain brain = new(PvpStrategy.Moderate);
 
-    // Per-duty match state.
+    private int leaveDutyDelayMs;
+    private int requeueMinSec;
+    private int requeueMaxSec;
+    private bool takeBreaks;
+    private int breakEvery;
+    private int breakMinutes;
+    private long nextQueueAllowedAtMs;
+    private int matchesSinceBreak;
+    private bool onBreak;
+
     private bool inMatchLive;
     private bool baselineCaptured;
     private int dutyBaselineTime;
@@ -33,10 +52,13 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
     private bool portraitHelloSent;
     private bool goodMatchSent;
     private bool ranSafetyMoveThisDuty;
-    private int lbTick;
     private bool hasEnabledRotationThisLife;
+    private bool clearedSignThisLife;
 
-    // Death tracking — RotationSolver disables itself on death, so we re-arm it after respawn.
+    private Vector3 lastMoveDest;
+    private long lastMoveAtMs;
+    private MoveKind? lastPlanKind;
+
     private bool wasDead;
     private long deadSinceMs;
     private bool rotationNeedsReset;
@@ -44,9 +66,17 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
     private bool stopAfterCurrentMatch;
 
     private const int PollMs = 100;
+    private const int MainLoopIdleMs = 500;
+    private const int DutyCommencedSettleMs = 1000;
+    // Grace period after death before re-applying the rotation, so it lands after the respawn completes.
+    private const int RespawnRotationDelayMs = 10_000;
 
     private static bool InDuty() => Svc.Condition[ConditionFlag.BoundByDuty];
-    private static bool IsDead() => Svc.Condition[ConditionFlag.Unconscious];
+
+    private static bool IsDead()
+        => Svc.Condition[ConditionFlag.Unconscious]
+        || (Svc.Objects.LocalPlayer is { } me && me.MaxHp > 0 && me.CurrentHp == 0);
+
     private static bool IsNormal() => Svc.Condition[ConditionFlag.NormalConditions];
 
     private static void Cmd(string command) => Chat.ExecuteCommand(command);
@@ -60,6 +90,23 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
         var cfg = Plugin.Cfg;
         sendHello = cfg.SendHelloOnEntry;
         sendGoodMatch = cfg.SendGoodMatchOnResults;
+        helloChance = cfg.HelloChancePercent / 100.0;
+        goodMatchChance = cfg.GoodMatchChancePercent / 100.0;
+        helloDelayMinSec = cfg.HelloDelayMinSeconds;
+        helloDelayMaxSec = cfg.HelloDelayMaxSeconds;
+        goodMatchDelayMinSec = cfg.GoodMatchDelayMinSeconds;
+        goodMatchDelayMaxSec = cfg.GoodMatchDelayMaxSeconds;
+        randomEmotes = cfg.RandomEmotes;
+        enableBrain = cfg.EnableCombatBrain;
+        humanize = cfg.Humanize;
+        brain.SetStrategy(cfg.Strategy, cfg.CustomStrategy);
+
+        leaveDutyDelayMs = Math.Max(0, cfg.LeaveDutyDelaySeconds) * 1000;
+        requeueMinSec = cfg.RequeueDelayMinSeconds;
+        requeueMaxSec = cfg.RequeueDelayMaxSeconds;
+        takeBreaks = cfg.TakeBreaks;
+        breakEvery = cfg.BreakEveryMatches;
+        breakMinutes = cfg.BreakMinutes;
 
         Svc.Chat.Print($"{ApsgConstants.LogPrefix} Starting PvP Series grind ({Plugin.Cfg.ActiveMode.DisplayName}).");
 
@@ -73,16 +120,14 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
             }
             else
             {
-                // Catch the "Duty Ready" popup the instant it appears, on any cycle — before the queue
-                // branch's own poll — so a match pop is always commenced and never times out in queue.
                 if (TryCommenceDuty())
                 {
                     Diag("duty ready popup -> commenced");
-                    await NextFrame(1000);
+                    await NextFrame(DutyCommencedSettleMs);
                     continue;
                 }
 
-                if (await TickOutOfDuty()) return; // stopped on match limit
+                if (await TickOutOfDuty()) return;
                 continue;
             }
 
@@ -94,7 +139,7 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
             if (inMatchLive)
                 await TickLiveMatch();
 
-            await NextFrame(500);
+            await NextFrame(MainLoopIdleMs);
         }
     }
 
@@ -109,15 +154,19 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
         portraitHelloSent = false;
         goodMatchSent = false;
         ranSafetyMoveThisDuty = false;
-        lbTick = 0;
         hasEnabledRotationThisLife = false;
+        clearedSignThisLife = false;
+        lastMoveDest = default;
+        lastMoveAtMs = 0;
+        lastPlanKind = null;
+        brain.Reset();
+        BrainTelemetry.Clear();
         wasDead = false;
         deadSinceMs = 0;
         rotationNeedsReset = false;
         Diag($"reset: {reason}");
     }
 
-    // RotationSolver drops its rotation on death; re-arm "/rotation auto LowHP" once we're up again.
     private void CheckDeathAndReapplyRotation()
     {
         if (IsDead())
@@ -127,7 +176,8 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
                 wasDead = true;
                 deadSinceMs = Environment.TickCount64;
                 rotationNeedsReset = true;
-                session.Deaths++;
+                clearedSignThisLife = false;
+                brain.Reset();
                 Diag("death detected -> rotation will be re-applied after respawn");
             }
             return;
@@ -136,9 +186,9 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
         if (wasDead)
         {
             wasDead = false;
-            if (rotationNeedsReset && Environment.TickCount64 - deadSinceMs >= 10_000 && IsNormal())
+            if (rotationNeedsReset && Environment.TickCount64 - deadSinceMs >= RespawnRotationDelayMs && IsNormal())
             {
-                Cmd("/rotation auto LowHP");
+                Cmd(GameCommands.EnableRotation);
                 rotationNeedsReset = false;
                 Diag("respawn detected -> rotation re-applied");
             }
@@ -146,7 +196,7 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
 
         if (rotationNeedsReset && IsNormal())
         {
-            Cmd("/rotation auto LowHP");
+            Cmd(GameCommands.EnableRotation);
             rotationNeedsReset = false;
             Diag("rotation re-applied (failsafe)");
         }

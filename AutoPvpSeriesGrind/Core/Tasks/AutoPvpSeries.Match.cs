@@ -1,6 +1,8 @@
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Util;
 using Dalamud.Game.ClientState.Conditions;
 using System.Threading.Tasks;
+using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
@@ -8,7 +10,19 @@ public sealed partial class AutoPvpSeries
 {
     private const int PvpAreaWaitMs = 90_000;
 
-    // When the results addon (MKSRecord) appears the match is over: count it, say "Good Match", leave, reset.
+    private const double EmoteChance = 0.35;
+
+    private const int PostQuickChatMs = 500;
+    private const int LeaveDutyTimeoutMs = 10_000;
+    private const int PortraitPhasePollMs = 1000;
+
+    // ContentTimeLeft (seconds) bands used to read the pre-match flow. During the portrait/intro phase
+    // the timer counts down inside the intro band; once the gate opens it jumps back up past GateOpenSec.
+    private const int IntroBandUpperSec = 32;
+    private const int IntroBandLowerSec = 1;
+    private const int GateOpenSec = 100;
+    private const int BaselineMovedThresholdSec = 10;
+
     private async Task<bool> TryHandleMatchEnd()
     {
         if (!ResultsScreenVisible()) return false;
@@ -16,7 +30,6 @@ public sealed partial class AutoPvpSeries
         session.MatchesCompleted++;
         Diag($"completed match {session.MatchesCompleted}");
 
-        // Evaluate the active stop mode (match count / Series rank / time / endless) after each win.
         if (Plugin.Cfg.ActiveMode.IsComplete(session.ToModeContext()))
         {
             stopAfterCurrentMatch = true;
@@ -24,25 +37,59 @@ public sealed partial class AutoPvpSeries
             Diag($"stop condition met ({Plugin.Cfg.ActiveMode.DisplayName}) -> stopping after this match");
         }
 
-        if (sendGoodMatch && !goodMatchSent)
-        {
-            Cmd("/quickchat \"Good Match\"");
-            goodMatchSent = true;
-            await NextFrame(500);
-        }
+        ScheduleNextQueue();
 
-        Diag("match ended (results screen visible) -> leaving duty");
-        Cmd("/vnav stop");
-        DutyOps.LeaveCurrentContent();
-
-        await NextFrame(2000);
+        await LingerThenLeave();
         ResetDutyState("left duty (post-match)");
         return true;
     }
 
+    // The leave delay is how long we sit on the results screen before bailing. "Good Match" is sent only if
+    // its random delay lands inside that window — a short leave delay means we just leave early without it.
+    private async Task LingerThenLeave()
+    {
+        var lingerMs = Math.Max(0, leaveDutyDelayMs);
+        var waitedMs = 0;
+
+        if (sendGoodMatch && !goodMatchSent)
+        {
+            goodMatchSent = true;
+            if (HumanTiming.Maybe(goodMatchChance))
+            {
+                var goodbyeAtMs = RandSecInclusive(goodMatchDelayMinSec, goodMatchDelayMaxSec) * 1000;
+                if (goodbyeAtMs <= lingerMs)
+                {
+                    if (goodbyeAtMs > 0) await NextFrame(goodbyeAtMs);
+                    Cmd(GameCommands.QuickChatGoodMatch);
+                    await NextFrame(PostQuickChatMs);
+                    waitedMs = goodbyeAtMs + PostQuickChatMs;
+                }
+                else
+                {
+                    Diag($"leaving early -> skipped \"Good Match\" (delay {goodbyeAtMs}ms > leave delay {lingerMs}ms)");
+                }
+            }
+        }
+
+        if (waitedMs < lingerMs)
+            await NextFrame(lingerMs - waitedMs);
+
+        Diag("match ended (results screen visible) -> leaving duty");
+        Cmd(GameCommands.NavStop);
+        DutyOps.LeaveCurrentContent();
+        await WaitUntilTimed(() => !InDuty(), LeaveDutyTimeoutMs, "left-duty", checkMs: 100);
+    }
+
+    private static int RandSecInclusive(int minSec, int maxSec)
+    {
+        var min = Math.Max(0, minSec);
+        var max = Math.Max(min, maxSec);
+        return min == max ? min : rng.Next(min, max + 1);
+    }
+
     private async Task CaptureBaseline()
     {
-        Cmd("/vnav stop");
+        Cmd(GameCommands.NavStop);
         Diag("in duty -> waiting for PvP area before baseline capture");
         await WaitUntilTimed(MatchState.InPvpArea, PvpAreaWaitMs, "in-pvp-area", checkMs: PollMs);
 
@@ -55,7 +102,8 @@ public sealed partial class AutoPvpSeries
         inMatchLive = false;
         ranSafetyMoveThisDuty = false;
         hasEnabledRotationThisLife = false;
-        portraitHelloThreshold = rng.Next(1, 30);
+        var helloDelay = RandSecInclusive(helloDelayMinSec, helloDelayMaxSec);
+        portraitHelloThreshold = Math.Clamp(IntroBandUpperSec - helloDelay, IntroBandLowerSec + 1, IntroBandUpperSec - 1);
         portraitHelloSent = false;
         Plugin.Instance.Controller.Phase = AutoPhase.InMatch;
 
@@ -63,8 +111,6 @@ public sealed partial class AutoPvpSeries
         Diag($"portrait hello threshold set -> {portraitHelloThreshold}s");
     }
 
-    // Pre-match: hold position through the portrait/intro band, send a randomized hello, and watch the
-    // content timer for the gate opening (timer jumps back above 100s once the match goes live).
     private async Task RunWaitingPhase()
     {
         while (InDuty() && !inMatchLive && !CancelToken.IsCancellationRequested)
@@ -74,17 +120,17 @@ public sealed partial class AutoPvpSeries
             if (!announcedEntered)
             {
                 Diag("entered PvP match; waiting for portraits + gate (ContentTimeLeft)");
-                Cmd("/vnav stop");
+                Cmd(GameCommands.NavStop);
                 announcedEntered = true;
                 Plugin.Instance.Controller.Phase = AutoPhase.InMatch;
             }
 
             var tLeft = DutyOps.ContentTimeLeft();
 
-            if (dutyBaselineTime != 0 && tLeft > 0 && Math.Abs(tLeft - dutyBaselineTime) >= 10)
+            if (dutyBaselineTime != 0 && tLeft > 0 && Math.Abs(tLeft - dutyBaselineTime) >= BaselineMovedThresholdSec)
                 timerMovedFromBaseline = true;
 
-            if (tLeft is < 32 and > 1)
+            if (tLeft is < IntroBandUpperSec and > IntroBandLowerSec)
             {
                 sawIntroBand = true;
                 if (!announcedPortrait)
@@ -93,26 +139,36 @@ public sealed partial class AutoPvpSeries
                     announcedPortrait = true;
                 }
 
-                if (sendHello && !portraitHelloSent && tLeft <= portraitHelloThreshold && tLeft > 1)
+                var greetMoment = !portraitHelloSent && tLeft <= portraitHelloThreshold && tLeft > IntroBandLowerSec;
+                if (greetMoment && (sendHello || randomEmotes))
                 {
-                    Cmd("/quickchat Hello");
                     portraitHelloSent = true;
-                    Diag($"quickchat Hello sent at tLeft={tLeft} (threshold={portraitHelloThreshold})");
+                    if (sendHello && HumanTiming.Maybe(helloChance))
+                    {
+                        Cmd(GameCommands.QuickChatHello);
+                        Diag($"quickchat Hello sent at tLeft={tLeft} (threshold={portraitHelloThreshold})");
+                    }
+                    if (randomEmotes && HumanTiming.Maybe(EmoteChance))
+                    {
+                        var emote = GameCommands.GreetEmotes[rng.Next(GameCommands.GreetEmotes.Length)];
+                        Cmd(emote);
+                        Diag($"random emote '{emote}' sent at tLeft={tLeft}");
+                    }
                 }
 
-                Cmd("/vnav stop");
-                await NextFrame(1000);
+                Cmd(GameCommands.NavStop);
+                await NextFrame(PortraitPhasePollMs);
             }
             else
             {
-                var gateOpen = tLeft > 100 && (sawIntroBand || timerMovedFromBaseline);
+                var gateOpen = tLeft > GateOpenSec && (sawIntroBand || timerMovedFromBaseline);
                 if (gateOpen)
                 {
                     Diag($"gate open detected by ContentTimeLeft -> {tLeft}");
                     inMatchLive = true;
-                    Cmd("/rotation Settings TargetingTypes add LowHP");
+                    Cmd(GameCommands.AddLowHpTargeting);
                     await NextFrame(PollMs);
-                    Cmd("/rotation auto LowHP");
+                    Cmd(GameCommands.EnableRotation);
                     hasEnabledRotationThisLife = true;
                     rotationNeedsReset = false;
                     Diag("rotation enabled (match start)");

@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Util;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 using ECommons.DalamudServices;
@@ -14,6 +15,8 @@ public sealed partial class AutoPvpSeries
     {
         await NextFrame(1000);
 
+        Ipc.PvpAutoLbIpc.Instance.PushPresetsIfNeeded();
+
         Controller_SetPhaseQueueing();
         DutyOps.QueueCasualMatch();
     }
@@ -21,7 +24,6 @@ public sealed partial class AutoPvpSeries
     private void Controller_SetPhaseQueueing()
         => Plugin.Instance.Controller.Phase = AutoPhase.Queueing;
 
-    // Out of duty: reset, stop if the limit was reached, otherwise (re)queue the casual roulette.
     private async Task<bool> TickOutOfDuty()
     {
         if (inMatchLive || announcedEntered || ranSafetyMoveThisDuty || baselineCaptured)
@@ -35,28 +37,61 @@ public sealed partial class AutoPvpSeries
 
         Plugin.Instance.Controller.Phase = AutoPhase.Queueing;
 
-        // When a match pops, the game shows the "Duty Ready" popup and waits for us to press Commence.
-        // The source script left this to an external plugin; here we click it ourselves, otherwise the
-        // popup just times out and we never enter the instance. Poll for it during the requeue interval.
-        if (await WaitUntilTimed(TryCommenceDuty, 5000, "duty-ready-commence", checkMs: 200))
-        {
-            Diag("duty ready popup -> commenced");
-            await NextFrame(1000);
-            return false;
-        }
-
         if (!Svc.Condition[ConditionFlag.InDutyQueue] && !DutyOps.IsQueued())
         {
+            var waitMs = nextQueueAllowedAtMs - Environment.TickCount64;
+            if (waitMs > 0)
+            {
+                Status = onBreak ? $"On a break — {FormatRemaining(waitMs)} left" : $"Next match in {FormatRemaining(waitMs)}";
+                await NextFrame(MainLoopIdleMs);
+                return false;
+            }
+
             Diag("not queued -> queueing casual match roulette");
             DutyOps.QueueCasualMatch();
         }
 
-        await NextFrame(500);
+        await NextFrame(MainLoopIdleMs);
         return false;
     }
 
-    // True once the "Duty Ready" confirmation is up and its Commence button has been clicked. Returns false
-    // when the popup is absent/not ready so the caller keeps polling until the match actually pops.
+    private void ScheduleNextQueue()
+    {
+        if (stopAfterCurrentMatch) return;
+
+        matchesSinceBreak++;
+        long delayMs;
+        if (takeBreaks && breakEvery > 0 && matchesSinceBreak >= breakEvery)
+        {
+            matchesSinceBreak = 0;
+            onBreak = true;
+            var baseMs = Math.Max(1, breakMinutes) * 60_000;
+            delayMs = HumanTiming.Jitter(baseMs, baseMs / 5);
+            Diag($"break scheduled (~{delayMs / 60000.0:F1} min) after {breakEvery} matches");
+        }
+        else
+        {
+            onBreak = false;
+            delayMs = RequeueDelayMs();
+            if (delayMs > 0) Diag($"requeue delay scheduled (~{delayMs / 1000.0:F0}s)");
+        }
+        nextQueueAllowedAtMs = Environment.TickCount64 + delayMs;
+    }
+
+    private long RequeueDelayMs()
+    {
+        var min = Math.Max(0, requeueMinSec);
+        var max = Math.Max(min, requeueMaxSec);
+        if (max <= 0) return 0;
+        return HumanTiming.Rng.Next(min, max + 1) * 1000L;
+    }
+
+    private static string FormatRemaining(long ms)
+    {
+        var s = (int)Math.Ceiling(ms / 1000.0);
+        return s >= 60 ? $"{s / 60}m {s % 60:00}s" : $"{s}s";
+    }
+
     private static unsafe bool TryCommenceDuty()
     {
         if (!GenericHelpers.TryGetAddonByName<AtkUnitBase>(ApsgConstants.AddonNames.DutyReady, out var a)

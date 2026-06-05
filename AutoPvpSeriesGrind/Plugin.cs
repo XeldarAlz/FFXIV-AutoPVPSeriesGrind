@@ -33,6 +33,7 @@ public sealed class Plugin : IDalamudPlugin
     private readonly AboutWindow aboutWindow;
     private readonly DependenciesWindow dependenciesWindow;
     private readonly RunHistoryWindow runHistoryWindow;
+    private readonly BrainDebugWindow brainWindow;
 
     private readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskHandler;
 
@@ -56,16 +57,18 @@ public sealed class Plugin : IDalamudPlugin
         aboutWindow = new AboutWindow();
         dependenciesWindow = new DependenciesWindow();
         runHistoryWindow = new RunHistoryWindow();
+        brainWindow = new BrainDebugWindow();
 
         WindowSystem.AddWindow(mainWindow);
         WindowSystem.AddWindow(configWindow);
         WindowSystem.AddWindow(aboutWindow);
         WindowSystem.AddWindow(dependenciesWindow);
         WindowSystem.AddWindow(runHistoryWindow);
+        WindowSystem.AddWindow(brainWindow);
 
         CommandManager.AddHandler(ApsgConstants.PrimaryCommand, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | about | target.",
+            HelpMessage = "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | about | brain | target | objects.",
         });
         CommandManager.AddHandler(ApsgConstants.AliasCommand, new CommandInfo(OnCommand)
         {
@@ -75,13 +78,8 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
-
-        if (Configuration.AutoShowOnLogin)
-            mainWindow.IsOpen = true;
     }
 
-    // vnavmesh runs its pathfind IPC on fire-and-forget Tasks we never get a handle to; when one faults it
-    // surfaces as an unobserved exception. Mark only those (matched by the vnavmesh stack) observed.
     private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         if (e.Observed) return;
@@ -106,6 +104,7 @@ public sealed class Plugin : IDalamudPlugin
         aboutWindow.Dispose();
         dependenciesWindow.Dispose();
         runHistoryWindow.Dispose();
+        brainWindow.Dispose();
 
         CommandManager.RemoveHandler(ApsgConstants.PrimaryCommand);
         CommandManager.RemoveHandler(ApsgConstants.AliasCommand);
@@ -127,8 +126,12 @@ public sealed class Plugin : IDalamudPlugin
             ToggleDependenciesUi();
         else if (trimmed.Equals("stats", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("history", StringComparison.OrdinalIgnoreCase))
             ToggleHistoryUi();
+        else if (trimmed.Equals("brain", StringComparison.OrdinalIgnoreCase))
+            ToggleBrainUi();
         else if (trimmed.Equals("target", StringComparison.OrdinalIgnoreCase))
             TargetDumper.Dump();
+        else if (trimmed.Equals("objects", StringComparison.OrdinalIgnoreCase))
+            TargetDumper.DumpObjects();
         else
             ToggleMainUi();
     }
@@ -138,4 +141,5 @@ public sealed class Plugin : IDalamudPlugin
     public void ToggleAboutUi() => aboutWindow.Toggle();
     public void ToggleDependenciesUi() => dependenciesWindow.Toggle();
     public void ToggleHistoryUi() => runHistoryWindow.Toggle();
+    public void ToggleBrainUi() => brainWindow.Toggle();
 }

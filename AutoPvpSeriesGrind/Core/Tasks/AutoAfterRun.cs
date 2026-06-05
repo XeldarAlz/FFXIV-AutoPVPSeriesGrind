@@ -9,23 +9,18 @@ using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-// Runs once the grind hits its goal: the user's chosen "Then" action. Logout/CloseGame issue the matching
-// chat command (driving the confirm dialog for logout); ReturnToInn defers to Lifestream's "inn" travel
-// since this plugin has no navigation of its own.
 public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
 {
     private readonly AfterRunAction action = action;
 
     private const int ReadyWaitMs = 20_000;
     private const int YesnoWaitMs = 6_000;
-    // Settle delay before issuing each chat command so it isn't eaten mid-transition.
     private const int PreCommandSettleMs = 800;
     private const int LifestreamStartMs = 4_000;
     private const int LifestreamCompleteMs = 180_000;
 
     protected override async Task Execute()
     {
-        // Don't act mid-transition; wait for a clean grounded state first.
         await WaitUntilTimed(IsSafeToFinish, ReadyWaitMs, "afterrun-ready");
         if (CancelToken.IsCancellationRequested) return;
 
@@ -39,7 +34,7 @@ public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
                 Status = "Logging out";
                 Diag("After-run: logging out.");
                 await NextFrame(PreCommandSettleMs);
-                Chat.ExecuteCommand("/logout");
+                Chat.ExecuteCommand(ApsgConstants.GameCommands.Logout);
                 if (await WaitUntilTimed(SelectYesnoOpen, YesnoWaitMs, "logout-yesno"))
                 {
                     ClickYes();
@@ -47,11 +42,9 @@ public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
                 }
                 else
                 {
-                    // The confirmation can fail to surface if the command was eaten (lag, a blocking
-                    // addon); re-issue once before giving up so we don't silently stay logged in.
                     Warn($"Logout confirmation did not appear within {YesnoWaitMs / 1000}s; re-issuing /logout.");
                     await NextFrame(PreCommandSettleMs);
-                    Chat.ExecuteCommand("/logout");
+                    Chat.ExecuteCommand(ApsgConstants.GameCommands.Logout);
                     if (await WaitUntilTimed(SelectYesnoOpen, YesnoWaitMs, "logout-yesno-retry"))
                         ClickYes();
                     else
@@ -63,7 +56,7 @@ public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
                 Status = "Closing the game";
                 Diag("After-run: closing the game (/xlkill).");
                 await NextFrame(PreCommandSettleMs);
-                Chat.ExecuteCommand("/xlkill");
+                Chat.ExecuteCommand(ApsgConstants.GameCommands.CloseGame);
                 break;
         }
     }
@@ -81,7 +74,7 @@ public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
         Diag("After-run: returning to the inn via Lifestream.");
         Svc.Chat.Print($"{ApsgConstants.LogPrefix} Run complete — retiring to the inn.");
         await NextFrame(PreCommandSettleMs);
-        LifestreamIPC.Instance.ExecuteCommand("inn");
+        LifestreamIPC.Instance.ExecuteCommand(ApsgConstants.LifestreamCommands.ReturnToInn);
 
         var started = await WaitUntilTimed(() =>
             LifestreamIPC.Instance.IsBusy()
