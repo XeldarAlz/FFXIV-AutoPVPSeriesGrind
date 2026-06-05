@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <em>Casual Match PvP, on autopilot. Built on Dalamud.</em>
+  <em>PvP Series, grinded for you. Built on Dalamud.</em>
 </p>
 
 ---
