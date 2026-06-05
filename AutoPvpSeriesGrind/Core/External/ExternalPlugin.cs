@@ -32,7 +32,7 @@ public static class ExternalPlugins
         [ExternalPlugin.RotationSolver] = new(
             InternalName: "RotationSolver",
             DisplayName: "RotationSolver Reborn",
-            RepoUrl: "https://raw.githubusercontent.com/FFXIV-CombatReborn/RotationSolverReborn/main/pluginmaster.json",
+            RepoUrl: "https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json",
             Purpose: "Drives combat during the match (/rotation auto LowHP).",
             Required: true,
             Aliases: ["RotationSolverReborn"]),
@@ -63,6 +63,17 @@ public static class ExternalPlugins
 
     public static bool AllRequiredInstalled()
         => All.Where(p => Catalog[p].Required).All(IsInstalled);
+
+    public static void AutoInstallMissingRequired()
+    {
+        foreach (var plugin in All)
+        {
+            var info = Catalog[plugin];
+            if (!info.Required || IsInstalled(plugin)) continue;
+            if (PluginInstaller.IsInstalling(plugin) || PluginInstaller.DidFail(plugin)) continue;
+            _ = PluginInstaller.Install(plugin);
+        }
+    }
 
     public static bool IsInstalledButDisabled(ExternalPlugin plugin) => false;
 }

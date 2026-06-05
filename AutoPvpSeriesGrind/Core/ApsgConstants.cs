@@ -87,6 +87,5 @@ internal static class ApsgConstants
         public const string PvpAutoLbApply = "PvpAutoLb.Presets.Apply";
     }
 
-    // Must match PvpAutoLbConstants.PresetApiVersion on the receiver side.
     public const int PvpAutoLbPresetApiVersion = 1;
 }

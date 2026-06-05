@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Combat;
+using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Ipc;
 using AutoPvpSeriesGrind.Core.Tasks;
 using AutoPvpSeriesGrind.Windows.Components;
@@ -46,13 +47,15 @@ public sealed class BrainDebugWindow : Window, IDisposable
         }
 
         var inMatch = Plugin.Instance.Controller.Phase == AutoPhase.InMatch;
-        if (BrainTelemetry.Snapshot is not { } snap || BrainTelemetry.Plan is not { } plan
-            || (!inMatch && !BrainTelemetry.IsFresh))
+        if (BrainTelemetry.Plan is not { } plan || (!inMatch && !BrainTelemetry.IsFresh))
         {
             Styling.VSpace(8);
             Centered(inMatch ? "Match starting — the brain spins up at the gate." : "Not in a live match.", Styling.TextMuted);
             return;
         }
+
+        var snap = inMatch ? MatchState.Capture() : BrainTelemetry.Snapshot;
+        if (snap is null) return;
 
         Styling.VSpace(6);
         DrawDecision(plan);

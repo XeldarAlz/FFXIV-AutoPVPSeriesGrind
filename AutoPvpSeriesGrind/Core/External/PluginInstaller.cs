@@ -1,5 +1,7 @@
+using Dalamud.Plugin;
 using ECommons.DalamudServices;
 using ECommons.Reflection;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.External;
@@ -22,7 +24,7 @@ public static class PluginInstaller
         {
             var info = ExternalPlugins.Catalog[plugin];
             Svc.Log.Info($"[ExternalPlugin] Installing {info.DisplayName} from {info.RepoUrl}");
-            var ok = await DalamudReflector.AddPlugin(info.RepoUrl, info.InternalName);
+            var ok = await AddPlugin(info.RepoUrl, info.InternalName);
             Svc.Log.Info(ok
                 ? $"[ExternalPlugin] {info.DisplayName} installed."
                 : $"[ExternalPlugin] {info.DisplayName} install reported failure — repo may need to be added manually.");
@@ -40,4 +42,69 @@ public static class PluginInstaller
             InFlight.Remove(plugin);
         }
     }
+
+    // Installs via Dalamud's internal PluginManager.InstallPluginAsync by reflection. We bind the
+    // arguments to the live method's parameters by name and length so we survive Dalamud signature
+    // drift — ECommons.DalamudReflector.AddPlugin hard-codes a 4-arg call that throws "Parameter
+    // count mismatch" once Dalamud changed InstallPluginAsync to 3 parameters.
+    private static async Task<bool> AddPlugin(string masterUrl, string internalName)
+    {
+        var plugins = await DalamudReflector.GetPluginMaster(masterUrl);
+        if (plugins is null || plugins.Count == 0)
+        {
+            Svc.Log.Warning($"[ExternalPlugin] No manifests fetched from {masterUrl}");
+            return false;
+        }
+
+        var manifest = plugins.FirstOrDefault(x => (string)x.GetFoP("InternalName") == internalName);
+        if (manifest is null)
+        {
+            Svc.Log.Warning($"[ExternalPlugin] '{internalName}' not found in {masterUrl}");
+            return false;
+        }
+
+        var pm = DalamudReflector.GetPluginManager();
+        if (pm is null)
+        {
+            Svc.Log.Warning("[ExternalPlugin] Could not resolve Dalamud PluginManager");
+            return false;
+        }
+
+        if (!DalamudReflector.HasRepo(masterUrl))
+            DalamudReflector.AddRepo(masterUrl, true);
+        DalamudReflector.ReloadPluginMasters();
+
+        var method = pm.GetType().GetMethod(
+            "InstallPluginAsync",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (method is null)
+        {
+            Svc.Log.Warning("[ExternalPlugin] PluginManager.InstallPluginAsync not found");
+            return false;
+        }
+
+        var pars = method.GetParameters();
+        var args = new object?[pars.Length];
+        for (var i = 0; i < pars.Length; i++)
+        {
+            args[i] = pars[i].Name switch
+            {
+                "repoManifest" => manifest,
+                "useTesting" => false,
+                "reason" => PluginLoadReason.Installer,
+                _ => DefaultArg(pars[i]),
+            };
+        }
+
+        var task = (Task)method.Invoke(pm, args)!;
+        await task.ConfigureAwait(false);
+
+        var localPlugin = task.GetFoP("Result");
+        return localPlugin is not null && (bool)localPlugin.GetFoP("IsLoaded");
+    }
+
+    private static object? DefaultArg(ParameterInfo p)
+        => p.HasDefaultValue ? p.DefaultValue
+            : p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType)
+            : null;
 }

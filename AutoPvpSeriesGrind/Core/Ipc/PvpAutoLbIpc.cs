@@ -22,8 +22,6 @@ internal sealed class PvpAutoLbIpc
 
     public bool IsAvailable => apply.HasFunction;
 
-    // Pushes the per-class preset table once; the receiver protects user-edited rules and we skip
-    // when it already has our version, so this is safe to call on every grind start.
     public void PushPresetsIfNeeded()
     {
         if (!apply.HasFunction)
