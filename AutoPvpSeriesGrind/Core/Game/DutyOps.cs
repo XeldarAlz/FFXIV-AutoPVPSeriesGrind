@@ -7,13 +7,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace AutoPvpSeriesGrind.Core.Game;
 
-// The three native game operations the source script reached for via SND's high-level wrappers
-// (Instances.DutyFinder, InstancedContent). Each is a thin, guarded call against FFXIVClientStructs so a
-// bad pointer/state logs and degrades rather than throwing into the loop. The exact behaviour of these
-// should be confirmed in-game (queue/leave/timer) — see README.
 internal static unsafe class DutyOps
 {
-    // Queue the Crystalline Conflict (Casual Match) roulette, matching the script's QueueRoulette(40).
     public static bool QueueCasualMatch()
     {
         try
@@ -23,7 +18,6 @@ internal static unsafe class DutyOps
             var qi = cf->GetQueueInfo();
             if (qi == null) return false;
 
-            // Clear any stale request, reset duty-finder flags, then register the roulette.
             if (qi->QueueState is ContentsFinderQueueState.Pending or ContentsFinderQueueState.Queued)
                 qi->CancelQueue();
             (*cf).ResetFlags();
@@ -51,8 +45,6 @@ internal static unsafe class DutyOps
         catch { return false; }
     }
 
-    // Leave the current instanced content (the script's InstancedContent.LeaveCurrentContent). 819 is the
-    // game's "leave duty" ExecuteCommand opcode (clib.Enums.CommandFlag.LeaveDuty).
     public static void LeaveCurrentContent()
     {
         try
@@ -65,8 +57,6 @@ internal static unsafe class DutyOps
         }
     }
 
-    // Seconds left on the instance content director's timer, or 0 when there is no active timer. Drives the
-    // portrait/gate detection just like the script's InstancedContent.ContentTimeLeft.
     public static int ContentTimeLeft()
     {
         try

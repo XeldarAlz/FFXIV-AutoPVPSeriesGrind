@@ -1,6 +1,5 @@
 namespace AutoPvpSeriesGrind.Core.Modes;
 
-// Built-ins in UI display order.
 public static class SeriesGrindModes
 {
     private static readonly List<ISeriesGrindMode> registered =

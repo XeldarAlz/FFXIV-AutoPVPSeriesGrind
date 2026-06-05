@@ -9,7 +9,6 @@ public readonly struct ModeContext
 
 public interface ISeriesGrindMode
 {
-    // Stable serialization key — never change once shipped (persisted in config as ModeId).
     string Id { get; }
 
     string DisplayName { get; }
@@ -17,6 +16,5 @@ public interface ISeriesGrindMode
 
     bool IsComplete(ModeContext ctx);
 
-    // Short "X left" string for the status line, or null when there's nothing meaningful to show.
     string? GetRemainingDisplay(ModeContext ctx) => null;
 }

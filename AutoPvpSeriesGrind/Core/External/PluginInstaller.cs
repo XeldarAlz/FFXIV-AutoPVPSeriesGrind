@@ -8,8 +8,6 @@ public static class PluginInstaller
 {
     private static readonly HashSet<ExternalPlugin> InFlight = [];
 
-    // Last attempt failed and the plugin is still not installed — drives the "Retry"/failure hint in DependencyRow.
-    // Cleared when an install succeeds or the user starts a new attempt.
     private static readonly HashSet<ExternalPlugin> Failed = [];
 
     public static bool IsInstalling(ExternalPlugin plugin) => InFlight.Contains(plugin);

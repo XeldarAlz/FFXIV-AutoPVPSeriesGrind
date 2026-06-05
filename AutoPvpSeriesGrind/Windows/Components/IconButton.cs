@@ -5,7 +5,6 @@ using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Windows.Components;
 
-// Square icon-font button. The icon glyph plus the supplied ImGui id ("##...") form the button label.
 internal static class IconButton
 {
     public static bool Draw(FontAwesomeIcon icon, string id, float size)
