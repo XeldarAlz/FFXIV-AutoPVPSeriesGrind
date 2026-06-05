@@ -14,6 +14,9 @@ public sealed partial class AutoPvpSeries
     private const float CrystalEngageRadius = 10f;
     private const float LegacyCrystalStopRange = 1.5f;
 
+    private const float SpawnExitArrivalRange = 3.5f;
+    private const int SpawnExitTimeoutMs = 8000;
+
     private async Task TickLiveMatch()
     {
         rotation.TickDeathAndRespawn();
@@ -21,6 +24,8 @@ public sealed partial class AutoPvpSeries
         {
             rotation.OnDeadDuringLive();
             movement.Stop();
+            leftSpawn = false;
+            leaveSpawnStartedAtMs = 0;
             BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead — waiting to respawn", Posture.Retreat);
             return;
         }
@@ -44,10 +49,50 @@ public sealed partial class AutoPvpSeries
             return;
         }
 
+        if (!leftSpawn && !TryLeaveSpawn(territory))
+            return;
+
         if (settings.EnableBrain)
             await RunBrainTick(territory);
         else
             LegacyCrystalMove();
+    }
+
+    private bool TryLeaveSpawn(uint territory)
+    {
+        if (MatchState.PlayerPosition() is not { } self)
+            return true;
+
+        if (MatchState.NearestSafeAnchor(territory, self) is not { } exit)
+        {
+            leftSpawn = true;
+            return true;
+        }
+
+        if (leaveSpawnStartedAtMs == 0)
+            leaveSpawnStartedAtMs = Environment.TickCount64;
+
+        var flat = HorizontalDistance(self, exit);
+        var timedOut = Environment.TickCount64 - leaveSpawnStartedAtMs > SpawnExitTimeoutMs;
+        if (flat <= SpawnExitArrivalRange || timedOut)
+        {
+            leftSpawn = true;
+            Diag(timedOut
+                ? $"leave-spawn timeout ({SpawnExitTimeoutMs}ms, {flat:F1}y out) -> handing off to brain"
+                : $"off the spawn platform (anchor {flat:F1}y) -> brain takes over");
+            return true;
+        }
+
+        movement.IssueMove(exit, exit, SpawnExitArrivalRange);
+        BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Engage, "leaving spawn — to gate anchor", Posture.Reposition);
+        return false;
+    }
+
+    private static float HorizontalDistance(Vector3 a, Vector3 b)
+    {
+        var dx = a.X - b.X;
+        var dz = a.Z - b.Z;
+        return MathF.Sqrt(dx * dx + dz * dz);
     }
 
     private async Task RunBrainTick(uint territory)

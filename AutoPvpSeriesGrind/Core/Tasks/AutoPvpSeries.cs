@@ -37,6 +37,8 @@ public sealed partial class AutoPvpSeries : AutoCommon
     private bool announcedEntered;
     private bool announcedPortrait;
     private bool ranSafetyMoveThisDuty;
+    private bool leftSpawn;
+    private long leaveSpawnStartedAtMs;
 
     private bool stopAfterCurrentMatch;
 
@@ -117,5 +119,7 @@ public sealed partial class AutoPvpSeries : AutoCommon
         announcedEntered = false;
         announcedPortrait = false;
         ranSafetyMoveThisDuty = false;
+        leftSpawn = false;
+        leaveSpawnStartedAtMs = 0;
     }
 }
