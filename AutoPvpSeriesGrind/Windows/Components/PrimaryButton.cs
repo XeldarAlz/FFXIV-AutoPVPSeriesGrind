@@ -7,7 +7,7 @@ namespace AutoPvpSeriesGrind.Windows.Components;
 
 internal static class PrimaryButton
 {
-    public static bool Draw(string label, Vector4 accent, bool enabled = true)
+    public static bool Draw(string label, Vector4 accent, bool enabled = true, float width = -1)
     {
         var height = Layout.PrimaryButtonHeight * ImGuiHelpers.GlobalScale;
         using var dis = ImRaii.Disabled(!enabled);
@@ -17,6 +17,6 @@ internal static class PrimaryButton
             .Push(ImGuiCol.Text, enabled ? Styling.TextStrong : Styling.TextMuted);
         using var style = ImRaii.PushStyle(ImGuiStyleVar.FrameRounding, 8f);
 
-        return ImGui.Button(label, new Vector2(-1, height));
+        return ImGui.Button(label, new Vector2(width, height));
     }
 }

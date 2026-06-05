@@ -12,14 +12,14 @@ public sealed class MainWindow : Window, IDisposable
     public MainWindow(Plugin plugin) : base("Auto PVP Series Grind###AutoPvpSeriesGrindMain")
     {
         this.plugin = plugin;
-        SizeConstraints = new WindowSizeConstraints
-        {
-            MinimumSize = new Vector2(480, 480),
-            MaximumSize = new Vector2(float.MaxValue, float.MaxValue),
-        };
-        Size = new Vector2(560, 580);
+        Size = new Vector2(560, 600);
         SizeCondition = ImGuiCond.FirstUseEver;
         Flags = ImGuiWindowFlags.NoCollapse;
+        SizeConstraints = new WindowSizeConstraints
+        {
+            MinimumSize = new Vector2(440, 470),
+            MaximumSize = new Vector2(float.MaxValue, float.MaxValue),
+        };
     }
 
     public void Dispose() { }
@@ -31,6 +31,7 @@ public sealed class MainWindow : Window, IDisposable
 
         using var style = Styling.PushWindowStyle();
 
+        Header.Draw(plugin, ctrl.Running);
         DependencyBanner.Draw(plugin);
 
         if (ctrl.Running)
