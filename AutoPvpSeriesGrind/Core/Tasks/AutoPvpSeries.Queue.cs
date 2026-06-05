@@ -61,13 +61,13 @@ public sealed partial class AutoPvpSeries
 
         matchesSinceBreak++;
         long delayMs;
-        if (takeBreaks && breakEvery > 0 && matchesSinceBreak >= breakEvery)
+        if (settings.TakeBreaks && settings.BreakEvery > 0 && matchesSinceBreak >= settings.BreakEvery)
         {
             matchesSinceBreak = 0;
             onBreak = true;
-            var baseMs = Math.Max(1, breakMinutes) * 60_000;
+            var baseMs = Math.Max(1, settings.BreakMinutes) * 60_000;
             delayMs = HumanTiming.Jitter(baseMs, baseMs / 5);
-            Diag($"break scheduled (~{delayMs / 60000.0:F1} min) after {breakEvery} matches");
+            Diag($"break scheduled (~{delayMs / 60000.0:F1} min) after {settings.BreakEvery} matches");
         }
         else
         {
@@ -80,8 +80,8 @@ public sealed partial class AutoPvpSeries
 
     private long RequeueDelayMs()
     {
-        var min = Math.Max(0, requeueMinSec);
-        var max = Math.Max(min, requeueMaxSec);
+        var min = Math.Max(0, settings.RequeueMinSec);
+        var max = Math.Max(min, settings.RequeueMaxSec);
         if (max <= 0) return 0;
         return HumanTiming.Rng.Next(min, max + 1) * 1000L;
     }

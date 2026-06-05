@@ -18,25 +18,9 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
     private readonly SessionStats session = session;
     private static readonly Random rng = HumanTiming.Rng;
 
-    private bool sendHello;
-    private bool sendGoodMatch;
-    private double helloChance;
-    private double goodMatchChance;
-    private int helloDelayMinSec;
-    private int helloDelayMaxSec;
-    private int goodMatchDelayMinSec;
-    private int goodMatchDelayMaxSec;
-    private bool randomEmotes;
-    private bool enableBrain;
-    private HumanizeLevel humanize;
+    private RunSettings settings;
     private readonly PvpBrain brain = new(PvpStrategy.Moderate);
 
-    private int leaveDutyDelayMs;
-    private int requeueMinSec;
-    private int requeueMaxSec;
-    private bool takeBreaks;
-    private int breakEvery;
-    private int breakMinutes;
     private long nextQueueAllowedAtMs;
     private int matchesSinceBreak;
     private bool onBreak;
@@ -89,25 +73,8 @@ public sealed partial class AutoPvpSeries(SessionStats session) : AutoCommon
     protected override async Task Execute()
     {
         var cfg = Plugin.Cfg;
-        sendHello = cfg.SendHelloOnEntry;
-        sendGoodMatch = cfg.SendGoodMatchOnResults;
-        helloChance = cfg.HelloChancePercent / 100.0;
-        goodMatchChance = cfg.GoodMatchChancePercent / 100.0;
-        helloDelayMinSec = cfg.HelloDelayMinSeconds;
-        helloDelayMaxSec = cfg.HelloDelayMaxSeconds;
-        goodMatchDelayMinSec = cfg.GoodMatchDelayMinSeconds;
-        goodMatchDelayMaxSec = cfg.GoodMatchDelayMaxSeconds;
-        randomEmotes = cfg.RandomEmotes;
-        enableBrain = cfg.EnableCombatBrain;
-        humanize = cfg.Humanize;
+        settings = RunSettings.From(cfg);
         brain.SetStrategy(cfg.Strategy, cfg.CustomStrategy);
-
-        leaveDutyDelayMs = Math.Max(0, cfg.LeaveDutyDelaySeconds) * 1000;
-        requeueMinSec = cfg.RequeueDelayMinSeconds;
-        requeueMaxSec = cfg.RequeueDelayMaxSeconds;
-        takeBreaks = cfg.TakeBreaks;
-        breakEvery = cfg.BreakEveryMatches;
-        breakMinutes = cfg.BreakMinutes;
 
         ApsgLog.Chat($"Starting PvP Series grind ({Plugin.Cfg.ActiveMode.DisplayName}).");
 

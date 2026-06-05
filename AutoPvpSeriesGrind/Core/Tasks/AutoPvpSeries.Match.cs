@@ -42,15 +42,15 @@ public sealed partial class AutoPvpSeries
     // its random delay lands inside that window — a short leave delay means we just leave early without it.
     private async Task LingerThenLeave()
     {
-        var lingerMs = Math.Max(0, leaveDutyDelayMs);
+        var lingerMs = Math.Max(0, settings.LeaveDutyDelayMs);
         var waitedMs = 0;
 
-        if (sendGoodMatch && !goodMatchSent)
+        if (settings.SendGoodMatch && !goodMatchSent)
         {
             goodMatchSent = true;
-            if (HumanTiming.Maybe(goodMatchChance))
+            if (HumanTiming.Maybe(settings.GoodMatchChance))
             {
-                var goodbyeAtMs = RandSecInclusive(goodMatchDelayMinSec, goodMatchDelayMaxSec) * 1000;
+                var goodbyeAtMs = RandSecInclusive(settings.GoodMatchDelayMinSec, settings.GoodMatchDelayMaxSec) * 1000;
                 if (goodbyeAtMs <= lingerMs)
                 {
                     if (goodbyeAtMs > 0) await NextFrame(goodbyeAtMs);
@@ -96,7 +96,7 @@ public sealed partial class AutoPvpSeries
         inMatchLive = false;
         ranSafetyMoveThisDuty = false;
         hasEnabledRotationThisLife = false;
-        var helloDelay = RandSecInclusive(helloDelayMinSec, helloDelayMaxSec);
+        var helloDelay = RandSecInclusive(settings.HelloDelayMinSec, settings.HelloDelayMaxSec);
         portraitHelloThreshold = Math.Clamp(IntroBandUpperSec - helloDelay, IntroBandLowerSec + 1, IntroBandUpperSec - 1);
         portraitHelloSent = false;
         Plugin.Instance.Controller.Phase = AutoPhase.InMatch;
@@ -134,15 +134,15 @@ public sealed partial class AutoPvpSeries
                 }
 
                 var greetMoment = !portraitHelloSent && tLeft <= portraitHelloThreshold && tLeft > IntroBandLowerSec;
-                if (greetMoment && (sendHello || randomEmotes))
+                if (greetMoment && (settings.SendHello || settings.RandomEmotes))
                 {
                     portraitHelloSent = true;
-                    if (sendHello && HumanTiming.Maybe(helloChance))
+                    if (settings.SendHello && HumanTiming.Maybe(settings.HelloChance))
                     {
                         Cmd(GameCommands.QuickChatHello);
                         Diag($"quickchat Hello sent at tLeft={tLeft} (threshold={portraitHelloThreshold})");
                     }
-                    if (randomEmotes && HumanTiming.Maybe(EmoteChance))
+                    if (settings.RandomEmotes && HumanTiming.Maybe(EmoteChance))
                     {
                         var emote = GameCommands.GreetEmotes[rng.Next(GameCommands.GreetEmotes.Length)];
                         Cmd(emote);

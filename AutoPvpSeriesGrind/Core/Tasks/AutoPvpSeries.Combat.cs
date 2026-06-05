@@ -65,7 +65,7 @@ public sealed partial class AutoPvpSeries
             return;
         }
 
-        if (enableBrain)
+        if (settings.EnableBrain)
             await RunBrainTick(territory);
         else
             LegacyCrystalMove();
@@ -86,9 +86,9 @@ public sealed partial class AutoPvpSeries
         var plan = brain.Decide(snap, anchor);
         BrainTelemetry.Record(snap, plan);
 
-        if (humanize != HumanizeLevel.Off && lastPlanKind != plan.Kind)
+        if (settings.Humanize != HumanizeLevel.Off && lastPlanKind != plan.Kind)
         {
-            var (min, max) = HumanTiming.ReactionBand(humanize);
+            var (min, max) = HumanTiming.ReactionBand(settings.Humanize);
             await NextFrame(HumanTiming.Reaction(min, max));
         }
         lastPlanKind = plan.Kind;
