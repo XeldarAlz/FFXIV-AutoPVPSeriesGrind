@@ -19,11 +19,11 @@
 
 ## What it does
 
-Grinds the **PvP Series Malmstones** by looping Casual Match. Press **Start** and the plugin queues the Crystalline Conflict casual roulette, rides out each match (RotationSolver fights, vnavmesh moves you onto the objective crystal), fires your job's PvP Limit Break, sends a quick greeting, leaves on the results screen, and requeues — until it hits your match limit.
+Grinds the **PvP Series Malmstones** by looping Casual Match. Press **Start** and the plugin queues the Crystalline Conflict casual roulette, rides out each match, fires your job's PvP Limit Break, sends a quick greeting, leaves on the results screen, and requeues — until it hits your match limit.
 
 ## Features
 
-- **Hands-off match loop**: queue → fight on the crystal → Limit Break → leave → requeue.
+- **Hands-off match loop**: queue → fight on the pvp match → leave → requeue.
 - **Match limit**: stop after N completed matches, or run until you stop it.
 - **Spawn-aware movement**: leaves the spawn pen toward the right side and contests the objective, holding the point when it's contested instead of re-pathing.
 - **Auto Limit Break**: fires the correct PvP LB for your job on a throttle.
@@ -42,13 +42,6 @@ https://raw.githubusercontent.com/XeldarAlz/DalamudPlugins/main/repo.json
 Tick **Enabled**, click **+**, then **Save and Close**. Open `/xlplugins` → **All Plugins**, search for **Auto PVP Series Grind**, and install.
 
 The plugin drives a few helpers for movement and combat. Open `/apsg deps` after install to see the list and one-click each missing one:
-
-- **vnavmesh** — pathfinding/movement (required)
-- **RotationSolver Reborn** — combat (required)
-- **Auto PVP LB** — optional, fires your PvP Limit Break with HP-aware targeting. If it isn't installed, this plugin fires a basic Limit Break itself (lowest-HP enemy in range); see the **Combat** settings tab.
-- **Lifestream** — optional, only for the "Return to the inn" after-run action
-
-The match loop also fires `/pvpac` (sprint) and `/quickchat` commands when available, exactly as the original SND script does — these are best-effort and not gated as dependencies.
 
 ## Commands
 
