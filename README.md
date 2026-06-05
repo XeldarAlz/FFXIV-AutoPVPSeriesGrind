@@ -17,6 +17,10 @@
 
 ---
 
+<p align="center">
+  <img src="AutoPvpSeriesGrind/Images/demo.gif" alt="Auto PVP Series Grind demo" />
+</p>
+
 ## What it does
 
 Grinds the **PvP Series Malmstones** by looping Casual Match. Press **Start** and the plugin queues the Crystalline Conflict casual roulette, rides out each match, fires your job's PvP Limit Break, sends a quick greeting, leaves on the results screen, and requeues — until it hits your match limit.
