@@ -346,8 +346,8 @@ public sealed class AboutWindow : Window, IDisposable
         var pulse = Styling.Pulse(Styling.PulseBreath);
         var accent = Styling.PulseColor(Styling.AccentPink, Styling.AccentViolet, 5200.0);
 
-        const string title = "Enjoying it? Support the project";
-        const string body = "A free, solo project I build in my spare time. A sponsorship keeps it alive and helps me make it better.";
+        const string title = "Made with care";
+        const string body = "I build and maintain this in my spare time. If it has helped you, a sponsorship lets me keep improving it. No pressure, and thank you for being here.";
 
         var slotOrigin = ImGui.GetCursorScreenPos();
         var fullAvail = ImGui.GetContentRegionAvail().X;
