@@ -47,13 +47,13 @@ internal sealed record StrategyProfile(
     float RepositionDistance)
 {
     private static readonly StrategyProfile DefensivePreset = new(
-        DisengageHp: 0.55f, ReengageHp: 0.85f, PanicHp: 0.35f, FocusRetreatCount: 2, FocusRepositionCount: 1,
+        DisengageHp: 0.45f, ReengageHp: 0.75f, PanicHp: 0.35f, FocusRetreatCount: 2, FocusRepositionCount: 2,
         MeleeHoldRange: 7f, RangedStandoff: 23f, MeleeReach: 3f, RangedBand: 18f,
         OutnumberMargin: 0, PushAdvantage: 2, EngageRadius: 22f, LeashRadius: 10f, CohesionRadius: 14f, KiteDistance: 22f,
         SupportRadius: 22f, ThreatRadius: 18f, BurstDropPerSec: 0.20f, StageStandoff: 22f, RepositionDistance: 12f);
 
     private static readonly StrategyProfile AggressivePreset = new(
-        DisengageHp: 0.18f, ReengageHp: 0.45f, PanicHp: 0.10f, FocusRetreatCount: 5, FocusRepositionCount: 3,
+        DisengageHp: 0.25f, ReengageHp: 0.45f, PanicHp: 0.15f, FocusRetreatCount: 4, FocusRepositionCount: 3,
         MeleeHoldRange: 2f, RangedStandoff: 14f, MeleeReach: 2.5f, RangedBand: 14f,
         OutnumberMargin: 2, PushAdvantage: 0, EngageRadius: 30f, LeashRadius: 28f, CohesionRadius: 24f, KiteDistance: 12f,
         SupportRadius: 26f, ThreatRadius: 22f, BurstDropPerSec: 0.40f, StageStandoff: 14f, RepositionDistance: 8f);

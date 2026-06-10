@@ -17,7 +17,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float FocusFalloffEpsilon = 0.01f;
     private const float EnemyBaseAvoidRadius = 25f; // defensive moves never resolve this close to the enemy spawn gate
     private const float MeleeFocusBump = 0.5f;    // a melee in your face commits harder than a ranged poke
-    private const float MinDeltaSeconds = 0.0001f;
+    private const long BurstWindowMs = 1000;      // hp-drop rate is measured over this window, not tick-to-tick
     private const long MinDwellMs = 700;          // hold a defensive stance this long before relaxing it (anti-thrash)
     private const float KillPotentialWeight = 3f;
     private const float FocusFireVoteWeight = 1.5f;
@@ -60,10 +60,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private StrategyProfile profile = StrategyProfile.For(strategy);
     private bool roleOverlayEnabled = strategy != PvpStrategy.Custom;
     private PvpRole appliedRole = PvpRole.Unknown;
+    private readonly Queue<(long Tick, float Hp)> hpSamples = new();
     private Vector3? enemyBase;
     private bool retreating;
-    private float lastHp = 1f;
-    private long lastHpTick;
     private Stance committedStance = Stance.Engage;
     private long committedAtMs;
     private ulong lastTargetId;
@@ -96,10 +95,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     {
         allyRoster.Clear();
         enemyRoster.Clear();
+        hpSamples.Clear();
         enemyBase = null;
         retreating = false;
-        lastHp = 1f;
-        lastHpTick = 0;
         committedStance = Stance.Engage;
         committedAtMs = 0;
         lastTargetId = 0;
@@ -608,21 +606,22 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         return focal;
     }
 
+    // Peak-to-current hp loss over the trailing window; a single hit between two 150ms ticks
+    // would otherwise read as an enormous instantaneous rate and trip every preset's threshold.
     private float HpDropPerSec(float hp)
     {
         var now = Environment.TickCount64;
-        var drop = 0f;
-        if (lastHpTick != 0)
+        while (hpSamples.Count > 0 && now - hpSamples.Peek().Tick > BurstWindowMs)
         {
-            var deltaSeconds = (now - lastHpTick) / 1000f;
-            if (deltaSeconds > MinDeltaSeconds)
-            {
-                drop = (lastHp - hp) / deltaSeconds;
-            }
+            hpSamples.Dequeue();
         }
-        lastHp = hp;
-        lastHpTick = now;
-        return drop;
+        var peak = hp;
+        foreach (var sample in hpSamples)
+        {
+            peak = MathF.Max(peak, sample.Hp);
+        }
+        hpSamples.Enqueue((now, hp));
+        return (peak - hp) / (BurstWindowMs / 1000f);
     }
 
     private Vector3 AwayFromEnemyBase(Vector3 dest, Vector3 self)
