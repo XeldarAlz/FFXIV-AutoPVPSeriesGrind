@@ -1,4 +1,6 @@
+using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.Game;
+using ECommons.DalamudServices;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
 using static AutoPvpSeriesGrind.Core.ApsgConstants.CrystallineConflict;
@@ -149,6 +151,10 @@ internal sealed partial class AutoPvpSeries
 
         LogDiagnostic($"gate open detected by ContentTimeLeft -> {timeLeftSeconds}");
         matchFlow.InMatchLive = true;
+        if (settings.RecordMatches)
+        {
+            MatchRecorder.Begin(Svc.ClientState.TerritoryType);
+        }
         await EnableRotationAtMatchStart();
         return true;
     }

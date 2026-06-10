@@ -1,3 +1,5 @@
+using AutoPvpSeriesGrind.Core.Debug;
+
 namespace AutoPvpSeriesGrind.Core.Combat;
 
 internal static class BrainTelemetry
@@ -15,6 +17,7 @@ internal static class BrainTelemetry
         Snapshot = snapshot;
         Plan = plan;
         UpdatedTick = Environment.TickCount64;
+        MatchRecorder.Record(snapshot, plan);
     }
 
     public static void RecordStatus(PvpSnapshot snapshot, MoveKind kind, string reason, Posture posture = Posture.Idle)

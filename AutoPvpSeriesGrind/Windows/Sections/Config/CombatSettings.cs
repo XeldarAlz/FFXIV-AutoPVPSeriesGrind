@@ -30,6 +30,7 @@ internal static class CombatSettings
         }
 
         DrawHumanizeRow(cfg);
+        DrawRecorderRow(cfg);
     }
 
     private static void DrawRotationProviderRow(Configuration cfg)
@@ -84,6 +85,16 @@ internal static class CombatSettings
             }));
 
         SettingsRow.Caption(HumanizeChoices.All[selected].Detail);
+    }
+
+    private static void DrawRecorderRow(Configuration cfg)
+    {
+        SettingsRow.Draw("Record matches",
+            "Writes every brain decision (positions, HP, posture, reason) to a per-match log file in the plugin folder, " +
+            "for reviewing and tuning how it played. Roughly 1 MB per match; only the last 30 matches are kept.",
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.RecordBrainLogs, value => cfg.RecordBrainLogs = value),
+            SettingsRow.ToggleHeight);
     }
 
     private static class RotationProviderChoices

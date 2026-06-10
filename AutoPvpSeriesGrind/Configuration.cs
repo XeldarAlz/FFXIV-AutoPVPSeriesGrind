@@ -38,6 +38,8 @@ public sealed class Configuration : IPluginConfiguration
 
     public HumanizeLevel Humanize { get; set; } = HumanizeLevel.Realistic;
 
+    public bool RecordBrainLogs { get; set; } = false;
+
     public int LeaveDutyDelaySeconds { get; set; } = 1;
 
     public int RequeueDelayMinSeconds { get; set; } = 2;

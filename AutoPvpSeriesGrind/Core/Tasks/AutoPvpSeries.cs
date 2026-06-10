@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Combat;
+using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Stats;
 using ECommons.Automation;
@@ -20,6 +21,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
     {
         this.session = session;
         rotation = new RotationController(brain);
+        brain.CanSee = LineOfSight.IsVisible;
     }
 
     private long nextQueueAllowedAtMs;
@@ -122,6 +124,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         greeting.Reset();
         brain.Reset();
         BrainTelemetry.Clear();
+        MatchRecorder.End();
         LogDiagnostic($"reset: {reason}");
     }
 

@@ -13,8 +13,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float PursuitSprintGap = 8f;
     private const int SoloFeedEnemies = 2;        // alone (no ally nearby) vs this many = a feed, never solo it
     private const float AllyBlendMinDot = -0.15f; // below this the team is behind the enemy line; flee to spawn instead
-    private const float RepositionAwayWeight = 0.6f;
-    private const float RepositionTeamWeight = 0.4f;
     private const float FocusFalloffMult = 2f;    // a focuser past ThreatRadius*this contributes no pressure
     private const float FocusFalloffEpsilon = 0.01f;
     private const float EnemyBaseAvoidRadius = 25f; // defensive moves never resolve this close to the enemy spawn gate
@@ -28,6 +26,18 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float StickyTargetBonus = 0.75f;
     private const float HealerPriorityBonus = 1.5f;
     private const float RangedPriorityBonus = 1f;
+    private const float CrystalRideStopRange = 1f;
+    private const float MinFanRadius = 1f;            // closer than this the blocker is vertical; swinging sideways won't help
+    private const int EscapeCandidateCount = 12;
+    private const float EscapeThreatScale = 30f;      // yalm-equivalent pressure of one enemy at point-blank
+    private const float MinThreatDistance = 2f;
+    private const float EscapeAnchorWeight = 0.5f;    // each yalm closer to the pull point is worth this much
+    private const float EscapeLosBreakBonus = 8f;     // breaking the nearest focuser's sight line ~= 16y closer to the team
+    private const float ThreatFocuserBump = 0.75f;
+    private const float ThreatMeleeBump = 0.5f;
+    private const float DegToRad = MathF.PI / 180f;
+
+    private static readonly float[] FanAngleDegrees = [30f, -30f, 60f, -60f, 90f, -90f, 120f, -120f];
 
     // Ordered by urgency; ApplyDwell compares ranks via (int), so the order matters.
     private enum Stance { Engage, Stage, Reposition, Regroup, Retreat }
@@ -53,6 +63,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private ulong lastTargetId;
 
     public bool OwnsTargeting { get; set; }
+
+    public Func<Vector3, Vector3, bool> CanSee { get; set; } = static (_, _) => true;
 
     public void SetStrategy(PvpStrategy s, CustomStrategyProfile? custom = null)
     {
@@ -205,6 +217,20 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         var push = localForce >= profile.PushAdvantage;
         var target = SelectTarget(snapshot, focal);
 
+        if (UncontestedObjective(snapshot) is { } crystal)
+        {
+            return new MovePlan(
+                Kind: MoveKind.Engage,
+                Destination: crystal,
+                Fallback: crystal,
+                StopRange: CrystalRideStopRange,
+                Sprint: true,
+                Reason: "ride crystal, point free",
+                Pursue: false,
+                Posture: Posture.Push,
+                TargetId: target?.Id ?? 0);
+        }
+
         EngageChoice choice;
         if (snapshot.PrefersBackline)
         {
@@ -220,6 +246,10 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         }
 
         var destination = ClampCohesion(choice.Destination, snapshot.AllyCentroid, profile.CohesionRadius);
+        if (snapshot.PrefersBackline && target is { } losTarget)
+        {
+            destination = EnsureLineOfFire(losTarget, destination);
+        }
 
         var targetDescription = target is { } chosenTarget ? $" → {(int)(chosenTarget.Hp * 100)}%@{chosenTarget.DistanceToSelf:F0}y" : "";
         var kind = choice.Posture == Posture.Hold ? MoveKind.Hold : MoveKind.Engage;
@@ -233,6 +263,46 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             Pursue: choice.Pursue,
             Posture: choice.Posture,
             TargetId: target?.Id ?? 0);
+    }
+
+    private Vector3? UncontestedObjective(PvpSnapshot snapshot)
+        => snapshot.Objective is { } objective
+           && PvpSnapshot.CountWithin(snapshot.Enemies, objective, profile.EngageRadius) == 0
+            ? objective
+            : null;
+
+    private Vector3 EnsureLineOfFire(PvpActor target, Vector3 destination)
+    {
+        if (CanSee(destination, target.Position))
+        {
+            return destination;
+        }
+
+        var offset = destination - target.Position;
+        offset.Y = 0;
+        var radius = offset.Length();
+        if (radius < MinFanRadius)
+        {
+            return destination;
+        }
+
+        var baseDirection = offset / radius;
+        for (var angleIndex = 0; angleIndex < FanAngleDegrees.Length; angleIndex++)
+        {
+            var candidate = target.Position + RotateY(baseDirection, FanAngleDegrees[angleIndex] * DegToRad) * radius;
+            if (CanSee(candidate, target.Position))
+            {
+                return candidate;
+            }
+        }
+        return destination;
+    }
+
+    private static Vector3 RotateY(Vector3 v, float radians)
+    {
+        var sin = MathF.Sin(radians);
+        var cos = MathF.Cos(radians);
+        return new Vector3(v.X * cos - v.Z * sin, v.Y, v.X * sin + v.Z * cos);
     }
 
     private PvpActor? SelectTarget(PvpSnapshot snapshot, Vector3 focal)
@@ -264,63 +334,86 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private MovePlan FallBack(PvpSnapshot snapshot, Vector3 safeAnchor, Posture posture, string reason)
     {
         var threat = NearestEnemyPos(snapshot) ?? snapshot.EnemyCentroid;
-        if (threat is { } threatPosition && NormalizedAwayFrom(snapshot.Self, threatPosition) is { } direction)
+        if (threat is not { } threatPosition || NormalizedAwayFrom(snapshot.Self, threatPosition) is not { } direction)
         {
-            if (snapshot.AllyCentroid is { } allyCentroid)
-            {
-                var toAllies = allyCentroid - snapshot.Self;
-                if (toAllies.LengthSquared() > MinVectorSq)
-                {
-                    var alliesDirection = Vector3.Normalize(toAllies);
-                    if (Vector3.Dot(alliesDirection, direction) > AllyBlendMinDot)
-                    {
-                        direction = Vector3.Normalize(direction + alliesDirection);
-                    }
-                    else
-                    {
-                        return new MovePlan(Kind: MoveKind.Retreat, Destination: safeAnchor, Fallback: safeAnchor,
-                            StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
-                    }
-                }
-            }
-            var kiteDestination = AwayFromEnemyBase(snapshot.Self + direction * profile.KiteDistance, snapshot.Self);
-            return new MovePlan(Kind: MoveKind.Retreat, Destination: kiteDestination, Fallback: safeAnchor,
+            return new MovePlan(Kind: MoveKind.Retreat, Destination: safeAnchor, Fallback: safeAnchor,
                 StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
         }
-        return new MovePlan(Kind: MoveKind.Retreat, Destination: safeAnchor, Fallback: safeAnchor,
-            StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
-    }
 
-    private MovePlan Reposition(PvpSnapshot snapshot, bool sprint, string reason)
-    {
-        var direction = Vector3.Zero;
-        if ((NearestFocuserPos(snapshot) ?? NearestEnemyPos(snapshot) ?? snapshot.EnemyCentroid) is { } threatPosition
-            && NormalizedAwayFrom(snapshot.Self, threatPosition) is { } awayDirection)
-        {
-            direction = awayDirection;
-        }
+        var pull = safeAnchor;
         if (snapshot.AllyCentroid is { } allyCentroid)
         {
             var toAllies = allyCentroid - snapshot.Self;
             if (toAllies.LengthSquared() > MinVectorSq)
             {
-                var alliesDirection = Vector3.Normalize(toAllies);
-                direction = direction == Vector3.Zero
-                    ? alliesDirection
-                    : Vector3.Normalize(direction * RepositionAwayWeight + alliesDirection * RepositionTeamWeight);
+                if (Vector3.Dot(Vector3.Normalize(toAllies), direction) <= AllyBlendMinDot)
+                {
+                    return new MovePlan(Kind: MoveKind.Retreat, Destination: safeAnchor, Fallback: safeAnchor,
+                        StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
+                }
+                pull = allyCentroid;
             }
         }
-        if (direction == Vector3.Zero)
-        {
-            direction = Vector3.UnitX;
-        }
 
-        var destination = AwayFromEnemyBase(
-            ClampCohesion(snapshot.Self + direction * profile.RepositionDistance, snapshot.AllyCentroid, profile.CohesionRadius),
-            snapshot.Self);
+        var kiteDestination = PickEscapePoint(snapshot, profile.KiteDistance, pull)
+            ?? AwayFromEnemyBase(snapshot.Self + direction * profile.KiteDistance, snapshot.Self);
+        return new MovePlan(Kind: MoveKind.Retreat, Destination: kiteDestination, Fallback: safeAnchor,
+            StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
+    }
+
+    private MovePlan Reposition(PvpSnapshot snapshot, bool sprint, string reason)
+    {
+        var pull = snapshot.AllyCentroid ?? snapshot.Self;
+        var destination = PickEscapePoint(snapshot, profile.RepositionDistance, pull)
+            ?? AwayFromEnemyBase(pull, snapshot.Self);
+        destination = ClampCohesion(destination, snapshot.AllyCentroid, profile.CohesionRadius);
         return new MovePlan(Kind: MoveKind.Retreat, Destination: destination, Fallback: destination,
             StopRange: RepositionStopRange, Sprint: sprint, Reason: reason, Pursue: false, Posture: Posture.Reposition);
     }
+
+    private Vector3? PickEscapePoint(PvpSnapshot snapshot, float distance, Vector3 pull)
+    {
+        var losReference = NearestFocuserPos(snapshot) ?? NearestEnemyPos(snapshot);
+        Vector3? best = null;
+        var bestScore = float.MinValue;
+        for (var candidateIndex = 0; candidateIndex < EscapeCandidateCount; candidateIndex++)
+        {
+            var angle = candidateIndex * (MathF.Tau / EscapeCandidateCount);
+            var candidate = snapshot.Self + new Vector3(MathF.Cos(angle), 0f, MathF.Sin(angle)) * distance;
+            if (TooCloseToEnemyBase(candidate))
+            {
+                continue;
+            }
+            var score = ScoreEscape(snapshot, candidate, pull, losReference);
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = candidate;
+            }
+        }
+        return best;
+    }
+
+    private float ScoreEscape(PvpSnapshot snapshot, Vector3 candidate, Vector3 pull, Vector3? losReference)
+    {
+        var score = -Vector3.Distance(candidate, pull) * EscapeAnchorWeight;
+        for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
+        {
+            var enemy = snapshot.Enemies[enemyIndex];
+            var weight = 1f
+                + (enemy.TargetId == snapshot.SelfId ? ThreatFocuserBump : 0f)
+                + (enemy.IsMelee ? ThreatMeleeBump : 0f);
+            score -= weight * EscapeThreatScale / MathF.Max(MinThreatDistance, Vector3.Distance(candidate, enemy.Position));
+        }
+        if (losReference is { } focuser && !CanSee(focuser, candidate))
+        {
+            score += EscapeLosBreakBonus;
+        }
+        return score;
+    }
+
+    private bool TooCloseToEnemyBase(Vector3 point)
+        => enemyBase is { } basePosition && Vector3.Distance(point, basePosition) < EnemyBaseAvoidRadius;
 
     private MovePlan Stage(PvpSnapshot s, Vector3 focal, string reason)
     {

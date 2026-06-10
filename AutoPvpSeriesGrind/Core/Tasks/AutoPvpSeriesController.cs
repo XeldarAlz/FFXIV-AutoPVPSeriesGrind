@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.External;
 using AutoPvpSeriesGrind.Core.Stats;
 using clib.Services;
@@ -126,6 +127,7 @@ internal sealed class AutoPvpSeriesController
 
     private void FinalizeRun(SessionStats? stats)
     {
+        MatchRecorder.End();
         if (stats is null || stats.Recorded) return;
         stats.Recorded = true;
         if (stats.MatchesCompleted == 0) return;
