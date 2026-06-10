@@ -21,7 +21,7 @@ internal static class RunningPanel
 
     private readonly record struct RingModel(float Fraction, string Big, string? Small, bool Endless);
 
-    private static ushort cachedTerritoryId;
+    private static uint cachedTerritoryId;
     private static string? cachedMapName;
 
     public static void Draw(Configuration cfg, AutoPvpSeriesController ctrl)
