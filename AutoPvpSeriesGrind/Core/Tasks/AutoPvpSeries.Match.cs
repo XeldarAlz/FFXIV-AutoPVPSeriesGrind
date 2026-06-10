@@ -35,7 +35,7 @@ internal sealed partial class AutoPvpSeries
     }
 
     // The leave delay is how long we sit on the results screen before bailing. "Good Match" is sent only if
-    // its random delay lands inside that window — a short leave delay means we just leave early without it.
+    // its random delay lands inside that window; a short leave delay means we just leave early without it.
     private async Task LingerThenLeave()
     {
         var lingerMs = Math.Max(0, settings.LeaveDutyDelayMs);
@@ -133,9 +133,9 @@ internal sealed partial class AutoPvpSeries
             matchFlow.AnnouncedPortrait = true;
         }
 
-        greeting.TryPortraitGreeting(timeLeftSeconds, settings);
-
         movement.HaltPathing();
+        greeting.TickIntro(timeLeftSeconds, settings);
+
         await NextFrame(PortraitPhasePollMs);
     }
 

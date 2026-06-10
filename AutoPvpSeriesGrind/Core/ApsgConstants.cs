@@ -17,7 +17,7 @@ internal static class ApsgConstants
 
     public const uint StatusSpawnProtection = 895; // active in the spawn pen before the gate opens
     public const uint StatusSprint = 1342;         // PvP sprint
-    public const uint StatusGuard = 3054;          // PvP Guard (90% mitigation) — poor target while up
+    public const uint StatusGuard = 3054;          // PvP Guard (90% mitigation); poor target while up
 
     // Standard-issue Elixir (PvP): 4.5s cast that refills HP and MP to full. Any movement cancels it,
     // so the brain must hold still whenever the rotation solver is casting it.
@@ -69,7 +69,8 @@ internal static class ApsgConstants
         public const string QuickChatHello = "/quickchat Hello";
         public const string QuickChatGoodMatch = "/quickchat \"Good Match\"";
 
-        public static readonly string[] GreetEmotes = ["/wave", "/cheer", "/salute", "/thumbsup"];
+        // Default emotes only; reward emotes the account may not own fail silently.
+        public static readonly string[] GreetEmotes = ["/wave", "/cheer", "/salute", "/thumbsup", "/joy", "/stretch"];
 
         public const string Logout = "/logout";
         public const string CloseGame = "/xlkill";
