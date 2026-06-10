@@ -1,13 +1,11 @@
 using AutoPvpSeriesGrind.Core.Game;
-using AutoPvpSeriesGrind.Core.Util;
-using Dalamud.Game.ClientState.Conditions;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
 using static AutoPvpSeriesGrind.Core.ApsgConstants.CrystallineConflict;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-public sealed partial class AutoPvpSeries
+internal sealed partial class AutoPvpSeries
 {
     private const int PvpAreaWaitMs = 90_000;
 
@@ -20,13 +18,13 @@ public sealed partial class AutoPvpSeries
         if (!ResultsScreenVisible()) return false;
 
         session.MatchesCompleted++;
-        Diag($"completed match {session.MatchesCompleted}");
+        LogDiagnostic($"completed match {session.MatchesCompleted}");
 
         if (Plugin.Cfg.ActiveMode.IsComplete(session.ToModeContext()))
         {
             stopAfterCurrentMatch = true;
             session.CompletedByGoal = true;
-            Diag($"stop condition met ({Plugin.Cfg.ActiveMode.DisplayName}) -> stopping after this match");
+            LogDiagnostic($"stop condition met ({Plugin.Cfg.ActiveMode.DisplayName}) -> stopping after this match");
         }
 
         ScheduleNextQueue();
@@ -48,89 +46,114 @@ public sealed partial class AutoPvpSeries
             if (goodbyeAtMs <= lingerMs)
             {
                 if (goodbyeAtMs > 0) await NextFrame(goodbyeAtMs);
-                Cmd(GameCommands.QuickChatGoodMatch);
+                ExecuteGameCommand(GameCommands.QuickChatGoodMatch);
                 await NextFrame(PostQuickChatMs);
                 waitedMs = goodbyeAtMs + PostQuickChatMs;
             }
             else
             {
-                Diag($"leaving early -> skipped \"Good Match\" (delay {goodbyeAtMs}ms > leave delay {lingerMs}ms)");
+                LogDiagnostic($"leaving early -> skipped \"Good Match\" (delay {goodbyeAtMs}ms > leave delay {lingerMs}ms)");
             }
         }
 
         if (waitedMs < lingerMs)
             await NextFrame(lingerMs - waitedMs);
 
-        Diag("match ended (results screen visible) -> leaving duty");
-        Cmd(GameCommands.NavStop);
+        LogDiagnostic("match ended (results screen visible) -> leaving duty");
+        ExecuteGameCommand(GameCommands.NavStop);
         DutyOps.LeaveCurrentContent();
-        await WaitUntilTimed(() => !InDuty(), LeaveDutyTimeoutMs, "left-duty", checkMs: 100);
+        await WaitUntilTimed(() => !InDuty(), LeaveDutyTimeoutMs, "left-duty", checkMs: PollMs);
     }
 
     private async Task CaptureBaseline()
     {
-        Cmd(GameCommands.NavStop);
-        Diag("in duty -> waiting for PvP area before baseline capture");
+        ExecuteGameCommand(GameCommands.NavStop);
+        LogDiagnostic("in duty -> waiting for PvP area before baseline capture");
         await WaitUntilTimed(MatchState.InPvpArea, PvpAreaWaitMs, "in-pvp-area", checkMs: PollMs);
 
         ResetMatchFlow();
-        dutyBaselineTime = DutyOps.ContentTimeLeft();
-        baselineCaptured = true;
+        matchFlow.DutyBaselineTime = DutyOps.ContentTimeLeft();
+        matchFlow.BaselineCaptured = true;
         greeting.PrepareForMatch(settings);
-        Plugin.Instance.Controller.Phase = AutoPhase.InMatch;
+        SetPhase(AutoPhase.InMatch);
 
-        Diag($"duty entry baseline ContentTimeLeft -> {dutyBaselineTime}");
+        LogDiagnostic($"duty entry baseline ContentTimeLeft -> {matchFlow.DutyBaselineTime}");
     }
 
     private async Task RunWaitingPhase()
     {
-        while (InDuty() && !inMatchLive && !CancelToken.IsCancellationRequested)
+        while (InDuty() && !matchFlow.InMatchLive && !CancelToken.IsCancellationRequested)
         {
             rotation.TickDeathAndRespawn();
 
-            if (!announcedEntered)
+            AnnounceMatchEntryOnce();
+
+            var timeLeftSeconds = DutyOps.ContentTimeLeft();
+
+            if (matchFlow.DutyBaselineTime != 0 && timeLeftSeconds > 0 && Math.Abs(timeLeftSeconds - matchFlow.DutyBaselineTime) >= BaselineMovedThresholdSec)
             {
-                Diag("entered PvP match; waiting for portraits + gate (ContentTimeLeft)");
-                Cmd(GameCommands.NavStop);
-                announcedEntered = true;
-                Plugin.Instance.Controller.Phase = AutoPhase.InMatch;
+                matchFlow.TimerMovedFromBaseline = true;
             }
 
-            var tLeft = DutyOps.ContentTimeLeft();
-
-            if (dutyBaselineTime != 0 && tLeft > 0 && Math.Abs(tLeft - dutyBaselineTime) >= BaselineMovedThresholdSec)
-                timerMovedFromBaseline = true;
-
-            if (tLeft is < IntroBandUpperSec and > IntroBandLowerSec)
+            if (timeLeftSeconds is < IntroBandUpperSec and > IntroBandLowerSec)
             {
-                sawIntroBand = true;
-                if (!announcedPortrait)
-                {
-                    Diag("intro/portraits phase detected (timer ~31s)");
-                    announcedPortrait = true;
-                }
-
-                greeting.TryPortraitGreeting(tLeft, settings);
-
-                movement.HaltPathing();
-                await NextFrame(PortraitPhasePollMs);
+                await TickIntroBand(timeLeftSeconds);
             }
             else
             {
-                var gateOpen = tLeft > GateOpenSec && (sawIntroBand || timerMovedFromBaseline);
-                if (gateOpen)
+                if (await TryStartLiveMatch(timeLeftSeconds))
                 {
-                    Diag($"gate open detected by ContentTimeLeft -> {tLeft}");
-                    inMatchLive = true;
-                    Cmd(GameCommands.AddLowHpTargeting);
-                    await NextFrame(PollMs);
-                    Cmd(GameCommands.EnableRotation);
-                    rotation.MarkRotationEnabled();
-                    Diag("rotation enabled (match start)");
                     break;
                 }
+
                 await NextFrame(PollMs);
             }
         }
+    }
+
+    private void AnnounceMatchEntryOnce()
+    {
+        if (matchFlow.AnnouncedEntered)
+        {
+            return;
+        }
+
+        LogDiagnostic("entered PvP match; waiting for portraits + gate (ContentTimeLeft)");
+        ExecuteGameCommand(GameCommands.NavStop);
+        matchFlow.AnnouncedEntered = true;
+        SetPhase(AutoPhase.InMatch);
+    }
+
+    private async Task TickIntroBand(int timeLeftSeconds)
+    {
+        matchFlow.SawIntroBand = true;
+        if (!matchFlow.AnnouncedPortrait)
+        {
+            LogDiagnostic("intro/portraits phase detected (timer ~31s)");
+            matchFlow.AnnouncedPortrait = true;
+        }
+
+        greeting.TryPortraitGreeting(timeLeftSeconds, settings);
+
+        movement.HaltPathing();
+        await NextFrame(PortraitPhasePollMs);
+    }
+
+    private async Task<bool> TryStartLiveMatch(int timeLeftSeconds)
+    {
+        var gateOpen = timeLeftSeconds > GateOpenSec && (matchFlow.SawIntroBand || matchFlow.TimerMovedFromBaseline);
+        if (!gateOpen)
+        {
+            return false;
+        }
+
+        LogDiagnostic($"gate open detected by ContentTimeLeft -> {timeLeftSeconds}");
+        matchFlow.InMatchLive = true;
+        ExecuteGameCommand(GameCommands.AddLowHpTargeting);
+        await NextFrame(PollMs);
+        ExecuteGameCommand(GameCommands.EnableRotation);
+        rotation.MarkRotationEnabled();
+        LogDiagnostic("rotation enabled (match start)");
+        return true;
     }
 }

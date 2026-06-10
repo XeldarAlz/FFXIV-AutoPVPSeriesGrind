@@ -8,6 +8,9 @@ namespace AutoPvpSeriesGrind.Core.Tasks;
 internal sealed class GreetingDirector
 {
     private const double EmoteChance = 0.35;
+    private const int MillisecondsPerSecond = 1000;
+    private const int PortraitHelloThresholdFloorSeconds = IntroBandLowerSec + 1;
+    private const int PortraitHelloThresholdCeilingSeconds = IntroBandUpperSec - 1;
 
     private int portraitHelloThreshold;
     private bool portraitHelloSent;
@@ -20,38 +23,38 @@ internal sealed class GreetingDirector
         goodMatchSent = false;
     }
 
-    public void PrepareForMatch(in RunSettings s)
+    public void PrepareForMatch(in RunSettings settings)
     {
-        var helloDelay = HumanTiming.RandSecInclusive(s.HelloDelayMinSec, s.HelloDelayMaxSec);
-        portraitHelloThreshold = Math.Clamp(IntroBandUpperSec - helloDelay, IntroBandLowerSec + 1, IntroBandUpperSec - 1);
+        var helloDelay = HumanTiming.RandomSecondsInclusive(settings.HelloDelayMinSec, settings.HelloDelayMaxSec);
+        portraitHelloThreshold = Math.Clamp(IntroBandUpperSec - helloDelay, PortraitHelloThresholdFloorSeconds, PortraitHelloThresholdCeilingSeconds);
         portraitHelloSent = false;
         ApsgLog.Info($"portrait hello threshold set -> {portraitHelloThreshold}s");
     }
 
-    public void TryPortraitGreeting(int tLeft, in RunSettings s)
+    public void TryPortraitGreeting(int timeLeftSeconds, in RunSettings settings)
     {
-        var greetMoment = !portraitHelloSent && tLeft <= portraitHelloThreshold && tLeft > IntroBandLowerSec;
-        if (!greetMoment || (!s.SendHello && !s.RandomEmotes)) return;
+        var greetMoment = !portraitHelloSent && timeLeftSeconds <= portraitHelloThreshold && timeLeftSeconds > IntroBandLowerSec;
+        if (!greetMoment || (!settings.SendHello && !settings.RandomEmotes)) return;
 
         portraitHelloSent = true;
-        if (s.SendHello && HumanTiming.Maybe(s.HelloChance))
+        if (settings.SendHello && HumanTiming.Maybe(settings.HelloChance))
         {
             Chat.ExecuteCommand(GameCommands.QuickChatHello);
-            ApsgLog.Info($"quickchat Hello sent at tLeft={tLeft} (threshold={portraitHelloThreshold})");
+            ApsgLog.Info($"quickchat Hello sent at tLeft={timeLeftSeconds} (threshold={portraitHelloThreshold})");
         }
-        if (s.RandomEmotes && HumanTiming.Maybe(EmoteChance))
+        if (settings.RandomEmotes && HumanTiming.Maybe(EmoteChance))
         {
-            var emote = GameCommands.GreetEmotes[HumanTiming.Rng.Next(GameCommands.GreetEmotes.Length)];
+            var emote = GameCommands.GreetEmotes[HumanTiming.SharedRandom.Next(GameCommands.GreetEmotes.Length)];
             Chat.ExecuteCommand(emote);
-            ApsgLog.Info($"random emote '{emote}' sent at tLeft={tLeft}");
+            ApsgLog.Info($"random emote '{emote}' sent at tLeft={timeLeftSeconds}");
         }
     }
 
-    public int? PlanGoodMatchDelayMs(in RunSettings s)
+    public int? PlanGoodMatchDelayMs(in RunSettings settings)
     {
-        if (!s.SendGoodMatch || goodMatchSent) return null;
+        if (!settings.SendGoodMatch || goodMatchSent) return null;
         goodMatchSent = true;
-        if (!HumanTiming.Maybe(s.GoodMatchChance)) return null;
-        return HumanTiming.RandSecInclusive(s.GoodMatchDelayMinSec, s.GoodMatchDelayMaxSec) * 1000;
+        if (!HumanTiming.Maybe(settings.GoodMatchChance)) return null;
+        return HumanTiming.RandomSecondsInclusive(settings.GoodMatchDelayMinSec, settings.GoodMatchDelayMaxSec) * MillisecondsPerSecond;
     }
 }

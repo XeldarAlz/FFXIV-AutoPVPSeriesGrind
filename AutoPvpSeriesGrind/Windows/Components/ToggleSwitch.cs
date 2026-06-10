@@ -6,17 +6,23 @@ namespace AutoPvpSeriesGrind.Windows.Components;
 
 internal static class ToggleSwitch
 {
-    public static bool Draw(string id, ref bool value)
+    private const float TrackWidth = 38f;
+    private const float TrackHeight = 20f;
+    private const float KnobInset = 4f;
+    private const float KnobPaddingX = 3f;
+
+    public static bool Draw(ref bool value)
     {
+        var globalScale = ImGuiHelpers.GlobalScale;
         var accent = Styling.AccentViolet;
-        var trackWidth = 38f * ImGuiHelpers.GlobalScale;
-        var trackHeight = 20f * ImGuiHelpers.GlobalScale;
-        var knobRadius = (trackHeight - 4f * ImGuiHelpers.GlobalScale) * 0.5f;
-        var padX = 3f * ImGuiHelpers.GlobalScale;
+        var trackWidth = TrackWidth * globalScale;
+        var trackHeight = TrackHeight * globalScale;
+        var knobRadius = (trackHeight - KnobInset * globalScale) * 0.5f;
+        var paddingX = KnobPaddingX * globalScale;
 
         var origin = ImGui.GetCursorScreenPos();
         var end = origin + new Vector2(trackWidth, trackHeight);
-        var dl = ImGui.GetWindowDrawList();
+        var drawList = ImGui.GetWindowDrawList();
         var hovered = ImGui.IsMouseHoveringRect(origin, end);
 
         var trackColor = value
@@ -24,12 +30,12 @@ internal static class ToggleSwitch
             : Vector4.Lerp(Styling.CardBgSoft, Styling.CardBgHover, hovered ? 1f : 0f);
         var knobColor = value ? Styling.TextStrong : Styling.TextSecondary;
 
-        dl.AddRectFilled(origin, end, ImGui.GetColorU32(trackColor), trackHeight * 0.5f);
-        dl.AddRect(origin, end, ImGui.GetColorU32(value ? accent : Styling.BorderDim), trackHeight * 0.5f);
+        drawList.AddRectFilled(origin, end, ImGui.GetColorU32(trackColor), trackHeight * 0.5f);
+        drawList.AddRect(origin, end, ImGui.GetColorU32(value ? accent : Styling.BorderDim), trackHeight * 0.5f);
 
-        var knobX = value ? end.X - knobRadius - padX : origin.X + knobRadius + padX;
+        var knobX = value ? end.X - knobRadius - paddingX : origin.X + knobRadius + paddingX;
         var knobY = origin.Y + trackHeight * 0.5f;
-        dl.AddCircleFilled(new Vector2(knobX, knobY), knobRadius, ImGui.GetColorU32(knobColor));
+        drawList.AddCircleFilled(new Vector2(knobX, knobY), knobRadius, ImGui.GetColorU32(knobColor));
 
         ImGui.Dummy(new Vector2(trackWidth, trackHeight));
 
@@ -38,7 +44,12 @@ internal static class ToggleSwitch
             value = !value;
             return true;
         }
-        if (hovered) ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+
+        if (hovered)
+        {
+            ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+        }
+
         return false;
     }
 }

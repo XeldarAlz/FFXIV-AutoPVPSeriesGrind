@@ -18,9 +18,11 @@ namespace AutoPvpSeriesGrind;
 
 public sealed class Plugin : IDalamudPlugin
 {
+    private const string PrimaryCommandHelp = "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | about | brain | target | objects.";
+    private const string AliasCommandHelp = "Alias for /apsg.";
+
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
-    [PluginService] internal static IPluginLog Log { get; private set; } = null!;
 
     internal static Plugin Instance { get; private set; } = null!;
 
@@ -63,35 +65,51 @@ public sealed class Plugin : IDalamudPlugin
         runHistoryWindow = new RunHistoryWindow();
         brainWindow = new BrainDebugWindow();
 
+        AddWindows();
+
+        subcommands = BuildSubcommands();
+
+        RegisterCommands();
+        HookUiEvents();
+    }
+
+    private void AddWindows()
+    {
         WindowSystem.AddWindow(mainWindow);
         WindowSystem.AddWindow(configWindow);
         WindowSystem.AddWindow(aboutWindow);
         WindowSystem.AddWindow(dependenciesWindow);
         WindowSystem.AddWindow(runHistoryWindow);
         WindowSystem.AddWindow(brainWindow);
+    }
 
-        subcommands = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["config"] = ToggleConfigUi,
-            ["about"] = ToggleAboutUi,
-            ["deps"] = ToggleDependenciesUi,
-            ["dependencies"] = ToggleDependenciesUi,
-            ["stats"] = ToggleHistoryUi,
-            ["history"] = ToggleHistoryUi,
-            ["brain"] = ToggleBrainUi,
-            ["target"] = TargetDumper.Dump,
-            ["objects"] = TargetDumper.DumpObjects,
-        };
+    private Dictionary<string, Action> BuildSubcommands() => new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["config"] = ToggleConfigUi,
+        ["about"] = ToggleAboutUi,
+        ["deps"] = ToggleDependenciesUi,
+        ["dependencies"] = ToggleDependenciesUi,
+        ["stats"] = ToggleHistoryUi,
+        ["history"] = ToggleHistoryUi,
+        ["brain"] = ToggleBrainUi,
+        ["target"] = TargetDumper.Dump,
+        ["objects"] = TargetDumper.DumpObjects,
+    };
 
+    private void RegisterCommands()
+    {
         CommandManager.AddHandler(ApsgConstants.PrimaryCommand, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | about | brain | target | objects.",
+            HelpMessage = PrimaryCommandHelp,
         });
         CommandManager.AddHandler(ApsgConstants.AliasCommand, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Alias for /apsg.",
+            HelpMessage = AliasCommandHelp,
         });
+    }
 
+    private void HookUiEvents()
+    {
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
@@ -108,10 +126,10 @@ public sealed class Plugin : IDalamudPlugin
     private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         if (e.Observed) return;
-        if (e.Exception.ToString().Contains("Navmesh.IPCProvider"))
+        if (e.Exception.ToString().Contains(ApsgConstants.VnavmeshIpcProviderMarker))
         {
             e.SetObserved();
-            Core.ApsgLog.Debug($"Observed vnavmesh IPC task fault: {e.Exception.GetBaseException().Message}");
+            ApsgLog.Debug($"Observed vnavmesh IPC task fault: {e.Exception.GetBaseException().Message}");
         }
     }
 

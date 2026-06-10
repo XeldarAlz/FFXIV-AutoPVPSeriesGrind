@@ -1,6 +1,7 @@
 using AutoPvpSeriesGrind.Core.External;
 using AutoPvpSeriesGrind.Core.Stats;
 using clib.Services;
+using System.Text;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
@@ -20,11 +21,21 @@ internal sealed class AutoPvpSeriesController
     public bool LastByGoal { get; private set; }
     private const int NoResult = int.MinValue / 2;
     private int lastResultTick = NoResult;
+
     public bool HasRecentResult(int withinMs)
-        => lastResultTick != NoResult && unchecked(Environment.TickCount - lastResultTick) is var age && age >= 0 && age < withinMs;
+    {
+        if (lastResultTick == NoResult)
+        {
+            return false;
+        }
+
+        var elapsedMs = unchecked(Environment.TickCount - lastResultTick);
+        return elapsedMs >= 0 && elapsedMs < withinMs;
+    }
+
     public void ClearLastResult() => lastResultTick = NoResult;
 
-    private static void Diag(string message) => ApsgLog.Info(message);
+    private static void LogDiagnostic(string message) => ApsgLog.Info(message);
 
     public void Start()
     {
@@ -32,23 +43,44 @@ internal sealed class AutoPvpSeriesController
 
         if (!ExternalPlugins.AllRequiredInstalled())
         {
-            var missing = string.Join(", ", ExternalPlugins.All
-                .Where(p => ExternalPlugins.Catalog[p].Required && !ExternalPlugins.IsInstalled(p))
-                .Select(p => ExternalPlugins.Catalog[p].DisplayName));
-            Diag($"Start aborted: required plugins missing ({missing}).");
+            var missing = MissingRequiredPluginNames();
+            LogDiagnostic($"Start aborted: required plugins missing ({missing}).");
             ApsgLog.ChatError($"Cannot start — install all required plugins first: {missing}.");
             return;
         }
 
         ClearLastResult();
-        var s = new SessionStats();
-        s.CaptureJob();
-        s.CaptureSeriesBaseline();
-        session = s;
+        var stats = new SessionStats();
+        stats.CaptureJob();
+        stats.CaptureSeriesBaseline();
+        session = stats;
         Phase = AutoPhase.Queueing;
-        Diag($"Run starting: mode {Plugin.Cfg.ActiveMode.DisplayName}.");
+        LogDiagnostic($"Run starting: mode {Plugin.Cfg.ActiveMode.DisplayName}.");
 
-        Svc.Automation.Start(new AutoPvpSeries(s), OnCompleted: () => EndRun(s));
+        Svc.Automation.Start(new AutoPvpSeries(stats), OnCompleted: () => EndRun(stats));
+    }
+
+    private static string MissingRequiredPluginNames()
+    {
+        var namesBuilder = new StringBuilder();
+        for (var pluginIndex = 0; pluginIndex < ExternalPlugins.All.Count; pluginIndex++)
+        {
+            var plugin = ExternalPlugins.All[pluginIndex];
+            var info = ExternalPlugins.Catalog[plugin];
+            if (!info.Required || ExternalPlugins.IsInstalled(plugin))
+            {
+                continue;
+            }
+
+            if (namesBuilder.Length > 0)
+            {
+                namesBuilder.Append(", ");
+            }
+
+            namesBuilder.Append(info.DisplayName);
+        }
+
+        return namesBuilder.ToString();
     }
 
     public void Stop()
@@ -58,69 +90,73 @@ internal sealed class AutoPvpSeriesController
         FinalizeRun(ending);
         session = null;
         Phase = AutoPhase.Idle;
-        if (ending is not null) Diag("Stop requested; session cleared.");
+        if (ending is not null) LogDiagnostic("Stop requested; session cleared.");
     }
 
-    private void EndRun(SessionStats s)
+    private void EndRun(SessionStats stats)
     {
-        FinalizeRun(s);
+        FinalizeRun(stats);
         Phase = AutoPhase.Idle;
-        MaybeRunAfterAction(s);
-        if (s == session && Phase != AutoPhase.Finishing) session = null;
+        MaybeRunAfterAction(stats);
+        if (stats == session && Phase != AutoPhase.Finishing) session = null;
     }
 
-    private void MaybeRunAfterAction(SessionStats s)
+    private void MaybeRunAfterAction(SessionStats stats)
     {
-        if (!s.CompletedByGoal || s.AfterActionDispatched) return;
-        s.AfterActionDispatched = true;
+        if (!stats.CompletedByGoal || stats.AfterActionDispatched) return;
+        stats.AfterActionDispatched = true;
 
         var action = Plugin.Cfg.AfterRun;
         if (action == AfterRunAction.StayLoggedIn)
         {
-            Diag("Goal reached; after-run action = stay where you are (no-op).");
+            LogDiagnostic("Goal reached; after-run action = stay where you are (no-op).");
             return;
         }
 
-        Diag($"Goal reached; starting after-run action {action}.");
+        LogDiagnostic($"Goal reached; starting after-run action {action}.");
         Phase = AutoPhase.Finishing;
         Svc.Automation.Start(new AutoAfterRun(action), OnCompleted: () =>
         {
-            Diag($"After-run action {action} finished.");
+            LogDiagnostic($"After-run action {action} finished.");
             Phase = AutoPhase.Idle;
             ClearLastResult();
-            if (s == session) session = null;
+            if (stats == session) session = null;
         });
     }
 
-    private void FinalizeRun(SessionStats? s)
+    private void FinalizeRun(SessionStats? stats)
     {
-        if (s is null || s.Recorded) return;
-        s.Recorded = true;
-        if (s.MatchesCompleted == 0) return;
+        if (stats is null || stats.Recorded) return;
+        stats.Recorded = true;
+        if (stats.MatchesCompleted == 0) return;
 
-        LastMatches = s.MatchesCompleted;
-        LastSeriesExp = s.SeriesExpGained;
-        LastByGoal = s.CompletedByGoal;
-        lastResultTick = Environment.TickCount;
+        RecordRun(stats);
 
         try
         {
             Plugin.Instance.History.Append(new RunRecord
             {
-                StartedAtUtc = s.StartedAt,
+                StartedAtUtc = stats.StartedAt,
                 EndedAtUtc = DateTime.UtcNow,
-                DurationSeconds = s.Elapsed.TotalSeconds,
-                MatchesCompleted = s.MatchesCompleted,
-                SeriesExpGained = s.SeriesExpGained,
-                JobId = s.JobId,
-                JobAbbr = s.JobAbbr,
+                DurationSeconds = stats.Elapsed.TotalSeconds,
+                MatchesCompleted = stats.MatchesCompleted,
+                SeriesExpGained = stats.SeriesExpGained,
+                JobId = stats.JobId,
+                JobAbbr = stats.JobAbbr,
             });
-            Diag($"Run recorded: {s.MatchesCompleted} matches, {s.SeriesExpGained} Series EXP over {s.Elapsed:hh\\:mm\\:ss}.");
+            LogDiagnostic($"Run recorded: {stats.MatchesCompleted} matches, {stats.SeriesExpGained} Series EXP over {stats.Elapsed:hh\\:mm\\:ss}.");
         }
         catch (Exception ex)
         {
-            Diag($"FinalizeRun failed to record history: {ex.Message}");
+            LogDiagnostic($"FinalizeRun failed to record history: {ex.Message}");
         }
     }
 
+    private void RecordRun(SessionStats stats)
+    {
+        LastMatches = stats.MatchesCompleted;
+        LastSeriesExp = stats.SeriesExpGained;
+        LastByGoal = stats.CompletedByGoal;
+        lastResultTick = Environment.TickCount;
+    }
 }

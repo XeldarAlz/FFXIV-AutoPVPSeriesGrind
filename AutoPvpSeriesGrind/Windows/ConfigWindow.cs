@@ -13,6 +13,27 @@ public sealed class ConfigWindow : Window, IDisposable
 {
     private enum Tab { Session, Combat, Match }
 
+    private readonly record struct TabDescriptor(
+        Tab Tab,
+        string Label,
+        FontAwesomeIcon Icon,
+        string Title,
+        string Subtitle,
+        Action<Configuration> DrawSettings);
+
+    private static readonly TabDescriptor[] TabDescriptors =
+    {
+        new(Tab.Session, "Session", FontAwesomeIcon.Flag, "Session",
+            "How a run starts and when it stops.", GeneralSettings.Draw),
+        new(Tab.Combat, "Combat", FontAwesomeIcon.Brain, "Combat",
+            "How the bot positions and picks its fights.", CombatSettings.Draw),
+        new(Tab.Match, "In match", FontAwesomeIcon.CommentDots, "In match",
+            "The social touches the bot performs during each match.", MatchSettings.Draw),
+    };
+
+    private const float SidebarWidth = 168f;
+    private const float HeaderFontScale = 1.55f;
+
     private readonly Plugin plugin;
     private Tab activeTab = Tab.Session;
 
@@ -33,10 +54,10 @@ public sealed class ConfigWindow : Window, IDisposable
 
     public override void Draw()
     {
-        var cfg = plugin.Configuration;
+        var configuration = plugin.Configuration;
         using var style = Styling.PushWindowStyle();
 
-        var sidebarWidth = 168f * ImGuiHelpers.GlobalScale;
+        var sidebarWidth = SidebarWidth * ImGuiHelpers.GlobalScale;
 
         using (ImRaii.Child("##cfg_sidebar", new Vector2(sidebarWidth, -1), border: false))
             DrawSidebar();
@@ -44,49 +65,35 @@ public sealed class ConfigWindow : Window, IDisposable
         ImGui.SameLine();
 
         using (ImRaii.Child("##cfg_content", new Vector2(-1, -1), border: false))
-            DrawContent(cfg);
+            DrawContent(configuration);
     }
 
     private void DrawSidebar()
     {
         ImGui.Spacing();
-        if (SidebarTab.Draw("Session", FontAwesomeIcon.Flag, Styling.AccentViolet, activeTab == Tab.Session)) activeTab = Tab.Session;
-        if (SidebarTab.Draw("Combat", FontAwesomeIcon.Brain, Styling.AccentViolet, activeTab == Tab.Combat)) activeTab = Tab.Combat;
-        if (SidebarTab.Draw("In match", FontAwesomeIcon.CommentDots, Styling.AccentViolet, activeTab == Tab.Match)) activeTab = Tab.Match;
-    }
-
-    private void DrawContent(Configuration cfg)
-    {
-        ImGui.Spacing();
-        switch (activeTab)
+        for (var tabIndex = 0; tabIndex < TabDescriptors.Length; tabIndex++)
         {
-            case Tab.Session:
-                DrawHeader("Session", "How a run starts and when it stops.");
-                GeneralSettings.Draw(cfg);
-                break;
-            case Tab.Combat:
-                DrawHeader("Combat", "How the bot positions and picks its fights.");
-                CombatSettings.Draw(cfg);
-                break;
-            case Tab.Match:
-                DrawHeader("In match", "The social touches the bot performs during each match.");
-                MatchSettings.Draw(cfg);
-                break;
+            var descriptor = TabDescriptors[tabIndex];
+            if (SidebarTab.Draw(descriptor.Label, descriptor.Icon, Styling.AccentViolet, activeTab == descriptor.Tab))
+            {
+                activeTab = descriptor.Tab;
+            }
         }
     }
 
-    private static void DrawHeader(string title, string subtitle)
+    private void DrawContent(Configuration configuration)
     {
-        ImGui.SetWindowFontScale(1.55f);
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextStrong))
-            ImGui.TextUnformatted(title);
-        ImGui.SetWindowFontScale(1.0f);
-
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
-            ImGui.TextUnformatted(subtitle);
-
         ImGui.Spacing();
-        ImGui.Separator();
-        ImGui.Spacing();
+        for (var tabIndex = 0; tabIndex < TabDescriptors.Length; tabIndex++)
+        {
+            var descriptor = TabDescriptors[tabIndex];
+            if (descriptor.Tab != activeTab)
+            {
+                continue;
+            }
+
+            WindowHeader.Draw(descriptor.Title, descriptor.Subtitle, HeaderFontScale);
+            descriptor.DrawSettings(configuration);
+        }
     }
 }

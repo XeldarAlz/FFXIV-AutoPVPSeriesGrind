@@ -19,11 +19,14 @@ internal readonly record struct RunSettings(
     int BreakEvery,
     int BreakMinutes)
 {
+    private const double PercentToFractionDivisor = 100.0;
+    private const int MillisecondsPerSecond = 1000;
+
     public static RunSettings From(Configuration cfg) => new(
         SendHello: cfg.SendHelloOnEntry,
         SendGoodMatch: cfg.SendGoodMatchOnResults,
-        HelloChance: cfg.HelloChancePercent / 100.0,
-        GoodMatchChance: cfg.GoodMatchChancePercent / 100.0,
+        HelloChance: cfg.HelloChancePercent / PercentToFractionDivisor,
+        GoodMatchChance: cfg.GoodMatchChancePercent / PercentToFractionDivisor,
         HelloDelayMinSec: cfg.HelloDelayMinSeconds,
         HelloDelayMaxSec: cfg.HelloDelayMaxSeconds,
         GoodMatchDelayMinSec: cfg.GoodMatchDelayMinSeconds,
@@ -31,7 +34,7 @@ internal readonly record struct RunSettings(
         RandomEmotes: cfg.RandomEmotes,
         EnableBrain: cfg.EnableCombatBrain,
         Humanize: cfg.Humanize,
-        LeaveDutyDelayMs: Math.Max(0, cfg.LeaveDutyDelaySeconds) * 1000,
+        LeaveDutyDelayMs: Math.Max(0, cfg.LeaveDutyDelaySeconds) * MillisecondsPerSecond,
         RequeueMinSec: cfg.RequeueDelayMinSeconds,
         RequeueMaxSec: cfg.RequeueDelayMaxSeconds,
         TakeBreaks: cfg.TakeBreaks,

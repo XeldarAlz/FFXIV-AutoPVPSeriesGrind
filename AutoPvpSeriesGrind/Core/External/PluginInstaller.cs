@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.External;
 
-public static class PluginInstaller
+internal static class PluginInstaller
 {
+    // These string literals mirror Dalamud's internal PluginManager/manifest member names reached via reflection.
+    private const string InternalNameProperty = "InternalName";
+    private const string InstallPluginAsyncMethodName = "InstallPluginAsync";
+    private const string RepoManifestParameterName = "repoManifest";
+    private const string UseTestingParameterName = "useTesting";
+    private const string ReasonParameterName = "reason";
+    private const string TaskResultProperty = "Result";
+    private const string IsLoadedProperty = "IsLoaded";
+
     private static readonly HashSet<ExternalPlugin> InFlight = [];
 
     private static readonly HashSet<ExternalPlugin> Failed = [];
@@ -49,62 +58,100 @@ public static class PluginInstaller
     // count mismatch" once Dalamud changed InstallPluginAsync to 3 parameters.
     private static async Task<bool> AddPlugin(string masterUrl, string internalName)
     {
-        var plugins = await DalamudReflector.GetPluginMaster(masterUrl);
-        if (plugins is null || plugins.Count == 0)
-        {
-            ApsgLog.Warn($"No manifests fetched from {masterUrl}");
-            return false;
-        }
-
-        var manifest = plugins.FirstOrDefault(x => (string)x.GetFoP("InternalName") == internalName);
+        var manifest = await FetchManifest(masterUrl, internalName);
         if (manifest is null)
         {
-            ApsgLog.Warn($"'{internalName}' not found in {masterUrl}");
             return false;
         }
 
-        var pm = DalamudReflector.GetPluginManager();
-        if (pm is null)
+        var pluginManager = DalamudReflector.GetPluginManager();
+        if (pluginManager is null)
         {
             ApsgLog.Warn("Could not resolve Dalamud PluginManager");
             return false;
         }
 
-        if (!DalamudReflector.HasRepo(masterUrl))
-            DalamudReflector.AddRepo(masterUrl, true);
-        DalamudReflector.ReloadPluginMasters();
+        EnsureRepo(masterUrl);
 
-        var method = pm.GetType().GetMethod(
-            "InstallPluginAsync",
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        if (method is null)
+        var installMethod = ResolveInstallMethod(pluginManager);
+        if (installMethod is null)
         {
-            ApsgLog.Warn("PluginManager.InstallPluginAsync not found");
             return false;
         }
 
-        var pars = method.GetParameters();
-        var args = new object?[pars.Length];
-        for (var i = 0; i < pars.Length; i++)
-        {
-            args[i] = pars[i].Name switch
-            {
-                "repoManifest" => manifest,
-                "useTesting" => false,
-                "reason" => PluginLoadReason.Installer,
-                _ => DefaultArg(pars[i]),
-            };
-        }
+        var arguments = BindInstallArguments(installMethod, manifest);
 
-        var task = (Task)method.Invoke(pm, args)!;
-        await task.ConfigureAwait(false);
+        var installTask = (Task)installMethod.Invoke(pluginManager, arguments)!;
+        await installTask.ConfigureAwait(false);
 
-        var localPlugin = task.GetFoP("Result");
-        return localPlugin is not null && (bool)localPlugin.GetFoP("IsLoaded");
+        return InstalledPluginIsLoaded(installTask);
     }
 
-    private static object? DefaultArg(ParameterInfo p)
-        => p.HasDefaultValue ? p.DefaultValue
-            : p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType)
+    private static async Task<object?> FetchManifest(string masterUrl, string internalName)
+    {
+        var plugins = await DalamudReflector.GetPluginMaster(masterUrl);
+        if (plugins is null || plugins.Count == 0)
+        {
+            ApsgLog.Warn($"No manifests fetched from {masterUrl}");
+            return null;
+        }
+
+        var manifest = plugins.FirstOrDefault(candidate => (string)candidate.GetFoP(InternalNameProperty) == internalName);
+        if (manifest is null)
+        {
+            ApsgLog.Warn($"'{internalName}' not found in {masterUrl}");
+            return null;
+        }
+
+        return manifest;
+    }
+
+    private static void EnsureRepo(string masterUrl)
+    {
+        if (!DalamudReflector.HasRepo(masterUrl))
+        {
+            DalamudReflector.AddRepo(masterUrl, true);
+        }
+        DalamudReflector.ReloadPluginMasters();
+    }
+
+    private static MethodInfo? ResolveInstallMethod(object pluginManager)
+    {
+        var installMethod = pluginManager.GetType().GetMethod(
+            InstallPluginAsyncMethodName,
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (installMethod is null)
+        {
+            ApsgLog.Warn("PluginManager.InstallPluginAsync not found");
+        }
+        return installMethod;
+    }
+
+    private static object?[] BindInstallArguments(MethodInfo installMethod, object manifest)
+    {
+        var parameters = installMethod.GetParameters();
+        var arguments = new object?[parameters.Length];
+        for (var argumentIndex = 0; argumentIndex < parameters.Length; argumentIndex++)
+        {
+            arguments[argumentIndex] = parameters[argumentIndex].Name switch
+            {
+                RepoManifestParameterName => manifest,
+                UseTestingParameterName => false,
+                ReasonParameterName => PluginLoadReason.Installer,
+                _ => DefaultArgument(parameters[argumentIndex]),
+            };
+        }
+        return arguments;
+    }
+
+    private static bool InstalledPluginIsLoaded(Task installTask)
+    {
+        var localPlugin = installTask.GetFoP(TaskResultProperty);
+        return localPlugin is not null && (bool)localPlugin.GetFoP(IsLoadedProperty);
+    }
+
+    private static object? DefaultArgument(ParameterInfo parameter)
+        => parameter.HasDefaultValue ? parameter.DefaultValue
+            : parameter.ParameterType.IsValueType ? Activator.CreateInstance(parameter.ParameterType)
             : null;
 }

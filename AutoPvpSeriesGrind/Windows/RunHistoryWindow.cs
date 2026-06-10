@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Stats;
+using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
@@ -10,6 +11,10 @@ namespace AutoPvpSeriesGrind.Windows;
 
 public sealed class RunHistoryWindow : Window, IDisposable
 {
+    private const float TableBottomReservedHeight = -44f;
+
+    private static readonly List<string> RowSelectableIds = [];
+
     private bool confirmClear;
 
     public RunHistoryWindow() : base("Auto PVP Series Grind — Run History###AutoPvpSeriesGrindHistory")
@@ -50,7 +55,7 @@ public sealed class RunHistoryWindow : Window, IDisposable
         DrawClearControl(history);
     }
 
-    private static void DrawLifetime(RunHistory.LifetimeTotals t)
+    private static void DrawLifetime(RunHistory.LifetimeTotals totals)
     {
         Styling.SectionLabel("Lifetime");
         ImGui.Spacing();
@@ -61,55 +66,17 @@ public sealed class RunHistoryWindow : Window, IDisposable
         var tileW = (avail - gap * 3f) / 4f;
         var size = new Vector2(tileW, 60f * s);
 
-        StatTile(FontAwesomeIcon.Flag, t.Runs.ToString("N0"), "Runs", Styling.AccentViolet, size);
+        StatTile.Draw(FontAwesomeIcon.Flag, totals.Runs.ToString("N0"), "Runs", Styling.AccentViolet, size);
         ImGui.SameLine(0, gap);
-        StatTile(FontAwesomeIcon.Trophy, t.Matches.ToString("N0"), "Matches", Styling.AccentBlue, size);
+        StatTile.Draw(FontAwesomeIcon.Trophy, totals.Matches.ToString("N0"), "Matches", Styling.AccentBlue, size);
         ImGui.SameLine(0, gap);
-        StatTile(FontAwesomeIcon.Gem, Formatting.Exp(t.SeriesExp), "Series EXP", Styling.AccentAmber, size);
+        StatTile.Draw(FontAwesomeIcon.Gem, Formatting.Exp(totals.SeriesExp), "Series EXP", Styling.AccentAmber, size);
         ImGui.SameLine(0, gap);
-        StatTile(FontAwesomeIcon.ChartLine, $"{t.MatchesPerHour:F1}", "Matches/h", Styling.AccentMint, size);
+        StatTile.Draw(FontAwesomeIcon.ChartLine, $"{totals.MatchesPerHour:F1}", "Matches/h", Styling.AccentMint, size);
 
         ImGui.Spacing();
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextDim))
-            ImGui.TextUnformatted($"{Formatting.Elapsed(t.Duration)} grinding");
-    }
-
-    private static void StatTile(FontAwesomeIcon icon, string value, string caption, Vector4 accent, Vector2 size)
-    {
-        var s = ImGuiHelpers.GlobalScale;
-        var origin = ImGui.GetCursorScreenPos();
-        var end = origin + size;
-        var dl = ImGui.GetWindowDrawList();
-
-        dl.AddRectFilled(origin, end, ImGui.GetColorU32(Vector4.Lerp(Styling.CardBg, accent, 0.10f)), Styling.CardRounding);
-        dl.AddRect(origin, end, ImGui.GetColorU32(Styling.BorderDim), Styling.CardRounding, ImDrawFlags.None, 1f);
-        dl.AddRectFilled(origin, new Vector2(end.X, origin.Y + 3f * s), ImGui.GetColorU32(accent), Styling.CardRounding, ImDrawFlags.RoundCornersTop);
-
-        var pad = 10f * s;
-        var iconStr = icon.ToIconString();
-        Vector2 iconSize;
-        using (ImRaii.PushFont(UiBuilder.IconFont))
-            iconSize = ImGui.CalcTextSize(iconStr);
-
-        var topY = origin.Y + 9f * s;
-        ImGui.SetCursorScreenPos(new Vector2(origin.X + pad, topY));
-        using (ImRaii.PushFont(UiBuilder.IconFont))
-        using (ImRaii.PushColor(ImGuiCol.Text, accent))
-            ImGui.TextUnformatted(iconStr);
-
-        ImGui.SetCursorScreenPos(new Vector2(origin.X + pad + iconSize.X + 6f * s, topY + (iconSize.Y - ImGui.GetTextLineHeight()) * 0.5f));
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextDim))
-            ImGui.TextUnformatted(caption);
-
-        ImGui.SetWindowFontScale(1.45f);
-        var valSize = ImGui.CalcTextSize(value);
-        ImGui.SetCursorScreenPos(new Vector2(origin.X + pad, end.Y - valSize.Y - 8f * s));
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextStrong))
-            ImGui.TextUnformatted(value);
-        ImGui.SetWindowFontScale(1f);
-
-        ImGui.SetCursorScreenPos(origin);
-        ImGui.Dummy(size);
+            ImGui.TextUnformatted($"{Formatting.Elapsed(totals.Duration)} grinding");
     }
 
     private static void DrawEmptyState()
@@ -143,50 +110,72 @@ public sealed class RunHistoryWindow : Window, IDisposable
             | ImGuiTableFlags.ScrollY | ImGuiTableFlags.SizingStretchProp | ImGuiTableFlags.PadOuterX;
 
         using var rowPad = ImRaii.PushStyle(ImGuiStyleVar.CellPadding, new Vector2(8, 5) * ImGuiHelpers.GlobalScale);
-        using var table = ImRaii.Table("##apsg_history", 5, flags, new Vector2(-1, -44 * ImGuiHelpers.GlobalScale));
+        using var table = ImRaii.Table("##apsg_history", 5, flags, new Vector2(-1, TableBottomReservedHeight * ImGuiHelpers.GlobalScale));
         if (!table) return;
 
+        SetupRunTableColumns();
+        DrawRunTableHeader();
+
+        for (var recordIndex = 0; recordIndex < history.Records.Count; recordIndex++)
+        {
+            DrawRunRecordRow(history.Records[recordIndex], recordIndex);
+        }
+    }
+
+    private static void SetupRunTableColumns()
+    {
         ImGui.TableSetupScrollFreeze(0, 1);
         ImGui.TableSetupColumn("When", ImGuiTableColumnFlags.WidthStretch, 1.4f);
         ImGui.TableSetupColumn("Job", ImGuiTableColumnFlags.WidthStretch, 0.7f);
         ImGui.TableSetupColumn("Time", ImGuiTableColumnFlags.WidthStretch, 0.9f);
         ImGui.TableSetupColumn("Matches", ImGuiTableColumnFlags.WidthStretch, 0.8f);
         ImGui.TableSetupColumn("Series EXP", ImGuiTableColumnFlags.WidthStretch, 0.9f);
+    }
 
+    private static void DrawRunTableHeader()
+    {
         ImGui.TableNextRow(ImGuiTableRowFlags.Headers);
         HeaderCell(FontAwesomeIcon.Clock, "When");
         HeaderCell(FontAwesomeIcon.User, "Job");
         HeaderCell(FontAwesomeIcon.Stopwatch, "Time");
         HeaderCell(FontAwesomeIcon.Trophy, "Matches");
         HeaderCell(FontAwesomeIcon.Gem, "Series EXP");
+    }
 
-        var i = 0;
-        foreach (var r in history.Records)
+    private static void DrawRunRecordRow(RunRecord record, int recordIndex)
+    {
+        ImGui.TableNextRow();
+
+        ImGui.TableNextColumn();
+        ImGui.Selectable(RowSelectableId(recordIndex), false, ImGuiSelectableFlags.SpanAllColumns);
+        ImGui.SameLine(0, 0);
+        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
+            ImGui.TextUnformatted(Formatting.RelativeTime(record.EndedAtUtc));
+
+        ImGui.TableNextColumn();
+        using (ImRaii.PushColor(ImGuiCol.Text, string.IsNullOrEmpty(record.JobAbbr) ? Styling.TextMuted : Styling.TextSecondary))
+            ImGui.TextUnformatted(string.IsNullOrEmpty(record.JobAbbr) ? "—" : record.JobAbbr);
+
+        ImGui.TableNextColumn();
+        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
+            ImGui.TextUnformatted(Formatting.Elapsed(record.Duration));
+
+        ImGui.TableNextColumn();
+        using (ImRaii.PushColor(ImGuiCol.Text, Styling.AccentBlue))
+            ImGui.TextUnformatted(record.MatchesCompleted.ToString());
+
+        ImGui.TableNextColumn();
+        using (ImRaii.PushColor(ImGuiCol.Text, record.SeriesExpGained > 0 ? Styling.AccentAmber : Styling.TextMuted))
+            ImGui.TextUnformatted(record.SeriesExpGained > 0 ? $"+{Formatting.Exp(record.SeriesExpGained)}" : "—");
+    }
+
+    private static string RowSelectableId(int rowIndex)
+    {
+        while (RowSelectableIds.Count <= rowIndex)
         {
-            ImGui.TableNextRow();
-
-            ImGui.TableNextColumn();
-            ImGui.Selectable($"##apsg_run{i++}", false, ImGuiSelectableFlags.SpanAllColumns);
-            ImGui.SameLine(0, 0);
-            using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
-                ImGui.TextUnformatted(RelativeTime(r.EndedAtUtc));
-
-            ImGui.TableNextColumn();
-            using (ImRaii.PushColor(ImGuiCol.Text, string.IsNullOrEmpty(r.JobAbbr) ? Styling.TextMuted : Styling.TextSecondary))
-                ImGui.TextUnformatted(string.IsNullOrEmpty(r.JobAbbr) ? "—" : r.JobAbbr);
-
-            ImGui.TableNextColumn();
-            using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
-                ImGui.TextUnformatted(Formatting.Elapsed(r.Duration));
-
-            ImGui.TableNextColumn();
-            using (ImRaii.PushColor(ImGuiCol.Text, Styling.AccentBlue))
-                ImGui.TextUnformatted(r.MatchesCompleted.ToString());
-
-            ImGui.TableNextColumn();
-            using (ImRaii.PushColor(ImGuiCol.Text, r.SeriesExpGained > 0 ? Styling.AccentAmber : Styling.TextMuted))
-                ImGui.TextUnformatted(r.SeriesExpGained > 0 ? $"+{Formatting.Exp(r.SeriesExpGained)}" : "—");
+            RowSelectableIds.Add($"##apsg_run{RowSelectableIds.Count}");
         }
+        return RowSelectableIds[rowIndex];
     }
 
     private static void HeaderCell(FontAwesomeIcon icon, string label)
@@ -199,16 +188,6 @@ public sealed class RunHistoryWindow : Window, IDisposable
         ImGui.SameLine(0, 5f * ImGuiHelpers.GlobalScale);
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextDim))
             ImGui.TextUnformatted(label);
-    }
-
-    private static string RelativeTime(DateTime utc)
-    {
-        var span = DateTime.UtcNow - utc;
-        if (span.TotalSeconds < 60) return "just now";
-        if (span.TotalMinutes < 60) return $"{(int)span.TotalMinutes}m ago";
-        if (span.TotalHours < 24) return $"{(int)span.TotalHours}h ago";
-        if (span.TotalDays < 7) return $"{(int)span.TotalDays}d ago";
-        return utc.ToLocalTime().ToString("MMM d");
     }
 
     private void DrawClearControl(RunHistory history)

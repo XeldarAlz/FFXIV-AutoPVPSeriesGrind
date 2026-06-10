@@ -21,4 +21,14 @@ internal static class Formatting
         var s = (int)secs;
         return $"{s / 60}:{s % 60:D2}";
     }
+
+    public static string RelativeTime(DateTime utc)
+    {
+        var span = DateTime.UtcNow - utc;
+        if (span.TotalSeconds < 60) return "just now";
+        if (span.TotalMinutes < 60) return $"{(int)span.TotalMinutes}m ago";
+        if (span.TotalHours < 24) return $"{(int)span.TotalHours}h ago";
+        if (span.TotalDays < 7) return $"{(int)span.TotalDays}d ago";
+        return utc.ToLocalTime().ToString("MMM d");
+    }
 }

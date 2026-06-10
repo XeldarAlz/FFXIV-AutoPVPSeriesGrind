@@ -20,8 +20,6 @@ internal sealed class PvpAutoLbIpc
         apply = Svc.PluginInterface.GetIpcSubscriber<string, int, bool>(ApsgConstants.IpcGates.PvpAutoLbApply);
     }
 
-    public bool IsAvailable => apply.HasFunction;
-
     public void PushPresetsIfNeeded()
     {
         if (!apply.HasFunction)

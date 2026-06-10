@@ -26,18 +26,18 @@ public sealed class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        var cfg = plugin.Configuration;
-        var ctrl = plugin.Controller;
+        var configuration = plugin.Configuration;
+        var controller = plugin.Controller;
 
         using var style = Styling.PushWindowStyle();
 
-        Header.Draw(plugin, ctrl.Running);
+        Header.Draw(plugin, controller.Running);
         DependencyBanner.Draw(plugin);
 
-        if (ctrl.Running)
-            RunningPanel.Draw(cfg, ctrl);
+        if (controller.Running)
+            RunningPanel.Draw(configuration, controller);
         else
-            IdlePanel.Draw(cfg, ctrl);
+            IdlePanel.Draw(configuration, controller);
 
         Footer.Draw();
     }

@@ -14,5 +14,4 @@ public sealed class RunRecord
     public string JobAbbr { get; set; } = "";
 
     public TimeSpan Duration => TimeSpan.FromSeconds(DurationSeconds);
-    public double MatchesPerHour => DurationSeconds > 0 ? MatchesCompleted / (DurationSeconds / 3600.0) : 0;
 }

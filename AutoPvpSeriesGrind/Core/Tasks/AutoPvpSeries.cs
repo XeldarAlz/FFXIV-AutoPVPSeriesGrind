@@ -1,15 +1,12 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Stats;
-using ECommons;
 using ECommons.Automation;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Threading.Tasks;
-using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-public sealed partial class AutoPvpSeries : AutoCommon
+internal sealed partial class AutoPvpSeries : AutoCommon
 {
     private readonly SessionStats session;
 
@@ -29,16 +26,7 @@ public sealed partial class AutoPvpSeries : AutoCommon
     private int matchesSinceBreak;
     private bool onBreak;
 
-    private bool inMatchLive;
-    private bool baselineCaptured;
-    private int dutyBaselineTime;
-    private bool sawIntroBand;
-    private bool timerMovedFromBaseline;
-    private bool announcedEntered;
-    private bool announcedPortrait;
-    private bool ranSafetyMoveThisDuty;
-    private bool leftSpawn;
-    private long leaveSpawnStartedAtMs;
+    private MatchFlowState matchFlow;
 
     private bool stopAfterCurrentMatch;
 
@@ -47,15 +35,31 @@ public sealed partial class AutoPvpSeries : AutoCommon
     private const int LiveTickMs = 150;
     private const int DutyCommencedSettleMs = 1000;
 
+    private struct MatchFlowState
+    {
+        public bool InMatchLive;
+        public bool BaselineCaptured;
+        public int DutyBaselineTime;
+        public bool SawIntroBand;
+        public bool TimerMovedFromBaseline;
+        public bool AnnouncedEntered;
+        public bool AnnouncedPortrait;
+        public bool RanSafetyMoveThisDuty;
+        public bool LeftSpawn;
+        public long LeaveSpawnStartedAtMs;
+
+        public void Reset() => this = default;
+    }
+
     private static bool InDuty() => MatchState.InDuty();
 
     private static bool IsDead() => MatchState.LocalIsDead();
 
-    private static void Cmd(string command) => Chat.ExecuteCommand(command);
+    private static void ExecuteGameCommand(string command) => Chat.ExecuteCommand(command);
 
-    private static unsafe bool ResultsScreenVisible()
-        => GenericHelpers.TryGetAddonByName<AtkUnitBase>(ApsgConstants.AddonNames.MatchResults, out var a)
-        && GenericHelpers.IsAddonReady(a);
+    private static bool ResultsScreenVisible() => AddonProbe.IsReady(ApsgConstants.AddonNames.MatchResults);
+
+    private void SetPhase(AutoPhase phase) => Plugin.Instance.Controller.Phase = phase;
 
     protected override async Task Execute()
     {
@@ -63,7 +67,7 @@ public sealed partial class AutoPvpSeries : AutoCommon
         settings = RunSettings.From(cfg);
         brain.SetStrategy(cfg.Strategy, cfg.CustomStrategy);
 
-        ApsgLog.Chat($"Starting PvP Series grind ({Plugin.Cfg.ActiveMode.DisplayName}).");
+        ApsgLog.Chat($"Starting PvP Series grind ({cfg.ActiveMode.DisplayName}).");
 
         await Startup();
 
@@ -75,27 +79,36 @@ public sealed partial class AutoPvpSeries : AutoCommon
             }
             else
             {
-                if (TryCommenceDuty())
-                {
-                    Diag("duty ready popup -> commenced");
-                    await NextFrame(DutyCommencedSettleMs);
-                    continue;
-                }
-
-                if (await TickOutOfDuty()) return;
+                if (await HandleOutOfDuty()) return;
                 continue;
             }
 
-            if (!baselineCaptured)
+            if (!matchFlow.BaselineCaptured)
+            {
                 await CaptureBaseline();
+            }
 
             await RunWaitingPhase();
 
-            if (inMatchLive)
+            if (matchFlow.InMatchLive)
+            {
                 await TickLiveMatch();
+            }
 
-            await NextFrame(inMatchLive ? LiveTickMs : MainLoopIdleMs);
+            await NextFrame(matchFlow.InMatchLive ? LiveTickMs : MainLoopIdleMs);
         }
+    }
+
+    private async Task<bool> HandleOutOfDuty()
+    {
+        if (TryCommenceDuty())
+        {
+            LogDiagnostic("duty ready popup -> commenced");
+            await NextFrame(DutyCommencedSettleMs);
+            return false;
+        }
+
+        return await TickOutOfDuty();
     }
 
     private void ResetDutyState(string reason)
@@ -106,20 +119,8 @@ public sealed partial class AutoPvpSeries : AutoCommon
         greeting.Reset();
         brain.Reset();
         BrainTelemetry.Clear();
-        Diag($"reset: {reason}");
+        LogDiagnostic($"reset: {reason}");
     }
 
-    private void ResetMatchFlow()
-    {
-        inMatchLive = false;
-        baselineCaptured = false;
-        dutyBaselineTime = 0;
-        sawIntroBand = false;
-        timerMovedFromBaseline = false;
-        announcedEntered = false;
-        announcedPortrait = false;
-        ranSafetyMoveThisDuty = false;
-        leftSpawn = false;
-        leaveSpawnStartedAtMs = 0;
-    }
+    private void ResetMatchFlow() => matchFlow.Reset();
 }

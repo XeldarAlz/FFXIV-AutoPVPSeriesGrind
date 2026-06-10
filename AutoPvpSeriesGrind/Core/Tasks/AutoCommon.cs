@@ -1,12 +1,11 @@
 using clib.TaskSystem;
-using ECommons.DalamudServices;
 using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-public abstract class AutoCommon : TaskBase
+internal abstract class AutoCommon : TaskBase
 {
-    protected void Diag(string message) => ApsgLog.Info(message);
+    protected void LogDiagnostic(string message) => ApsgLog.Info(message);
 
     protected void Warn(string message) => ApsgLog.Warn(message);
 
@@ -18,16 +17,23 @@ public abstract class AutoCommon : TaskBase
         {
             if (CancelToken.IsCancellationRequested) return false;
             bool ok;
-            try { ok = condition(); }
+            try
+            {
+                ok = condition();
+            }
             catch (Exception ex)
             {
-                if (!threw) { Warn($"WaitUntilTimed '{scope}' condition threw (treating as unsatisfied): {ex.Message}"); threw = true; }
+                if (!threw)
+                {
+                    Warn($"WaitUntilTimed '{scope}' condition threw (treating as unsatisfied): {ex.Message}");
+                    threw = true;
+                }
                 ok = false;
             }
             if (ok) return true;
             await NextFrame(checkMs);
         }
-        Diag($"WAIT TIMEOUT: '{scope}' not satisfied within {timeoutMs / 1000}s");
+        LogDiagnostic($"WAIT TIMEOUT: '{scope}' not satisfied within {timeoutMs / 1000}s");
         return false;
     }
 }

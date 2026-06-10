@@ -1,4 +1,3 @@
-using ECommons.DalamudServices;
 using Newtonsoft.Json;
 using System.IO;
 
@@ -8,6 +7,7 @@ internal sealed class RunHistory
 {
     private const int MaxRecords = 500;
     private const string FileName = "run-history.json";
+    private const double SecondsPerHour = 3600.0;
 
     public List<RunRecord> Records { get; private set; } = [];
 
@@ -59,14 +59,23 @@ internal sealed class RunHistory
 
     private void RecomputeLifetime()
     {
-        var totals = new LifetimeTotals { Runs = Records.Count };
-        foreach (var r in Records)
+        var matches = 0;
+        long seriesExp = 0;
+        double seconds = 0;
+        for (var recordIndex = 0; recordIndex < Records.Count; recordIndex++)
         {
-            totals.Matches += r.MatchesCompleted;
-            totals.SeriesExp += r.SeriesExpGained;
-            totals.Seconds += r.DurationSeconds;
+            var record = Records[recordIndex];
+            matches += record.MatchesCompleted;
+            seriesExp += record.SeriesExpGained;
+            seconds += record.DurationSeconds;
         }
-        Lifetime = totals;
+        Lifetime = new LifetimeTotals
+        {
+            Runs = Records.Count,
+            Matches = matches,
+            SeriesExp = seriesExp,
+            Seconds = seconds,
+        };
     }
 
     private void Save()
@@ -90,7 +99,7 @@ internal sealed class RunHistory
         public long SeriesExp;
         public double Seconds;
 
-        public readonly double MatchesPerHour => Seconds > 0 ? Matches / (Seconds / 3600.0) : 0;
+        public readonly double MatchesPerHour => Seconds > 0 ? Matches / (Seconds / SecondsPerHour) : 0;
         public readonly TimeSpan Duration => TimeSpan.FromSeconds(Seconds);
     }
 }

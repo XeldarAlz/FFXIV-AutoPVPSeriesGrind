@@ -9,23 +9,23 @@ namespace AutoPvpSeriesGrind.Core.Tasks;
 
 internal sealed class MovementExecutor
 {
-    private const float RepathThreshold = 2.5f;     // skip re-issuing a path if the new dest is this close to the last
-    private const float PursuitRepathThreshold = 1f;
-    private const float MinStopRange = 0.5f;         // below this we MoveTo exactly instead of MoveCloseTo
-    private const float HoldSlack = 1.5f;            // extra slack before we bother re-pathing while holding
+    private const float SameDestinationDriftThreshold = 2.5f;
+    private const float PursuitSameDestinationDriftThreshold = 1f;
+    private const float MinStopRangeForMoveCloseTo = 0.5f;
+    private const float HoldRepathSlack = 1.5f;
 
     // Minimum gap before re-pathing to an unchanged, not-yet-reached destination (avoids per-tick pathfind spam when stuck).
     private const int RepathCooldownMs = 2000;
 
     private static NavIpc Nav => NavIpc.Instance;
 
-    private Vector3 lastMoveDest;
+    private Vector3 lastMoveDestination;
     private long lastMoveAtMs;
     private Posture? lastPosture;
 
     public void Reset()
     {
-        lastMoveDest = default;
+        lastMoveDestination = default;
         lastMoveAtMs = 0;
         lastPosture = null;
     }
@@ -37,6 +37,16 @@ internal sealed class MovementExecutor
         return changed;
     }
 
+    public static void EnsureSprinting()
+    {
+        if (MatchState.HasStatus(StatusSprint))
+        {
+            return;
+        }
+
+        Chat.ExecuteCommand(GameCommands.Sprint);
+    }
+
     public void HaltPathing()
     {
         if (Nav.IsRunning()) Nav.Stop();
@@ -46,18 +56,20 @@ internal sealed class MovementExecutor
     {
         if (!Nav.IsRunning()) return;
         Nav.Stop();
-        lastMoveDest = default;
+        lastMoveDestination = default;
     }
 
     public void Execute(in MovePlan plan)
     {
-        if (plan.Sprint && !MatchState.HasStatus(StatusSprint))
-            Chat.ExecuteCommand(GameCommands.Sprint);
+        if (plan.Sprint)
+        {
+            EnsureSprinting();
+        }
 
         switch (plan.Kind)
         {
             case MoveKind.Hold:
-                if (DistanceToSelf(plan.Destination) > plan.StopRange + HoldSlack)
+                if (DistanceToSelf(plan.Destination) > plan.StopRange + HoldRepathSlack)
                     IssueMove(plan.Destination, plan.Fallback, plan.StopRange);
                 else
                     Stop();
@@ -70,35 +82,44 @@ internal sealed class MovementExecutor
         }
     }
 
-    public void IssueMove(Vector3 dest, Vector3 fallback, float stopRange, bool pursue = false)
+    public void IssueMove(Vector3 destination, Vector3 fallback, float stopRange, bool pursue = false)
     {
-        var drift = Vector3.Distance(dest, lastMoveDest);
-
-        if (pursue)
+        var driftThreshold = pursue ? PursuitSameDestinationDriftThreshold : SameDestinationDriftThreshold;
+        var stopSlack = pursue ? 0f : SameDestinationDriftThreshold;
+        if (ShouldSkipRepath(destination, stopRange, driftThreshold, stopSlack))
         {
-            if (drift < PursuitRepathThreshold)
-            {
-                if (Nav.IsRunning()) return;
-                if (DistanceToSelf(dest) <= stopRange) return;
-                if (Environment.TickCount64 - lastMoveAtMs < RepathCooldownMs) return;
-            }
-        }
-        else if (drift < RepathThreshold)
-        {
-            if (Nav.IsRunning()) return;
-            if (DistanceToSelf(dest) <= stopRange + RepathThreshold) return;
-            if (Environment.TickCount64 - lastMoveAtMs < RepathCooldownMs) return;
+            return;
         }
 
-        lastMoveDest = dest;
+        lastMoveDestination = destination;
         lastMoveAtMs = Environment.TickCount64;
-        var target = Nav.NearestPointReachable(dest)
-                     ?? (fallback != dest ? Nav.NearestPointReachable(fallback) : null)
+        var target = Nav.NearestPointReachable(destination)
+                     ?? (fallback != destination ? Nav.NearestPointReachable(fallback) : null)
                      ?? fallback;
-        if (stopRange > MinStopRange) Nav.MoveCloseTo(target, stopRange);
+        if (stopRange > MinStopRangeForMoveCloseTo) Nav.MoveCloseTo(target, stopRange);
         else Nav.MoveTo(target);
     }
 
-    private static float DistanceToSelf(Vector3 p)
-        => MatchState.PlayerPosition() is { } self ? Vector3.Distance(self, p) : float.MaxValue;
+    private bool ShouldSkipRepath(Vector3 destination, float stopRange, float driftThreshold, float stopSlack)
+    {
+        if (Vector3.Distance(destination, lastMoveDestination) >= driftThreshold)
+        {
+            return false;
+        }
+
+        if (Nav.IsRunning())
+        {
+            return true;
+        }
+
+        if (DistanceToSelf(destination) <= stopRange + stopSlack)
+        {
+            return true;
+        }
+
+        return Environment.TickCount64 - lastMoveAtMs < RepathCooldownMs;
+    }
+
+    private static float DistanceToSelf(Vector3 point)
+        => MatchState.PlayerPosition() is { } self ? Vector3.Distance(self, point) : float.MaxValue;
 }

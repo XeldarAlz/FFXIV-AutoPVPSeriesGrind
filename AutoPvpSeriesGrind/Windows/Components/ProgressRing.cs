@@ -9,142 +9,181 @@ namespace AutoPvpSeriesGrind.Windows.Components;
 internal static class ProgressRing
 {
     private const float Top = -MathF.PI / 2f;
+    private const float ArcSegmentStep = MathF.PI / 48f;
+    private const float SweepSegmentStep = MathF.PI / 36f;
+    private const float SweepHeadRadiusRatio = 0.62f;
+    private const int GlowLayerCount = 4;
+    private const float GlowBaseRadiusRatio = 0.72f;
+    private const float GlowLayerRadiusStep = 0.17f;
+    private const float GlowLayerAlphaStep = 0.05f;
+    private const float GlowMaxAlpha = 0.5f;
+    private const float MinVisibleFraction = 0.0001f;
+    private const float PlayRingThickness = 4.5f;
+    private const float PlayIconHeightRatio = 0.78f;
+    private const float LockIconHeightRatio = 0.62f;
+    private const float PlayGlyphOpticalCenterNudgeRatio = 0.07f;
 
-    private static Vector2 Dir(float a) => new(MathF.Cos(a), MathF.Sin(a));
+    private static Vector2 AngleToDirection(float angle) => new(MathF.Cos(angle), MathF.Sin(angle));
 
-    private static void Arc(Vector2 c, float r, float thickness, float a0, float a1, uint col)
+    private static void Arc(Vector2 center, float radius, float thickness, float startAngle, float endAngle, uint color)
     {
-        var dl = ImGui.GetWindowDrawList();
-        var span = MathF.Abs(a1 - a0);
-        var seg = Math.Max(2, (int)MathF.Ceiling(span / (MathF.PI / 48f)));
-        var prev = c + Dir(a0) * r;
-        for (var i = 1; i <= seg; i++)
+        var drawList = ImGui.GetWindowDrawList();
+        var span = MathF.Abs(endAngle - startAngle);
+        var segmentCount = Math.Max(2, (int)MathF.Ceiling(span / ArcSegmentStep));
+        var previousPoint = center + AngleToDirection(startAngle) * radius;
+        for (var segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++)
         {
-            var a = a0 + (a1 - a0) * (i / (float)seg);
-            var cur = c + Dir(a) * r;
-            dl.AddLine(prev, cur, col, thickness);
-            prev = cur;
+            var angle = startAngle + (endAngle - startAngle) * (segmentIndex / (float)segmentCount);
+            var currentPoint = center + AngleToDirection(angle) * radius;
+            drawList.AddLine(previousPoint, currentPoint, color, thickness);
+            previousPoint = currentPoint;
         }
-        var cap = thickness * 0.5f;
-        dl.AddCircleFilled(c + Dir(a0) * r, cap, col);
-        dl.AddCircleFilled(c + Dir(a1) * r, cap, col);
+
+        var capRadius = thickness * 0.5f;
+        drawList.AddCircleFilled(center + AngleToDirection(startAngle) * radius, capRadius, color);
+        drawList.AddCircleFilled(center + AngleToDirection(endAngle) * radius, capRadius, color);
     }
 
-    public static void Glow(Vector2 c, float radius, Vector4 color, float intensity)
+    public static void Glow(Vector2 center, float radius, Vector4 color, float intensity)
     {
-        var dl = ImGui.GetWindowDrawList();
-        for (var i = 4; i >= 1; i--)
+        var drawList = ImGui.GetWindowDrawList();
+        for (var layerIndex = GlowLayerCount; layerIndex >= 1; layerIndex--)
         {
-            var r = radius * (0.72f + i * 0.17f);
-            var a = Math.Clamp(intensity * 0.05f * (5 - i), 0f, 0.5f);
-            dl.AddCircleFilled(c, r, ImGui.GetColorU32(Styling.WithAlpha(color, a)));
+            var layerRadius = radius * (GlowBaseRadiusRatio + layerIndex * GlowLayerRadiusStep);
+            var layerAlpha = Math.Clamp(intensity * GlowLayerAlphaStep * (GlowLayerCount + 1 - layerIndex), 0f, GlowMaxAlpha);
+            drawList.AddCircleFilled(center, layerRadius, ImGui.GetColorU32(Styling.WithAlpha(color, layerAlpha)));
         }
     }
 
-    public static void Disc(Vector2 c, float radius, Vector4 color)
-        => ImGui.GetWindowDrawList().AddCircleFilled(c, radius, ImGui.GetColorU32(color));
+    public static void Track(Vector2 center, float radius, float thickness, Vector4 color)
+        => Arc(center, radius, thickness, Top, Top + MathF.PI * 2f, ImGui.GetColorU32(color));
 
-    public static void Track(Vector2 c, float r, float thickness, Vector4 col)
-        => Arc(c, r, thickness, Top, Top + MathF.PI * 2f, ImGui.GetColorU32(col));
-
-    public static void Fill(Vector2 c, float r, float thickness, float fraction, Vector4 col)
+    public static void Fill(Vector2 center, float radius, float thickness, float fraction, Vector4 color)
     {
         fraction = Math.Clamp(fraction, 0f, 1f);
-        if (fraction <= 0.0001f) return;
-        Arc(c, r, thickness, Top, Top + fraction * MathF.PI * 2f, ImGui.GetColorU32(col));
-    }
-
-    public static void Sweep(Vector2 c, float r, float thickness, Vector4 col, double periodMs, float arcLen, float headAlpha)
-    {
-        var dl = ImGui.GetWindowDrawList();
-        var head = Top + Styling.Phase(periodMs) * MathF.PI * 2f;
-        var tail = head - arcLen;
-        var steps = Math.Max(10, (int)MathF.Ceiling(arcLen / (MathF.PI / 36f)));
-        var prev = c + Dir(tail) * r;
-        for (var i = 1; i <= steps; i++)
+        if (fraction <= MinVisibleFraction)
         {
-            var t = i / (float)steps;
-            var a = tail + (head - tail) * t;
-            var cur = c + Dir(a) * r;
-            dl.AddLine(prev, cur, ImGui.GetColorU32(Styling.WithAlpha(col, headAlpha * t * t)), thickness);
-            prev = cur;
+            return;
         }
-        dl.AddCircleFilled(c + Dir(head) * r, thickness * 0.62f, ImGui.GetColorU32(Styling.WithAlpha(col, headAlpha)));
+
+        Arc(center, radius, thickness, Top, Top + fraction * MathF.PI * 2f, ImGui.GetColorU32(color));
     }
 
-    public static void CenterValue(Vector2 c, string big, string? small, Vector4 bigCol, Vector4 smallCol, float bigScale)
+    public static void Sweep(Vector2 center, float radius, float thickness, Vector4 color, double periodMs, float arcLength, float headAlpha)
+    {
+        var drawList = ImGui.GetWindowDrawList();
+        var headAngle = Top + Styling.Phase(periodMs) * MathF.PI * 2f;
+        var tailAngle = headAngle - arcLength;
+        var stepCount = Math.Max(10, (int)MathF.Ceiling(arcLength / SweepSegmentStep));
+        var previousPoint = center + AngleToDirection(tailAngle) * radius;
+        for (var stepIndex = 1; stepIndex <= stepCount; stepIndex++)
+        {
+            var stepFraction = stepIndex / (float)stepCount;
+            var angle = tailAngle + (headAngle - tailAngle) * stepFraction;
+            var currentPoint = center + AngleToDirection(angle) * radius;
+            drawList.AddLine(previousPoint, currentPoint, ImGui.GetColorU32(Styling.WithAlpha(color, headAlpha * stepFraction * stepFraction)), thickness);
+            previousPoint = currentPoint;
+        }
+
+        drawList.AddCircleFilled(center + AngleToDirection(headAngle) * radius, thickness * SweepHeadRadiusRatio, ImGui.GetColorU32(Styling.WithAlpha(color, headAlpha)));
+    }
+
+    public static void CenterValue(Vector2 center, string big, string? small, Vector4 bigColor, Vector4 smallColor, float bigScale)
     {
         ImGui.SetWindowFontScale(bigScale);
-        var bs = ImGui.CalcTextSize(big);
+        var bigSize = ImGui.CalcTextSize(big);
         ImGui.SetWindowFontScale(1f);
 
         var hasSmall = !string.IsNullOrEmpty(small);
-        var ss = hasSmall ? ImGui.CalcTextSize(small) : Vector2.Zero;
+        var smallSize = hasSmall ? ImGui.CalcTextSize(small) : Vector2.Zero;
         var gap = hasSmall ? 1f * ImGuiHelpers.GlobalScale : 0f;
-        var top = c.Y - (bs.Y + gap + ss.Y) * 0.5f;
+        var top = center.Y - (bigSize.Y + gap + smallSize.Y) * 0.5f;
 
-        ImGui.SetCursorScreenPos(new Vector2(c.X - bs.X * 0.5f, top));
+        ImGui.SetCursorScreenPos(new Vector2(center.X - bigSize.X * 0.5f, top));
         ImGui.SetWindowFontScale(bigScale);
-        using (ImRaii.PushColor(ImGuiCol.Text, bigCol))
+        using (ImRaii.PushColor(ImGuiCol.Text, bigColor))
+        {
             ImGui.TextUnformatted(big);
+        }
+
         ImGui.SetWindowFontScale(1f);
 
         if (hasSmall)
         {
-            ImGui.SetCursorScreenPos(new Vector2(c.X - ss.X * 0.5f, top + bs.Y + gap));
-            using (ImRaii.PushColor(ImGuiCol.Text, smallCol))
+            ImGui.SetCursorScreenPos(new Vector2(center.X - smallSize.X * 0.5f, top + bigSize.Y + gap));
+            using (ImRaii.PushColor(ImGuiCol.Text, smallColor))
+            {
                 ImGui.TextUnformatted(small!);
+            }
         }
     }
 
-    public static void CenterIcon(Vector2 c, FontAwesomeIcon icon, Vector4 col, float targetHeight)
+    public static void CenterIcon(Vector2 center, FontAwesomeIcon icon, Vector4 color, float targetHeight)
     {
         var glyph = icon.ToIconString();
-        float baseH;
+        float baseHeight;
         using (ImRaii.PushFont(UiBuilder.IconFont))
-            baseH = ImGui.CalcTextSize(glyph).Y;
-        var scale = baseH > 0 ? targetHeight / baseH : 1f;
+        {
+            baseHeight = ImGui.CalcTextSize(glyph).Y;
+        }
 
-        ImGui.SetWindowFontScale(scale);
-        Vector2 sz;
+        var fontScale = baseHeight > 0 ? targetHeight / baseHeight : 1f;
+
+        ImGui.SetWindowFontScale(fontScale);
+        Vector2 scaledSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))
-            sz = ImGui.CalcTextSize(glyph);
-        ImGui.SetCursorScreenPos(new Vector2(c.X - sz.X * 0.5f, c.Y - sz.Y * 0.5f));
+        {
+            scaledSize = ImGui.CalcTextSize(glyph);
+        }
+
+        ImGui.SetCursorScreenPos(new Vector2(center.X - scaledSize.X * 0.5f, center.Y - scaledSize.Y * 0.5f));
         using (ImRaii.PushFont(UiBuilder.IconFont))
-        using (ImRaii.PushColor(ImGuiCol.Text, col))
+        using (ImRaii.PushColor(ImGuiCol.Text, color))
+        {
             ImGui.TextUnformatted(glyph);
+        }
+
         ImGui.SetWindowFontScale(1f);
     }
 
-    public static bool PlayButton(Vector2 c, float radius, bool enabled)
+    public static bool PlayButton(Vector2 center, float radius, bool enabled)
     {
-        var dl = ImGui.GetWindowDrawList();
-        var min = c - new Vector2(radius, radius);
-        var max = c + new Vector2(radius, radius);
-        var hovered = enabled && ImGui.IsMouseHoveringRect(min, max);
+        var drawList = ImGui.GetWindowDrawList();
+        var boundsMin = center - new Vector2(radius, radius);
+        var boundsMax = center + new Vector2(radius, radius);
+        var hovered = enabled && ImGui.IsMouseHoveringRect(boundsMin, boundsMax);
 
         var accent = Styling.AccentViolet;
-        var thickness = 4.5f * ImGuiHelpers.GlobalScale;
+        var thickness = PlayRingThickness * ImGuiHelpers.GlobalScale;
 
         if (enabled)
-            Glow(c, radius, accent, 0.85f + (hovered ? 1.0f : 0f) + 0.55f * Styling.Pulse(Styling.PulseBreath));
+        {
+            Glow(center, radius, accent, 0.85f + (hovered ? 1.0f : 0f) + 0.55f * Styling.Pulse(Styling.PulseBreath));
+        }
 
-        dl.AddCircleFilled(c, radius - thickness * 0.5f, ImGui.GetColorU32(enabled
+        drawList.AddCircleFilled(center, radius - thickness * 0.5f, ImGui.GetColorU32(enabled
             ? Vector4.Lerp(Styling.CardBg, accent, hovered ? 0.30f : 0.15f)
             : Styling.CardBgSoft));
-        Track(c, radius, thickness, enabled ? Styling.WithAlpha(accent, hovered ? 1f : 0.78f) : Styling.WithAlpha(Styling.BorderDim, 0.85f));
+        Track(center, radius, thickness, enabled ? Styling.WithAlpha(accent, hovered ? 1f : 0.78f) : Layout.RingTrackColor);
 
         var glyph = enabled ? FontAwesomeIcon.Play : FontAwesomeIcon.Lock;
-        var glyphCol = enabled ? (hovered ? Styling.TextStrong : Styling.AccentVioletSoft) : Styling.TextMuted;
-        // A play triangle is visually heavier on its left edge; nudge right so it reads centred.
-        var nudge = enabled ? new Vector2(radius * 0.07f, 0f) : Vector2.Zero;
-        CenterIcon(c + nudge, glyph, glyphCol, radius * (enabled ? 0.78f : 0.62f));
+        var glyphColor = enabled ? (hovered ? Styling.TextStrong : Styling.AccentVioletSoft) : Styling.TextMuted;
+        var opticalCenterNudge = enabled ? new Vector2(radius * PlayGlyphOpticalCenterNudgeRatio, 0f) : Vector2.Zero;
+        CenterIcon(center + opticalCenterNudge, glyph, glyphColor, radius * (enabled ? PlayIconHeightRatio : LockIconHeightRatio));
 
-        ImGui.SetCursorScreenPos(min);
-        ImGui.Dummy(max - min);
+        ImGui.SetCursorScreenPos(boundsMin);
+        ImGui.Dummy(boundsMax - boundsMin);
 
-        if (!enabled) return false;
-        if (hovered) ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+        if (!enabled)
+        {
+            return false;
+        }
+
+        if (hovered)
+        {
+            ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+        }
+
         return hovered && ImGui.IsMouseClicked(ImGuiMouseButton.Left);
     }
 }

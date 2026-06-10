@@ -90,7 +90,6 @@ internal static class ApsgConstants
         public const string NavStop = "vnavmesh.Path.Stop";
         public const string NavIsRunning = "vnavmesh.Path.IsRunning";
         public const string NavPathfindInProgress = "vnavmesh.SimpleMove.PathfindInProgress";
-        public const string NavIsReady = "vnavmesh.Nav.IsReady";
         public const string NavNearestPointReachable = "vnavmesh.Query.Mesh.NearestPointReachable";
 
         public const string LifestreamExecuteCommand = "Lifestream.ExecuteCommand";
@@ -100,6 +99,9 @@ internal static class ApsgConstants
         public const string PvpAutoLbGetVersion = "PvpAutoLb.Presets.GetVersion";
         public const string PvpAutoLbApply = "PvpAutoLb.Presets.Apply";
     }
+
+    // Type-name fragment identifying vnavmesh's IPC provider in faulted-task exception text.
+    public const string VnavmeshIpcProviderMarker = "Navmesh.IPCProvider";
 
     public const int PvpAutoLbPresetApiVersion = 1;
 }

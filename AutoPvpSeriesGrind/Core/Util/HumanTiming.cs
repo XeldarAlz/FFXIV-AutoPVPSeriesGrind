@@ -2,28 +2,30 @@ namespace AutoPvpSeriesGrind.Core.Util;
 
 internal static class HumanTiming
 {
-    public static readonly Random Rng = new();
+    public static readonly Random SharedRandom = new();
 
     public static int Jitter(int baseMs, int spreadMs)
-        => Math.Max(0, baseMs - spreadMs + Rng.Next(0, spreadMs * 2 + 1));
+        => Math.Max(0, baseMs - spreadMs + SharedRandom.Next(0, spreadMs * 2 + 1));
 
-    public static int Reaction(int minMs = 180, int maxMs = 520)
+    public static int Reaction(int minMs, int maxMs)
     {
-        if (maxMs <= minMs) return minMs;
+        if (maxMs <= minMs)
+        {
+            return minMs;
+        }
+
         var span = maxMs - minMs;
-        return minMs + (Rng.Next(0, span + 1) + Rng.Next(0, span + 1)) / 2;
+        return minMs + (SharedRandom.Next(0, span + 1) + SharedRandom.Next(0, span + 1)) / 2;
     }
 
-    public static bool Maybe(double probability) => Rng.NextDouble() < probability;
+    public static bool Maybe(double probability) => SharedRandom.NextDouble() < probability;
 
-    public static int RandSecInclusive(int minSec, int maxSec)
+    public static int RandomSecondsInclusive(int minSeconds, int maxSeconds)
     {
-        var min = Math.Max(0, minSec);
-        var max = Math.Max(min, maxSec);
-        return min == max ? min : Rng.Next(min, max + 1);
+        var clampedMinSeconds = Math.Max(0, minSeconds);
+        var clampedMaxSeconds = Math.Max(clampedMinSeconds, maxSeconds);
+        return clampedMinSeconds == clampedMaxSeconds ? clampedMinSeconds : SharedRandom.Next(clampedMinSeconds, clampedMaxSeconds + 1);
     }
-
-    public static float Offset(float max) => (float)((Rng.NextDouble() * 2.0 - 1.0) * max);
 
     public static (int Min, int Max) ReactionBand(HumanizeLevel level) => level switch
     {

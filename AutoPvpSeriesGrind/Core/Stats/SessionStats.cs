@@ -1,3 +1,5 @@
+using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Modes;
 using ECommons.DalamudServices;
 
 namespace AutoPvpSeriesGrind.Core.Stats;
@@ -14,7 +16,7 @@ public sealed class SessionStats
     {
         get
         {
-            var now = Core.Game.PvpProfileReader.SeriesTotalExperience();
+            var now = PvpProfileReader.SeriesTotalExperience();
             return now > SeriesExpStart ? now - SeriesExpStart : 0;
         }
     }
@@ -28,11 +30,11 @@ public sealed class SessionStats
 
     public TimeSpan Elapsed => DateTime.UtcNow - StartedAt;
 
-    public Core.Modes.ModeContext ToModeContext() => new()
+    public ModeContext ToModeContext() => new()
     {
         MatchesCompleted = MatchesCompleted,
         Elapsed = Elapsed,
-        SeriesRank = Core.Game.PvpProfileReader.SeriesCurrentRank(),
+        SeriesRank = PvpProfileReader.SeriesCurrentRank(),
     };
 
     public void CaptureJob()
@@ -44,5 +46,5 @@ public sealed class SessionStats
     }
 
     public void CaptureSeriesBaseline()
-        => SeriesExpStart = Core.Game.PvpProfileReader.SeriesTotalExperience();
+        => SeriesExpStart = PvpProfileReader.SeriesTotalExperience();
 }

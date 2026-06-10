@@ -3,11 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using Lumina.Excel.Sheets;
 using System.Numerics;
+// FFXIVClientStructs.FFXIV.Client.Game.Object also defines an ObjectKind; alias to keep Dalamud's unambiguous.
+using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
 namespace AutoPvpSeriesGrind.Core.Debug;
 
 internal static unsafe class TargetDumper
 {
+    private const int MaxNearbyObjectRows = 25;
+
     public static void DumpObjects()
     {
         var me = Svc.Objects.LocalPlayer;
@@ -19,16 +23,18 @@ internal static unsafe class TargetDumper
 
         var self = me.Position;
         var rows = Svc.Objects
-            .Where(o => o.ObjectKind is Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj
-                or Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)
-            .Select(o => (o, dist: Vector3.Distance(self, o.Position)))
-            .OrderBy(t => t.dist)
-            .Take(25)
+            .Where(gameObject => gameObject.ObjectKind is ObjectKind.EventObj or ObjectKind.BattleNpc)
+            .Select(gameObject => (gameObject, distance: Vector3.Distance(self, gameObject.Position)))
+            .OrderBy(row => row.distance)
+            .Take(MaxNearbyObjectRows)
             .ToList();
 
         ApsgLog.Chat($"Territory {Svc.ClientState.TerritoryType} — {rows.Count} nearby event/battle objects (nearest first):");
-        foreach (var (o, dist) in rows)
-            Svc.Chat.Print($"  [{o.ObjectKind}] BaseId={o.BaseId} \"{o.Name.TextValue}\" d={dist:F1}");
+        for (var rowIndex = 0; rowIndex < rows.Count; rowIndex++)
+        {
+            var (gameObject, distance) = rows[rowIndex];
+            Svc.Chat.Print($"  [{gameObject.ObjectKind}] BaseId={gameObject.BaseId} \"{gameObject.Name.TextValue}\" d={distance:F1}");
+        }
     }
 
     public static void Dump()

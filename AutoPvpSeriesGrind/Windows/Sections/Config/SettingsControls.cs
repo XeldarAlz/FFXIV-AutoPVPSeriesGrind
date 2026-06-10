@@ -7,40 +7,75 @@ namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class SettingsControls
 {
-    public static void DrawToggle(Configuration cfg, Func<bool> getter, Action<bool> setter, string id)
+    private const float DefaultSliderWidth = 200f;
+    private const float DefaultComboWidth = 180f;
+    private const float DelaySliderLabelOffset = 50f;
+    private const float DelaySliderWidth = 220f;
+
+    public static void DrawToggle(Configuration cfg, Func<bool> getter, Action<bool> setter)
     {
-        var v = getter();
-        if (ToggleSwitch.Draw(id, ref v))
+        var value = getter();
+        if (ToggleSwitch.Draw(ref value))
         {
-            setter(v);
+            setter(value);
             cfg.SaveDebounced();
         }
     }
 
     public static void DrawIntSlider(Configuration cfg, string id, Func<int> getter, Action<int> setter,
-        int min, int max, string format = "%d", float width = 200f)
+        int minimum, int maximum, string format = "%d", float width = DefaultSliderWidth)
     {
-        var v = getter();
+        var value = getter();
         ImGui.SetNextItemWidth(width * ImGuiHelpers.GlobalScale);
-        using (ImRaii.PushColor(ImGuiCol.SliderGrab, Styling.AccentViolet))
-        using (ImRaii.PushColor(ImGuiCol.SliderGrabActive, Styling.AccentVioletSoft))
-        using (ImRaii.PushColor(ImGuiCol.FrameBg, Styling.CardBgSoft))
-        using (ImRaii.PushColor(ImGuiCol.FrameBgHovered, Styling.CardBgHover))
-            if (ImGui.SliderInt(id, ref v, min, max, format))
+        using (ImRaii.PushColor(ImGuiCol.SliderGrab, Styling.AccentViolet)
+            .Push(ImGuiCol.SliderGrabActive, Styling.AccentVioletSoft)
+            .Push(ImGuiCol.FrameBg, Styling.CardBgSoft)
+            .Push(ImGuiCol.FrameBgHovered, Styling.CardBgHover))
+        {
+            if (ImGui.SliderInt(id, ref value, minimum, maximum, format))
             {
-                setter(Math.Clamp(v, min, max));
+                setter(Math.Clamp(value, minimum, maximum));
                 cfg.SaveDebounced();
             }
+        }
     }
 
     public static void DrawCombo(string id, string preview, string[] options, int selected, Action<int> onSelect,
-        float width = 180f)
+        float width = DefaultComboWidth)
     {
         ImGui.SetNextItemWidth(width * ImGuiHelpers.GlobalScale);
         using var combo = ImRaii.Combo(id, preview);
-        if (!combo) return;
-        for (var i = 0; i < options.Length; i++)
-            if (ImGui.Selectable(options[i], i == selected))
-                onSelect(i);
+        if (!combo)
+        {
+            return;
+        }
+
+        for (var optionIndex = 0; optionIndex < options.Length; optionIndex++)
+        {
+            if (ImGui.Selectable(options[optionIndex], optionIndex == selected))
+            {
+                onSelect(optionIndex);
+            }
+        }
+    }
+
+    public static void DrawLabeledDelaySlider(Configuration cfg, string id, string label,
+        Func<int> getter, Action<int> setter, int maxSeconds)
+    {
+        ImGui.AlignTextToFramePadding();
+        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
+        {
+            ImGui.TextUnformatted(label);
+        }
+
+        ImGui.SameLine(DelaySliderLabelOffset * ImGuiHelpers.GlobalScale);
+        DrawIntSlider(cfg, id, getter, setter, 0, maxSeconds, "%d s", DelaySliderWidth);
+    }
+
+    public static void DrawDelayRange(Configuration cfg, string minId, string maxId,
+        Func<int> getMin, Action<int> setMin, Func<int> getMax, Action<int> setMax, int maxSeconds)
+    {
+        DrawLabeledDelaySlider(cfg, minId, "Min", getMin, setMin, maxSeconds);
+        DrawLabeledDelaySlider(cfg, maxId, "Max", getMax, setMax, maxSeconds);
     }
 }

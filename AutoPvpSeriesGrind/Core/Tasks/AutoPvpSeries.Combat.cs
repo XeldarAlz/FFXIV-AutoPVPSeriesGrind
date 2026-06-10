@@ -8,10 +8,9 @@ using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-public sealed partial class AutoPvpSeries
+internal sealed partial class AutoPvpSeries
 {
-    // Radius (yalms) around the crystal used for "on point" engagement checks.
-    private const float CrystalEngageRadius = 10f;
+    private const float CrystalEngageRadiusYalms = 10f;
     private const float LegacyCrystalStopRange = 1.5f;
 
     private const float SpawnExitArrivalRange = 3.5f;
@@ -24,8 +23,8 @@ public sealed partial class AutoPvpSeries
         {
             rotation.OnDeadDuringLive();
             movement.Stop();
-            leftSpawn = false;
-            leaveSpawnStartedAtMs = 0;
+            matchFlow.LeftSpawn = false;
+            matchFlow.LeaveSpawnStartedAtMs = 0;
             BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead — waiting to respawn", Posture.Retreat);
             return;
         }
@@ -37,9 +36,8 @@ public sealed partial class AutoPvpSeries
 
         if (MatchState.HasStatus(StatusSpawnProtection))
         {
-            if (!MatchState.HasStatus(StatusSprint))
-                Cmd(GameCommands.Sprint);
-            ranSafetyMoveThisDuty = true;
+            MovementExecutor.EnsureSprinting();
+            matchFlow.RanSafetyMoveThisDuty = true;
         }
 
         if (MatchState.LocalIsCasting(ActionStandardIssueElixir))
@@ -49,7 +47,7 @@ public sealed partial class AutoPvpSeries
             return;
         }
 
-        if (!leftSpawn && !TryLeaveSpawn(territory))
+        if (!matchFlow.LeftSpawn && !TryLeaveSpawn(territory))
             return;
 
         if (settings.EnableBrain)
@@ -65,19 +63,21 @@ public sealed partial class AutoPvpSeries
 
         if (MatchState.NearestSafeAnchor(territory, self) is not { } exit)
         {
-            leftSpawn = true;
+            matchFlow.LeftSpawn = true;
             return true;
         }
 
-        if (leaveSpawnStartedAtMs == 0)
-            leaveSpawnStartedAtMs = Environment.TickCount64;
+        if (matchFlow.LeaveSpawnStartedAtMs == 0)
+        {
+            matchFlow.LeaveSpawnStartedAtMs = Environment.TickCount64;
+        }
 
-        var flat = HorizontalDistance(self, exit);
-        var timedOut = Environment.TickCount64 - leaveSpawnStartedAtMs > SpawnExitTimeoutMs;
+        var flat = VectorMath.HorizontalDistance(self, exit);
+        var timedOut = Environment.TickCount64 - matchFlow.LeaveSpawnStartedAtMs > SpawnExitTimeoutMs;
         if (flat <= SpawnExitArrivalRange || timedOut)
         {
-            leftSpawn = true;
-            Diag(timedOut
+            matchFlow.LeftSpawn = true;
+            LogDiagnostic(timedOut
                 ? $"leave-spawn timeout ({SpawnExitTimeoutMs}ms, {flat:F1}y out) -> handing off to brain"
                 : $"off the spawn platform (anchor {flat:F1}y) -> brain takes over");
             return true;
@@ -88,33 +88,26 @@ public sealed partial class AutoPvpSeries
         return false;
     }
 
-    private static float HorizontalDistance(Vector3 a, Vector3 b)
-    {
-        var dx = a.X - b.X;
-        var dz = a.Z - b.Z;
-        return MathF.Sqrt(dx * dx + dz * dz);
-    }
-
     private async Task RunBrainTick(uint territory)
     {
-        var snap = MatchState.Capture();
+        var snapshot = MatchState.Capture();
 
-        if (!snap.HasObjective)
+        if (!snapshot.HasObjective)
         {
-            BrainTelemetry.Record(snap, new MovePlan(MoveKind.Hold, snap.Self, snap.Self, 0f, false, "no objective"));
+            BrainTelemetry.Record(snapshot, new MovePlan(MoveKind.Hold, snapshot.Self, snapshot.Self, 0f, false, "no objective"));
             movement.HaltPathing();
             return;
         }
 
-        var anchor = MatchState.NearestSafeAnchor(territory, snap.Self) ?? snap.Self;
-        var plan = brain.Decide(snap, anchor);
-        BrainTelemetry.Record(snap, plan);
+        var anchor = MatchState.NearestSafeAnchor(territory, snapshot.Self) ?? snapshot.Self;
+        var plan = brain.Decide(snapshot, anchor);
+        BrainTelemetry.Record(snapshot, plan);
 
         var planChanged = movement.UpdatePosture(plan.Posture);
         if (settings.Humanize != HumanizeLevel.Off && planChanged)
         {
-            var (min, max) = HumanTiming.ReactionBand(settings.Humanize);
-            await NextFrame(HumanTiming.Reaction(min, max));
+            var (reactionMinMs, reactionMaxMs) = HumanTiming.ReactionBand(settings.Humanize);
+            await NextFrame(HumanTiming.Reaction(reactionMinMs, reactionMaxMs));
         }
 
         movement.Execute(plan);
@@ -122,18 +115,28 @@ public sealed partial class AutoPvpSeries
 
     private void LegacyCrystalMove()
     {
-        var snap = MatchState.Capture();
-        if (snap.Objective is not { } c)
+        var snapshot = MatchState.Capture();
+        if (snapshot.Objective is not { } crystalPosition)
         {
-            BrainTelemetry.RecordStatus(snap, MoveKind.Hold, "no objective (legacy)");
+            BrainTelemetry.RecordStatus(snapshot, MoveKind.Hold, "no objective (legacy)");
             return;
         }
 
-        var enemyOnPoint = snap.Enemies.Any(e => Vector3.Distance(e.Position, c) < CrystalEngageRadius);
-        var hold = Vector3.Distance(snap.Self, c) < CrystalEngageRadius && enemyOnPoint;
-        BrainTelemetry.RecordStatus(snap, hold ? MoveKind.Hold : MoveKind.Engage, hold ? "hold (legacy)" : "to crystal (legacy)");
+        var enemyOnPoint = false;
+        for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
+        {
+            var enemy = snapshot.Enemies[enemyIndex];
+            if (Vector3.Distance(enemy.Position, crystalPosition) < CrystalEngageRadiusYalms)
+            {
+                enemyOnPoint = true;
+                break;
+            }
+        }
+
+        var hold = Vector3.Distance(snapshot.Self, crystalPosition) < CrystalEngageRadiusYalms && enemyOnPoint;
+        BrainTelemetry.RecordStatus(snapshot, hold ? MoveKind.Hold : MoveKind.Engage, hold ? "hold (legacy)" : "to crystal (legacy)");
         if (!hold)
-            movement.IssueMove(c, c, LegacyCrystalStopRange);
+            movement.IssueMove(crystalPosition, crystalPosition, LegacyCrystalStopRange);
         else
             movement.Stop();
     }

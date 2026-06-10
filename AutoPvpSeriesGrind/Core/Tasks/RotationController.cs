@@ -39,35 +39,52 @@ internal sealed class RotationController(PvpBrain brain)
     {
         if (MatchState.LocalIsDead())
         {
-            if (!wasDead)
-            {
-                wasDead = true;
-                deadSinceMs = Environment.TickCount64;
-                rotationNeedsReset = true;
-                clearedSignThisLife = false;
-                brain.Reset();
-                ApsgLog.Info("death detected -> rotation will be re-applied after respawn");
-            }
+            OnDeathDetected();
             return;
         }
 
-        if (wasDead)
-        {
-            wasDead = false;
-            if (rotationNeedsReset && Environment.TickCount64 - deadSinceMs >= RespawnRotationDelayMs && MatchState.IsNormalConditions())
-            {
-                Chat.ExecuteCommand(GameCommands.EnableRotation);
-                rotationNeedsReset = false;
-                ApsgLog.Info("respawn detected -> rotation re-applied");
-            }
-        }
+        OnRespawnDetected();
 
         if (rotationNeedsReset && MatchState.IsNormalConditions())
         {
-            Chat.ExecuteCommand(GameCommands.EnableRotation);
-            rotationNeedsReset = false;
-            ApsgLog.Info("rotation re-applied (failsafe)");
+            ReapplyRotation("rotation re-applied (failsafe)");
         }
+    }
+
+    private void OnDeathDetected()
+    {
+        if (wasDead)
+        {
+            return;
+        }
+
+        wasDead = true;
+        deadSinceMs = Environment.TickCount64;
+        rotationNeedsReset = true;
+        clearedSignThisLife = false;
+        brain.Reset();
+        ApsgLog.Info("death detected -> rotation will be re-applied after respawn");
+    }
+
+    private void OnRespawnDetected()
+    {
+        if (!wasDead)
+        {
+            return;
+        }
+
+        wasDead = false;
+        if (rotationNeedsReset && Environment.TickCount64 - deadSinceMs >= RespawnRotationDelayMs && MatchState.IsNormalConditions())
+        {
+            ReapplyRotation("respawn detected -> rotation re-applied");
+        }
+    }
+
+    private void ReapplyRotation(string logMessage)
+    {
+        Chat.ExecuteCommand(GameCommands.EnableRotation);
+        rotationNeedsReset = false;
+        ApsgLog.Info(logMessage);
     }
 
     public void EnsureRotationEnabled()

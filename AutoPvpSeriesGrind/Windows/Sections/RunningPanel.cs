@@ -21,9 +21,12 @@ internal static class RunningPanel
 
     private readonly record struct RingModel(float Fraction, string Big, string? Small, bool Endless);
 
+    private static ushort cachedTerritoryId;
+    private static string? cachedMapName;
+
     public static void Draw(Configuration cfg, AutoPvpSeriesController ctrl)
     {
-        var s = ImGuiHelpers.GlobalScale;
+        var scale = ImGuiHelpers.GlobalScale;
 
         var inDuty = Svc.Condition[ConditionFlag.BoundByDuty];
         var inCombat = Svc.Condition[ConditionFlag.InCombat];
@@ -32,87 +35,112 @@ internal static class RunningPanel
 
         var phase = ResolvePhase(ctrl, inDuty, inCombat, inQueue, timeLeft);
         var (accent, accentSoft, label) = Palette(phase);
-        var finishing = phase == Display.Finishing;
-        if (finishing)
-        {
-            accent = Styling.AccentAmber;
-            accentSoft = Styling.AccentMint;
-            label = "DONE";
-        }
 
         Styling.VSpace(8);
-        var labelCol = phase == Display.Fighting
-            ? Styling.PulseColor(accent, accentSoft, Styling.PulseCalm)
-            : accent;
-        Styling.TextCentered($"·   {label}   ·", labelCol, 0.95f);
+        DrawStatusLabel(phase, accent, accentSoft, label);
         Styling.VSpace(10);
 
-        DrawRing(cfg, ctrl, phase, accent, accentSoft, finishing, radius: 58f, bigScale: 2.0f);
+        DrawRing(cfg, ctrl, phase, accent, accentSoft, radius: Layout.HeroRingRadius, bigScale: 2.0f);
         Styling.VSpace(10);
 
-        var activity = finishing
-            ? (string.IsNullOrWhiteSpace(ctrl.Status) ? "Wrapping up the session" : ctrl.Status)
-            : ActivityLine(ctrl, phase);
-        DrawLiveLine(activity, finishing ? Styling.AccentMint : accentSoft);
+        DrawActivitySubline(ctrl, phase, accentSoft);
         Styling.VSpace(12);
 
-        if (!finishing)
-        {
-            if (phase == Display.Portraits)
-                Styling.TextCentered($"Match starting in {Math.Max(timeLeft, 0)}s…", Styling.TextDim);
-            else if (inDuty && timeLeft > 0 && phase is Display.Fighting or Display.InMatch)
-                DrawMatchClock(timeLeft, accent, s);
-            else if (!string.IsNullOrWhiteSpace(ctrl.Status))
-                Styling.TextCentered(ctrl.Status, Styling.TextDim);
-        }
+        DrawClockOrStatus(ctrl, phase, accent, inDuty, timeLeft, scale);
 
         Styling.VSpace(8);
         DrawSessionStrip(cfg, ctrl);
         Styling.VSpace(16);
 
-        var colW = MathF.Min(ImGui.GetContentRegionAvail().X, 320f * s);
-        Styling.CenterNextItem(colW);
-        if (PrimaryButton.Draw("STOP", Styling.AccentRose, true, colW))
+        DrawStopButton(ctrl, scale);
+    }
+
+    private static void DrawStatusLabel(Display phase, Vector4 accent, Vector4 accentSoft, string label)
+    {
+        var labelColor = phase == Display.Fighting
+            ? Styling.PulseColor(accent, accentSoft, Styling.PulseCalm)
+            : accent;
+        Styling.TextCentered($"·   {label}   ·", labelColor, 0.95f);
+    }
+
+    private static void DrawActivitySubline(AutoPvpSeriesController ctrl, Display phase, Vector4 accentSoft)
+    {
+        var activity = phase == Display.Finishing
+            ? (string.IsNullOrWhiteSpace(ctrl.Status) ? "Wrapping up the session" : ctrl.Status)
+            : ActivityLine(ctrl, phase);
+        DrawLiveLine(activity, accentSoft);
+    }
+
+    private static void DrawClockOrStatus(AutoPvpSeriesController ctrl, Display phase, Vector4 accent,
+        bool inDuty, int timeLeft, float scale)
+    {
+        if (phase == Display.Finishing)
+        {
+            return;
+        }
+
+        if (phase == Display.Portraits)
+        {
+            Styling.TextCentered($"Match starting in {Math.Max(timeLeft, 0)}s…", Styling.TextDim);
+        }
+        else if (inDuty && timeLeft > 0 && phase is Display.Fighting or Display.InMatch)
+        {
+            DrawMatchClock(timeLeft, accent, scale);
+        }
+        else if (!string.IsNullOrWhiteSpace(ctrl.Status))
+        {
+            Styling.TextCentered(ctrl.Status, Styling.TextDim);
+        }
+    }
+
+    private static void DrawStopButton(AutoPvpSeriesController ctrl, float scale)
+    {
+        var columnWidth = MathF.Min(ImGui.GetContentRegionAvail().X, 320f * scale);
+        Styling.CenterNextItem(columnWidth);
+        if (PrimaryButton.Draw("STOP", Styling.AccentRose, true, columnWidth))
+        {
             ctrl.Stop();
+        }
     }
 
     private static void DrawRing(Configuration cfg, AutoPvpSeriesController ctrl, Display phase,
-        Vector4 accent, Vector4 accentSoft, bool finishing, float radius, float bigScale)
+        Vector4 accent, Vector4 accentSoft, float radius, float bigScale)
     {
-        var s = ImGuiHelpers.GlobalScale;
+        var scale = ImGuiHelpers.GlobalScale;
         var model = ModelFor(cfg, ctrl);
-        var r = radius * s;
-        var thickness = MathF.Max(5f, radius * 0.12f) * s;
+        var scaledRadius = radius * scale;
+        var thickness = MathF.Max(5f, radius * 0.12f) * scale;
 
         var startScreen = ImGui.GetCursorScreenPos();
-        var availX = ImGui.GetContentRegionAvail().X;
-        var center = new Vector2(startScreen.X + availX * 0.5f, startScreen.Y + r + 4f * s);
+        var availableWidth = ImGui.GetContentRegionAvail().X;
+        var center = new Vector2(startScreen.X + availableWidth * 0.5f, startScreen.Y + scaledRadius + 4f * scale);
 
+        var finishing = phase == Display.Finishing;
         var fighting = phase == Display.Fighting;
         var glow = 0.55f + (fighting ? 0.5f * Styling.Pulse(Styling.PulseCalm) : 0f) + (finishing ? 0.45f : 0f);
-        ProgressRing.Glow(center, r, accent, glow);
-        ProgressRing.Track(center, r, thickness, Styling.WithAlpha(Styling.BorderDim, 0.85f));
+        ProgressRing.Glow(center, scaledRadius, accent, glow);
+        ProgressRing.Track(center, scaledRadius, thickness, Layout.RingTrackColor);
 
         if (finishing)
         {
-            ProgressRing.Fill(center, r, thickness, 1f, accent);
-            ProgressRing.Sweep(center, r, thickness * 0.55f, accentSoft, Styling.PulseOrbit, 1.0f, 0.40f);
-            ProgressRing.CenterIcon(center, FontAwesomeIcon.Check, accent, r * 0.62f);
+            ProgressRing.Fill(center, scaledRadius, thickness, 1f, accent);
+            ProgressRing.Sweep(center, scaledRadius, thickness * 0.55f, accentSoft, Styling.PulseOrbit, 1.0f, 0.40f);
+            ProgressRing.CenterIcon(center, FontAwesomeIcon.Check, accent, scaledRadius * Layout.HeroRingIconRatio);
         }
         else if (model.Endless)
         {
-            ProgressRing.Sweep(center, r, thickness, accentSoft, Styling.PulseOrbit, 2.4f, 0.95f);
+            ProgressRing.Sweep(center, scaledRadius, thickness, accentSoft, Styling.PulseOrbit, 2.4f, 0.95f);
             ProgressRing.CenterValue(center, model.Big, model.Small, Styling.TextStrong, accentSoft, bigScale);
         }
         else
         {
-            ProgressRing.Fill(center, r, thickness, model.Fraction, accent);
-            ProgressRing.Sweep(center, r, thickness * 0.5f, accentSoft, Styling.PulseOrbit, 0.85f, 0.25f);
+            ProgressRing.Fill(center, scaledRadius, thickness, model.Fraction, accent);
+            ProgressRing.Sweep(center, scaledRadius, thickness * 0.5f, accentSoft, Styling.PulseOrbit, 0.85f, 0.25f);
             ProgressRing.CenterValue(center, model.Big, model.Small, Styling.TextStrong, Styling.TextDim, bigScale);
         }
 
         ImGui.SetCursorScreenPos(startScreen);
-        ImGui.Dummy(new Vector2(availX, r * 2f + 8f * s));
+        ImGui.Dummy(new Vector2(availableWidth, scaledRadius * 2f + 8f * scale));
     }
 
     private static RingModel ModelFor(Configuration cfg, AutoPvpSeriesController ctrl)
@@ -128,13 +156,13 @@ internal static class RunningPanel
             case TimeBoxedMode.ModeId:
             {
                 var target = Math.Max(1, cfg.TargetMinutes);
-                var mins = ctrl.SessionSnapshot?.Elapsed.TotalMinutes ?? 0;
-                return new RingModel((float)(mins / target), ((int)mins).ToString(), $"/ {target}m", false);
+                var elapsedMinutes = ctrl.SessionSnapshot?.Elapsed.TotalMinutes ?? 0;
+                return new RingModel((float)(elapsedMinutes / target), ((int)elapsedMinutes).ToString(), $"/ {target}m", false);
             }
             case SeriesRankMode.ModeId:
             {
-                var cur = PvpProfileReader.SeriesCurrentRank();
-                return new RingModel(PvpProfileReader.SeriesRankProgress(), cur.ToString(), $"→ {cfg.TargetSeriesRank}", false);
+                var currentRank = PvpProfileReader.SeriesCurrentRank();
+                return new RingModel(PvpProfileReader.SeriesRankProgress(), currentRank.ToString(), $"→ {cfg.TargetSeriesRank}", false);
             }
             default:
                 return new RingModel(0f, matches.ToString(), "∞", true);
@@ -143,42 +171,47 @@ internal static class RunningPanel
 
     private static void DrawLiveLine(string text, Vector4 accent)
     {
-        var s = ImGuiHelpers.GlobalScale;
-        var dotR = 3f * s;
-        var gap = 7f * s;
-        var lineH = ImGui.GetTextLineHeight();
-        var textW = ImGui.CalcTextSize(text).X;
-        var total = dotR * 2f + gap + textW;
+        var scale = ImGuiHelpers.GlobalScale;
+        var dotRadius = 3f * scale;
+        var gap = 7f * scale;
+        var lineHeight = ImGui.GetTextLineHeight();
+        var textWidth = ImGui.CalcTextSize(text).X;
+        var totalWidth = dotRadius * 2f + gap + textWidth;
 
-        Styling.CenterNextItem(total);
+        Styling.CenterNextItem(totalWidth);
 
-        var p = ImGui.GetCursorScreenPos();
+        var cursorScreen = ImGui.GetCursorScreenPos();
         var alpha = 0.35f + 0.65f * Styling.Pulse(Styling.PulseBreath);
         ImGui.GetWindowDrawList().AddCircleFilled(
-            new Vector2(p.X + dotR, p.Y + lineH * 0.5f), dotR, ImGui.GetColorU32(Styling.WithAlpha(accent, alpha)));
+            new Vector2(cursorScreen.X + dotRadius, cursorScreen.Y + lineHeight * 0.5f), dotRadius, ImGui.GetColorU32(Styling.WithAlpha(accent, alpha)));
 
-        ImGui.Dummy(new Vector2(dotR * 2f + gap, lineH));
+        ImGui.Dummy(new Vector2(dotRadius * 2f + gap, lineHeight));
         ImGui.SameLine(0, 0);
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
+        {
             ImGui.TextUnformatted(text);
+        }
     }
 
-    private static void DrawMatchClock(int timeLeft, Vector4 color, float s)
+    private static void DrawMatchClock(int timeLeft, Vector4 color, float scale)
     {
-        var frac = Math.Clamp(timeLeft / MatchClockSeconds, 0f, 1f);
-        var w = MathF.Min(ImGui.GetContentRegionAvail().X, 280f * s);
-        var h = 7f * s;
+        var fraction = Math.Clamp(timeLeft / MatchClockSeconds, 0f, 1f);
+        var barWidth = MathF.Min(ImGui.GetContentRegionAvail().X, 280f * scale);
+        var barHeight = 7f * scale;
 
         var leftX = ImGui.GetCursorPosX();
-        Styling.CenterNextItem(w);
+        Styling.CenterNextItem(barWidth);
 
         var origin = ImGui.GetCursorScreenPos();
-        var dl = ImGui.GetWindowDrawList();
-        var end = origin + new Vector2(w, h);
-        dl.AddRectFilled(origin, end, ImGui.GetColorU32(Styling.CardBgSoft), h * 0.5f);
-        if (frac > 0)
-            dl.AddRectFilled(origin, new Vector2(origin.X + w * frac, end.Y), ImGui.GetColorU32(color * 0.9f), h * 0.5f);
-        ImGui.Dummy(new Vector2(w, h));
+        var drawList = ImGui.GetWindowDrawList();
+        var end = origin + new Vector2(barWidth, barHeight);
+        drawList.AddRectFilled(origin, end, ImGui.GetColorU32(Styling.CardBgSoft), barHeight * 0.5f);
+        if (fraction > 0)
+        {
+            drawList.AddRectFilled(origin, new Vector2(origin.X + barWidth * fraction, end.Y), ImGui.GetColorU32(color * 0.9f), barHeight * 0.5f);
+        }
+
+        ImGui.Dummy(new Vector2(barWidth, barHeight));
 
         ImGui.SetCursorPosX(leftX);
         Styling.VSpace(2f);
@@ -187,15 +220,15 @@ internal static class RunningPanel
 
     private static void DrawSessionStrip(Configuration cfg, AutoPvpSeriesController ctrl)
     {
-        var sess = ctrl.SessionSnapshot;
-        var matches = sess?.MatchesCompleted ?? 0;
-        var elapsed = sess?.Elapsed ?? TimeSpan.Zero;
+        var session = ctrl.SessionSnapshot;
+        var matches = session?.MatchesCompleted ?? 0;
+        var elapsed = session?.Elapsed ?? TimeSpan.Zero;
         var rate = elapsed.TotalHours > 0 ? matches / elapsed.TotalHours : 0;
-        var exp = sess?.SeriesExpGained ?? 0;
+        var seriesExpGained = session?.SeriesExpGained ?? 0;
 
         var strip = cfg.ActiveMode.Id == MatchCountMode.ModeId
-            ? $"{Formatting.Elapsed(elapsed)}     ·     {rate:F1}/h     ·     +{Formatting.Exp(exp)} Series"
-            : $"{matches} matches     ·     {rate:F1}/h     ·     +{Formatting.Exp(exp)} Series";
+            ? $"{Formatting.Elapsed(elapsed)}{Layout.WideDotSeparator}{rate:F1}/h{Layout.WideDotSeparator}+{Formatting.Exp(seriesExpGained)} Series"
+            : $"{matches} matches{Layout.WideDotSeparator}{rate:F1}/h{Layout.WideDotSeparator}+{Formatting.Exp(seriesExpGained)} Series";
         Styling.TextCentered(strip, Styling.TextDim);
     }
 
@@ -216,7 +249,7 @@ internal static class RunningPanel
         Display.Queueing  => (Styling.AccentBlue,   Styling.AccentBlueSoft,   "IN QUEUE"),
         Display.Portraits => (Styling.AccentAmber,  Styling.AccentAmberSoft,  "PORTRAITS"),
         Display.Fighting  => (Styling.AccentViolet, Styling.AccentVioletSoft, "FIGHTING"),
-        Display.Finishing => (Styling.AccentMint,   Styling.AccentMintSoft,   "FINISHING UP"),
+        Display.Finishing => (Styling.AccentAmber,  Styling.AccentMint,       "DONE"),
         _                 => (Styling.AccentBlue,   Styling.AccentBlueSoft,   "IN MATCH"),
     };
 
@@ -237,8 +270,14 @@ internal static class RunningPanel
 
     private static string CurrentMapName()
     {
-        var id = Svc.ClientState.TerritoryType;
-        var name = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(id)?.PlaceName.ValueNullable?.Name.ExtractText();
-        return string.IsNullOrEmpty(name) ? "the arena" : name;
+        var territoryId = Svc.ClientState.TerritoryType;
+        if (cachedMapName == null || territoryId != cachedTerritoryId)
+        {
+            var name = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(territoryId)?.PlaceName.ValueNullable?.Name.ExtractText();
+            cachedMapName = string.IsNullOrEmpty(name) ? "the arena" : name;
+            cachedTerritoryId = territoryId;
+        }
+
+        return cachedMapName;
     }
 }

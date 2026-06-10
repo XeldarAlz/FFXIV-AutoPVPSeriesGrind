@@ -1,15 +1,14 @@
+using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Ipc;
 using Dalamud.Game.ClientState.Conditions;
-using ECommons;
 using ECommons.Automation;
 using ECommons.DalamudServices;
 using ECommons.UIHelpers.AddonMasterImplementations;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
+internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
 {
     private readonly AfterRunAction action = action;
 
@@ -31,34 +30,46 @@ public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
                 break;
 
             case AfterRunAction.Logout:
-                Status = "Logging out";
-                Diag("After-run: logging out.");
-                await NextFrame(PreCommandSettleMs);
-                Chat.ExecuteCommand(ApsgConstants.GameCommands.Logout);
-                if (await WaitUntilTimed(SelectYesnoOpen, YesnoWaitMs, "logout-yesno"))
-                {
-                    ClickYes();
-                    Diag("Logout confirmation accepted.");
-                }
-                else
-                {
-                    Warn($"Logout confirmation did not appear within {YesnoWaitMs / 1000}s; re-issuing /logout.");
-                    await NextFrame(PreCommandSettleMs);
-                    Chat.ExecuteCommand(ApsgConstants.GameCommands.Logout);
-                    if (await WaitUntilTimed(SelectYesnoOpen, YesnoWaitMs, "logout-yesno-retry"))
-                        ClickYes();
-                    else
-                        Warn("Logout confirmation still absent after retry; character may remain logged in.");
-                }
+                await LogoutWithConfirmation();
                 break;
 
             case AfterRunAction.CloseGame:
                 Status = "Closing the game";
-                Diag("After-run: closing the game (/xlkill).");
+                LogDiagnostic("After-run: closing the game (/xlkill).");
                 await NextFrame(PreCommandSettleMs);
                 Chat.ExecuteCommand(ApsgConstants.GameCommands.CloseGame);
                 break;
         }
+    }
+
+    private async Task LogoutWithConfirmation()
+    {
+        Status = "Logging out";
+        LogDiagnostic("After-run: logging out.");
+        if (await IssueLogoutAndAcceptYesno("logout-yesno"))
+        {
+            LogDiagnostic("Logout confirmation accepted.");
+            return;
+        }
+
+        Warn($"Logout confirmation did not appear within {YesnoWaitMs / 1000}s; re-issuing /logout.");
+        if (!await IssueLogoutAndAcceptYesno("logout-yesno-retry"))
+        {
+            Warn("Logout confirmation still absent after retry; character may remain logged in.");
+        }
+    }
+
+    private async Task<bool> IssueLogoutAndAcceptYesno(string waitScope)
+    {
+        await NextFrame(PreCommandSettleMs);
+        Chat.ExecuteCommand(ApsgConstants.GameCommands.Logout);
+        if (!await WaitUntilTimed(SelectYesnoOpen, YesnoWaitMs, waitScope))
+        {
+            return false;
+        }
+
+        ClickYes();
+        return true;
     }
 
     private async Task ReturnToInn()
@@ -71,7 +82,7 @@ public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
             return;
         }
 
-        Diag("After-run: returning to the inn via Lifestream.");
+        LogDiagnostic("After-run: returning to the inn via Lifestream.");
         ApsgLog.Chat("Run complete — retiring to the inn.");
         await NextFrame(PreCommandSettleMs);
         LifestreamIPC.Instance.ExecuteCommand(ApsgConstants.LifestreamCommands.ReturnToInn);
@@ -79,21 +90,23 @@ public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
         var started = await WaitUntilTimed(() =>
             LifestreamIPC.Instance.IsBusy()
             || Svc.Condition[ConditionFlag.Casting]
-            || Svc.Condition[ConditionFlag.BetweenAreas]
-            || Svc.Condition[ConditionFlag.BetweenAreas51], LifestreamStartMs, "inn-start");
+            || IsTransitioning(), LifestreamStartMs, "inn-start");
         if (!started)
         {
-            Diag("No Lifestream activity after the inn command; nothing more to do.");
+            LogDiagnostic("No Lifestream activity after the inn command; nothing more to do.");
             return;
         }
 
         await WaitUntilTimed(() =>
             !LifestreamIPC.Instance.IsBusy()
-            && !Svc.Condition[ConditionFlag.BetweenAreas]
-            && !Svc.Condition[ConditionFlag.BetweenAreas51]
+            && !IsTransitioning()
             && Svc.Objects.LocalPlayer is not null, LifestreamCompleteMs, "inn-complete");
-        Diag("Return to inn complete.");
+        LogDiagnostic("Return to inn complete.");
     }
+
+    private static bool IsTransitioning()
+        => Svc.Condition[ConditionFlag.BetweenAreas]
+        || Svc.Condition[ConditionFlag.BetweenAreas51];
 
     private static bool IsSafeToFinish()
         => Svc.Objects.LocalPlayer is not null
@@ -102,12 +115,13 @@ public sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
         && !Svc.Condition[ConditionFlag.BetweenAreas]
         && !Svc.Condition[ConditionFlag.Casting];
 
-    private static unsafe bool SelectYesnoOpen()
-        => GenericHelpers.TryGetAddonByName<AtkUnitBase>(ApsgConstants.AddonNames.SelectYesno, out var a) && GenericHelpers.IsAddonReady(a);
+    private static bool SelectYesnoOpen() => AddonProbe.IsReady(ApsgConstants.AddonNames.SelectYesno);
 
     private static unsafe void ClickYes()
     {
-        if (GenericHelpers.TryGetAddonByName<AtkUnitBase>(ApsgConstants.AddonNames.SelectYesno, out var a) && GenericHelpers.IsAddonReady(a))
-            new AddonMaster.SelectYesno((nint)a).Yes();
+        if (AddonProbe.TryGetReady(ApsgConstants.AddonNames.SelectYesno, out var addon))
+        {
+            new AddonMaster.SelectYesno((nint)addon).Yes();
+        }
     }
 }

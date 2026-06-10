@@ -45,7 +45,15 @@ public sealed class DependenciesWindow : Window, IDisposable
             ImGui.TextUnformatted("Required plugins");
         ImGui.SetWindowFontScale(1.0f);
 
-        var missing = ExternalPlugins.All.Count(p => ExternalPlugins.Catalog[p].Required && !ExternalPlugins.IsInstalled(p));
+        var missing = 0;
+        foreach (var plugin in ExternalPlugins.All)
+        {
+            if (ExternalPlugins.Catalog[plugin].Required && !ExternalPlugins.IsInstalled(plugin))
+            {
+                missing++;
+            }
+        }
+
         using (ImRaii.PushColor(ImGuiCol.Text, missing == 0 ? Styling.AccentMint : Styling.AccentRose))
             ImGui.TextUnformatted(missing == 0
                 ? "All required plugins are installed and loaded."

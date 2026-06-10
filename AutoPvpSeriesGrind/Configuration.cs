@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core;
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Modes;
 using Dalamud.Configuration;
@@ -50,23 +51,9 @@ public sealed class Configuration : IPluginConfiguration
 
     public void SaveDebounced()
     {
-        if (EzThrottler.Throttle(Core.ApsgConstants.ThrottleKeys.Save, Core.ApsgConstants.SaveThrottleMs))
+        if (EzThrottler.Throttle(ApsgConstants.ThrottleKeys.Save, ApsgConstants.SaveThrottleMs))
+        {
             Save();
+        }
     }
-}
-
-public enum AfterRunAction
-{
-    StayLoggedIn,
-    ReturnToInn,
-    Logout,
-    CloseGame,
-}
-
-public enum HumanizeLevel
-{
-    Off,
-    Light,
-    Realistic,
-    Heavy,
 }

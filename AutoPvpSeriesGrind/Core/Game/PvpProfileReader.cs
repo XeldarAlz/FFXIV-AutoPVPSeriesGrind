@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Util;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina.Excel.Sheets;
@@ -6,58 +7,47 @@ namespace AutoPvpSeriesGrind.Core.Game;
 
 internal static unsafe class PvpProfileReader
 {
-    public static int SeriesCurrentRank()
+    public static int SeriesCurrentRank() => Safe.Try("SeriesCurrentRank read failed", () =>
     {
-        try
-        {
-            var p = PvPProfile.Instance();
-            return p == null ? 0 : p->GetSeriesCurrentRank();
-        }
-        catch (Exception ex)
-        {
-            ApsgLog.Warn(ex, "SeriesCurrentRank read failed");
-            return 0;
-        }
-    }
+        var profile = PvPProfile.Instance();
+        return profile == null ? 0 : profile->GetSeriesCurrentRank();
+    }, fallback: 0);
 
-    public static float SeriesRankProgress()
+    public static float SeriesRankProgress() => Safe.Try("SeriesRankProgress read failed", () =>
     {
-        try
+        var profile = PvPProfile.Instance();
+        if (profile == null)
         {
-            var p = PvPProfile.Instance();
-            if (p == null) return 0f;
-            int rank = p->GetSeriesCurrentRank();
-            if (rank < 1) return 0f;
-            long into = p->GetSeriesExperience();
-            long toNext = Svc.Data.GetExcelSheet<PvPSeriesLevel>()?.GetRowOrDefault((uint)rank)?.ExpToNext ?? 0;
-            return toNext > 0 ? Math.Clamp(into / (float)toNext, 0f, 1f) : 0f;
-        }
-        catch (Exception ex)
-        {
-            ApsgLog.Warn(ex, "SeriesRankProgress read failed");
             return 0f;
         }
-    }
-
-    public static long SeriesTotalExperience()
-    {
-        try
+        int rank = profile->GetSeriesCurrentRank();
+        if (rank < 1)
         {
-            var p = PvPProfile.Instance();
-            if (p == null) return 0;
-
-            long total = p->GetSeriesExperience();
-            int rank = p->GetSeriesCurrentRank();
-            var sheet = Svc.Data.GetExcelSheet<PvPSeriesLevel>();
-            if (sheet is not null)
-                for (uint r = 1; r < rank; r++)
-                    total += sheet.GetRowOrDefault(r)?.ExpToNext ?? 0;
-            return total;
+            return 0f;
         }
-        catch (Exception ex)
+        long expIntoCurrentRank = profile->GetSeriesExperience();
+        long toNext = Svc.Data.GetExcelSheet<PvPSeriesLevel>()?.GetRowOrDefault((uint)rank)?.ExpToNext ?? 0;
+        return toNext > 0 ? Math.Clamp(expIntoCurrentRank / (float)toNext, 0f, 1f) : 0f;
+    }, fallback: 0f);
+
+    public static long SeriesTotalExperience() => Safe.Try<long>("SeriesTotalExperience read failed", () =>
+    {
+        var profile = PvPProfile.Instance();
+        if (profile == null)
         {
-            ApsgLog.Warn(ex, "SeriesTotalExperience read failed");
             return 0;
         }
-    }
+
+        long total = profile->GetSeriesExperience();
+        int rank = profile->GetSeriesCurrentRank();
+        var sheet = Svc.Data.GetExcelSheet<PvPSeriesLevel>();
+        if (sheet is not null)
+        {
+            for (uint rankIndex = 1; rankIndex < rank; rankIndex++)
+            {
+                total += sheet.GetRowOrDefault(rankIndex)?.ExpToNext ?? 0;
+            }
+        }
+        return total;
+    }, fallback: 0);
 }

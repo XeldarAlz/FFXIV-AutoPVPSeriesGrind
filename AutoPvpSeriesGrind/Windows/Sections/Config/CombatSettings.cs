@@ -8,6 +8,9 @@ namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class CombatSettings
 {
+    private const float RowLabelOffset = 150f;
+    private const float RowSliderWidth = 175f;
+
     private readonly record struct BehaviorChoice(string Name, string Blurb, bool BrainEnabled, PvpStrategy Strategy);
 
     private static readonly BehaviorChoice[] BehaviorChoices =
@@ -32,92 +35,119 @@ internal static class CombatSettings
     private static readonly string[] BehaviorNames = BehaviorChoices.Select(c => c.Name).ToArray();
     private static readonly string[] HumanizeNames = HumanizeChoices.Select(c => c.Name).ToArray();
 
+    private readonly record struct CustomStrategyRowDescriptor(
+        string? GroupHeader,
+        string Label,
+        string Tooltip,
+        int Minimum,
+        int Maximum,
+        string Format,
+        Func<CustomStrategyProfile, int> Getter,
+        Action<CustomStrategyProfile, int> Setter)
+    {
+        public string SliderId { get; } = $"##cs_{Label}";
+    }
+
+    private static readonly CustomStrategyRowDescriptor[] customStrategyRows =
+    [
+        new("Retreat", "Disengage HP", "Back off when pressured or outnumbered and your HP drops below this.",
+            0, 100, "%d%%", static custom => custom.DisengageHpPercent, static (custom, value) => custom.DisengageHpPercent = value),
+        new(null, "Re-engage HP", "Rejoin the fight once you've healed back above this.",
+            0, 100, "%d%%", static custom => custom.ReengageHpPercent, static (custom, value) => custom.ReengageHpPercent = value),
+        new(null, "Panic HP", "Always flee below this HP, no matter the situation.",
+            0, 100, "%d%%", static custom => custom.PanicHpPercent, static (custom, value) => custom.PanicHpPercent = value),
+        new(null, "Pressure count", "How many enemies targeting you counts as 'under pressure' (gates the HP retreat).",
+            1, 8, "%d enemies", static custom => custom.FocusRetreatCount, static (custom, value) => custom.FocusRetreatCount = value),
+        new("Aggression", "Push advantage", "Ally-minus-enemy edge around you needed before pushing a target. Lower is bolder; 0 pushes on an even fight.",
+            -2, 4, "%d", static custom => custom.PushAdvantage, static (custom, value) => custom.PushAdvantage = value),
+        new(null, "Outnumber margin", "How far behind in local numbers before falling back to the team. 0 = back off on any deficit.",
+            0, 6, "%d", static custom => custom.OutnumberMargin, static (custom, value) => custom.OutnumberMargin = value),
+        new("Positioning", "Melee hold", "Yalms a melee holds off the point when not pushing.",
+            0, 15, "%d yd", static custom => custom.MeleeHoldRange, static (custom, value) => custom.MeleeHoldRange = value),
+        new(null, "Melee reach", "Yalms a melee closes to when pushing a target.",
+            0, 10, "%d yd", static custom => custom.MeleeReach, static (custom, value) => custom.MeleeReach = value),
+        new(null, "Ranged standoff", "Yalms a backline keeps from the point when holding.",
+            0, 30, "%d yd", static custom => custom.RangedStandoff, static (custom, value) => custom.RangedStandoff = value),
+        new(null, "Ranged band", "Yalms a backline keeps from its target when pushing.",
+            0, 30, "%d yd", static custom => custom.RangedBand, static (custom, value) => custom.RangedBand = value),
+        new("Team & range", "Engage radius", "Yalms around the fight used to weigh the local force balance.",
+            5, 40, "%d yd", static custom => custom.EngageRadius, static (custom, value) => custom.EngageRadius = value),
+        new(null, "Leash radius", "Yalms from the point the brain will still pick a target (chase limit).",
+            5, 40, "%d yd", static custom => custom.LeashRadius, static (custom, value) => custom.LeashRadius = value),
+        new(null, "Cohesion radius", "Yalms from the team's center the brain is willing to stray.",
+            5, 40, "%d yd", static custom => custom.CohesionRadius, static (custom, value) => custom.CohesionRadius = value),
+        new(null, "Kite distance", "Yalms peeled away each step while retreating.",
+            5, 30, "%d yd", static custom => custom.KiteDistance, static (custom, value) => custom.KiteDistance = value),
+        new("Teamplay & focus", "Support radius", "Yalms around you a teammate must be to count as backup. Outside this you're 'alone'.",
+            5, 40, "%d yd", static custom => custom.SupportRadius, static (custom, value) => custom.SupportRadius = value),
+        new(null, "Threat radius", "Yalms around you used to count nearby enemies when weighing whether you're outnumbered.",
+            5, 40, "%d yd", static custom => custom.ThreatRadius, static (custom, value) => custom.ThreatRadius = value),
+        new(null, "Focus reposition", "Enemies targeting you that trigger a kite-to-safety before your HP drops.",
+            1, 8, "%d enemies", static custom => custom.FocusRepositionCount, static (custom, value) => custom.FocusRepositionCount = value),
+        new(null, "Burst sensitivity", "How fast your HP must fall (per second) to count as being bursted and bail early.",
+            5, 100, "%d%%/s", static custom => custom.BurstSensitivityPercent, static (custom, value) => custom.BurstSensitivityPercent = value),
+        new(null, "Stage standoff", "Yalms to keep from the enemy group while waiting to commit with the team.",
+            5, 40, "%d yd", static custom => custom.StageStandoff, static (custom, value) => custom.StageStandoff = value),
+        new(null, "Reposition step", "Yalms to peel toward your team when focused.",
+            5, 30, "%d yd", static custom => custom.RepositionDistance, static (custom, value) => custom.RepositionDistance = value),
+    ];
+
     public static void Draw(Configuration cfg)
     {
-        var mode = cfg.EnableCombatBrain
-            ? Math.Max(0, Array.FindIndex(BehaviorChoices, c => c.BrainEnabled && c.Strategy == cfg.Strategy))
+        var behaviorIndex = cfg.EnableCombatBrain
+            ? Math.Max(0, FindBehaviorIndex(cfg.Strategy))
             : 0;
 
-        SettingsRow.Draw("Combat behavior", BehaviorChoices[mode].Blurb, () =>
-            SettingsControls.DrawCombo("##behavior", BehaviorNames[mode], BehaviorNames, mode, i =>
+        SettingsRow.Draw("Combat behavior", BehaviorChoices[behaviorIndex].Blurb, () =>
+            SettingsControls.DrawCombo("##behavior", BehaviorNames[behaviorIndex], BehaviorNames, behaviorIndex, selectedIndex =>
             {
-                var choice = BehaviorChoices[i];
+                var choice = BehaviorChoices[selectedIndex];
                 cfg.EnableCombatBrain = choice.BrainEnabled;
-                if (choice.BrainEnabled) cfg.Strategy = choice.Strategy;
+                if (choice.BrainEnabled)
+                {
+                    cfg.Strategy = choice.Strategy;
+                }
+
                 cfg.SaveDebounced();
             }));
 
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
+        {
             ImGui.TextWrapped("This only controls movement — where to stand and when to back off. RotationSolver still presses your skills (and Guard/Purify); the Limit Break is fired by the required Auto PVP LB plugin, which this plugin auto-configures for your class.");
+        }
+
         ImGui.Spacing();
         ImGui.Spacing();
 
         if (cfg.EnableCombatBrain && cfg.Strategy == PvpStrategy.Custom)
+        {
             DrawCustomStrategy(cfg);
+        }
 
-        var humanizeIdx = Math.Max(0, Array.FindIndex(HumanizeChoices, c => c.Level == cfg.Humanize));
-        SettingsRow.Draw("Humanize timing", HumanizeChoices[humanizeIdx].Blurb, () =>
-            SettingsControls.DrawCombo("##humanize", HumanizeNames[humanizeIdx], HumanizeNames, humanizeIdx, i =>
+        var humanizeIndex = Math.Max(0, FindHumanizeIndex(cfg.Humanize));
+        SettingsRow.Draw("Humanize timing", HumanizeChoices[humanizeIndex].Blurb, () =>
+            SettingsControls.DrawCombo("##humanize", HumanizeNames[humanizeIndex], HumanizeNames, humanizeIndex, selectedIndex =>
             {
-                cfg.Humanize = HumanizeChoices[i].Level;
+                cfg.Humanize = HumanizeChoices[selectedIndex].Level;
                 cfg.SaveDebounced();
             }));
     }
 
     private static void DrawCustomStrategy(Configuration cfg)
     {
-        var c = cfg.CustomStrategy;
+        var custom = cfg.CustomStrategy;
         ImGui.Spacing();
 
-        Group("Retreat");
-        Row(cfg, "Disengage HP", "Back off when pressured or outnumbered and your HP drops below this.",
-            () => c.DisengageHpPercent, v => c.DisengageHpPercent = v, 0, 100, "%d%%");
-        Row(cfg, "Re-engage HP", "Rejoin the fight once you've healed back above this.",
-            () => c.ReengageHpPercent, v => c.ReengageHpPercent = v, 0, 100, "%d%%");
-        Row(cfg, "Panic HP", "Always flee below this HP, no matter the situation.",
-            () => c.PanicHpPercent, v => c.PanicHpPercent = v, 0, 100, "%d%%");
-        Row(cfg, "Pressure count", "How many enemies targeting you counts as 'under pressure' (gates the HP retreat).",
-            () => c.FocusRetreatCount, v => c.FocusRetreatCount = v, 1, 8, "%d enemies");
+        for (var rowIndex = 0; rowIndex < customStrategyRows.Length; rowIndex++)
+        {
+            var descriptor = customStrategyRows[rowIndex];
+            if (descriptor.GroupHeader != null)
+            {
+                Group(descriptor.GroupHeader);
+            }
 
-        Group("Aggression");
-        Row(cfg, "Push advantage", "Ally-minus-enemy edge around you needed before pushing a target. Lower is bolder; 0 pushes on an even fight.",
-            () => c.PushAdvantage, v => c.PushAdvantage = v, -2, 4, "%d");
-        Row(cfg, "Outnumber margin", "How far behind in local numbers before falling back to the team. 0 = back off on any deficit.",
-            () => c.OutnumberMargin, v => c.OutnumberMargin = v, 0, 6, "%d");
-
-        Group("Positioning");
-        Row(cfg, "Melee hold", "Yalms a melee holds off the point when not pushing.",
-            () => c.MeleeHoldRange, v => c.MeleeHoldRange = v, 0, 15, "%d yd");
-        Row(cfg, "Melee reach", "Yalms a melee closes to when pushing a target.",
-            () => c.MeleeReach, v => c.MeleeReach = v, 0, 10, "%d yd");
-        Row(cfg, "Ranged standoff", "Yalms a backline keeps from the point when holding.",
-            () => c.RangedStandoff, v => c.RangedStandoff = v, 0, 30, "%d yd");
-        Row(cfg, "Ranged band", "Yalms a backline keeps from its target when pushing.",
-            () => c.RangedBand, v => c.RangedBand = v, 0, 30, "%d yd");
-
-        Group("Team & range");
-        Row(cfg, "Engage radius", "Yalms around the fight used to weigh the local force balance.",
-            () => c.EngageRadius, v => c.EngageRadius = v, 5, 40, "%d yd");
-        Row(cfg, "Leash radius", "Yalms from the point the brain will still pick a target (chase limit).",
-            () => c.LeashRadius, v => c.LeashRadius = v, 5, 40, "%d yd");
-        Row(cfg, "Cohesion radius", "Yalms from the team's center the brain is willing to stray.",
-            () => c.CohesionRadius, v => c.CohesionRadius = v, 5, 40, "%d yd");
-        Row(cfg, "Kite distance", "Yalms peeled away each step while retreating.",
-            () => c.KiteDistance, v => c.KiteDistance = v, 5, 30, "%d yd");
-
-        Group("Teamplay & focus");
-        Row(cfg, "Support radius", "Yalms around you a teammate must be to count as backup. Outside this you're 'alone'.",
-            () => c.SupportRadius, v => c.SupportRadius = v, 5, 40, "%d yd");
-        Row(cfg, "Threat radius", "Yalms around you used to count nearby enemies when weighing whether you're outnumbered.",
-            () => c.ThreatRadius, v => c.ThreatRadius = v, 5, 40, "%d yd");
-        Row(cfg, "Focus reposition", "Enemies targeting you that trigger a kite-to-safety before your HP drops.",
-            () => c.FocusRepositionCount, v => c.FocusRepositionCount = v, 1, 8, "%d enemies");
-        Row(cfg, "Burst sensitivity", "How fast your HP must fall (per second) to count as being bursted and bail early.",
-            () => c.BurstSensitivityPercent, v => c.BurstSensitivityPercent = v, 5, 100, "%d%%/s");
-        Row(cfg, "Stage standoff", "Yalms to keep from the enemy group while waiting to commit with the team.",
-            () => c.StageStandoff, v => c.StageStandoff = v, 5, 40, "%d yd");
-        Row(cfg, "Reposition step", "Yalms to peel toward your team when focused.",
-            () => c.RepositionDistance, v => c.RepositionDistance = v, 5, 30, "%d yd");
+            Row(cfg, custom, descriptor);
+        }
 
         ImGui.Spacing();
     }
@@ -128,14 +158,48 @@ internal static class CombatSettings
         Styling.SectionLabel(label);
     }
 
-    private static void Row(Configuration cfg, string label, string tip, Func<int> get, Action<int> set,
-        int min, int max, string fmt)
+    private static void Row(Configuration cfg, CustomStrategyProfile custom, CustomStrategyRowDescriptor descriptor)
     {
         ImGui.AlignTextToFramePadding();
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
-            ImGui.TextUnformatted(label);
-        if (ImGui.IsItemHovered()) ImGui.SetTooltip(tip);
-        ImGui.SameLine(150f * ImGuiHelpers.GlobalScale);
-        SettingsControls.DrawIntSlider(cfg, $"##cs_{label}", get, set, min, max, fmt, 175f);
+        {
+            ImGui.TextUnformatted(descriptor.Label);
+        }
+
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip(descriptor.Tooltip);
+        }
+
+        ImGui.SameLine(RowLabelOffset * ImGuiHelpers.GlobalScale);
+        SettingsControls.DrawIntSlider(cfg, descriptor.SliderId, () => descriptor.Getter(custom),
+            value => descriptor.Setter(custom, value), descriptor.Minimum, descriptor.Maximum, descriptor.Format, RowSliderWidth);
+    }
+
+    private static int FindBehaviorIndex(PvpStrategy strategy)
+    {
+        for (var choiceIndex = 0; choiceIndex < BehaviorChoices.Length; choiceIndex++)
+        {
+            var choice = BehaviorChoices[choiceIndex];
+            if (choice.BrainEnabled && choice.Strategy == strategy)
+            {
+                return choiceIndex;
+            }
+        }
+
+        return -1;
+    }
+
+    private static int FindHumanizeIndex(HumanizeLevel level)
+    {
+        for (var choiceIndex = 0; choiceIndex < HumanizeChoices.Length; choiceIndex++)
+        {
+            if (HumanizeChoices[choiceIndex].Level == level)
+            {
+                return choiceIndex;
+            }
+        }
+
+        return -1;
     }
 }

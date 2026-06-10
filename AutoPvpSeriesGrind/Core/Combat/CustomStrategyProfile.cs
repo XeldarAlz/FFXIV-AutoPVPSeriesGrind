@@ -2,30 +2,30 @@ namespace AutoPvpSeriesGrind.Core.Combat;
 
 public sealed class CustomStrategyProfile
 {
-    public int DisengageHpPercent { get; set; } = 35;
-    public int ReengageHpPercent { get; set; } = 65;
-    public int PanicHpPercent { get; set; } = 20;
-    public int FocusRetreatCount { get; set; } = 3;
-    public int FocusRepositionCount { get; set; } = 2;
+    public int DisengageHpPercent { get; set; } = ModerateStrategyBaseline.DisengageHpPercent;
+    public int ReengageHpPercent { get; set; } = ModerateStrategyBaseline.ReengageHpPercent;
+    public int PanicHpPercent { get; set; } = ModerateStrategyBaseline.PanicHpPercent;
+    public int FocusRetreatCount { get; set; } = ModerateStrategyBaseline.FocusRetreatCount;
+    public int FocusRepositionCount { get; set; } = ModerateStrategyBaseline.FocusRepositionCount;
 
-    public int PushAdvantage { get; set; } = 1;
-    public int OutnumberMargin { get; set; } = 1;
+    public int PushAdvantage { get; set; } = ModerateStrategyBaseline.PushAdvantage;
+    public int OutnumberMargin { get; set; } = ModerateStrategyBaseline.OutnumberMargin;
 
-    public int MeleeHoldRange { get; set; } = 5;
-    public int MeleeReach { get; set; } = 3;
-    public int RangedStandoff { get; set; } = 18;
-    public int RangedBand { get; set; } = 16;
+    public int MeleeHoldRange { get; set; } = ModerateStrategyBaseline.MeleeHoldRange;
+    public int MeleeReach { get; set; } = ModerateStrategyBaseline.MeleeReach;
+    public int RangedStandoff { get; set; } = ModerateStrategyBaseline.RangedStandoff;
+    public int RangedBand { get; set; } = ModerateStrategyBaseline.RangedBand;
 
-    public int EngageRadius { get; set; } = 25;
-    public int LeashRadius { get; set; } = 18;
-    public int CohesionRadius { get; set; } = 18;
-    public int KiteDistance { get; set; } = 16;
+    public int EngageRadius { get; set; } = ModerateStrategyBaseline.EngageRadius;
+    public int LeashRadius { get; set; } = ModerateStrategyBaseline.LeashRadius;
+    public int CohesionRadius { get; set; } = ModerateStrategyBaseline.CohesionRadius;
+    public int KiteDistance { get; set; } = ModerateStrategyBaseline.KiteDistance;
 
-    public int SupportRadius { get; set; } = 22;
-    public int ThreatRadius { get; set; } = 18;
-    public int BurstSensitivityPercent { get; set; } = 30;
-    public int StageStandoff { get; set; } = 18;
-    public int RepositionDistance { get; set; } = 10;
+    public int SupportRadius { get; set; } = ModerateStrategyBaseline.SupportRadius;
+    public int ThreatRadius { get; set; } = ModerateStrategyBaseline.ThreatRadius;
+    public int BurstSensitivityPercent { get; set; } = ModerateStrategyBaseline.BurstSensitivityPercent;
+    public int StageStandoff { get; set; } = ModerateStrategyBaseline.StageStandoff;
+    public int RepositionDistance { get; set; } = ModerateStrategyBaseline.RepositionDistance;
 
     internal StrategyProfile ToProfile() => new(
         DisengageHp: Pct(DisengageHpPercent),

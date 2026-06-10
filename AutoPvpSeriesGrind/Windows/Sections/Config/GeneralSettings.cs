@@ -1,12 +1,14 @@
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 
 namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class GeneralSettings
 {
+    private const string RequeueMinSliderId = "##rq_Min";
+    private const string RequeueMaxSliderId = "##rq_Max";
+
     public static void Draw(Configuration cfg)
     {
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
@@ -27,7 +29,7 @@ internal static class GeneralSettings
 
         SettingsRow.Draw("Take breaks",
             "Idle for a while every so often, the way a person steps away between sessions. Off by default.",
-            () => SettingsControls.DrawToggle(cfg, () => cfg.TakeBreaks, v => cfg.TakeBreaks = v, "##breaks"));
+            () => SettingsControls.DrawToggle(cfg, () => cfg.TakeBreaks, value => cfg.TakeBreaks = value));
 
         if (cfg.TakeBreaks)
         {
@@ -43,16 +45,8 @@ internal static class GeneralSettings
 
     private static void DrawRequeueRange(Configuration cfg)
     {
-        LabeledSlider(cfg, "Min", () => cfg.RequeueDelayMinSeconds, v => cfg.RequeueDelayMinSeconds = v);
-        LabeledSlider(cfg, "Max", () => cfg.RequeueDelayMaxSeconds, v => cfg.RequeueDelayMaxSeconds = v);
-    }
-
-    private static void LabeledSlider(Configuration cfg, string label, Func<int> get, Action<int> set)
-    {
-        ImGui.AlignTextToFramePadding();
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
-            ImGui.TextUnformatted(label);
-        ImGui.SameLine(50f * ImGuiHelpers.GlobalScale);
-        SettingsControls.DrawIntSlider(cfg, $"##rq_{label}", get, set, 0, 60, "%d s", 220f);
+        SettingsControls.DrawDelayRange(cfg, RequeueMinSliderId, RequeueMaxSliderId,
+            () => cfg.RequeueDelayMinSeconds, value => cfg.RequeueDelayMinSeconds = value,
+            () => cfg.RequeueDelayMaxSeconds, value => cfg.RequeueDelayMaxSeconds = value, 60);
     }
 }

@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Util;
 using clib.Extensions;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Enums;
@@ -9,55 +10,68 @@ namespace AutoPvpSeriesGrind.Core.Game;
 
 internal static unsafe class DutyOps
 {
-    public static bool QueueCasualMatch() => Try("QueueCasualMatch", () =>
-    {
-        var cf = ContentsFinder.Instance();
-        if (cf == null) return false;
-        var qi = cf->GetQueueInfo();
-        if (qi == null) return false;
+    // ContentsFinderQueueInfo.QueueRoulette's undocumented second parameter ("a3" in FFXIVClientStructs).
+    private const byte QueueRouletteUnknownArgument = 0;
 
-        if (qi->QueueState is ContentsFinderQueueState.Pending or ContentsFinderQueueState.Queued)
-            qi->CancelQueue();
-        (*cf).ResetFlags();
-        qi->QueueRoulette(ApsgConstants.CasualMatchRouletteId, 0);
+    private const int NoCommandArgument = 0;
+
+    public static bool QueueCasualMatch() => Safe.Try("QueueCasualMatch failed", () =>
+    {
+        var contentsFinder = ContentsFinder.Instance();
+        if (contentsFinder == null)
+        {
+            return false;
+        }
+        var queueInfo = contentsFinder->GetQueueInfo();
+        if (queueInfo == null)
+        {
+            return false;
+        }
+
+        if (queueInfo->QueueState is ContentsFinderQueueState.Pending or ContentsFinderQueueState.Queued)
+        {
+            queueInfo->CancelQueue();
+        }
+        (*contentsFinder).ResetFlags();
+        queueInfo->QueueRoulette(ApsgConstants.CasualMatchRouletteId, QueueRouletteUnknownArgument);
         return true;
     }, fallback: false);
 
-    public static bool IsQueued() => TrySilent(() =>
+    public static bool IsQueued() => Safe.TrySilent(() =>
     {
-        var cf = ContentsFinder.Instance();
-        if (cf == null) return false;
-        var qi = cf->GetQueueInfo();
-        if (qi == null) return false;
-        return qi->QueueState is ContentsFinderQueueState.Pending
+        var contentsFinder = ContentsFinder.Instance();
+        if (contentsFinder == null)
+        {
+            return false;
+        }
+        var queueInfo = contentsFinder->GetQueueInfo();
+        if (queueInfo == null)
+        {
+            return false;
+        }
+        return queueInfo->QueueState is ContentsFinderQueueState.Pending
             or ContentsFinderQueueState.Queued or ContentsFinderQueueState.Ready;
     }, fallback: false);
 
-    public static void LeaveCurrentContent() => Try("LeaveCurrentContent", () =>
+    public static void LeaveCurrentContent() => Safe.Try("LeaveCurrentContent failed", () =>
     {
-        GameMain.ExecuteCommand((int)clib.Enums.CommandFlag.LeaveDuty, 0, 0, 0, 0);
-        return true;
-    }, fallback: false);
+        GameMain.ExecuteCommand((int)clib.Enums.CommandFlag.LeaveDuty,
+            NoCommandArgument, NoCommandArgument, NoCommandArgument, NoCommandArgument);
+    });
 
-    public static int ContentTimeLeft() => TrySilent(() =>
+    public static int ContentTimeLeft() => Safe.TrySilent(() =>
     {
-        var ef = EventFramework.Instance();
-        if (ef == null) return 0;
-        var dir = ef->GetInstanceContentDirector();
-        if (dir == null || !dir->HasTimer()) return 0;
+        var eventFramework = EventFramework.Instance();
+        if (eventFramework == null)
+        {
+            return 0;
+        }
+        var contentDirector = eventFramework->GetInstanceContentDirector();
+        if (contentDirector == null || !contentDirector->HasTimer())
+        {
+            return 0;
+        }
         var now = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        return Math.Max(0, dir->GetTimeRemaining(now));
+        return Math.Max(0, contentDirector->GetTimeRemaining(now));
     }, fallback: 0);
-
-    private static T Try<T>(string label, Func<T> body, T fallback)
-    {
-        try { return body(); }
-        catch (Exception ex) { ApsgLog.Warn(ex, $"{label} failed"); return fallback; }
-    }
-
-    private static T TrySilent<T>(Func<T> body, T fallback)
-    {
-        try { return body(); }
-        catch { return fallback; }
-    }
 }

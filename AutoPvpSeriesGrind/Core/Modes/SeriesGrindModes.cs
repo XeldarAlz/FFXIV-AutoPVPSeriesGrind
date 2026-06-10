@@ -2,7 +2,7 @@ namespace AutoPvpSeriesGrind.Core.Modes;
 
 public static class SeriesGrindModes
 {
-    private static readonly List<ISeriesGrindMode> registered =
+    private static readonly ISeriesGrindMode[] registered =
     [
         new MatchCountMode(),
         new SeriesRankMode(),
@@ -15,5 +15,18 @@ public static class SeriesGrindModes
     public static ISeriesGrindMode Default => registered[0];
 
     public static ISeriesGrindMode GetById(string? id)
-        => (id is null ? null : registered.FirstOrDefault(m => m.Id == id)) ?? Default;
+    {
+        if (id is null)
+        {
+            return Default;
+        }
+        for (var modeIndex = 0; modeIndex < registered.Length; modeIndex++)
+        {
+            if (registered[modeIndex].Id == id)
+            {
+                return registered[modeIndex];
+            }
+        }
+        return Default;
+    }
 }

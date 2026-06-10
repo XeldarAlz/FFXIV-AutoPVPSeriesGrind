@@ -15,6 +15,4 @@ public interface ISeriesGrindMode
     string Description { get; }
 
     bool IsComplete(ModeContext ctx);
-
-    string? GetRemainingDisplay(ModeContext ctx) => null;
 }

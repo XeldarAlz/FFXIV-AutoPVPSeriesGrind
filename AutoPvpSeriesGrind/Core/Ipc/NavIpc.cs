@@ -8,6 +8,9 @@ namespace AutoPvpSeriesGrind.Core.Ipc;
 
 internal sealed class NavIpc
 {
+    private const float DefaultHalfExtentXZ = 5f;
+    private const float DefaultHalfExtentY = 5f;
+
     private static NavIpc? instance;
     public static NavIpc Instance => instance ??= new NavIpc();
 
@@ -16,7 +19,6 @@ internal sealed class NavIpc
     private readonly ICallGateSubscriber<object> stop;
     private readonly ICallGateSubscriber<bool> isRunning;
     private readonly ICallGateSubscriber<bool> pathfindInProgress;
-    private readonly ICallGateSubscriber<bool> navIsReady;
     private readonly ICallGateSubscriber<Vector3, float, float, Vector3?> nearestPointReachable;
 
     private NavIpc()
@@ -26,7 +28,6 @@ internal sealed class NavIpc
         stop = Svc.PluginInterface.GetIpcSubscriber<object>(IpcGates.NavStop);
         isRunning = Svc.PluginInterface.GetIpcSubscriber<bool>(IpcGates.NavIsRunning);
         pathfindInProgress = Svc.PluginInterface.GetIpcSubscriber<bool>(IpcGates.NavPathfindInProgress);
-        navIsReady = Svc.PluginInterface.GetIpcSubscriber<bool>(IpcGates.NavIsReady);
         nearestPointReachable = Svc.PluginInterface.GetIpcSubscriber<Vector3, float, float, Vector3?>(IpcGates.NavNearestPointReachable);
     }
 
@@ -35,17 +36,25 @@ internal sealed class NavIpc
     public void MoveTo(Vector3 dest, bool fly = false)
     {
         if (moveTo.HasFunction)
+        {
             IpcGate.Run(true, () => { _ = moveTo.InvokeFunc(dest, fly); }, "NavIpc: PathfindAndMoveTo failed");
+        }
         else
-            Chat.ExecuteCommand(GameCommands.NavMoveTo(dest));
+        {
+            MoveToViaChatCommand(dest);
+        }
     }
 
     public void MoveCloseTo(Vector3 dest, float range, bool fly = false)
     {
         if (moveCloseTo.HasFunction)
+        {
             IpcGate.Run(true, () => { _ = moveCloseTo.InvokeFunc(dest, fly, range); }, "NavIpc: PathfindAndMoveCloseTo failed");
+        }
         else
-            Chat.ExecuteCommand(GameCommands.NavMoveTo(dest));
+        {
+            MoveToViaChatCommand(dest);
+        }
     }
 
     public void Stop()
@@ -60,10 +69,11 @@ internal sealed class NavIpc
         => IpcGate.Invoke(isRunning.HasFunction, isRunning.InvokeFunc, false, "NavIpc: IsRunning failed")
         || IpcGate.Invoke(pathfindInProgress.HasFunction, pathfindInProgress.InvokeFunc, false, "NavIpc: PathfindInProgress failed");
 
-    public bool IsReady() => IpcGate.Invoke(navIsReady.HasFunction, navIsReady.InvokeFunc, true, "NavIpc: IsReady failed");
-
-    public Vector3? NearestPointReachable(Vector3 point, float halfExtentXZ = 5f, float halfExtentY = 5f)
+    public Vector3? NearestPointReachable(Vector3 point, float halfExtentXZ = DefaultHalfExtentXZ, float halfExtentY = DefaultHalfExtentY)
         => IpcGate.Invoke(nearestPointReachable.HasFunction,
             () => nearestPointReachable.InvokeFunc(point, halfExtentXZ, halfExtentY), (Vector3?)null,
             "NavIpc: NearestPointReachable failed");
+
+    private static void MoveToViaChatCommand(Vector3 destination)
+        => Chat.ExecuteCommand(GameCommands.NavMoveTo(destination));
 }

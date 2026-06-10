@@ -39,52 +39,73 @@ public static class LbPresets
     // Bump whenever the table changes so already-configured clients receive the update.
     public const int Version = 2;
 
+    private static class JobId
+    {
+        public const uint Paladin = 19;
+        public const uint Monk = 20;
+        public const uint Warrior = 21;
+        public const uint Dragoon = 22;
+        public const uint Bard = 23;
+        public const uint WhiteMage = 24;
+        public const uint BlackMage = 25;
+        public const uint Summoner = 27;
+        public const uint Scholar = 28;
+        public const uint Ninja = 30;
+        public const uint Machinist = 31;
+        public const uint DarkKnight = 32;
+        public const uint Astrologian = 33;
+        public const uint Samurai = 34;
+        public const uint RedMage = 35;
+        public const uint Gunbreaker = 37;
+        public const uint Dancer = 38;
+        public const uint Reaper = 39;
+        public const uint Sage = 40;
+        public const uint Viper = 41;
+        public const uint Pictomancer = 42;
+    }
+
     // Offensive: fire when an enemy is low enough that the LB's burst secures the kill.
     // Absolute threshold ≈ LB damage minus a buffer for in-flight heals/shields.
-    private static LbRulePreset OffAbs(uint absolute)
+    private static LbRulePreset OffensiveAbsolute(uint absolute)
         => new() { Mode = LbFireMode.Offensive, EnemyHpMode = ThresholdMode.Absolute, EnemyHpAbsolute = absolute };
 
-    private static LbRulePreset OffPct(float percent)
+    private static LbRulePreset OffensivePercent(float percent)
         => new() { Mode = LbFireMode.Offensive, EnemyHpMode = ThresholdMode.Percent, EnemyHpPercent = percent };
 
     // Defensive: team heal/shield/mitigation — fire when allies (self included) are hurt AND enemies are present.
-    private static LbRulePreset Def(float allyHp, int allies, float allyR, int enemies, float enemyR)
-        => new() { Mode = LbFireMode.Defensive, AllyHpPercent = allyHp, AllyCountNear = allies, AllyRadiusYalms = allyR, EnemyCountNear = enemies, EnemyRadiusYalms = enemyR };
+    private static LbRulePreset Defensive(float allyHp, int allies, float allyRadius, int enemies, float enemyRadius)
+        => new() { Mode = LbFireMode.Defensive, AllyHpPercent = allyHp, AllyCountNear = allies, AllyRadiusYalms = allyRadius, EnemyCountNear = enemies, EnemyRadiusYalms = enemyRadius };
 
     // Utility: team buff or self-centered AoE setup/CC — fire in a teamfight. allies=1 means "self only",
     // i.e. the trigger reduces to "enough enemies clustered" for LBs that don't need teammates in range.
-    private static LbRulePreset Util(int allies, float allyR, int enemies, float enemyR)
-        => new() { Mode = LbFireMode.Utility, AllyCountNear = allies, AllyRadiusYalms = allyR, EnemyCountNear = enemies, EnemyRadiusYalms = enemyR };
+    private static LbRulePreset Utility(int allies, float allyRadius, int enemies, float enemyRadius)
+        => new() { Mode = LbFireMode.Utility, AllyCountNear = allies, AllyRadiusYalms = allyRadius, EnemyCountNear = enemies, EnemyRadiusYalms = enemyRadius };
 
-    // Keyed by ClassJob RowId. Values are starting points derived from each LB's mechanic — tune to taste.
-    public static readonly IReadOnlyDictionary<uint, LbRulePreset> Rules = new Dictionary<uint, LbRulePreset>
+    private static readonly IReadOnlyDictionary<uint, LbRulePreset> Rules = new Dictionary<uint, LbRulePreset>
     {
-        // ── Offensive (secure a kill) ──────────────────────────────────────────────
-        [31] = OffAbs(33_500), // MCH Marksman's Spite — 40k single-target nuke
-        [34] = OffAbs(20_000), // SAM Zantetsuken — 24k AoE, ignores Guard (Kuzushi = execute)
-        [32] = OffAbs(18_000), // DRK Eventide — up to 24k line; scales with DRK's own HP, so conservative
-        [20] = OffAbs(18_000), // MNK Meteodrive — 12k + 12k, removes Guard, roots
-        [27] = OffAbs(16_500), // SMN Summon Bahamut — Megaflare 20k AoE
-        [22] = OffAbs(16_000), // DRG Sky High → Sky Shatter — 16k AoE (32k within 5y)
-        [24] = OffAbs(15_000), // WHM Afflatus Purgation — 18k line + stun + team regen (hybrid; see notes)
-        [41] = OffAbs(12_500), // VPR World-Swallower — 15k AoE + Reawakened burst window
-        [30] = OffPct(48f),    // NIN Seiton Tenchu — incapacitates foes below 50% HP
+        [JobId.Machinist] = OffensiveAbsolute(33_500),
+        [JobId.Samurai] = OffensiveAbsolute(20_000),
+        [JobId.DarkKnight] = OffensiveAbsolute(18_000),
+        [JobId.Monk] = OffensiveAbsolute(18_000),
+        [JobId.Summoner] = OffensiveAbsolute(16_500),
+        [JobId.Dragoon] = OffensiveAbsolute(16_000),
+        [JobId.WhiteMage] = OffensiveAbsolute(15_000),
+        [JobId.Viper] = OffensiveAbsolute(12_500),
+        [JobId.Ninja] = OffensivePercent(48f),
 
-        // ── Defensive (team heal / shield / mitigation) ────────────────────────────
-        [19] = Def(allyHp: 60f, allies: 2, allyR: 15f, enemies: 2, enemyR: 15f), // PLD Phalanx — self invuln + party 33% DR
-        [40] = Def(allyHp: 65f, allies: 2, allyR: 12f, enemies: 2, enemyR: 15f), // SGE Mesotes — damage-negate barrier zone
-        [42] = Def(allyHp: 70f, allies: 2, allyR: 15f, enemies: 2, enemyR: 15f), // PCT Chocobastion — -25% dmg-taken zone + knockback
-        [28] = Def(allyHp: 70f, allies: 2, allyR: 20f, enemies: 1, enemyR: 25f), // SCH Seraphism — heal ramp + cleanse/barrier
-        [35] = Def(allyHp: 70f, allies: 2, allyR: 15f, enemies: 2, enemyR: 20f), // RDM Southern Cross — 12k party heal + 12k AoE
+        [JobId.Paladin] = Defensive(allyHp: 60f, allies: 2, allyRadius: 15f, enemies: 2, enemyRadius: 15f),
+        [JobId.Sage] = Defensive(allyHp: 65f, allies: 2, allyRadius: 12f, enemies: 2, enemyRadius: 15f),
+        [JobId.Pictomancer] = Defensive(allyHp: 70f, allies: 2, allyRadius: 15f, enemies: 2, enemyRadius: 15f),
+        [JobId.Scholar] = Defensive(allyHp: 70f, allies: 2, allyRadius: 20f, enemies: 1, enemyRadius: 25f),
+        [JobId.RedMage] = Defensive(allyHp: 70f, allies: 2, allyRadius: 15f, enemies: 2, enemyRadius: 20f),
 
-        // ── Utility (teamfight buff / setup / CC) ──────────────────────────────────
-        [33] = Util(allies: 2, allyR: 20f, enemies: 2, enemyR: 20f), // AST Celestial River — team +30% dmg/heal, enemies -30% dmg
-        [23] = Util(allies: 2, allyR: 25f, enemies: 2, enemyR: 25f), // BRD Final Fantasia — +10% party damage (30y)
-        [21] = Util(allies: 1, allyR: 20f, enemies: 2, enemyR: 12f), // WAR Primal Scream — cone Guard-strip + Inner Release
-        [37] = Util(allies: 1, allyR: 20f, enemies: 2, enemyR: 8f),  // GNB Relentless Rush — PBAoE DoT + self mit + dmg-taken debuff
-        [25] = Util(allies: 1, allyR: 20f, enemies: 2, enemyR: 20f), // BLM Soul Resonance — upgrades to Flare/Freeze AoE
-        [38] = Util(allies: 1, allyR: 20f, enemies: 2, enemyR: 12f), // DNC Contradance — AoE charm (Seduced)
-        [39] = Util(allies: 1, allyR: 20f, enemies: 2, enemyR: 10f), // RPR Tenebrae Lemurum — self burst + AoE Hysteria stun
+        [JobId.Astrologian] = Utility(allies: 2, allyRadius: 20f, enemies: 2, enemyRadius: 20f),
+        [JobId.Bard] = Utility(allies: 2, allyRadius: 25f, enemies: 2, enemyRadius: 25f),
+        [JobId.Warrior] = Utility(allies: 1, allyRadius: 20f, enemies: 2, enemyRadius: 12f),
+        [JobId.Gunbreaker] = Utility(allies: 1, allyRadius: 20f, enemies: 2, enemyRadius: 8f),
+        [JobId.BlackMage] = Utility(allies: 1, allyRadius: 20f, enemies: 2, enemyRadius: 20f),
+        [JobId.Dancer] = Utility(allies: 1, allyRadius: 20f, enemies: 2, enemyRadius: 12f),
+        [JobId.Reaper] = Utility(allies: 1, allyRadius: 20f, enemies: 2, enemyRadius: 10f),
     };
 
     public static string ToJson() => JsonConvert.SerializeObject(Rules);
