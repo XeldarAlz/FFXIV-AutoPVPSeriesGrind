@@ -26,7 +26,7 @@ internal static class DependencyBanner
         foreach (var externalPlugin in ExternalPlugins.All)
         {
             var info = ExternalPlugins.Catalog[externalPlugin];
-            if (!info.Required || ExternalPlugins.IsInstalled(externalPlugin))
+            if (!ExternalPlugins.IsRequired(externalPlugin) || ExternalPlugins.IsInstalled(externalPlugin))
             {
                 continue;
             }

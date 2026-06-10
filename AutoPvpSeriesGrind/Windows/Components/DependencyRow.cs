@@ -19,14 +19,15 @@ internal static class DependencyRow
         var info = ExternalPlugins.Catalog[plugin];
         var installed = ExternalPlugins.IsInstalled(plugin);
         var installing = PluginInstaller.IsInstalling(plugin);
+        var required = ExternalPlugins.IsRequired(plugin);
 
         ImGui.TableNextRow();
 
         ImGui.TableSetColumnIndex(0);
-        DrawStatusIcon(installed, info.Required);
+        DrawStatusIcon(installed, required);
 
         ImGui.TableSetColumnIndex(1);
-        DrawName(info);
+        DrawName(info, required);
 
         ImGui.TableSetColumnIndex(2);
         DrawAction(plugin, info, installed, installing);
@@ -45,14 +46,14 @@ internal static class DependencyRow
             ImGui.TextUnformatted(icon.ToIconString());
     }
 
-    private static void DrawName(ExternalPluginInfo info)
+    private static void DrawName(ExternalPluginInfo info, bool required)
     {
         ImGui.AlignTextToFramePadding();
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextStrong))
             ImGui.TextUnformatted(info.DisplayName);
         ImGui.SameLine();
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
-            ImGui.TextUnformatted(info.Required ? "  required" : "  optional");
+            ImGui.TextUnformatted(required ? "  required" : "  optional");
 
         if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
         {

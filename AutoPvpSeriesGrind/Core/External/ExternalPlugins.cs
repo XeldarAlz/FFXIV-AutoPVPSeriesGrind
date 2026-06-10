@@ -50,6 +50,19 @@ internal static class ExternalPlugins
         return snapshot;
     }
 
+    public static bool IsRequired(ExternalPlugin plugin)
+    {
+        if (!Catalog[plugin].Required)
+        {
+            return false;
+        }
+        if (plugin == ExternalPlugin.RotationSolver)
+        {
+            return Plugin.Cfg.RotationProvider == RotationProvider.RotationSolver;
+        }
+        return true;
+    }
+
     public static bool IsInstalled(ExternalPlugin plugin)
     {
         var info = Catalog[plugin];
@@ -73,11 +86,7 @@ internal static class ExternalPlugins
         for (var pluginIndex = 0; pluginIndex < AllSnapshot.Length; pluginIndex++)
         {
             var plugin = AllSnapshot[pluginIndex];
-            if (!Catalog[plugin].Required)
-            {
-                continue;
-            }
-            if (!IsInstalled(plugin))
+            if (IsRequired(plugin) && !IsInstalled(plugin))
             {
                 return false;
             }
@@ -89,8 +98,7 @@ internal static class ExternalPlugins
     {
         foreach (var plugin in All)
         {
-            var info = Catalog[plugin];
-            if (!info.Required || IsInstalled(plugin)) continue;
+            if (!IsRequired(plugin) || IsInstalled(plugin)) continue;
             if (PluginInstaller.IsInstalling(plugin) || PluginInstaller.DidFail(plugin)) continue;
             _ = PluginInstaller.Install(plugin);
         }

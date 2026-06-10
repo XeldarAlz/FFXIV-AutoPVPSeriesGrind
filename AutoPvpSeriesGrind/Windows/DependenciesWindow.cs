@@ -48,7 +48,7 @@ public sealed class DependenciesWindow : Window, IDisposable
         var missing = 0;
         foreach (var plugin in ExternalPlugins.All)
         {
-            if (ExternalPlugins.Catalog[plugin].Required && !ExternalPlugins.IsInstalled(plugin))
+            if (ExternalPlugins.IsRequired(plugin) && !ExternalPlugins.IsInstalled(plugin))
             {
                 missing++;
             }

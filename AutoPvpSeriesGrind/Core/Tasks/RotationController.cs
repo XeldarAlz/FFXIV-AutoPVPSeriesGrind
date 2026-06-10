@@ -12,7 +12,9 @@ internal sealed class RotationController(PvpBrain brain)
 
     private readonly PvpBrain brain = brain;
 
-    private string enableCommand = GameCommands.EnableRotation;
+    public bool Managed { get; private set; } = true;
+    public bool UsesLowHpPreset { get; private set; } = true;
+    public string EnableCommand { get; private set; } = GameCommands.EnableRotation;
 
     private bool wasDead;
     private long deadSinceMs;
@@ -29,7 +31,12 @@ internal sealed class RotationController(PvpBrain brain)
         clearedSignThisLife = false;
     }
 
-    public void SetEnableCommand(string command) => enableCommand = command;
+    public void Configure(bool managed, bool brainPicksTargets)
+    {
+        Managed = managed;
+        UsesLowHpPreset = !brainPicksTargets;
+        EnableCommand = brainPicksTargets ? GameCommands.EnableRotationManual : GameCommands.EnableRotation;
+    }
 
     public void MarkRotationEnabled()
     {
@@ -86,19 +93,28 @@ internal sealed class RotationController(PvpBrain brain)
 
     private void ReapplyRotation(string logMessage)
     {
-        Chat.ExecuteCommand(enableCommand);
         rotationNeedsReset = false;
+        if (!Managed)
+        {
+            return;
+        }
+        Chat.ExecuteCommand(EnableCommand);
         ApsgLog.Info(logMessage);
     }
 
     public void EnsureRotationEnabled()
     {
-        if (MatchState.IsNormalConditions() && !rotationEnabledThisLife)
+        if (rotationEnabledThisLife || !MatchState.IsNormalConditions())
         {
-            Chat.ExecuteCommand(enableCommand);
-            rotationEnabledThisLife = true;
-            ApsgLog.Info("rotation enabled (live failsafe)");
+            return;
         }
+        rotationEnabledThisLife = true;
+        if (!Managed)
+        {
+            return;
+        }
+        Chat.ExecuteCommand(EnableCommand);
+        ApsgLog.Info("rotation enabled (live failsafe)");
     }
 
     public void EnsureSignCleared()

@@ -149,11 +149,25 @@ internal sealed partial class AutoPvpSeries
 
         LogDiagnostic($"gate open detected by ContentTimeLeft -> {timeLeftSeconds}");
         matchFlow.InMatchLive = true;
-        ExecuteGameCommand(GameCommands.AddLowHpTargeting);
-        await NextFrame(PollMs);
-        ExecuteGameCommand(GameCommands.EnableRotation);
+        await EnableRotationAtMatchStart();
+        return true;
+    }
+
+    private async Task EnableRotationAtMatchStart()
+    {
+        if (!rotation.Managed)
+        {
+            rotation.MarkRotationEnabled();
+            return;
+        }
+
+        if (rotation.UsesLowHpPreset)
+        {
+            ExecuteGameCommand(GameCommands.AddLowHpTargeting);
+            await NextFrame(PollMs);
+        }
+        ExecuteGameCommand(rotation.EnableCommand);
         rotation.MarkRotationEnabled();
         LogDiagnostic("rotation enabled (match start)");
-        return true;
     }
 }

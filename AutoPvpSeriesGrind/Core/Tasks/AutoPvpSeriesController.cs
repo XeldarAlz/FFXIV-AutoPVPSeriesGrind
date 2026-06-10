@@ -67,7 +67,7 @@ internal sealed class AutoPvpSeriesController
         {
             var plugin = ExternalPlugins.All[pluginIndex];
             var info = ExternalPlugins.Catalog[plugin];
-            if (!info.Required || ExternalPlugins.IsInstalled(plugin))
+            if (!ExternalPlugins.IsRequired(plugin) || ExternalPlugins.IsInstalled(plugin))
             {
                 continue;
             }

@@ -22,6 +22,14 @@ internal static class CombatSettings
         new("Custom", "Play smart, hand-tuned: every threshold below is yours to set. Starts from the Moderate baseline.", true, PvpStrategy.Custom),
     ];
 
+    private readonly record struct RotationProviderChoice(string Name, string Blurb, RotationProvider Provider);
+
+    private static readonly RotationProviderChoice[] RotationProviderChoices =
+    [
+        new("RotationSolver Reborn", "Required, auto-installed, and driven by this plugin — combat skills, Guard, and Purify are handled for you. The recommended default.", RotationProvider.RotationSolver),
+        new("Other / manual", "Bring your own rotation plugin (e.g. Wrath Combo). This plugin never touches it and RotationSolver is no longer required — pressing skills, Guard, and Purify are your plugin's job.", RotationProvider.External),
+    ];
+
     private readonly record struct HumanizeChoice(string Name, string Blurb, HumanizeLevel Level);
 
     private static readonly HumanizeChoice[] HumanizeChoices =
@@ -33,6 +41,7 @@ internal static class CombatSettings
     ];
 
     private static readonly string[] BehaviorNames = BehaviorChoices.Select(c => c.Name).ToArray();
+    private static readonly string[] RotationProviderNames = RotationProviderChoices.Select(c => c.Name).ToArray();
     private static readonly string[] HumanizeNames = HumanizeChoices.Select(c => c.Name).ToArray();
 
     private readonly record struct CustomStrategyRowDescriptor(
@@ -94,6 +103,8 @@ internal static class CombatSettings
 
     public static void Draw(Configuration cfg)
     {
+        DrawRotationProvider(cfg);
+
         var behaviorIndex = cfg.EnableCombatBrain
             ? Math.Max(0, FindBehaviorIndex(cfg.Strategy))
             : 0;
@@ -113,7 +124,7 @@ internal static class CombatSettings
 
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
         {
-            ImGui.TextWrapped("This only controls movement — where to stand and when to back off. RotationSolver still presses your skills (and Guard/Purify); the Limit Break is fired by the required Auto PVP LB plugin, which this plugin auto-configures for your class.");
+            ImGui.TextWrapped("This only controls movement — where to stand and when to back off. Your rotation plugin presses the skills; the Limit Break is fired by the required Auto PVP LB plugin, which this plugin auto-configures for your class.");
         }
 
         ImGui.Spacing();
@@ -138,10 +149,21 @@ internal static class CombatSettings
             }));
     }
 
+    private static void DrawRotationProvider(Configuration cfg)
+    {
+        var providerIndex = Math.Max(0, FindRotationProviderIndex(cfg.RotationProvider));
+        SettingsRow.Draw("Rotation plugin", RotationProviderChoices[providerIndex].Blurb, () =>
+            SettingsControls.DrawCombo("##rotprovider", RotationProviderNames[providerIndex], RotationProviderNames, providerIndex, selectedIndex =>
+            {
+                cfg.RotationProvider = RotationProviderChoices[selectedIndex].Provider;
+                cfg.SaveDebounced();
+            }));
+    }
+
     private static void DrawTargetPicking(Configuration cfg)
     {
         SettingsRow.Draw("Smart target picking",
-            "On: this plugin decides who to attack — it joins the team's focus target, prefers low-HP and squishy enemies (healers first), and ignores anyone with Guard up. RotationSolver runs in manual mode and presses skills on that target. Off: RotationSolver picks targets itself (always the lowest HP in range).",
+            "On: this plugin decides who to attack — it joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. RotationSolver runs in manual mode and presses skills on that target; another rotation plugin must attack your current target. Off: the rotation plugin picks targets itself (RotationSolver uses lowest HP in range).",
             () => SettingsControls.DrawToggle(cfg, () => cfg.BrainPicksTargets, value => cfg.BrainPicksTargets = value));
     }
 
@@ -186,6 +208,19 @@ internal static class CombatSettings
         ImGui.SameLine(RowLabelOffset * ImGuiHelpers.GlobalScale);
         SettingsControls.DrawIntSlider(cfg, descriptor.SliderId, () => descriptor.Getter(custom),
             value => descriptor.Setter(custom, value), descriptor.Minimum, descriptor.Maximum, descriptor.Format, RowSliderWidth);
+    }
+
+    private static int FindRotationProviderIndex(RotationProvider provider)
+    {
+        for (var choiceIndex = 0; choiceIndex < RotationProviderChoices.Length; choiceIndex++)
+        {
+            if (RotationProviderChoices[choiceIndex].Provider == provider)
+            {
+                return choiceIndex;
+            }
+        }
+
+        return -1;
     }
 
     private static int FindBehaviorIndex(PvpStrategy strategy)

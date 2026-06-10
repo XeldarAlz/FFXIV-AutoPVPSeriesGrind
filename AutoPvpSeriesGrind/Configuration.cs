@@ -30,6 +30,7 @@ public sealed class Configuration : IPluginConfiguration
     public int GoodMatchDelayMaxSeconds { get; set; } = 2;
     public bool RandomEmotes { get; set; } = false;
 
+    public RotationProvider RotationProvider { get; set; } = RotationProvider.RotationSolver;
     public bool EnableCombatBrain { get; set; } = true;
     public bool BrainPicksTargets { get; set; } = false;
     public PvpStrategy Strategy { get; set; } = PvpStrategy.Moderate;
