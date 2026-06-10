@@ -1,5 +1,9 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Windows.Components;
+using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Utility;
+using Dalamud.Interface.Utility.Raii;
+using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
@@ -85,6 +89,8 @@ internal static class CustomStrategySettings
         {
             DrawGroup(cfg, custom, group);
         }
+
+        DrawResetRow(cfg);
     }
 
     private static void DrawGroup(Configuration cfg, CustomStrategyProfile custom, Group group)
@@ -102,5 +108,33 @@ internal static class CustomStrategySettings
             () => SettingsControls.DrawIntSlider(cfg, row.SliderId,
                 () => row.Getter(custom), value => row.Setter(custom, value),
                 row.Minimum, row.Maximum, row.Format));
+    }
+
+    private const float ResetButtonWidth = 170f;
+
+    private static void DrawResetRow(Configuration cfg)
+    {
+        var armed = ImGui.GetIO().KeyCtrl;
+        var width = ResetButtonWidth * ImGuiHelpers.GlobalScale;
+        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, ImGui.GetContentRegionAvail().X - width));
+
+        using var colors = ImRaii.PushColor(ImGuiCol.Button, Styling.CardBgSoft)
+            .Push(ImGuiCol.ButtonHovered, Styling.WithAlpha(Styling.AccentRose, 0.30f))
+            .Push(ImGuiCol.ButtonActive, Styling.WithAlpha(Styling.AccentRose, 0.45f))
+            .Push(ImGuiCol.Border, Styling.BorderDim)
+            .Push(ImGuiCol.Text, armed ? Styling.AccentRose : Styling.TextDim);
+        using var rounding = ImRaii.PushStyle(ImGuiStyleVar.FrameRounding, Styling.FrameRounding);
+        using var border = ImRaii.PushStyle(ImGuiStyleVar.FrameBorderSize, 1f);
+
+        if (ImGui.Button("Reset to defaults", new Vector2(width, ImGui.GetFrameHeight())) && armed)
+        {
+            cfg.CustomStrategy = new CustomStrategyProfile();
+            cfg.Save();
+        }
+
+        if (ImGui.IsItemHovered())
+        {
+            SettingsRow.HelpTooltip("Sets every value above back to the Moderate baseline. Hold Ctrl and click to confirm.");
+        }
     }
 }
