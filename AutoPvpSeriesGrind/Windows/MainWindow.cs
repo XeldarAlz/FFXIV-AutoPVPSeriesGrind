@@ -38,7 +38,5 @@ public sealed class MainWindow : Window, IDisposable
             RunningPanel.Draw(configuration, controller);
         else
             IdlePanel.Draw(configuration, controller);
-
-        Footer.Draw();
     }
 }

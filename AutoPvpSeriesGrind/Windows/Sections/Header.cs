@@ -5,6 +5,7 @@ using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using System;
 using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Windows.Sections;
@@ -30,11 +31,22 @@ internal static class Header
         ImGui.AlignTextToFramePadding();
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextStrong))
         {
-            ImGui.TextUnformatted("AUTO PVP SERIES GRIND");
+            ImGui.TextUnformatted(Greeting());
         }
 
         DrawIconCluster(plugin, frameHeight);
         Styling.HairlineRule(2f, 2f);
+    }
+
+    private static string Greeting()
+    {
+        return DateTime.Now.Hour switch
+        {
+            >= 5 and < 12 => "Good morning, ready to grind?",
+            >= 12 and < 17 => "Good afternoon, ready to grind?",
+            >= 17 and < 22 => "Good evening, ready to grind?",
+            _ => "Late night grind session?",
+        };
     }
 
     private static void DrawIconCluster(Plugin plugin, float buttonSize)
