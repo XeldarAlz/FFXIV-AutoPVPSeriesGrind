@@ -37,15 +37,15 @@ public sealed class ConfigWindow : Window, IDisposable
     private readonly Plugin plugin;
     private Tab activeTab = Tab.Session;
 
-    public ConfigWindow(Plugin plugin) : base("Auto PVP Series Grind — Settings###AutoPvpSeriesGrindConfig")
+    public ConfigWindow(Plugin plugin) : base("Auto PVP Series Grind - Settings###AutoPvpSeriesGrindConfig")
     {
         this.plugin = plugin;
         Flags = ImGuiWindowFlags.NoCollapse;
-        Size = new Vector2(560, 460);
+        Size = new Vector2(620, 500);
         SizeCondition = ImGuiCond.FirstUseEver;
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(480, 360),
+            MinimumSize = new Vector2(560, 400),
             MaximumSize = new Vector2(2000, 1600),
         };
     }

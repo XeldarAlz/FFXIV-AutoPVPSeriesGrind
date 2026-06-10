@@ -2,15 +2,22 @@ using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class SettingsControls
 {
-    private const float DefaultSliderWidth = 200f;
-    private const float DefaultComboWidth = 180f;
-    private const float DelaySliderLabelOffset = 50f;
-    private const float DelaySliderWidth = 220f;
+    public const float ToggleWidth = 38f;
+    public const float RowSliderWidth = 180f;
+    public const float RowComboWidth = 170f;
+
+    private const float RangeDragWidth = 62f;
+    private const float RangeDashSlot = 14f;
+    private const float RangeDragSpeed = 0.25f;
+
+    public static float RangeInlineWidth()
+        => RangeDragWidth * 2f + RangeDashSlot;
 
     public static void DrawToggle(Configuration cfg, Func<bool> getter, Action<bool> setter)
     {
@@ -23,14 +30,11 @@ internal static class SettingsControls
     }
 
     public static void DrawIntSlider(Configuration cfg, string id, Func<int> getter, Action<int> setter,
-        int minimum, int maximum, string format = "%d", float width = DefaultSliderWidth)
+        int minimum, int maximum, string format = "%d", float width = RowSliderWidth)
     {
         var value = getter();
         ImGui.SetNextItemWidth(width * ImGuiHelpers.GlobalScale);
-        using (ImRaii.PushColor(ImGuiCol.SliderGrab, Styling.AccentViolet)
-            .Push(ImGuiCol.SliderGrabActive, Styling.AccentVioletSoft)
-            .Push(ImGuiCol.FrameBg, Styling.CardBgSoft)
-            .Push(ImGuiCol.FrameBgHovered, Styling.CardBgHover))
+        using (PushFrameColors())
         {
             if (ImGui.SliderInt(id, ref value, minimum, maximum, format))
             {
@@ -40,42 +44,117 @@ internal static class SettingsControls
         }
     }
 
-    public static void DrawCombo(string id, string preview, string[] options, int selected, Action<int> onSelect,
-        float width = DefaultComboWidth)
+    public static void DrawRangeInline(Configuration cfg, string minId, string maxId,
+        Func<int> getMin, Action<int> setMin, Func<int> getMax, Action<int> setMax,
+        int maxValue, string format = "%d s")
     {
-        ImGui.SetNextItemWidth(width * ImGuiHelpers.GlobalScale);
-        using var combo = ImRaii.Combo(id, preview);
-        if (!combo)
+        using var colors = PushFrameColors();
+
+        DrawRangeBound(cfg, minId, getMin, setMin, maxValue, format,
+            onChanged: value => { if (value > getMax()) setMax(value); });
+
+        DrawRangeDash();
+
+        DrawRangeBound(cfg, maxId, getMax, setMax, maxValue, format,
+            onChanged: value => { if (value < getMin()) setMin(value); });
+    }
+
+    private static void DrawRangeBound(Configuration cfg, string id, Func<int> getter, Action<int> setter,
+        int maxValue, string format, Action<int> onChanged)
+    {
+        var value = getter();
+        ImGui.SetNextItemWidth(RangeDragWidth * ImGuiHelpers.GlobalScale);
+        if (!ImGui.DragInt(id, ref value, RangeDragSpeed, 0, maxValue, format))
         {
             return;
         }
 
-        for (var optionIndex = 0; optionIndex < options.Length; optionIndex++)
+        value = Math.Clamp(value, 0, maxValue);
+        setter(value);
+        onChanged(value);
+        cfg.SaveDebounced();
+    }
+
+    private static void DrawRangeDash()
+    {
+        var dashSlot = RangeDashSlot * ImGuiHelpers.GlobalScale;
+
+        ImGui.SameLine(0f, 0f);
+        var slotOrigin = ImGui.GetCursorScreenPos();
+        var dashSize = ImGui.CalcTextSize("–");
+        ImGui.SetCursorScreenPos(slotOrigin + new Vector2((dashSlot - dashSize.X) * 0.5f, (ImGui.GetFrameHeight() - dashSize.Y) * 0.5f));
+        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
         {
-            if (ImGui.Selectable(options[optionIndex], optionIndex == selected))
+            ImGui.TextUnformatted("–");
+        }
+
+        ImGui.SameLine(0f, 0f);
+        ImGui.SetCursorScreenPos(slotOrigin with { X = slotOrigin.X + dashSlot });
+    }
+
+    private static IDisposable PushFrameColors()
+        => ImRaii.PushColor(ImGuiCol.SliderGrab, Styling.AccentViolet)
+            .Push(ImGuiCol.SliderGrabActive, Styling.AccentVioletSoft)
+            .Push(ImGuiCol.FrameBg, Styling.CardBgSoft)
+            .Push(ImGuiCol.FrameBgHovered, Styling.CardBgHover)
+            .Push(ImGuiCol.FrameBgActive, Styling.CardBgHover);
+
+    internal static class Choices
+    {
+        public readonly record struct Choice(string Name, string Detail);
+
+        private const float PopupWidth = 320f;
+        private const float ItemPaddingX = 6f;
+        private const float ItemPaddingY = 5f;
+        private const float NameDetailGap = 2f;
+
+        public static void DrawCombo(string id, Choice[] options, int selected, Action<int> onSelect,
+            float width = RowComboWidth)
+        {
+            var scale = ImGuiHelpers.GlobalScale;
+            ImGui.SetNextItemWidth(width * scale);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(PopupWidth * scale, 0f), new Vector2(PopupWidth * scale, 600f * scale));
+
+            using var frameColors = PushFrameColors();
+            using var combo = ImRaii.Combo(id, options[selected].Name);
+            if (!combo)
             {
-                onSelect(optionIndex);
+                return;
+            }
+
+            for (var optionIndex = 0; optionIndex < options.Length; optionIndex++)
+            {
+                if (DrawItem(id, options[optionIndex], optionIndex, optionIndex == selected))
+                {
+                    onSelect(optionIndex);
+                }
             }
         }
-    }
 
-    public static void DrawLabeledDelaySlider(Configuration cfg, string id, string label,
-        Func<int> getter, Action<int> setter, int maxSeconds)
-    {
-        ImGui.AlignTextToFramePadding();
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
+        private static bool DrawItem(string comboId, Choice option, int optionIndex, bool selected)
         {
-            ImGui.TextUnformatted(label);
+            var scale = ImGuiHelpers.GlobalScale;
+            var paddingX = ItemPaddingX * scale;
+            var paddingY = ItemPaddingY * scale;
+            var nameDetailGap = NameDetailGap * scale;
+            var lineHeight = ImGui.GetTextLineHeight();
+            var wrapWidth = ImGui.GetContentRegionAvail().X - paddingX * 2f;
+
+            var detailSize = ImGui.CalcTextSize(option.Detail, false, wrapWidth);
+            var itemHeight = paddingY * 2f + lineHeight + nameDetailGap + detailSize.Y;
+
+            var itemOrigin = ImGui.GetCursorScreenPos();
+            var clicked = ImGui.Selectable($"##{comboId}_opt{optionIndex}", selected,
+                ImGuiSelectableFlags.None, new Vector2(0f, itemHeight));
+
+            var drawList = ImGui.GetWindowDrawList();
+            var nameColor = selected ? Styling.AccentVioletSoft : Styling.TextStrong;
+            drawList.AddText(itemOrigin + new Vector2(paddingX, paddingY), ImGui.GetColorU32(nameColor), option.Name);
+            drawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(),
+                itemOrigin + new Vector2(paddingX, paddingY + lineHeight + nameDetailGap),
+                ImGui.GetColorU32(Styling.TextMuted), option.Detail, wrapWidth);
+
+            return clicked;
         }
-
-        ImGui.SameLine(DelaySliderLabelOffset * ImGuiHelpers.GlobalScale);
-        DrawIntSlider(cfg, id, getter, setter, 0, maxSeconds, "%d s", DelaySliderWidth);
-    }
-
-    public static void DrawDelayRange(Configuration cfg, string minId, string maxId,
-        Func<int> getMin, Action<int> setMin, Func<int> getMax, Action<int> setMax, int maxSeconds)
-    {
-        DrawLabeledDelaySlider(cfg, minId, "Min", getMin, setMin, maxSeconds);
-        DrawLabeledDelaySlider(cfg, maxId, "Max", getMax, setMax, maxSeconds);
     }
 }

@@ -1,252 +1,174 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Windows.Components;
-using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility;
-using Dalamud.Interface.Utility.Raii;
 
 namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class CombatSettings
 {
-    private const float RowLabelOffset = 150f;
-    private const float RowSliderWidth = 175f;
-
-    private readonly record struct BehaviorChoice(string Name, string Blurb, bool BrainEnabled, PvpStrategy Strategy);
-
-    private static readonly BehaviorChoice[] BehaviorChoices =
-    [
-        new("Rush the crystal", "No tactics — just run to the objective and stand on it. Never retreats, never picks targets. Simplest to reason about, but it will feed when outnumbered.", BrainEnabled: false, PvpStrategy.Moderate),
-        new("Defensive", "Play smart, cautious: hold the point but never dive, wait for the team before committing, and kite away the moment it's focused. Backs off on any deficit; retreats below ~55% HP. Ranged DPS and healers hold far behind the point.", true, PvpStrategy.Defensive),
-        new("Moderate", "Play smart, balanced: hold the point, take short chases when ahead, fall back to the team when outnumbered, and kite out when two enemies focus it. Retreats below ~35% HP. A good default.", true, PvpStrategy.Moderate),
-        new("Aggressive", "Play smart, aggressive: push the enemy line and chase kills, but still won't solo a lost fight — falls back only when badly outnumbered and retreats only when nearly dead (below ~18% HP).", true, PvpStrategy.Aggressive),
-        new("Custom", "Play smart, hand-tuned: every threshold below is yours to set. Starts from the Moderate baseline.", true, PvpStrategy.Custom),
-    ];
-
-    private readonly record struct RotationProviderChoice(string Name, string Blurb, RotationProvider Provider);
-
-    private static readonly RotationProviderChoice[] RotationProviderChoices =
-    [
-        new("RotationSolver Reborn", "Required, auto-installed, and driven by this plugin — combat skills, Guard, and Purify are handled for you. The recommended default.", RotationProvider.RotationSolver),
-        new("Other / manual", "Bring your own rotation plugin (e.g. Wrath Combo). This plugin never touches it and RotationSolver is no longer required — pressing skills, Guard, and Purify are your plugin's job.", RotationProvider.External),
-    ];
-
-    private readonly record struct HumanizeChoice(string Name, string Blurb, HumanizeLevel Level);
-
-    private static readonly HumanizeChoice[] HumanizeChoices =
-    [
-        new("Off", "React instantly. Movement is frame-perfect.", HumanizeLevel.Off),
-        new("Light", "A small reaction delay (~80–220ms) before changing what it's doing.", HumanizeLevel.Light),
-        new("Realistic", "A natural reaction delay (~140–380ms). A good default.", HumanizeLevel.Realistic),
-        new("Heavy", "A slow, deliberate reaction (~260–650ms) — clearly unhurried.", HumanizeLevel.Heavy),
-    ];
-
-    private static readonly string[] BehaviorNames = BehaviorChoices.Select(c => c.Name).ToArray();
-    private static readonly string[] RotationProviderNames = RotationProviderChoices.Select(c => c.Name).ToArray();
-    private static readonly string[] HumanizeNames = HumanizeChoices.Select(c => c.Name).ToArray();
-
-    private readonly record struct CustomStrategyRowDescriptor(
-        string? GroupHeader,
-        string Label,
-        string Tooltip,
-        int Minimum,
-        int Maximum,
-        string Format,
-        Func<CustomStrategyProfile, int> Getter,
-        Action<CustomStrategyProfile, int> Setter)
-    {
-        public string SliderId { get; } = $"##cs_{Label}";
-    }
-
-    private static readonly CustomStrategyRowDescriptor[] customStrategyRows =
-    [
-        new("Retreat", "Disengage HP", "If enemies are on you (or your side is outnumbered) and your HP falls below this, run back to safety.",
-            0, 100, "%d%%", static custom => custom.DisengageHpPercent, static (custom, value) => custom.DisengageHpPercent = value),
-        new(null, "Re-engage HP", "Once you have recovered above this much HP, go back into the fight.",
-            0, 100, "%d%%", static custom => custom.ReengageHpPercent, static (custom, value) => custom.ReengageHpPercent = value),
-        new(null, "Panic HP", "Below this HP, always run away — no exceptions.",
-            0, 100, "%d%%", static custom => custom.PanicHpPercent, static (custom, value) => custom.PanicHpPercent = value),
-        new(null, "Pressure count", "How many enemies must be targeting you before you count as 'in danger'. Works together with Disengage HP.",
-            1, 8, "%d enemies", static custom => custom.FocusRetreatCount, static (custom, value) => custom.FocusRetreatCount = value),
-        new("Aggression", "Push advantage", "How many more fighters your side needs in the area before you chase a kill. 0 = chase even fights; negative = chase even when outnumbered.",
-            -2, 4, "%d", static custom => custom.PushAdvantage, static (custom, value) => custom.PushAdvantage = value),
-        new(null, "Outnumber margin", "How many more enemies than allies near you it takes before you fall back to your team. 0 = fall back as soon as they have one extra.",
-            0, 6, "%d", static custom => custom.OutnumberMargin, static (custom, value) => custom.OutnumberMargin = value),
-        new("Positioning", "Melee hold", "How far from the crystal to stand as melee or tank when not chasing anyone.",
-            0, 15, "%d yd", static custom => custom.MeleeHoldRange, static (custom, value) => custom.MeleeHoldRange = value),
-        new(null, "Melee reach", "How close to get to a target when chasing it as melee or tank.",
-            0, 10, "%d yd", static custom => custom.MeleeReach, static (custom, value) => custom.MeleeReach = value),
-        new(null, "Ranged standoff", "How far behind the crystal to stand as ranged or healer when holding.",
-            0, 30, "%d yd", static custom => custom.RangedStandoff, static (custom, value) => custom.RangedStandoff = value),
-        new(null, "Ranged band", "How far to stay from your target when attacking as ranged or healer.",
-            0, 30, "%d yd", static custom => custom.RangedBand, static (custom, value) => custom.RangedBand = value),
-        new("Team & range", "Engage radius", "Size of the area around the fight used to count who is winning it.",
-            5, 40, "%d yd", static custom => custom.EngageRadius, static (custom, value) => custom.EngageRadius = value),
-        new(null, "Leash radius", "Never chase a target further than this from the crystal. Enemies beyond it are ignored.",
-            5, 40, "%d yd", static custom => custom.LeashRadius, static (custom, value) => custom.LeashRadius = value),
-        new(null, "Cohesion radius", "Never wander further than this from the middle of your team.",
-            5, 40, "%d yd", static custom => custom.CohesionRadius, static (custom, value) => custom.CohesionRadius = value),
-        new(null, "Kite distance", "How far each retreat step takes you away from the enemy.",
-            5, 30, "%d yd", static custom => custom.KiteDistance, static (custom, value) => custom.KiteDistance = value),
-        new("Teamplay & focus", "Support radius", "A teammate within this distance counts as backup. With no one inside it, you are treated as alone.",
-            5, 40, "%d yd", static custom => custom.SupportRadius, static (custom, value) => custom.SupportRadius = value),
-        new(null, "Threat radius", "Enemies within this distance of you count toward being outnumbered.",
-            5, 40, "%d yd", static custom => custom.ThreatRadius, static (custom, value) => custom.ThreatRadius = value),
-        new(null, "Focus reposition", "When this many enemies target you, sidestep to safety even at full HP.",
-            1, 8, "%d enemies", static custom => custom.FocusRepositionCount, static (custom, value) => custom.FocusRepositionCount = value),
-        new(null, "Burst sensitivity", "How fast your HP must be dropping (percent per second) to count as being bursted and back off early.",
-            5, 100, "%d%%/s", static custom => custom.BurstSensitivityPercent, static (custom, value) => custom.BurstSensitivityPercent = value),
-        new(null, "Stage standoff", "While waiting for your team to arrive, keep at least this far from the enemy group.",
-            5, 40, "%d yd", static custom => custom.StageStandoff, static (custom, value) => custom.StageStandoff = value),
-        new(null, "Reposition step", "When enemies target you, how far to step back toward your team in one move.",
-            5, 30, "%d yd", static custom => custom.RepositionDistance, static (custom, value) => custom.RepositionDistance = value),
-    ];
-
     public static void Draw(Configuration cfg)
     {
-        DrawRotationProvider(cfg);
-
-        var behaviorIndex = cfg.EnableCombatBrain
-            ? Math.Max(0, FindBehaviorIndex(cfg.Strategy))
-            : 0;
-
-        SettingsRow.Draw("Combat behavior", BehaviorChoices[behaviorIndex].Blurb, () =>
-            SettingsControls.DrawCombo("##behavior", BehaviorNames[behaviorIndex], BehaviorNames, behaviorIndex, selectedIndex =>
-            {
-                var choice = BehaviorChoices[selectedIndex];
-                cfg.EnableCombatBrain = choice.BrainEnabled;
-                if (choice.BrainEnabled)
-                {
-                    cfg.Strategy = choice.Strategy;
-                }
-
-                cfg.SaveDebounced();
-            }));
-
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
-        {
-            ImGui.TextWrapped("This only controls movement — where to stand and when to back off. Your rotation plugin presses the skills; the Limit Break is fired by the required Auto PVP LB plugin, which this plugin auto-configures for your class.");
-        }
-
-        ImGui.Spacing();
-        ImGui.Spacing();
-
-        if (cfg.EnableCombatBrain)
-        {
-            DrawTargetPicking(cfg);
-        }
+        DrawCombatGroup(cfg);
+        SettingsGroup.Footnote("Behavior controls movement only: where to stand and when to back off. " +
+            "Your rotation plugin presses the skills; the required Auto PVP LB plugin fires the Limit Break, auto-configured for your class.");
 
         if (cfg.EnableCombatBrain && cfg.Strategy == PvpStrategy.Custom)
         {
-            DrawCustomStrategy(cfg);
+            CustomStrategySettings.Draw(cfg);
+        }
+    }
+
+    private static void DrawCombatGroup(Configuration cfg)
+    {
+        using var group = SettingsGroup.Begin("Combat");
+
+        DrawRotationProviderRow(cfg);
+        DrawBehaviorRow(cfg);
+
+        if (cfg.EnableCombatBrain)
+        {
+            DrawTargetingRow(cfg);
         }
 
-        var humanizeIndex = Math.Max(0, FindHumanizeIndex(cfg.Humanize));
-        SettingsRow.Draw("Humanize timing", HumanizeChoices[humanizeIndex].Blurb, () =>
-            SettingsControls.DrawCombo("##humanize", HumanizeNames[humanizeIndex], HumanizeNames, humanizeIndex, selectedIndex =>
+        DrawHumanizeRow(cfg);
+    }
+
+    private static void DrawRotationProviderRow(Configuration cfg)
+    {
+        var selected = RotationProviderChoices.IndexFor(cfg.RotationProvider);
+        SettingsRow.Draw("Rotation plugin",
+            "Which plugin presses your combat skills during matches.",
+            SettingsControls.RowComboWidth,
+            () => SettingsControls.Choices.DrawCombo("##rotprovider", RotationProviderChoices.Options, selected, choiceIndex =>
             {
-                cfg.Humanize = HumanizeChoices[selectedIndex].Level;
+                cfg.RotationProvider = RotationProviderChoices.All[choiceIndex].Provider;
                 cfg.SaveDebounced();
             }));
     }
 
-    private static void DrawRotationProvider(Configuration cfg)
+    private static void DrawBehaviorRow(Configuration cfg)
     {
-        var providerIndex = Math.Max(0, FindRotationProviderIndex(cfg.RotationProvider));
-        SettingsRow.Draw("Rotation plugin", RotationProviderChoices[providerIndex].Blurb, () =>
-            SettingsControls.DrawCombo("##rotprovider", RotationProviderNames[providerIndex], RotationProviderNames, providerIndex, selectedIndex =>
+        var selected = BehaviorChoices.IndexFor(cfg);
+        SettingsRow.Draw("Behavior",
+            "How the bot positions itself and picks its fights.",
+            SettingsControls.RowComboWidth,
+            () => SettingsControls.Choices.DrawCombo("##behavior", BehaviorChoices.Options, selected, choiceIndex =>
             {
-                cfg.RotationProvider = RotationProviderChoices[selectedIndex].Provider;
+                BehaviorChoices.Apply(cfg, BehaviorChoices.All[choiceIndex]);
                 cfg.SaveDebounced();
             }));
+
+        SettingsRow.Caption(BehaviorChoices.All[selected].Detail);
     }
 
-    private static void DrawTargetPicking(Configuration cfg)
+    private static void DrawTargetingRow(Configuration cfg)
     {
-        SettingsRow.Draw("Smart target picking",
-            "On: this plugin decides who to attack — it joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. RotationSolver runs in manual mode and presses skills on that target; another rotation plugin must attack your current target. Off: the rotation plugin picks targets itself (RotationSolver uses lowest HP in range).",
-            () => SettingsControls.DrawToggle(cfg, () => cfg.BrainPicksTargets, value => cfg.BrainPicksTargets = value));
+        SettingsRow.Draw("Smart targeting",
+            "On: this plugin decides who to attack. It joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. " +
+            "RotationSolver runs in manual mode and presses skills on that target; another rotation plugin must attack your current target. " +
+            "Off: the rotation plugin picks targets itself (RotationSolver uses lowest HP in range).",
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.BrainPicksTargets, value => cfg.BrainPicksTargets = value),
+            SettingsRow.ToggleHeight);
     }
 
-    private static void DrawCustomStrategy(Configuration cfg)
+    private static void DrawHumanizeRow(Configuration cfg)
     {
-        var custom = cfg.CustomStrategy;
-        ImGui.Spacing();
-
-        for (var rowIndex = 0; rowIndex < customStrategyRows.Length; rowIndex++)
-        {
-            var descriptor = customStrategyRows[rowIndex];
-            if (descriptor.GroupHeader != null)
+        var selected = HumanizeChoices.IndexFor(cfg.Humanize);
+        SettingsRow.Draw("Reaction time",
+            "Adds a human reaction delay before the bot changes what it's doing.",
+            SettingsControls.RowComboWidth,
+            () => SettingsControls.Choices.DrawCombo("##humanize", HumanizeChoices.Options, selected, choiceIndex =>
             {
-                Group(descriptor.GroupHeader);
+                cfg.Humanize = HumanizeChoices.All[choiceIndex].Level;
+                cfg.SaveDebounced();
+            }));
+
+        SettingsRow.Caption(HumanizeChoices.All[selected].Detail);
+    }
+
+    private static class RotationProviderChoices
+    {
+        public readonly record struct Entry(string Name, string Detail, RotationProvider Provider);
+
+        public static readonly Entry[] All =
+        [
+            new("RotationSolver Reborn",
+                "Auto-installed and driven by this plugin; skills, Guard, and Purify are handled for you. The recommended default.",
+                RotationProvider.RotationSolver),
+            new("Other / manual",
+                "Bring your own rotation plugin (e.g. Wrath Combo). It must press skills, Guard, and Purify itself; RotationSolver is no longer required.",
+                RotationProvider.External),
+        ];
+
+        public static readonly SettingsControls.Choices.Choice[] Options =
+            All.Select(entry => new SettingsControls.Choices.Choice(entry.Name, entry.Detail)).ToArray();
+
+        public static int IndexFor(RotationProvider provider)
+            => Math.Max(0, Array.FindIndex(All, entry => entry.Provider == provider));
+    }
+
+    private static class BehaviorChoices
+    {
+        public readonly record struct Entry(string Name, string Detail, bool BrainEnabled, PvpStrategy Strategy);
+
+        public static readonly Entry[] All =
+        [
+            new("Rush the crystal",
+                "No tactics: runs to the objective and stands on it. Never retreats; will feed when outnumbered.",
+                BrainEnabled: false, PvpStrategy.Moderate),
+            new("Defensive",
+                "Holds the point without diving, kites when focused, retreats below ~55% HP. Ranged and healers stay far back.",
+                BrainEnabled: true, PvpStrategy.Defensive),
+            new("Moderate",
+                "Balanced: short chases when ahead, falls back when outnumbered, retreats below ~35% HP. A good default.",
+                BrainEnabled: true, PvpStrategy.Moderate),
+            new("Aggressive",
+                "Pushes the enemy line and chases kills; retreats only when nearly dead (~18% HP).",
+                BrainEnabled: true, PvpStrategy.Aggressive),
+            new("Custom",
+                "Hand-tuned: every threshold below is yours to set. Starts from the Moderate baseline.",
+                BrainEnabled: true, PvpStrategy.Custom),
+        ];
+
+        public static readonly SettingsControls.Choices.Choice[] Options =
+            All.Select(entry => new SettingsControls.Choices.Choice(entry.Name, entry.Detail)).ToArray();
+
+        public static int IndexFor(Configuration cfg)
+        {
+            if (!cfg.EnableCombatBrain)
+            {
+                return 0;
             }
 
-            Row(cfg, custom, descriptor);
+            return Math.Max(0, Array.FindIndex(All, entry => entry.BrainEnabled && entry.Strategy == cfg.Strategy));
         }
 
-        ImGui.Spacing();
-    }
-
-    private static void Group(string label)
-    {
-        ImGui.Spacing();
-        Styling.SectionLabel(label);
-    }
-
-    private static void Row(Configuration cfg, CustomStrategyProfile custom, CustomStrategyRowDescriptor descriptor)
-    {
-        ImGui.AlignTextToFramePadding();
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
+        public static void Apply(Configuration cfg, Entry entry)
         {
-            ImGui.TextUnformatted(descriptor.Label);
-        }
-
-        if (ImGui.IsItemHovered())
-        {
-            ImGui.SetTooltip(descriptor.Tooltip);
-        }
-
-        ImGui.SameLine(RowLabelOffset * ImGuiHelpers.GlobalScale);
-        SettingsControls.DrawIntSlider(cfg, descriptor.SliderId, () => descriptor.Getter(custom),
-            value => descriptor.Setter(custom, value), descriptor.Minimum, descriptor.Maximum, descriptor.Format, RowSliderWidth);
-    }
-
-    private static int FindRotationProviderIndex(RotationProvider provider)
-    {
-        for (var choiceIndex = 0; choiceIndex < RotationProviderChoices.Length; choiceIndex++)
-        {
-            if (RotationProviderChoices[choiceIndex].Provider == provider)
+            cfg.EnableCombatBrain = entry.BrainEnabled;
+            if (entry.BrainEnabled)
             {
-                return choiceIndex;
+                cfg.Strategy = entry.Strategy;
             }
         }
-
-        return -1;
     }
 
-    private static int FindBehaviorIndex(PvpStrategy strategy)
+    private static class HumanizeChoices
     {
-        for (var choiceIndex = 0; choiceIndex < BehaviorChoices.Length; choiceIndex++)
-        {
-            var choice = BehaviorChoices[choiceIndex];
-            if (choice.BrainEnabled && choice.Strategy == strategy)
-            {
-                return choiceIndex;
-            }
-        }
+        public readonly record struct Entry(string Name, string Detail, HumanizeLevel Level);
 
-        return -1;
-    }
+        public static readonly Entry[] All =
+        [
+            new("Off", "Reacts instantly, with frame-perfect movement.", HumanizeLevel.Off),
+            new("Light", "~80–220 ms reaction delay.", HumanizeLevel.Light),
+            new("Realistic", "~140–380 ms reaction delay. A good default.", HumanizeLevel.Realistic),
+            new("Heavy", "~260–650 ms reaction delay, clearly unhurried.", HumanizeLevel.Heavy),
+        ];
 
-    private static int FindHumanizeIndex(HumanizeLevel level)
-    {
-        for (var choiceIndex = 0; choiceIndex < HumanizeChoices.Length; choiceIndex++)
-        {
-            if (HumanizeChoices[choiceIndex].Level == level)
-            {
-                return choiceIndex;
-            }
-        }
+        public static readonly SettingsControls.Choices.Choice[] Options =
+            All.Select(entry => new SettingsControls.Choices.Choice(entry.Name, entry.Detail)).ToArray();
 
-        return -1;
+        public static int IndexFor(HumanizeLevel level)
+            => Math.Max(0, Array.FindIndex(All, entry => entry.Level == level));
     }
 }

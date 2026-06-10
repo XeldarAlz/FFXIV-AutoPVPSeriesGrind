@@ -4,42 +4,71 @@ namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class MatchSettings
 {
-    private const string HelloDelayMinSliderId = "##hellodelay_min";
-    private const string HelloDelayMaxSliderId = "##hellodelay_max";
-    private const string GoodMatchDelayMinSliderId = "##gmdelay_min";
-    private const string GoodMatchDelayMaxSliderId = "##gmdelay_max";
-
     public static void Draw(Configuration cfg)
     {
-        SettingsRow.Draw("Say hello on entry", "Send /quickchat Hello once during the portrait/intro phase, at a random moment so it doesn't look scripted.",
-            () => SettingsControls.DrawToggle(cfg, () => cfg.SendHelloOnEntry, value => cfg.SendHelloOnEntry = value));
+        DrawIntroGroup(cfg);
+        DrawResultsGroup(cfg);
+    }
+
+    private static void DrawIntroGroup(Configuration cfg)
+    {
+        using var group = SettingsGroup.Begin("Match intro");
+
+        SettingsRow.Draw("Say hello",
+            "Sends /quickchat Hello once during the portrait phase, at a random moment so it doesn't look scripted.",
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.SendHelloOnEntry, value => cfg.SendHelloOnEntry = value),
+            SettingsRow.ToggleHeight);
 
         if (cfg.SendHelloOnEntry)
         {
-            SettingsRow.Draw("Greeting frequency", "How often the hello actually fires. Lower means it sometimes stays silent.",
-                () => SettingsControls.DrawIntSlider(cfg, "##hellochance", () => cfg.HelloChancePercent, v => cfg.HelloChancePercent = v, 0, 100, "%d%% of matches", 220f));
+            SettingsRow.Draw("Chance",
+                "How often the hello actually fires. Lower means it sometimes stays silent.",
+                SettingsControls.RowSliderWidth,
+                () => SettingsControls.DrawIntSlider(cfg, "##hellochance",
+                    () => cfg.HelloChancePercent, value => cfg.HelloChancePercent = value, 0, 100, "%d%% of matches"));
 
-            SettingsRow.Draw("Greeting delay", "How long after the portraits appear to wait before greeting — a random time in this range, so it never fires the instant the intro starts.",
-                () => SettingsControls.DrawDelayRange(cfg, HelloDelayMinSliderId, HelloDelayMaxSliderId,
+            SettingsRow.Draw("After",
+                "Waits a random time in this range after the portraits appear, so the greeting never fires the instant the intro starts.",
+                SettingsControls.RangeInlineWidth(),
+                () => SettingsControls.DrawRangeInline(cfg, "##hellodelay_min", "##hellodelay_max",
                     () => cfg.HelloDelayMinSeconds, value => cfg.HelloDelayMinSeconds = value,
                     () => cfg.HelloDelayMaxSeconds, value => cfg.HelloDelayMaxSeconds = value, 30));
         }
 
-        SettingsRow.Draw("\"Good Match\" on results", "Send /quickchat \"Good Match\" when the results screen appears at the end of a match.",
-            () => SettingsControls.DrawToggle(cfg, () => cfg.SendGoodMatchOnResults, value => cfg.SendGoodMatchOnResults = value));
+        SettingsRow.Draw("Occasional emotes",
+            "Plays a random friendly emote (wave, cheer, salute, and the like) at a random moment of the pre-match countdown, sometimes twice. Waits until your character is free so the emote actually plays.",
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.RandomEmotes, value => cfg.RandomEmotes = value),
+            SettingsRow.ToggleHeight);
+    }
 
-        if (cfg.SendGoodMatchOnResults)
+    private static void DrawResultsGroup(Configuration cfg)
+    {
+        using var group = SettingsGroup.Begin("Results screen");
+
+        SettingsRow.Draw("Say “Good Match”",
+            "Sends /quickchat \"Good Match\" when the results screen appears at the end of a match.",
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.SendGoodMatchOnResults, value => cfg.SendGoodMatchOnResults = value),
+            SettingsRow.ToggleHeight);
+
+        if (!cfg.SendGoodMatchOnResults)
         {
-            SettingsRow.Draw("Compliment frequency", "How often \"Good Match\" actually fires after a match.",
-                () => SettingsControls.DrawIntSlider(cfg, "##gmchance", () => cfg.GoodMatchChancePercent, v => cfg.GoodMatchChancePercent = v, 0, 100, "%d%% of matches", 220f));
-
-            SettingsRow.Draw("\"Good Match\" delay", "How long after the results screen appears to wait before sending \"Good Match\" — a random time in this range. If it lands later than the \"Delay before leaving the duty\" (under General), the bot leaves first and skips the goodbye.",
-                () => SettingsControls.DrawDelayRange(cfg, GoodMatchDelayMinSliderId, GoodMatchDelayMaxSliderId,
-                    () => cfg.GoodMatchDelayMinSeconds, value => cfg.GoodMatchDelayMinSeconds = value,
-                    () => cfg.GoodMatchDelayMaxSeconds, value => cfg.GoodMatchDelayMaxSeconds = value, 30));
+            return;
         }
 
-        SettingsRow.Draw("Occasional emotes", "Sometimes play a friendly emote (wave, cheer, salute, thumbs-up) during the portrait phase. Adds a bit of personality.",
-            () => SettingsControls.DrawToggle(cfg, () => cfg.RandomEmotes, value => cfg.RandomEmotes = value));
+        SettingsRow.Draw("Chance",
+            "How often \"Good Match\" actually fires after a match.",
+            SettingsControls.RowSliderWidth,
+            () => SettingsControls.DrawIntSlider(cfg, "##gmchance",
+                () => cfg.GoodMatchChancePercent, value => cfg.GoodMatchChancePercent = value, 0, 100, "%d%% of matches"));
+
+        SettingsRow.Draw("After",
+            "Waits a random time in this range after the results screen appears. If it lands later than \"Leave duty after\" (under Session), the bot leaves first and skips the goodbye.",
+            SettingsControls.RangeInlineWidth(),
+            () => SettingsControls.DrawRangeInline(cfg, "##gmdelay_min", "##gmdelay_max",
+                () => cfg.GoodMatchDelayMinSeconds, value => cfg.GoodMatchDelayMinSeconds = value,
+                () => cfg.GoodMatchDelayMaxSeconds, value => cfg.GoodMatchDelayMaxSeconds = value, 30));
     }
 }

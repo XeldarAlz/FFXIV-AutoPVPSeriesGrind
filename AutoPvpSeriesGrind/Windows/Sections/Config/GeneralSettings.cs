@@ -1,52 +1,59 @@
 using AutoPvpSeriesGrind.Windows.Components;
-using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility.Raii;
 
 namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class GeneralSettings
 {
-    private const string RequeueMinSliderId = "##rq_Min";
-    private const string RequeueMaxSliderId = "##rq_Max";
-
     public static void Draw(Configuration cfg)
     {
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
-            ImGui.TextWrapped("The stop condition (matches / Series rank / time / endless) and what to do afterwards live on the main window under \"Run until\".");
-        ImGui.Spacing();
-        ImGui.Spacing();
-
-        Styling.SectionLabel("Pacing");
-        ImGui.Spacing();
-
-        SettingsRow.Draw("Delay before leaving the duty",
-            "Once the results screen appears, wait this long before leaving the duty. Set to 0 to leave as soon as the match ends.",
-            () => SettingsControls.DrawIntSlider(cfg, "##leaveduty", () => cfg.LeaveDutyDelaySeconds, v => cfg.LeaveDutyDelaySeconds = v, 0, 30, "%d s", 220f));
-
-        SettingsRow.Draw("Delay before re-queueing",
-            "After a match ends, wait a random time in this range before queueing the next one — re-queueing the instant a match ends looks robotic. Set both to 0 to queue immediately.",
-            () => DrawRequeueRange(cfg));
-
-        SettingsRow.Draw("Take breaks",
-            "Idle for a while every so often, the way a person steps away between sessions. Off by default.",
-            () => SettingsControls.DrawToggle(cfg, () => cfg.TakeBreaks, value => cfg.TakeBreaks = value));
-
-        if (cfg.TakeBreaks)
-        {
-            SettingsRow.Draw("Break every",
-                "How many matches between breaks.",
-                () => SettingsControls.DrawIntSlider(cfg, "##breakevery", () => cfg.BreakEveryMatches, v => cfg.BreakEveryMatches = v, 1, 100, "%d matches", 220f));
-
-            SettingsRow.Draw("Break length",
-                "Roughly how long each break lasts (varied by ±20% each time).",
-                () => SettingsControls.DrawIntSlider(cfg, "##breaklen", () => cfg.BreakMinutes, v => cfg.BreakMinutes = v, 1, 120, "%d min", 220f));
-        }
+        DrawPacingGroup(cfg);
+        DrawBreaksGroup(cfg);
+        SettingsGroup.Footnote("Run length and what happens afterwards are set on the main window, under “Run until”.");
     }
 
-    private static void DrawRequeueRange(Configuration cfg)
+    private static void DrawPacingGroup(Configuration cfg)
     {
-        SettingsControls.DrawDelayRange(cfg, RequeueMinSliderId, RequeueMaxSliderId,
-            () => cfg.RequeueDelayMinSeconds, value => cfg.RequeueDelayMinSeconds = value,
-            () => cfg.RequeueDelayMaxSeconds, value => cfg.RequeueDelayMaxSeconds = value, 60);
+        using var group = SettingsGroup.Begin("Pacing");
+
+        SettingsRow.Draw("Leave duty after",
+            "Once the results screen appears, wait this long before leaving the duty. 0 leaves as soon as the match ends.",
+            SettingsControls.RowSliderWidth,
+            () => SettingsControls.DrawIntSlider(cfg, "##leaveduty",
+                () => cfg.LeaveDutyDelaySeconds, value => cfg.LeaveDutyDelaySeconds = value, 0, 30, "%d s"));
+
+        SettingsRow.Draw("Re-queue after",
+            "Waits a random time in this range before queueing the next match; re-queueing the instant a match ends looks robotic. 0 – 0 queues immediately.",
+            SettingsControls.RangeInlineWidth(),
+            () => SettingsControls.DrawRangeInline(cfg, "##rq_Min", "##rq_Max",
+                () => cfg.RequeueDelayMinSeconds, value => cfg.RequeueDelayMinSeconds = value,
+                () => cfg.RequeueDelayMaxSeconds, value => cfg.RequeueDelayMaxSeconds = value, 60));
+    }
+
+    private static void DrawBreaksGroup(Configuration cfg)
+    {
+        using var group = SettingsGroup.Begin("Breaks");
+
+        SettingsRow.Draw("Take breaks",
+            "Idle for a while every so often, the way a person steps away between sessions.",
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.TakeBreaks, value => cfg.TakeBreaks = value),
+            SettingsRow.ToggleHeight);
+
+        if (!cfg.TakeBreaks)
+        {
+            return;
+        }
+
+        SettingsRow.Draw("Break every",
+            "How many matches between breaks.",
+            SettingsControls.RowSliderWidth,
+            () => SettingsControls.DrawIntSlider(cfg, "##breakevery",
+                () => cfg.BreakEveryMatches, value => cfg.BreakEveryMatches = value, 1, 100, "%d matches"));
+
+        SettingsRow.Draw("Break length",
+            "Roughly how long each break lasts, varied by ±20% each time.",
+            SettingsControls.RowSliderWidth,
+            () => SettingsControls.DrawIntSlider(cfg, "##breaklen",
+                () => cfg.BreakMinutes, value => cfg.BreakMinutes = value, 1, 120, "%d min"));
     }
 }
