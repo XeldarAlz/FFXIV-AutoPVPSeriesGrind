@@ -103,12 +103,13 @@ internal static class MatchState
     {
         var localPlayer = Svc.Objects.LocalPlayer;
         var self = localPlayer?.Position ?? Vector3.Zero;
+        var selfRotation = localPlayer?.Rotation ?? 0f;
         var selfId = localPlayer?.GameObjectId ?? 0;
         var selfTargetId = localPlayer?.TargetObjectId ?? 0;
         var objective = CrystalPosition();
 
         var players = ClassifyPlayers(localPlayer, self, selfId, selfTargetId);
-        return AssembleSnapshot(self, selfId, objective, players);
+        return AssembleSnapshot(self, selfRotation, selfId, objective, players);
     }
 
     private static ClassifiedPlayers ClassifyPlayers(IPlayerCharacter? localPlayer, Vector3 self, ulong selfId, ulong selfTargetId)
@@ -155,11 +156,12 @@ internal static class MatchState
         return new ClassifiedPlayers(enemies, allies, enemySum, allySum, focusCount, currentTarget);
     }
 
-    private static PvpSnapshot AssembleSnapshot(Vector3 self, ulong selfId, Vector3? objective, ClassifiedPlayers players)
+    private static PvpSnapshot AssembleSnapshot(Vector3 self, float selfRotation, ulong selfId, Vector3? objective, ClassifiedPlayers players)
     {
         return new PvpSnapshot
         {
             Self = self,
+            SelfRotation = selfRotation,
             SelfId = selfId,
             SelfHp = SelfHpFraction(),
             SelfRole = LocalRole(),

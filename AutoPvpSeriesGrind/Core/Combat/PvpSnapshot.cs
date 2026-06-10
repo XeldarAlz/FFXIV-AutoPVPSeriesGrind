@@ -5,6 +5,7 @@ namespace AutoPvpSeriesGrind.Core.Combat;
 internal sealed class PvpSnapshot
 {
     public required Vector3 Self { get; init; }
+    public required float SelfRotation { get; init; }
     public required ulong SelfId { get; init; }
     public required float SelfHp { get; init; }
     public required PvpRole SelfRole { get; init; }

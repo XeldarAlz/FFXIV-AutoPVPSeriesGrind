@@ -53,6 +53,12 @@ internal static class Styling
     public static float Phase(double periodMs)
         => (float)((Environment.TickCount % periodMs) / periodMs);
 
+    public static float EaseOutCubic(float t)
+    {
+        var inv = 1f - Math.Clamp(t, 0f, 1f);
+        return 1f - inv * inv * inv;
+    }
+
     public static Vector4 WithAlpha(Vector4 c, float a) => c with { W = a };
 
     public static void TextCentered(string text, Vector4 color, float fontScale = 1f)
