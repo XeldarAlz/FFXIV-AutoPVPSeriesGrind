@@ -45,7 +45,7 @@ internal static class MatchState
         return false;
     }
 
-    public static float SelfHp01()
+    private static float SelfHpFraction()
     {
         var localPlayer = Svc.Objects.LocalPlayer;
         if (localPlayer is null)
@@ -147,7 +147,7 @@ internal static class MatchState
         {
             Self = self,
             SelfId = selfId,
-            SelfHp = SelfHp01(),
+            SelfHp = SelfHpFraction(),
             PrefersBackline = LocalPrefersBackline(),
             Objective = objective,
             CurrentTarget = players.CurrentTarget,

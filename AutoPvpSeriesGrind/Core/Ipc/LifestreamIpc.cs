@@ -3,15 +3,15 @@ using ECommons.DalamudServices;
 
 namespace AutoPvpSeriesGrind.Core.Ipc;
 
-internal sealed class LifestreamIPC
+internal sealed class LifestreamIpc
 {
-    private static LifestreamIPC? instance;
-    public static LifestreamIPC Instance => instance ??= new LifestreamIPC();
+    private static LifestreamIpc? instance;
+    public static LifestreamIpc Instance => instance ??= new LifestreamIpc();
 
     private readonly ICallGateSubscriber<string, object> executeCommand;
     private readonly ICallGateSubscriber<bool> isBusy;
 
-    private LifestreamIPC()
+    private LifestreamIpc()
     {
         executeCommand = Svc.PluginInterface.GetIpcSubscriber<string, object>(ApsgConstants.IpcGates.LifestreamExecuteCommand);
         isBusy = Svc.PluginInterface.GetIpcSubscriber<bool>(ApsgConstants.IpcGates.LifestreamIsBusy);

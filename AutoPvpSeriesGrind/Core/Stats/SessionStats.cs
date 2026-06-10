@@ -4,7 +4,7 @@ using ECommons.DalamudServices;
 
 namespace AutoPvpSeriesGrind.Core.Stats;
 
-public sealed class SessionStats
+internal sealed class SessionStats
 {
     public DateTime StartedAt { get; } = DateTime.UtcNow;
 

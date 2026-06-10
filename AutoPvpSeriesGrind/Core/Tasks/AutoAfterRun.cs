@@ -75,7 +75,7 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
     private async Task ReturnToInn()
     {
         Status = "Returning to the inn";
-        if (!LifestreamIPC.Instance.IsAvailable)
+        if (!LifestreamIpc.Instance.IsAvailable)
         {
             Warn("Return to inn requested but Lifestream is not installed; staying put.");
             ApsgLog.ChatError("Install Lifestream to use \"Return to the inn\".");
@@ -85,10 +85,10 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
         LogDiagnostic("After-run: returning to the inn via Lifestream.");
         ApsgLog.Chat("Run complete — retiring to the inn.");
         await NextFrame(PreCommandSettleMs);
-        LifestreamIPC.Instance.ExecuteCommand(ApsgConstants.LifestreamCommands.ReturnToInn);
+        LifestreamIpc.Instance.ExecuteCommand(ApsgConstants.LifestreamCommands.ReturnToInn);
 
         var started = await WaitUntilTimed(() =>
-            LifestreamIPC.Instance.IsBusy()
+            LifestreamIpc.Instance.IsBusy()
             || Svc.Condition[ConditionFlag.Casting]
             || IsTransitioning(), LifestreamStartMs, "inn-start");
         if (!started)
@@ -98,7 +98,7 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
         }
 
         await WaitUntilTimed(() =>
-            !LifestreamIPC.Instance.IsBusy()
+            !LifestreamIpc.Instance.IsBusy()
             && !IsTransitioning()
             && Svc.Objects.LocalPlayer is not null, LifestreamCompleteMs, "inn-complete");
         LogDiagnostic("Return to inn complete.");
