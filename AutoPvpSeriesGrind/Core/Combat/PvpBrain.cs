@@ -21,6 +21,13 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float MeleeFocusBump = 0.5f;    // a melee in your face commits harder than a ranged poke
     private const float MinDeltaSeconds = 0.0001f;
     private const long MinDwellMs = 700;          // hold a defensive stance this long before relaxing it (anti-thrash)
+    private const float KillPotentialWeight = 3f;
+    private const float FocusFireVoteWeight = 1.5f;
+    private const float TargetDistanceWeight = 1.5f;
+    private const float GuardPenalty = 4f;
+    private const float StickyTargetBonus = 0.75f;
+    private const float HealerPriorityBonus = 1.5f;
+    private const float RangedPriorityBonus = 1f;
 
     // Ordered by urgency — ApplyDwell compares ranks via (int), so the order matters.
     private enum Stance { Engage, Stage, Reposition, Regroup, Retreat }
@@ -40,6 +47,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private long lastHpTick;
     private Stance committedStance = Stance.Engage;
     private long committedAtMs;
+    private ulong lastTargetId;
+
+    public bool OwnsTargeting { get; set; }
 
     public void SetStrategy(PvpStrategy s, CustomStrategyProfile? custom = null) => profile = StrategyProfile.For(s, custom);
 
@@ -51,6 +61,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         lastHpTick = 0;
         committedStance = Stance.Engage;
         committedAtMs = 0;
+        lastTargetId = 0;
     }
 
     public MovePlan Decide(PvpSnapshot snapshot, Vector3 safeAnchor, Vector3? enemyBasePosition = null)
@@ -165,7 +176,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     {
         var localForce = LocalForce(alliesNear, enemiesNear);
         var push = localForce >= profile.PushAdvantage;
-        var target = snapshot.PrefersBackline ? ChooseTarget(snapshot, focal) : (snapshot.CurrentTarget ?? ChooseTarget(snapshot, focal));
+        var target = SelectTarget(snapshot, focal);
 
         EngageChoice choice;
         if (snapshot.PrefersBackline)
@@ -193,7 +204,17 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             Sprint: choice.Sprint,
             Reason: $"{choice.Label} {1 + alliesNear}v{enemiesNear}{targetDescription}",
             Pursue: choice.Pursue,
-            Posture: choice.Posture);
+            Posture: choice.Posture,
+            TargetId: target?.Id ?? 0);
+    }
+
+    private PvpActor? SelectTarget(PvpSnapshot snapshot, Vector3 focal)
+    {
+        if (OwnsTargeting || snapshot.PrefersBackline)
+        {
+            return ChooseTarget(snapshot, focal);
+        }
+        return snapshot.CurrentTarget ?? ChooseTarget(snapshot, focal);
     }
 
     private EngageChoice EngageBackline(PvpSnapshot snapshot, Vector3 focal, bool push, PvpActor? target)
@@ -297,11 +318,31 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
     private PvpActor? ChooseTarget(PvpSnapshot snapshot, Vector3 focal)
     {
-        if (snapshot.Enemies.Count == 0)
+        var pool = TargetPool(snapshot, focal);
+        if (pool.Count == 0)
         {
+            lastTargetId = 0;
             return null;
         }
 
+        var best = pool[0];
+        var bestScore = ScoreTarget(snapshot, best);
+        for (var poolIndex = 1; poolIndex < pool.Count; poolIndex++)
+        {
+            var candidate = pool[poolIndex];
+            var score = ScoreTarget(snapshot, candidate);
+            if (score > bestScore)
+            {
+                best = candidate;
+                bestScore = score;
+            }
+        }
+        lastTargetId = best.Id;
+        return best;
+    }
+
+    private List<PvpActor> TargetPool(PvpSnapshot snapshot, Vector3 focal)
+    {
         var pool = new List<PvpActor>();
         for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
         {
@@ -311,46 +352,49 @@ internal sealed class PvpBrain(PvpStrategy strategy)
                 pool.Add(enemy);
             }
         }
-        if (pool.Count == 0)
+        if (pool.Count == 0 && snapshot.Enemies.Count > 0)
         {
             pool.Add(NearestEnemy(snapshot));
         }
-
-        PvpActor? focus = null;
-        var bestVotes = 0;
-        for (var poolIndex = 0; poolIndex < pool.Count; poolIndex++)
-        {
-            var enemy = pool[poolIndex];
-            var votes = 0;
-            for (var allyIndex = 0; allyIndex < snapshot.Allies.Count; allyIndex++)
-            {
-                if (snapshot.Allies[allyIndex].TargetId == enemy.Id)
-                {
-                    votes++;
-                }
-            }
-            if (votes > bestVotes)
-            {
-                bestVotes = votes;
-                focus = enemy;
-            }
-        }
-        if (bestVotes >= 1 && focus is { } focusTarget)
-        {
-            return focusTarget;
-        }
-
-        var best = pool[0];
-        for (var poolIndex = 1; poolIndex < pool.Count; poolIndex++)
-        {
-            var candidate = pool[poolIndex];
-            if (candidate.Hp < best.Hp || (candidate.Hp == best.Hp && candidate.DistanceToSelf < best.DistanceToSelf))
-            {
-                best = candidate;
-            }
-        }
-        return best;
+        return pool;
     }
+
+    private float ScoreTarget(PvpSnapshot snapshot, PvpActor enemy)
+    {
+        var score = (1f - enemy.Hp) * KillPotentialWeight;
+        score += AllyVotes(snapshot, enemy.Id) * FocusFireVoteWeight;
+        score += RolePriority(enemy.Role);
+        score -= enemy.DistanceToSelf / profile.EngageRadius * TargetDistanceWeight;
+        if (enemy.HasGuard)
+        {
+            score -= GuardPenalty;
+        }
+        if (enemy.Id == lastTargetId)
+        {
+            score += StickyTargetBonus;
+        }
+        return score;
+    }
+
+    private static int AllyVotes(PvpSnapshot snapshot, ulong enemyId)
+    {
+        var votes = 0;
+        for (var allyIndex = 0; allyIndex < snapshot.Allies.Count; allyIndex++)
+        {
+            if (snapshot.Allies[allyIndex].TargetId == enemyId)
+            {
+                votes++;
+            }
+        }
+        return votes;
+    }
+
+    private static float RolePriority(PvpRole role) => role switch
+    {
+        PvpRole.Healer => HealerPriorityBonus,
+        PvpRole.Ranged => RangedPriorityBonus,
+        _ => 0f,
+    };
 
     private Vector3 BacklineOnTarget(PvpSnapshot s, PvpActor target)
     {

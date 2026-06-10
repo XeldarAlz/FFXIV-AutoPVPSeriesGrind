@@ -67,6 +67,10 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         var cfg = Plugin.Cfg;
         settings = RunSettings.From(cfg);
         brain.SetStrategy(cfg.Strategy, cfg.CustomStrategy);
+        brain.OwnsTargeting = settings.BrainTargets;
+        rotation.SetEnableCommand(settings.BrainTargets
+            ? ApsgConstants.GameCommands.EnableRotationManual
+            : ApsgConstants.GameCommands.EnableRotation);
 
         ApsgLog.Chat($"Starting PvP Series grind ({cfg.ActiveMode.DisplayName}).");
 

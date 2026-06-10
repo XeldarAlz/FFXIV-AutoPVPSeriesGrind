@@ -119,6 +119,11 @@ internal static class CombatSettings
         ImGui.Spacing();
         ImGui.Spacing();
 
+        if (cfg.EnableCombatBrain)
+        {
+            DrawTargetPicking(cfg);
+        }
+
         if (cfg.EnableCombatBrain && cfg.Strategy == PvpStrategy.Custom)
         {
             DrawCustomStrategy(cfg);
@@ -131,6 +136,13 @@ internal static class CombatSettings
                 cfg.Humanize = HumanizeChoices[selectedIndex].Level;
                 cfg.SaveDebounced();
             }));
+    }
+
+    private static void DrawTargetPicking(Configuration cfg)
+    {
+        SettingsRow.Draw("Smart target picking",
+            "On: this plugin decides who to attack — it joins the team's focus target, prefers low-HP and squishy enemies (healers first), and ignores anyone with Guard up. RotationSolver runs in manual mode and presses skills on that target. Off: RotationSolver picks targets itself (always the lowest HP in range).",
+            () => SettingsControls.DrawToggle(cfg, () => cfg.BrainPicksTargets, value => cfg.BrainPicksTargets = value));
     }
 
     private static void DrawCustomStrategy(Configuration cfg)

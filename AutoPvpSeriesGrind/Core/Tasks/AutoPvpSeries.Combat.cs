@@ -121,7 +121,16 @@ internal sealed partial class AutoPvpSeries
             await NextFrame(HumanTiming.Reaction(reactionMinMs, reactionMaxMs));
         }
 
+        ApplyBrainTarget(plan.TargetId);
         movement.Execute(plan);
+    }
+
+    private void ApplyBrainTarget(ulong targetId)
+    {
+        if (settings.BrainTargets && targetId != 0)
+        {
+            MatchState.SetTarget(targetId);
+        }
     }
 
     private void LegacyCrystalMove()

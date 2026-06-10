@@ -29,13 +29,11 @@ internal static class MatchState
         => Svc.Objects.LocalPlayer is { } me && me.IsCasting(actionId);
 
     public static bool HasStatus(uint statusId)
+        => Svc.Objects.LocalPlayer is { } localPlayer && HasStatus(localPlayer, statusId);
+
+    private static bool HasStatus(IPlayerCharacter playerCharacter, uint statusId)
     {
-        var localPlayer = Svc.Objects.LocalPlayer;
-        if (localPlayer is null)
-        {
-            return false;
-        }
-        foreach (var status in localPlayer.StatusList)
+        foreach (var status in playerCharacter.StatusList)
         {
             if (status is not null && status.StatusId == statusId)
             {
@@ -43,6 +41,22 @@ internal static class MatchState
             }
         }
         return false;
+    }
+
+    public static void SetTarget(ulong gameObjectId)
+    {
+        if (Svc.Targets.Target?.GameObjectId == gameObjectId)
+        {
+            return;
+        }
+        foreach (var gameObject in Svc.Objects)
+        {
+            if (gameObject.GameObjectId == gameObjectId)
+            {
+                Svc.Targets.Target = gameObject;
+                return;
+            }
+        }
     }
 
     private static float SelfHpFraction()
@@ -169,11 +183,21 @@ internal static class MatchState
             Id: playerCharacter.GameObjectId,
             Position: playerCharacter.Position,
             Hp: HpFraction(playerCharacter.CurrentHp, playerCharacter.MaxHp),
-            IsMelee: RoleIsMelee(roleByte),
+            Role: RoleFromByte(roleByte),
+            HasGuard: HasStatus(playerCharacter, ApsgConstants.StatusGuard),
             IsCasting: playerCharacter.IsCasting,
             TargetId: playerCharacter.TargetObjectId,
             DistanceToSelf: Vector3.Distance(self, playerCharacter.Position));
     }
+
+    private static PvpRole RoleFromByte(int roleByte) => roleByte switch
+    {
+        ApsgConstants.JobRoles.Tank => PvpRole.Tank,
+        ApsgConstants.JobRoles.MeleeDps => PvpRole.Melee,
+        ApsgConstants.JobRoles.RangedDps => PvpRole.Ranged,
+        ApsgConstants.JobRoles.Healer => PvpRole.Healer,
+        _ => PvpRole.Unknown,
+    };
 
     private static bool RoleIsMelee(int roleByte)
         => roleByte is ApsgConstants.JobRoles.Tank or ApsgConstants.JobRoles.MeleeDps;

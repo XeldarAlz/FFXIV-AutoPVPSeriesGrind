@@ -12,6 +12,8 @@ internal sealed class RotationController(PvpBrain brain)
 
     private readonly PvpBrain brain = brain;
 
+    private string enableCommand = GameCommands.EnableRotation;
+
     private bool wasDead;
     private long deadSinceMs;
     private bool rotationNeedsReset;
@@ -26,6 +28,8 @@ internal sealed class RotationController(PvpBrain brain)
         rotationEnabledThisLife = false;
         clearedSignThisLife = false;
     }
+
+    public void SetEnableCommand(string command) => enableCommand = command;
 
     public void MarkRotationEnabled()
     {
@@ -82,7 +86,7 @@ internal sealed class RotationController(PvpBrain brain)
 
     private void ReapplyRotation(string logMessage)
     {
-        Chat.ExecuteCommand(GameCommands.EnableRotation);
+        Chat.ExecuteCommand(enableCommand);
         rotationNeedsReset = false;
         ApsgLog.Info(logMessage);
     }
@@ -91,7 +95,7 @@ internal sealed class RotationController(PvpBrain brain)
     {
         if (MatchState.IsNormalConditions() && !rotationEnabledThisLife)
         {
-            Chat.ExecuteCommand(GameCommands.EnableRotation);
+            Chat.ExecuteCommand(enableCommand);
             rotationEnabledThisLife = true;
             ApsgLog.Info("rotation enabled (live failsafe)");
         }

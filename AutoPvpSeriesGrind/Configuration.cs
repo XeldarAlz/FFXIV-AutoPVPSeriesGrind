@@ -31,6 +31,7 @@ public sealed class Configuration : IPluginConfiguration
     public bool RandomEmotes { get; set; } = false;
 
     public bool EnableCombatBrain { get; set; } = true;
+    public bool BrainPicksTargets { get; set; } = false;
     public PvpStrategy Strategy { get; set; } = PvpStrategy.Moderate;
     public CustomStrategyProfile CustomStrategy { get; set; } = new();
 

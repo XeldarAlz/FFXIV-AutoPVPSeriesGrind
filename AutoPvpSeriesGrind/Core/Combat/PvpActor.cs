@@ -6,7 +6,11 @@ internal readonly record struct PvpActor(
     ulong Id,
     Vector3 Position,
     float Hp,
-    bool IsMelee,
+    PvpRole Role,
+    bool HasGuard,
     bool IsCasting,
     ulong TargetId,
-    float DistanceToSelf);
+    float DistanceToSelf)
+{
+    public bool IsMelee => Role is PvpRole.Tank or PvpRole.Melee;
+}
