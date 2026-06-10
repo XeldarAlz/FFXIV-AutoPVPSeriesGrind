@@ -25,7 +25,7 @@ internal sealed partial class AutoPvpSeries
             movement.Stop();
             matchFlow.LeftSpawn = false;
             matchFlow.LeaveSpawnStartedAtMs = 0;
-            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead — waiting to respawn", Posture.Retreat);
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead, waiting to respawn", Posture.Retreat);
             return;
         }
 
@@ -95,7 +95,7 @@ internal sealed partial class AutoPvpSeries
         }
 
         movement.IssueMove(exit, exit, SpawnExitArrivalRange);
-        BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Engage, "leaving spawn — to gate anchor", Posture.Reposition);
+        BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Engage, "leaving spawn, to gate anchor", Posture.Reposition);
         return false;
     }
 

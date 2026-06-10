@@ -83,7 +83,7 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
         }
 
         LogDiagnostic("After-run: returning to the inn via Lifestream.");
-        ApsgLog.Chat("Run complete — retiring to the inn.");
+        ApsgLog.Chat("Run complete. Retiring to the inn.");
         await NextFrame(PreCommandSettleMs);
         LifestreamIpc.Instance.ExecuteCommand(ApsgConstants.LifestreamCommands.ReturnToInn);
 

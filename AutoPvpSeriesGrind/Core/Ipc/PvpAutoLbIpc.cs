@@ -24,14 +24,14 @@ internal sealed class PvpAutoLbIpc
     {
         if (!apply.HasFunction)
         {
-            ApsgLog.Info("PvpAutoLb preset IPC not available — skipping push.");
+            ApsgLog.Info("PvpAutoLb preset IPC not available; skipping push.");
             return;
         }
 
         var api = IpcGate.Invoke(apiVersion.HasFunction, apiVersion.InvokeFunc, 0, "PvpAutoLbIpc: ApiVersion failed");
         if (api != ApsgConstants.PvpAutoLbPresetApiVersion)
         {
-            ApsgLog.Warn($"PvpAutoLb preset API mismatch (theirs {api}, ours {ApsgConstants.PvpAutoLbPresetApiVersion}) — skipping push.");
+            ApsgLog.Warn($"PvpAutoLb preset API mismatch (theirs {api}, ours {ApsgConstants.PvpAutoLbPresetApiVersion}); skipping push.");
             return;
         }
 

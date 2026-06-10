@@ -17,7 +17,7 @@ public sealed class RunHistoryWindow : Window, IDisposable
 
     private bool confirmClear;
 
-    public RunHistoryWindow() : base("Auto PVP Series Grind — Run History###AutoPvpSeriesGrindHistory")
+    public RunHistoryWindow() : base("Auto PVP Series Grind - Run History###AutoPvpSeriesGrindHistory")
     {
         Flags = ImGuiWindowFlags.NoCollapse;
         Size = new Vector2(620, 460);
@@ -154,7 +154,7 @@ public sealed class RunHistoryWindow : Window, IDisposable
 
         ImGui.TableNextColumn();
         using (ImRaii.PushColor(ImGuiCol.Text, string.IsNullOrEmpty(record.JobAbbr) ? Styling.TextMuted : Styling.TextSecondary))
-            ImGui.TextUnformatted(string.IsNullOrEmpty(record.JobAbbr) ? "—" : record.JobAbbr);
+            ImGui.TextUnformatted(string.IsNullOrEmpty(record.JobAbbr) ? "–" : record.JobAbbr);
 
         ImGui.TableNextColumn();
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
@@ -166,7 +166,7 @@ public sealed class RunHistoryWindow : Window, IDisposable
 
         ImGui.TableNextColumn();
         using (ImRaii.PushColor(ImGuiCol.Text, record.SeriesExpGained > 0 ? Styling.AccentAmber : Styling.TextMuted))
-            ImGui.TextUnformatted(record.SeriesExpGained > 0 ? $"+{Formatting.Exp(record.SeriesExpGained)}" : "—");
+            ImGui.TextUnformatted(record.SeriesExpGained > 0 ? $"+{Formatting.Exp(record.SeriesExpGained)}" : "–");
     }
 
     private static string RowSelectableId(int rowIndex)

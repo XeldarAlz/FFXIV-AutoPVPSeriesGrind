@@ -36,7 +36,7 @@ internal static class PluginInstaller
             var ok = await AddPlugin(info.RepoUrl, info.InternalName);
             ApsgLog.Info(ok
                 ? $"{info.DisplayName} installed."
-                : $"{info.DisplayName} install reported failure — repo may need to be added manually.");
+                : $"{info.DisplayName} install reported failure; repo may need to be added manually.");
             if (!ok) Failed.Add(plugin);
             return ok;
         }
@@ -54,7 +54,7 @@ internal static class PluginInstaller
 
     // Installs via Dalamud's internal PluginManager.InstallPluginAsync by reflection. We bind the
     // arguments to the live method's parameters by name and length so we survive Dalamud signature
-    // drift — ECommons.DalamudReflector.AddPlugin hard-codes a 4-arg call that throws "Parameter
+    // drift: ECommons.DalamudReflector.AddPlugin hard-codes a 4-arg call that throws "Parameter
     // count mismatch" once Dalamud changed InstallPluginAsync to 3 parameters.
     private static async Task<bool> AddPlugin(string masterUrl, string internalName)
     {

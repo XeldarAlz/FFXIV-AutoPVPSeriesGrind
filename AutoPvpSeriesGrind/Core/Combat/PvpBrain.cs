@@ -12,7 +12,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float MinVectorSq = 0.01f;     // below this a direction vector is treated as degenerate
     private const float PursuitSprintGap = 8f;
     private const int SoloFeedEnemies = 2;        // alone (no ally nearby) vs this many = a feed, never solo it
-    private const float AllyBlendMinDot = -0.15f; // below this the team is behind the enemy line — flee to spawn instead
+    private const float AllyBlendMinDot = -0.15f; // below this the team is behind the enemy line; flee to spawn instead
     private const float RepositionAwayWeight = 0.6f;
     private const float RepositionTeamWeight = 0.4f;
     private const float FocusFalloffMult = 2f;    // a focuser past ThreatRadius*this contributes no pressure
@@ -29,7 +29,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float HealerPriorityBonus = 1.5f;
     private const float RangedPriorityBonus = 1f;
 
-    // Ordered by urgency — ApplyDwell compares ranks via (int), so the order matters.
+    // Ordered by urgency; ApplyDwell compares ranks via (int), so the order matters.
     private enum Stance { Engage, Stage, Reposition, Regroup, Retreat }
 
     private readonly record struct EngageChoice(
@@ -127,8 +127,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         {
             Stance.Retreat => FallBack(snapshot, safeAnchor, Posture.Retreat, $"retreat hp={snapshot.SelfHp:P0} focus={snapshot.FocusCount}"),
             Stance.Regroup => FallBack(snapshot, safeAnchor, Posture.Regroup, $"regroup {1 + alliesNear}v{enemiesNear} on you"),
-            Stance.Reposition => Reposition(snapshot, bursting, $"focused x{snapshot.FocusCount} — reposition"),
-            Stance.Stage => Stage(snapshot, focal, $"staging {1 + alliesNear}v{enemiesNear} — wait for team"),
+            Stance.Reposition => Reposition(snapshot, bursting, $"focused x{snapshot.FocusCount}, reposition"),
+            Stance.Stage => Stage(snapshot, focal, $"staging {1 + alliesNear}v{enemiesNear}, wait for team"),
             _ => Engage(snapshot, focal, alliesNear, enemiesNear),
         };
     }

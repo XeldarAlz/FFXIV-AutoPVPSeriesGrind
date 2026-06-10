@@ -10,7 +10,7 @@ namespace AutoPvpSeriesGrind.Windows;
 
 public sealed class DependenciesWindow : Window, IDisposable
 {
-    public DependenciesWindow() : base("Auto PVP Series Grind — Dependencies###AutoPvpSeriesGrindDeps")
+    public DependenciesWindow() : base("Auto PVP Series Grind - Dependencies###AutoPvpSeriesGrindDeps")
     {
         Flags = ImGuiWindowFlags.NoCollapse;
         Size = new Vector2(580, 460);

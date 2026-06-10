@@ -133,7 +133,7 @@ internal static class DependencyRow
 
         if (ImGui.IsItemHovered())
             using (ImRaii.Tooltip())
-                ImGui.TextUnformatted($"Install failed — left-click to copy repo URL:\n{info.RepoUrl}");
+                ImGui.TextUnformatted($"Install failed. Left-click to copy repo URL:\n{info.RepoUrl}");
         else if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
             ImGui.SetClipboardText(info.RepoUrl);
     }

@@ -45,7 +45,7 @@ internal sealed class AutoPvpSeriesController
         {
             var missing = MissingRequiredPluginNames();
             LogDiagnostic($"Start aborted: required plugins missing ({missing}).");
-            ApsgLog.ChatError($"Cannot start — install all required plugins first: {missing}.");
+            ApsgLog.ChatError($"Cannot start. Install all required plugins first: {missing}.");
             return;
         }
 

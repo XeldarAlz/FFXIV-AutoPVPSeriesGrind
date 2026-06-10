@@ -17,7 +17,7 @@ public enum ThresholdMode
 }
 
 // Wire DTO pushed to PvpAutoLb over IPC. Property names and string-enum values must match
-// PvpAutoLb.Core.LbRule exactly. Source is intentionally omitted — the receiver stamps it.
+// PvpAutoLb.Core.LbRule exactly. Source is intentionally omitted; the receiver stamps it.
 public sealed class LbRulePreset
 {
     [JsonConverter(typeof(StringEnumConverter))] public LbFireMode Mode { get; set; } = LbFireMode.Offensive;
@@ -72,11 +72,11 @@ public static class LbPresets
     private static LbRulePreset OffensivePercent(float percent)
         => new() { Mode = LbFireMode.Offensive, EnemyHpMode = ThresholdMode.Percent, EnemyHpPercent = percent };
 
-    // Defensive: team heal/shield/mitigation — fire when allies (self included) are hurt AND enemies are present.
+    // Defensive: team heal/shield/mitigation; fire when allies (self included) are hurt AND enemies are present.
     private static LbRulePreset Defensive(float allyHp, int allies, float allyRadius, int enemies, float enemyRadius)
         => new() { Mode = LbFireMode.Defensive, AllyHpPercent = allyHp, AllyCountNear = allies, AllyRadiusYalms = allyRadius, EnemyCountNear = enemies, EnemyRadiusYalms = enemyRadius };
 
-    // Utility: team buff or self-centered AoE setup/CC — fire in a teamfight. allies=1 means "self only",
+    // Utility: team buff or self-centered AoE setup/CC; fire in a teamfight. allies=1 means "self only",
     // i.e. the trigger reduces to "enough enemies clustered" for LBs that don't need teammates in range.
     private static LbRulePreset Utility(int allies, float allyRadius, int enemies, float enemyRadius)
         => new() { Mode = LbFireMode.Utility, AllyCountNear = allies, AllyRadiusYalms = allyRadius, EnemyCountNear = enemies, EnemyRadiusYalms = enemyRadius };

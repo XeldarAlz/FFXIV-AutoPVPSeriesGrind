@@ -44,7 +44,7 @@ internal sealed partial class AutoPvpSeries
             var waitMs = nextQueueAllowedAtMs - Environment.TickCount64;
             if (waitMs > 0)
             {
-                Status = onBreak ? $"On a break — {FormatRemaining(waitMs)} left" : $"Next match in {FormatRemaining(waitMs)}";
+                Status = onBreak ? $"On a break, {FormatRemaining(waitMs)} left" : $"Next match in {FormatRemaining(waitMs)}";
                 await NextFrame(MainLoopIdleMs);
                 return false;
             }

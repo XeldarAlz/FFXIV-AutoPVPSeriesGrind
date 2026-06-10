@@ -60,7 +60,7 @@ public sealed class BrainDebugWindow : Window, IDisposable
         if (BrainTelemetry.Plan is not { } plan || (!inMatch && !BrainTelemetry.IsFresh))
         {
             Styling.VSpace(8);
-            Styling.TextCentered(inMatch ? "Match starting — the brain spins up at the gate." : "Not in a live match.", Styling.TextMuted);
+            Styling.TextCentered(inMatch ? "Match starting: the brain spins up at the gate." : "Not in a live match.", Styling.TextMuted);
             return;
         }
 
@@ -87,7 +87,7 @@ public sealed class BrainDebugWindow : Window, IDisposable
 
         if (!NavIpc.Instance.IsAvailable)
             using (ImRaii.PushColor(ImGuiCol.Text, Styling.AccentRose))
-                ImGui.TextUnformatted("vnavmesh IPC unavailable — chat fallback in use.");
+                ImGui.TextUnformatted("vnavmesh IPC unavailable; chat fallback in use.");
     }
 
     private static void DrawDecision(in MovePlan plan)
@@ -279,9 +279,9 @@ public sealed class BrainDebugWindow : Window, IDisposable
         Row("Forces", $"{snap.Enemies.Count} enemy  ·  {snap.Allies.Count} ally", Styling.TextStrong);
         Row(NearYouLabel, $"{1 + alliesNear} ally  ·  {enemiesNear} enemy", nearColor);
         Row("Focused by", snap.FocusCount.ToString(), snap.FocusCount > 0 ? Styling.AccentRose : Styling.TextStrong);
-        Row("Nearest ally", snap.Allies.Count == 0 ? "—" : $"{snap.NearestAllyDistance:F1}y",
+        Row("Nearest ally", snap.Allies.Count == 0 ? "–" : $"{snap.NearestAllyDistance:F1}y",
             snap.Allies.Count == 0 ? Styling.AccentRose : Styling.TextStrong);
-        Row("Nearest enemy", snap.Enemies.Count == 0 ? "—" : $"{snap.NearestEnemyDistance:F1}y", Styling.TextStrong);
+        Row("Nearest enemy", snap.Enemies.Count == 0 ? "–" : $"{snap.NearestEnemyDistance:F1}y", Styling.TextStrong);
         Row("Position", $"{RoleLabel(snap.SelfRole)}  ·  {(snap.PrefersBackline ? "backline" : "frontline")}", Styling.TextStrong);
         Row("Objective", snap.HasObjective ? $"located  ·  {HorizontalDistance(snap.Self, snap.Objective!.Value):F0}y" : "not found",
             snap.HasObjective ? Styling.AccentMint : Styling.TextMuted);

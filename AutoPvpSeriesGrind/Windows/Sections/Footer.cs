@@ -7,7 +7,7 @@ namespace AutoPvpSeriesGrind.Windows.Sections;
 internal static class Footer
 {
     private static readonly string CommandHint =
-        $"Auto PVP Series Grind — {ApsgConstants.PrimaryCommand} / {ApsgConstants.AliasCommand}";
+        $"Auto PVP Series Grind - {ApsgConstants.PrimaryCommand} / {ApsgConstants.AliasCommand}";
 
     public static void Draw()
     {

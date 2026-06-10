@@ -29,7 +29,7 @@ internal static unsafe class TargetDumper
             .Take(MaxNearbyObjectRows)
             .ToList();
 
-        ApsgLog.Chat($"Territory {Svc.ClientState.TerritoryType} — {rows.Count} nearby event/battle objects (nearest first):");
+        ApsgLog.Chat($"Territory {Svc.ClientState.TerritoryType}: {rows.Count} nearby event/battle objects (nearest first):");
         for (var rowIndex = 0; rowIndex < rows.Count; rowIndex++)
         {
             var (gameObject, distance) = rows[rowIndex];
