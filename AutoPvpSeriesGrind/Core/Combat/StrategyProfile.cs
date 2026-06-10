@@ -80,6 +80,21 @@ internal sealed record StrategyProfile(
         StageStandoff: ModerateStrategyBaseline.StageStandoff,
         RepositionDistance: ModerateStrategyBaseline.RepositionDistance);
 
+    private const float TankHoldRangeFactor = 0.5f;
+    private const float TankRetreatHpDelta = 0.10f;
+    private const float TankPanicHpDelta = 0.05f;
+    private const float MinTankRetreatHp = 0.10f;
+    private const float MinTankPanicHp = 0.05f;
+
+    private const float HealerStandoffBonus = 4f;
+    private const float HealerKiteBonus = 4f;
+    private const float HealerCohesionTightening = 4f;
+    private const float MinHealerCohesion = 8f;
+    private const float HealerRetreatHpDelta = 0.10f;
+    private const float HealerReengageHpDelta = 0.05f;
+    private const float MaxHealerRetreatHp = 0.90f;
+    private const float MaxHealerReengageHp = 0.95f;
+
     public static StrategyProfile For(PvpStrategy strategy, CustomStrategyProfile? custom = null) => strategy switch
     {
         PvpStrategy.Defensive => DefensivePreset,
@@ -87,5 +102,32 @@ internal sealed record StrategyProfile(
         PvpStrategy.Custom => (custom ?? new CustomStrategyProfile()).ToProfile(),
         PvpStrategy.Moderate => ModeratePreset,
         _ => ModeratePreset,
+    };
+
+    public StrategyProfile WithRole(PvpRole role) => role switch
+    {
+        PvpRole.Tank => WithTankRole(),
+        PvpRole.Healer => WithHealerRole(),
+        _ => this,
+    };
+
+    private StrategyProfile WithTankRole() => this with
+    {
+        MeleeHoldRange = MeleeHoldRange * TankHoldRangeFactor,
+        DisengageHp = MathF.Max(MinTankRetreatHp, DisengageHp - TankRetreatHpDelta),
+        PanicHp = MathF.Max(MinTankPanicHp, PanicHp - TankPanicHpDelta),
+        FocusRetreatCount = FocusRetreatCount + 1,
+        FocusRepositionCount = FocusRepositionCount + 1,
+        OutnumberMargin = OutnumberMargin + 1,
+    };
+
+    private StrategyProfile WithHealerRole() => this with
+    {
+        RangedStandoff = RangedStandoff + HealerStandoffBonus,
+        RangedBand = RangedBand + HealerStandoffBonus,
+        KiteDistance = KiteDistance + HealerKiteBonus,
+        CohesionRadius = MathF.Max(MinHealerCohesion, CohesionRadius - HealerCohesionTightening),
+        DisengageHp = MathF.Min(MaxHealerRetreatHp, DisengageHp + HealerRetreatHpDelta),
+        ReengageHp = MathF.Min(MaxHealerReengageHp, ReengageHp + HealerReengageHpDelta),
     };
 }

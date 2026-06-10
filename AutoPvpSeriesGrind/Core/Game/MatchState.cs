@@ -69,14 +69,11 @@ internal static class MatchState
         return HpFraction(localPlayer.CurrentHp, localPlayer.MaxHp);
     }
 
-    private static bool LocalPrefersBackline()
-    {
-        var role = Svc.Objects.LocalPlayer?.ClassJob.ValueNullable?.Role ?? 0;
-        return role is ApsgConstants.JobRoles.RangedDps or ApsgConstants.JobRoles.Healer;
-    }
+    private static PvpRole LocalRole()
+        => RoleFromByte(Svc.Objects.LocalPlayer?.ClassJob.ValueNullable?.Role ?? 0);
 
     public static bool LocalIsMelee()
-        => RoleIsMelee(Svc.Objects.LocalPlayer?.ClassJob.ValueNullable?.Role ?? 0);
+        => LocalRole() is PvpRole.Tank or PvpRole.Melee;
 
     private static Vector3? CrystalPosition()
     {
@@ -165,7 +162,7 @@ internal static class MatchState
             Self = self,
             SelfId = selfId,
             SelfHp = SelfHpFraction(),
-            PrefersBackline = LocalPrefersBackline(),
+            SelfRole = LocalRole(),
             Objective = objective,
             CurrentTarget = players.CurrentTarget,
             Enemies = players.Enemies,
@@ -198,9 +195,6 @@ internal static class MatchState
         ApsgConstants.JobRoles.Healer => PvpRole.Healer,
         _ => PvpRole.Unknown,
     };
-
-    private static bool RoleIsMelee(int roleByte)
-        => roleByte is ApsgConstants.JobRoles.Tank or ApsgConstants.JobRoles.MeleeDps;
 
     private static float HpFraction(uint currentHp, uint maxHp)
         => maxHp > 0 ? (float)currentHp / maxHp : 1f;

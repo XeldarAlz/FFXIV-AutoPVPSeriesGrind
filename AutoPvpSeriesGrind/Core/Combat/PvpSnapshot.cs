@@ -7,7 +7,7 @@ internal sealed class PvpSnapshot
     public required Vector3 Self { get; init; }
     public required ulong SelfId { get; init; }
     public required float SelfHp { get; init; }
-    public required bool PrefersBackline { get; init; }
+    public required PvpRole SelfRole { get; init; }
     public required Vector3? Objective { get; init; }
     public required PvpActor? CurrentTarget { get; init; }
     public required IReadOnlyList<PvpActor> Enemies { get; init; }
@@ -17,6 +17,7 @@ internal sealed class PvpSnapshot
     public required int FocusCount { get; init; }
 
     public bool HasObjective => Objective.HasValue;
+    public bool PrefersBackline => SelfRole is PvpRole.Ranged or PvpRole.Healer;
 
     public float NearestEnemyDistance => MinDistanceToSelf(Enemies);
     public float NearestAllyDistance => MinDistanceToSelf(Allies);

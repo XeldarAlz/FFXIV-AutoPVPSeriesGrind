@@ -282,12 +282,21 @@ public sealed class BrainDebugWindow : Window, IDisposable
         Row("Nearest ally", snap.Allies.Count == 0 ? "—" : $"{snap.NearestAllyDistance:F1}y",
             snap.Allies.Count == 0 ? Styling.AccentRose : Styling.TextStrong);
         Row("Nearest enemy", snap.Enemies.Count == 0 ? "—" : $"{snap.NearestEnemyDistance:F1}y", Styling.TextStrong);
-        Row("Position", snap.PrefersBackline ? "backline" : "frontline", Styling.TextStrong);
+        Row("Position", $"{RoleLabel(snap.SelfRole)}  ·  {(snap.PrefersBackline ? "backline" : "frontline")}", Styling.TextStrong);
         Row("Objective", snap.HasObjective ? $"located  ·  {HorizontalDistance(snap.Self, snap.Objective!.Value):F0}y" : "not found",
             snap.HasObjective ? Styling.AccentMint : Styling.TextMuted);
         Row("Move target", plan.Kind == MoveKind.Hold ? "holding" : $"{HorizontalDistance(snap.Self, plan.Destination):F1}y away{(plan.Sprint ? "  ·  sprint" : "")}",
             Styling.TextStrong);
     }
+
+    private static string RoleLabel(PvpRole role) => role switch
+    {
+        PvpRole.Tank => "tank",
+        PvpRole.Melee => "melee",
+        PvpRole.Ranged => "ranged",
+        PvpRole.Healer => "healer",
+        _ => "unknown role",
+    };
 
     private static void Row(string label, string value, Vector4 valueColor)
     {

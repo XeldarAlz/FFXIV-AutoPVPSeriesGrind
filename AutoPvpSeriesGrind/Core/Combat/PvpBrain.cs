@@ -40,7 +40,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         string Label,
         Posture Posture);
 
+    private StrategyProfile baseProfile = StrategyProfile.For(strategy);
     private StrategyProfile profile = StrategyProfile.For(strategy);
+    private PvpRole appliedRole = PvpRole.Unknown;
     private Vector3? enemyBase;
     private bool retreating;
     private float lastHp = 1f;
@@ -51,7 +53,21 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
     public bool OwnsTargeting { get; set; }
 
-    public void SetStrategy(PvpStrategy s, CustomStrategyProfile? custom = null) => profile = StrategyProfile.For(s, custom);
+    public void SetStrategy(PvpStrategy s, CustomStrategyProfile? custom = null)
+    {
+        baseProfile = StrategyProfile.For(s, custom);
+        profile = baseProfile.WithRole(appliedRole);
+    }
+
+    private void ApplyRole(PvpRole role)
+    {
+        if (role == appliedRole)
+        {
+            return;
+        }
+        appliedRole = role;
+        profile = baseProfile.WithRole(role);
+    }
 
     public void Reset()
     {
@@ -67,9 +83,10 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     public MovePlan Decide(PvpSnapshot snapshot, Vector3 safeAnchor, Vector3? enemyBasePosition = null)
     {
         enemyBase = enemyBasePosition;
+        ApplyRole(snapshot.SelfRole);
         var bursting = HpDropPerSec(snapshot.SelfHp) >= profile.BurstDropPerSec;
 
-        var focal = snapshot.Objective ?? snapshot.AllyCentroid ?? snapshot.Self;
+        var focal = FocalPoint(snapshot);
 
         var enemiesNear = PvpSnapshot.CountWithin(snapshot.Enemies, snapshot.Self, profile.ThreatRadius);
         var alliesNear = PvpSnapshot.CountWithin(snapshot.Allies, snapshot.Self, profile.SupportRadius);
@@ -148,6 +165,11 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     }
 
     private static int LocalForce(int alliesNear, int enemiesNear) => (1 + alliesNear) - enemiesNear;
+
+    private static Vector3 FocalPoint(PvpSnapshot snapshot)
+        => snapshot.SelfRole == PvpRole.Healer
+            ? snapshot.AllyCentroid ?? snapshot.Objective ?? snapshot.Self
+            : snapshot.Objective ?? snapshot.AllyCentroid ?? snapshot.Self;
 
     private float WeightedFocus(PvpSnapshot snapshot)
     {
