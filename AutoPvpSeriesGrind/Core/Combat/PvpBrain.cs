@@ -42,6 +42,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
     private StrategyProfile baseProfile = StrategyProfile.For(strategy);
     private StrategyProfile profile = StrategyProfile.For(strategy);
+    private bool roleOverlayEnabled = strategy != PvpStrategy.Custom;
     private PvpRole appliedRole = PvpRole.Unknown;
     private Vector3? enemyBase;
     private bool retreating;
@@ -56,7 +57,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     public void SetStrategy(PvpStrategy s, CustomStrategyProfile? custom = null)
     {
         baseProfile = StrategyProfile.For(s, custom);
-        profile = baseProfile.WithRole(appliedRole);
+        roleOverlayEnabled = s != PvpStrategy.Custom;
+        profile = EffectiveProfile(appliedRole);
     }
 
     private void ApplyRole(PvpRole role)
@@ -66,8 +68,11 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             return;
         }
         appliedRole = role;
-        profile = baseProfile.WithRole(role);
+        profile = EffectiveProfile(role);
     }
+
+    private StrategyProfile EffectiveProfile(PvpRole role)
+        => roleOverlayEnabled ? baseProfile.WithRole(role) : baseProfile;
 
     public void Reset()
     {
