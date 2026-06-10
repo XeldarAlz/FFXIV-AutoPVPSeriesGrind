@@ -38,6 +38,7 @@ internal sealed partial class AutoPvpSeries
         {
             MovementExecutor.EnsureSprinting();
             matchFlow.RanSafetyMoveThisDuty = true;
+            CaptureBasesAtSpawn(territory);
         }
 
         if (MatchState.LocalIsCasting(ActionStandardIssueElixir))
@@ -56,12 +57,22 @@ internal sealed partial class AutoPvpSeries
             LegacyCrystalMove();
     }
 
+    private void CaptureBasesAtSpawn(uint territory)
+    {
+        if (matchFlow.Bases is null && MatchState.PlayerPosition() is { } spawnPosition)
+        {
+            matchFlow.Bases = MatchState.IdentifyBases(territory, spawnPosition);
+            if (matchFlow.Bases is { } bases)
+                LogDiagnostic($"bases identified: own={bases.Own:F0} enemy={bases.Enemy:F0}");
+        }
+    }
+
     private bool TryLeaveSpawn(uint territory)
     {
         if (MatchState.PlayerPosition() is not { } self)
             return true;
 
-        if (MatchState.NearestSafeAnchor(territory, self) is not { } exit)
+        if ((matchFlow.Bases?.Own ?? MatchState.NearestSafeAnchor(territory, self)) is not { } exit)
         {
             matchFlow.LeftSpawn = true;
             return true;
@@ -99,8 +110,8 @@ internal sealed partial class AutoPvpSeries
             return;
         }
 
-        var anchor = MatchState.NearestSafeAnchor(territory, snapshot.Self) ?? snapshot.Self;
-        var plan = brain.Decide(snapshot, anchor);
+        var anchor = matchFlow.Bases?.Own ?? MatchState.NearestSafeAnchor(territory, snapshot.Self) ?? snapshot.Self;
+        var plan = brain.Decide(snapshot, anchor, matchFlow.Bases?.Enemy);
         BrainTelemetry.Record(snapshot, plan);
 
         var planChanged = movement.UpdatePosture(plan.Posture);

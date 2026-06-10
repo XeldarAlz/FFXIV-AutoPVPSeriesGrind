@@ -13,6 +13,9 @@ internal static class CrystallineConflictMaps
     public static Vector3? NearestSafeAnchor(uint territory, Vector3 from)
         => SafeAnchors.TryGetValue(territory, out var anchors) ? anchors.Nearest(from) : null;
 
+    public static TeamBases? IdentifyBases(uint territory, Vector3 spawnPosition)
+        => SafeAnchors.TryGetValue(territory, out var anchors) ? anchors.IdentifyBySpawn(spawnPosition) : null;
+
     private static Dictionary<uint, SpawnAnchors> BuildSafeAnchors()
     {
         var map = new Dictionary<uint, SpawnAnchors>();

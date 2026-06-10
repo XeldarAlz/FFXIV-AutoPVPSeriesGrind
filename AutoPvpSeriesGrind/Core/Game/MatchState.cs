@@ -85,6 +85,9 @@ internal static class MatchState
     public static Vector3? NearestSafeAnchor(uint territory, Vector3 from)
         => CrystallineConflictMaps.NearestSafeAnchor(territory, from);
 
+    public static TeamBases? IdentifyBases(uint territory, Vector3 spawnPosition)
+        => CrystallineConflictMaps.IdentifyBases(territory, spawnPosition);
+
     public static PvpSnapshot Capture()
     {
         var localPlayer = Svc.Objects.LocalPlayer;

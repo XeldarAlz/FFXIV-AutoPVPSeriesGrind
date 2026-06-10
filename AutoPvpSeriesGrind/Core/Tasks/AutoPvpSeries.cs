@@ -47,6 +47,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         public bool RanSafetyMoveThisDuty;
         public bool LeftSpawn;
         public long LeaveSpawnStartedAtMs;
+        public TeamBases? Bases;
 
         public void Reset() => this = default;
     }

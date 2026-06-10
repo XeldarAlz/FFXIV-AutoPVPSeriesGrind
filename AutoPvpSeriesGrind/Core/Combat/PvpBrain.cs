@@ -17,6 +17,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float RepositionTeamWeight = 0.4f;
     private const float FocusFalloffMult = 2f;    // a focuser past ThreatRadius*this contributes no pressure
     private const float FocusFalloffEpsilon = 0.01f;
+    private const float EnemyBaseAvoidRadius = 25f; // defensive moves never resolve this close to the enemy spawn gate
     private const float MeleeFocusBump = 0.5f;    // a melee in your face commits harder than a ranged poke
     private const float MinDeltaSeconds = 0.0001f;
     private const long MinDwellMs = 700;          // hold a defensive stance this long before relaxing it (anti-thrash)
@@ -33,6 +34,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         Posture Posture);
 
     private StrategyProfile profile = StrategyProfile.For(strategy);
+    private Vector3? enemyBase;
     private bool retreating;
     private float lastHp = 1f;
     private long lastHpTick;
@@ -43,6 +45,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
     public void Reset()
     {
+        enemyBase = null;
         retreating = false;
         lastHp = 1f;
         lastHpTick = 0;
@@ -50,8 +53,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         committedAtMs = 0;
     }
 
-    public MovePlan Decide(PvpSnapshot snapshot, Vector3 safeAnchor)
+    public MovePlan Decide(PvpSnapshot snapshot, Vector3 safeAnchor, Vector3? enemyBasePosition = null)
     {
+        enemyBase = enemyBasePosition;
         var bursting = HpDropPerSec(snapshot.SelfHp) >= profile.BurstDropPerSec;
 
         var focal = snapshot.Objective ?? snapshot.AllyCentroid ?? snapshot.Self;
@@ -231,7 +235,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
                     }
                 }
             }
-            return new MovePlan(Kind: MoveKind.Retreat, Destination: snapshot.Self + direction * profile.KiteDistance, Fallback: safeAnchor,
+            var kiteDestination = AwayFromEnemyBase(snapshot.Self + direction * profile.KiteDistance, snapshot.Self);
+            return new MovePlan(Kind: MoveKind.Retreat, Destination: kiteDestination, Fallback: safeAnchor,
                 StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
         }
         return new MovePlan(Kind: MoveKind.Retreat, Destination: safeAnchor, Fallback: safeAnchor,
@@ -262,7 +267,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             direction = Vector3.UnitX;
         }
 
-        var destination = ClampCohesion(snapshot.Self + direction * profile.RepositionDistance, snapshot.AllyCentroid, profile.CohesionRadius);
+        var destination = AwayFromEnemyBase(
+            ClampCohesion(snapshot.Self + direction * profile.RepositionDistance, snapshot.AllyCentroid, profile.CohesionRadius),
+            snapshot.Self);
         return new MovePlan(Kind: MoveKind.Retreat, Destination: destination, Fallback: destination,
             StopRange: RepositionStopRange, Sprint: sprint, Reason: reason, Pursue: false, Posture: Posture.Reposition);
     }
@@ -284,7 +291,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
                 dest = ec + Vector3.Normalize(fromEnemy) * profile.StageStandoff;
         }
 
-        dest = ClampCohesion(dest, s.AllyCentroid, profile.CohesionRadius);
+        dest = AwayFromEnemyBase(ClampCohesion(dest, s.AllyCentroid, profile.CohesionRadius), s.Self);
         return new MovePlan(MoveKind.Hold, dest, anchor, StageStopRange, false, reason, false, Posture.Stage);
     }
 
@@ -377,6 +384,24 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         lastHp = hp;
         lastHpTick = now;
         return drop;
+    }
+
+    private Vector3 AwayFromEnemyBase(Vector3 dest, Vector3 self)
+    {
+        if (enemyBase is not { } basePosition)
+            return dest;
+        var away = dest - basePosition;
+        var distance = away.Length();
+        if (distance >= EnemyBaseAvoidRadius)
+            return dest;
+        if (distance * distance <= MinVectorSq)
+        {
+            away = self - basePosition;
+            distance = away.Length();
+            if (distance * distance <= MinVectorSq)
+                return dest;
+        }
+        return basePosition + away / distance * EnemyBaseAvoidRadius;
     }
 
     private static Vector3 ClampCohesion(Vector3 dest, Vector3? center, float radius)
