@@ -26,7 +26,7 @@ internal static class IdlePanel
     private static readonly AfterRunAction[] afterRunOrder =
         [AfterRunAction.StayLoggedIn, AfterRunAction.ReturnToInn, AfterRunAction.Logout, AfterRunAction.CloseGame];
 
-    public static void Draw(Configuration cfg, Plugin plugin, AutoPvpSeriesController ctrl)
+    public static void Draw(Configuration cfg, AutoPvpSeriesController ctrl)
     {
         if (DrawPayoff(ctrl)) return;
 

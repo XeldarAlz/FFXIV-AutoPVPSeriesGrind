@@ -75,7 +75,7 @@ internal static class DependencyRow
 
         var (btnColor, hoverColor, activeColor) = failed
             ? (Styling.AccentRose * 0.55f, Styling.AccentRose * 0.75f, Styling.AccentRose)
-            : (Styling.AccentTeal * 0.55f, Styling.AccentTeal * 0.75f, Styling.AccentTeal);
+            : (Styling.AccentViolet * 0.55f, Styling.AccentViolet * 0.75f, Styling.AccentViolet);
 
         using (ImRaii.Disabled(installing))
         using (ImRaii.PushColor(ImGuiCol.Button, btnColor))

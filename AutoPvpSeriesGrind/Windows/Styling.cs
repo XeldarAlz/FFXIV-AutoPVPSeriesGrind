@@ -18,9 +18,6 @@ internal static class Styling
     public static readonly Vector4 AccentBlue       = new(0.40f, 0.68f, 0.98f, 1.00f);
     public static readonly Vector4 AccentBlueSoft   = new(0.62f, 0.82f, 1.00f, 1.00f);
 
-    public static readonly Vector4 AccentTeal     = AccentViolet;
-    public static readonly Vector4 AccentTealSoft = AccentVioletSoft;
-
     public static readonly Vector4 CardBg        = new(0.075f, 0.090f, 0.105f, 0.85f);
     public static readonly Vector4 CardBgSoft    = new(0.090f, 0.105f, 0.120f, 0.55f);
     public static readonly Vector4 CardBgHover   = new(0.105f, 0.125f, 0.145f, 0.95f);
@@ -32,12 +29,12 @@ internal static class Styling
     public static readonly Vector4 TextMuted     = new(0.50f, 0.53f, 0.58f, 1.00f);
 
     public static readonly Vector4 Hairline = new(1f, 1f, 1f, 0.055f);
+    public static readonly Vector4 White    = new(1f, 1f, 1f, 1f);
 
     public const float CardRounding = 7f;
     public const float FrameRounding = 5f;
     public const float WindowRounding = 7f;
 
-    public const double PulseFast = 600.0;
     public const double PulseMedium = 800.0;
 
     public const double PulseBreath = 2600.0;
@@ -100,5 +97,24 @@ internal static class Styling
     {
         using (ImRaii.PushColor(ImGuiCol.Text, TextDim))
             ImGui.TextUnformatted(label.ToUpperInvariant());
+    }
+
+    public static void HairlineRule(float spacingBefore = 0f, float spacingAfter = 0f)
+    {
+        if (spacingBefore > 0f)
+        {
+            VSpace(spacingBefore);
+        }
+
+        var drawList = ImGui.GetWindowDrawList();
+        var lineStart = ImGui.GetCursorScreenPos();
+        var lineWidth = ImGui.GetContentRegionAvail().X;
+        drawList.AddLine(lineStart, lineStart + new Vector2(lineWidth, 0), ImGui.GetColorU32(Hairline), 1f);
+        ImGui.Dummy(new Vector2(lineWidth, 1f));
+
+        if (spacingAfter > 0f)
+        {
+            VSpace(spacingAfter);
+        }
     }
 }

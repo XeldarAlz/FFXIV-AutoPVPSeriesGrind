@@ -37,7 +37,7 @@ public sealed class MainWindow : Window, IDisposable
         if (ctrl.Running)
             RunningPanel.Draw(cfg, ctrl);
         else
-            IdlePanel.Draw(cfg, plugin, ctrl);
+            IdlePanel.Draw(cfg, ctrl);
 
         Footer.Draw();
     }
