@@ -34,9 +34,9 @@ internal static class CustomStrategySettings
         ]),
         new("Aggression",
         [
-            new("Push advantage", "How many more fighters your side needs in the area before you chase a kill. 0 = chase even fights; negative = chase even when outnumbered.",
+            new("Push advantage", "How much stronger your side must be nearby before you chase a kill. Wounded fighters count for less, and every extra enemy death counts as half a fighter. 0 = chase even fights; negative = chase even when weaker.",
                 -2, 4, "%d", static p => p.PushAdvantage, static (p, v) => p.PushAdvantage = v),
-            new("Outnumber margin", "How many more enemies than allies near you it takes before you fall back to your team. 0 = fall back as soon as they have one extra.",
+            new("Outnumber margin", "How much stronger the enemies near you must be before you fall back to your team. Wounded fighters count for less. 0 = fall back as soon as they have any edge.",
                 0, 6, "%d", static p => p.OutnumberMargin, static (p, v) => p.OutnumberMargin = v),
         ]),
         new("Positioning",

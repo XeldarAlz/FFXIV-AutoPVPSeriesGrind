@@ -35,6 +35,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float EscapeLosBreakBonus = 8f;     // breaking the nearest focuser's sight line ~= 16y closer to the team
     private const float ThreatFocuserBump = 0.75f;
     private const float ThreatMeleeBump = 0.5f;
+    private const float TeamAdvantageForceWeight = 0.5f; // each net dead enemy counts as half a fighter on our side
     private const float DegToRad = MathF.PI / 180f;
 
     private static readonly float[] FanAngleDegrees = [30f, -30f, 60f, -60f, 90f, -90f, 120f, -120f];
@@ -50,6 +51,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         string Label,
         Posture Posture);
 
+    private readonly HashSet<ulong> allyRoster = [];
+    private readonly HashSet<ulong> enemyRoster = [];
     private StrategyProfile baseProfile = StrategyProfile.For(strategy);
     private StrategyProfile profile = StrategyProfile.For(strategy);
     private bool roleOverlayEnabled = strategy != PvpStrategy.Custom;
@@ -88,6 +91,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
     public void Reset()
     {
+        allyRoster.Clear();
+        enemyRoster.Clear();
         enemyBase = null;
         retreating = false;
         lastHp = 1f;
@@ -107,7 +112,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
         var enemiesNear = PvpSnapshot.CountWithin(snapshot.Enemies, snapshot.Self, profile.ThreatRadius);
         var alliesNear = PvpSnapshot.CountWithin(snapshot.Allies, snapshot.Self, profile.SupportRadius);
-        var localForce = LocalForce(alliesNear, enemiesNear);
+        var headcountForce = (1 + alliesNear) - enemiesNear;
+        var teamAdvantage = TeamAdvantage(snapshot);
+        var effectiveForce = WeightedForce(snapshot) + teamAdvantage * TeamAdvantageForceWeight;
         var isolated = alliesNear == 0;
 
         var enemiesAtPoint = PvpSnapshot.CountWithin(snapshot.Enemies, focal, profile.EngageRadius);
@@ -121,45 +128,90 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             {
                 retreating = true;
             }
-            else if (snapshot.SelfHp <= profile.DisengageHp && (focus >= profile.FocusRetreatCount || localForce < 0 || bursting))
+            else if (snapshot.SelfHp <= profile.DisengageHp && (focus >= profile.FocusRetreatCount || headcountForce < 0 || bursting))
             {
                 retreating = true;
             }
         }
-        else if (snapshot.SelfHp >= profile.ReengageHp && localForce >= 0 && focus < profile.FocusRetreatCount)
+        else if (snapshot.SelfHp >= profile.ReengageHp && headcountForce >= 0 && focus < profile.FocusRetreatCount)
         {
             retreating = false;
         }
 
-        var desired = ChooseStance(localForce, isolated, enemiesNear, enemiesAtPoint, alliesAtPoint, focus, bursting,
+        var desired = ChooseStance(effectiveForce, isolated, enemiesNear, enemiesAtPoint, alliesAtPoint, focus, bursting,
             snapshot.AllyCentroid is not null);
         var stance = ApplyDwell(desired);
 
+        var advantageTag = TeamAdvantageTag(teamAdvantage);
         return stance switch
         {
             Stance.Retreat => FallBack(snapshot, safeAnchor, Posture.Retreat, $"retreat hp={snapshot.SelfHp:P0} focus={snapshot.FocusCount}"),
-            Stance.Regroup => FallBack(snapshot, safeAnchor, Posture.Regroup, $"regroup {1 + alliesNear}v{enemiesNear} on you"),
+            Stance.Regroup => FallBack(snapshot, safeAnchor, Posture.Regroup, $"regroup {1 + alliesNear}v{enemiesNear} on you{advantageTag}"),
             Stance.Reposition => Reposition(snapshot, bursting, $"focused x{snapshot.FocusCount}, reposition"),
-            Stance.Stage => Stage(snapshot, focal, $"staging {1 + alliesNear}v{enemiesNear}, wait for team"),
-            _ => Engage(snapshot, focal, alliesNear, enemiesNear),
+            Stance.Stage => Stage(snapshot, focal, $"staging {1 + alliesNear}v{enemiesNear}, wait for team{advantageTag}"),
+            _ => Engage(snapshot, focal, alliesNear, enemiesNear, effectiveForce, advantageTag),
         };
     }
 
-    private Stance ChooseStance(int localForce, bool isolated, int enemiesNear, int enemiesAtPoint, int alliesAtPoint,
+    private float WeightedForce(PvpSnapshot snapshot)
+    {
+        var force = 1f;
+        for (var allyIndex = 0; allyIndex < snapshot.Allies.Count; allyIndex++)
+        {
+            var ally = snapshot.Allies[allyIndex];
+            if (ally.DistanceToSelf <= profile.SupportRadius)
+            {
+                force += ally.Hp;
+            }
+        }
+        for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
+        {
+            var enemy = snapshot.Enemies[enemyIndex];
+            if (enemy.DistanceToSelf <= profile.ThreatRadius)
+            {
+                force -= enemy.Hp;
+            }
+        }
+        return force;
+    }
+
+    private int TeamAdvantage(PvpSnapshot snapshot)
+    {
+        for (var allyIndex = 0; allyIndex < snapshot.Allies.Count; allyIndex++)
+        {
+            allyRoster.Add(snapshot.Allies[allyIndex].Id);
+        }
+        for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
+        {
+            enemyRoster.Add(snapshot.Enemies[enemyIndex].Id);
+        }
+        var deadEnemies = Math.Max(0, enemyRoster.Count - snapshot.Enemies.Count);
+        var deadAllies = Math.Max(0, allyRoster.Count - snapshot.Allies.Count);
+        return deadEnemies - deadAllies;
+    }
+
+    private static string TeamAdvantageTag(int teamAdvantage) => teamAdvantage switch
+    {
+        > 0 => $", {teamAdvantage} up",
+        < 0 => $", {-teamAdvantage} down",
+        _ => "",
+    };
+
+    private Stance ChooseStance(float effectiveForce, bool isolated, int enemiesNear, int enemiesAtPoint, int alliesAtPoint,
         float focus, bool bursting, bool hasTeam)
     {
         if (retreating)
             return Stance.Retreat;
 
         var soloFeed = isolated && enemiesNear >= SoloFeedEnemies;
-        var overwhelmed = enemiesNear >= 1 && localForce < -profile.OutnumberMargin;
+        var overwhelmed = enemiesNear >= 1 && effectiveForce < -profile.OutnumberMargin;
         if (soloFeed || overwhelmed)
             return Stance.Regroup;
 
-        if (focus >= profile.FocusRepositionCount && (localForce <= 0 || isolated || bursting))
+        if (focus >= profile.FocusRepositionCount && (effectiveForce <= 0f || isolated || bursting))
             return Stance.Reposition;
 
-        if (hasTeam && enemiesAtPoint > 0 && alliesAtPoint == 0 && localForce < 0)
+        if (hasTeam && enemiesAtPoint > 0 && alliesAtPoint == 0 && effectiveForce < 0f)
             return Stance.Stage;
 
         return Stance.Engage;
@@ -180,8 +232,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         committedAtMs = now;
         return desired;
     }
-
-    private static int LocalForce(int alliesNear, int enemiesNear) => (1 + alliesNear) - enemiesNear;
 
     private static Vector3 FocalPoint(PvpSnapshot snapshot)
         => snapshot.SelfRole == PvpRole.Healer
@@ -211,10 +261,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         return sum;
     }
 
-    private MovePlan Engage(PvpSnapshot snapshot, Vector3 focal, int alliesNear, int enemiesNear)
+    private MovePlan Engage(PvpSnapshot snapshot, Vector3 focal, int alliesNear, int enemiesNear, float effectiveForce, string advantageTag)
     {
-        var localForce = LocalForce(alliesNear, enemiesNear);
-        var push = localForce >= profile.PushAdvantage;
+        var push = effectiveForce >= profile.PushAdvantage;
         var target = SelectTarget(snapshot, focal);
 
         if (UncontestedObjective(snapshot) is { } crystal)
@@ -259,7 +308,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             Fallback: destination,
             StopRange: choice.StopRange,
             Sprint: choice.Sprint,
-            Reason: $"{choice.Label} {1 + alliesNear}v{enemiesNear}{targetDescription}",
+            Reason: $"{choice.Label} {1 + alliesNear}v{enemiesNear}{advantageTag}{targetDescription}",
             Pursue: choice.Pursue,
             Posture: choice.Posture,
             TargetId: target?.Id ?? 0);
