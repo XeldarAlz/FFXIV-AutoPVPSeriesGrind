@@ -40,7 +40,6 @@ public sealed class ConfigWindow : Window, IDisposable
     public ConfigWindow(Plugin plugin) : base("Auto PVP Series Grind - Settings###AutoPvpSeriesGrindConfig")
     {
         this.plugin = plugin;
-        Flags = ImGuiWindowFlags.NoCollapse;
         Size = new Vector2(620, 500);
         SizeCondition = ImGuiCond.FirstUseEver;
         SizeConstraints = new WindowSizeConstraints

@@ -14,7 +14,6 @@ public sealed class MainWindow : Window, IDisposable
         this.plugin = plugin;
         Size = new Vector2(560, 600);
         SizeCondition = ImGuiCond.FirstUseEver;
-        Flags = ImGuiWindowFlags.NoCollapse;
         SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(440, 470),

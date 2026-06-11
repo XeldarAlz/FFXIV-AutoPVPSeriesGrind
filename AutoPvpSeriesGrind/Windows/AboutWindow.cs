@@ -40,7 +40,6 @@ public sealed partial class AboutWindow : Window, IDisposable
 
     public AboutWindow() : base($"{Name}: About###{WindowId}")
     {
-        Flags = ImGuiWindowFlags.NoCollapse;
         Size = new Vector2(540, 700);
         SizeCondition = ImGuiCond.FirstUseEver;
         SizeConstraints = new WindowSizeConstraints

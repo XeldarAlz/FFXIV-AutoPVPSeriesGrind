@@ -19,7 +19,6 @@ public sealed class RunHistoryWindow : Window, IDisposable
 
     public RunHistoryWindow() : base("Auto PVP Series Grind - Run History###AutoPvpSeriesGrindHistory")
     {
-        Flags = ImGuiWindowFlags.NoCollapse;
         Size = new Vector2(620, 460);
         SizeCondition = ImGuiCond.FirstUseEver;
         SizeConstraints = new WindowSizeConstraints

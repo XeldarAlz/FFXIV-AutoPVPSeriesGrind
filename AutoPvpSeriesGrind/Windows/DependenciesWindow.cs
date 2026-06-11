@@ -12,7 +12,6 @@ public sealed class DependenciesWindow : Window, IDisposable
 {
     public DependenciesWindow() : base("Auto PVP Series Grind - Dependencies###AutoPvpSeriesGrindDeps")
     {
-        Flags = ImGuiWindowFlags.NoCollapse;
         Size = new Vector2(580, 460);
         SizeCondition = ImGuiCond.FirstUseEver;
         SizeConstraints = new WindowSizeConstraints

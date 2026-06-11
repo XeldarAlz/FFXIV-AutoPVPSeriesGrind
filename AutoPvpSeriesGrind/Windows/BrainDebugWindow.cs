@@ -63,7 +63,6 @@ public sealed class BrainDebugWindow : Window, IDisposable
 
     public BrainDebugWindow() : base("Auto PVP Series Grind: Brain###AutoPvpSeriesGrindBrain")
     {
-        Flags = ImGuiWindowFlags.NoCollapse;
         Size = new Vector2(420, 620);
         SizeCondition = ImGuiCond.FirstUseEver;
         SizeConstraints = new WindowSizeConstraints
