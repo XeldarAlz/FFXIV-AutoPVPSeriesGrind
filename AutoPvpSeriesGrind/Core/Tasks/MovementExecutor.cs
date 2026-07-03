@@ -68,9 +68,12 @@ internal sealed class MovementExecutor
         if (Nav.IsRunning()) Nav.Stop();
     }
 
-    public void Stop()
+    public void Stop(bool? running = null)
     {
-        if (!Nav.IsRunning()) return;
+        if (!(running ?? Nav.IsRunning()))
+        {
+            return;
+        }
         Nav.Stop();
         lastMoveDestination = default;
         destinationCommittedAtMs = 0;
@@ -83,7 +86,8 @@ internal sealed class MovementExecutor
             EnsureSprinting();
         }
 
-        if (TryRecoverFromStuck(plan))
+        var running = Nav.IsRunning();
+        if (TryRecoverFromStuck(plan, running))
         {
             return;
         }
@@ -92,23 +96,28 @@ internal sealed class MovementExecutor
         {
             case MoveKind.Hold:
                 if (DistanceToSelf(plan.Destination) > plan.StopRange + HoldRepathSlack)
-                    IssueMove(plan.Destination, plan.Fallback, plan.StopRange);
+                {
+                    IssueMove(plan.Destination, plan.Fallback, plan.StopRange, running: running);
+                }
                 else
-                    Stop();
+                {
+                    Stop(running);
+                }
                 break;
 
             case MoveKind.Engage:
             case MoveKind.Retreat:
-                IssueMove(plan.Destination, plan.Fallback, plan.StopRange, plan.Pursue);
+                IssueMove(plan.Destination, plan.Fallback, plan.StopRange, plan.Pursue, running);
                 break;
         }
     }
 
-    public void IssueMove(Vector3 destination, Vector3 fallback, float stopRange, bool pursue = false)
+    public void IssueMove(Vector3 destination, Vector3 fallback, float stopRange, bool pursue = false, bool? running = null)
     {
+        var isRunning = running ?? Nav.IsRunning();
         var driftThreshold = DriftThreshold(pursue);
         var stopSlack = pursue ? 0f : SameDestinationDriftThreshold;
-        if (ShouldSkipRepath(destination, stopRange, driftThreshold, stopSlack))
+        if (ShouldSkipRepath(destination, stopRange, driftThreshold, stopSlack, isRunning))
         {
             return;
         }
@@ -123,13 +132,13 @@ internal sealed class MovementExecutor
         else Nav.MoveTo(target);
     }
 
-    private bool TryRecoverFromStuck(in MovePlan plan)
+    private bool TryRecoverFromStuck(in MovePlan plan, bool running)
     {
         if (MatchState.PlayerPosition() is not { } self)
         {
             return false;
         }
-        if (!stuck.IsStuck(self, Nav.IsRunning()))
+        if (!stuck.IsStuck(self, running))
         {
             return false;
         }
@@ -138,7 +147,7 @@ internal sealed class MovementExecutor
         lastMoveDestination = default;
         lastMoveAtMs = 0;
         destinationCommittedAtMs = 0;
-        IssueMove(JitterPerpendicular(plan.Destination, self), plan.Fallback, plan.StopRange, plan.Pursue);
+        IssueMove(JitterPerpendicular(plan.Destination, self), plan.Fallback, plan.StopRange, plan.Pursue, running: false);
         return true;
     }
 
@@ -167,14 +176,14 @@ internal sealed class MovementExecutor
     private bool WithinCommitWindow()
         => destinationCommittedAtMs != 0 && Environment.TickCount64 - destinationCommittedAtMs < DestinationCommitMs;
 
-    private bool ShouldSkipRepath(Vector3 destination, float stopRange, float driftThreshold, float stopSlack)
+    private bool ShouldSkipRepath(Vector3 destination, float stopRange, float driftThreshold, float stopSlack, bool running)
     {
         if (Vector3.Distance(destination, lastMoveDestination) >= driftThreshold)
         {
             return false;
         }
 
-        if (Nav.IsRunning())
+        if (running)
         {
             return true;
         }
