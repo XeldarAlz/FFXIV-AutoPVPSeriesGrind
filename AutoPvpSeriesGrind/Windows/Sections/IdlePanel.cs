@@ -86,7 +86,7 @@ internal static class IdlePanel
         Styling.VSpace(8);
 
         const string text = "Ranged jobs grind more efficiently than melee";
-        var iconString = FontAwesomeIcon.Lightbulb.ToIconString();
+        var iconString = Glyph.Of(FontAwesomeIcon.Lightbulb);
         var color = Styling.AccentAmberSoft;
         var gap = 6f * scale;
 

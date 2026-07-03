@@ -38,6 +38,10 @@ internal static class ExternalPlugins
 
     public static IReadOnlyList<ExternalPlugin> All => AllSnapshot;
 
+    private const int InstalledCacheTtlMs = 2000;
+    private static readonly Dictionary<ExternalPlugin, bool> InstalledCache = new();
+    private static long installedCacheStampMs;
+
     private static ExternalPlugin[] CreateAllSnapshot()
     {
         var snapshot = new ExternalPlugin[Catalog.Count];
@@ -64,6 +68,29 @@ internal static class ExternalPlugins
     }
 
     public static bool IsInstalled(ExternalPlugin plugin)
+    {
+        RefreshInstalledCacheIfStale();
+        return InstalledCache.TryGetValue(plugin, out var installed) && installed;
+    }
+
+    public static void InvalidateInstalledCache() => installedCacheStampMs = 0;
+
+    private static void RefreshInstalledCacheIfStale()
+    {
+        var now = Environment.TickCount64;
+        if (installedCacheStampMs != 0 && now - installedCacheStampMs < InstalledCacheTtlMs)
+        {
+            return;
+        }
+        installedCacheStampMs = now;
+        for (var pluginIndex = 0; pluginIndex < AllSnapshot.Length; pluginIndex++)
+        {
+            var plugin = AllSnapshot[pluginIndex];
+            InstalledCache[plugin] = ScanInstalled(plugin);
+        }
+    }
+
+    private static bool ScanInstalled(ExternalPlugin plugin)
     {
         var info = Catalog[plugin];
         foreach (var installedPlugin in Svc.PluginInterface.InstalledPlugins)

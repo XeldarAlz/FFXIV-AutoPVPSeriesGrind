@@ -125,6 +125,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         brain.Reset();
         BrainTelemetry.Clear();
         MatchRecorder.End();
+        MatchState.ForgetObjective();
         LogDiagnostic($"reset: {reason}");
     }
 

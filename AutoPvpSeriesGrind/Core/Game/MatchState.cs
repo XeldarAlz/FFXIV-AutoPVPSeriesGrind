@@ -49,9 +49,11 @@ internal static class MatchState
         {
             return;
         }
-        foreach (var gameObject in Svc.Objects)
+        var objects = Svc.Objects;
+        for (var objectIndex = 0; objectIndex < objects.Length; objectIndex++)
         {
-            if (gameObject.GameObjectId == gameObjectId)
+            var gameObject = objects[objectIndex];
+            if (gameObject is not null && gameObject.GameObjectId == gameObjectId)
             {
                 Svc.Targets.Target = gameObject;
                 return;
@@ -75,18 +77,6 @@ internal static class MatchState
     public static bool LocalIsMelee()
         => LocalRole() is PvpRole.Tank or PvpRole.Melee;
 
-    private static Vector3? CrystalPosition()
-    {
-        foreach (var gameObject in Svc.Objects)
-        {
-            if (gameObject.Name.TextValue == ApsgConstants.CrystalName)
-            {
-                return gameObject.Position;
-            }
-        }
-        return null;
-    }
-
     public static bool IsEnemyPlayer(IGameObject gameObject)
     {
         try { return gameObject.IsHostile(); }
@@ -99,6 +89,10 @@ internal static class MatchState
     public static TeamBases? IdentifyBases(uint territory, Vector3 spawnPosition)
         => CrystallineConflictMaps.IdentifyBases(territory, spawnPosition);
 
+    private static ulong cachedObjectiveId;
+
+    public static void ForgetObjective() => cachedObjectiveId = 0;
+
     public static PvpSnapshot Capture()
     {
         var localPlayer = Svc.Objects.LocalPlayer;
@@ -106,55 +100,90 @@ internal static class MatchState
         var selfRotation = localPlayer?.Rotation ?? 0f;
         var selfId = localPlayer?.GameObjectId ?? 0;
         var selfTargetId = localPlayer?.TargetObjectId ?? 0;
-        var objective = CrystalPosition();
 
-        var players = ClassifyPlayers(localPlayer, self, selfId, selfTargetId);
-        return AssembleSnapshot(self, selfRotation, selfId, objective, players);
+        var scan = ScanArena(localPlayer, self, selfId, selfTargetId);
+        return AssembleSnapshot(self, selfRotation, selfId, scan);
     }
 
-    private static ClassifiedPlayers ClassifyPlayers(IPlayerCharacter? localPlayer, Vector3 self, ulong selfId, ulong selfTargetId)
+    private static ArenaScan ScanArena(IPlayerCharacter? localPlayer, Vector3 self, ulong selfId, ulong selfTargetId)
     {
         var enemies = new List<PvpActor>();
         var allies = new List<PvpActor>();
         var enemySum = Vector3.Zero;
         var focusCount = 0;
         PvpActor? currentTarget = null;
+        Vector3? objective = null;
 
-        foreach (var gameObject in Svc.Objects)
+        var objects = Svc.Objects;
+        for (var objectIndex = 0; objectIndex < objects.Length; objectIndex++)
         {
-            if (gameObject is not IPlayerCharacter playerCharacter || playerCharacter.CurrentHp == 0)
-            {
-                continue;
-            }
-            if (localPlayer is not null && playerCharacter.Address == localPlayer.Address)
+            var gameObject = objects[objectIndex];
+            if (gameObject is null)
             {
                 continue;
             }
 
-            var actor = ToActor(playerCharacter, self);
-            if (IsEnemyPlayer(playerCharacter))
+            if (gameObject is IPlayerCharacter playerCharacter)
             {
-                enemies.Add(actor);
-                enemySum += playerCharacter.Position;
-                if (actor.TargetId == selfId)
+                if (playerCharacter.CurrentHp == 0)
                 {
-                    focusCount++;
+                    continue;
                 }
-                if (selfTargetId != 0 && actor.Id == selfTargetId)
+                if (localPlayer is not null && playerCharacter.Address == localPlayer.Address)
                 {
-                    currentTarget = actor;
+                    continue;
                 }
+
+                var actor = ToActor(playerCharacter, self);
+                if (IsEnemyPlayer(playerCharacter))
+                {
+                    enemies.Add(actor);
+                    enemySum += playerCharacter.Position;
+                    if (actor.TargetId == selfId)
+                    {
+                        focusCount++;
+                    }
+                    if (selfTargetId != 0 && actor.Id == selfTargetId)
+                    {
+                        currentTarget = actor;
+                    }
+                }
+                else
+                {
+                    allies.Add(actor);
+                }
+                continue;
             }
-            else
+
+            if (objective is null && IsObjective(gameObject))
             {
-                allies.Add(actor);
+                objective = gameObject.Position;
             }
         }
 
-        return new ClassifiedPlayers(enemies, allies, enemySum, focusCount, currentTarget);
+        if (objective is null)
+        {
+            cachedObjectiveId = 0;
+        }
+
+        return new ArenaScan(enemies, allies, enemySum, focusCount, currentTarget, objective);
     }
 
-    private static PvpSnapshot AssembleSnapshot(Vector3 self, float selfRotation, ulong selfId, Vector3? objective, ClassifiedPlayers players)
+    private static bool IsObjective(IGameObject gameObject)
+    {
+        if (cachedObjectiveId != 0)
+        {
+            return gameObject.GameObjectId == cachedObjectiveId;
+        }
+        if (gameObject.Name.TextValue == ApsgConstants.CrystalName)
+        {
+            cachedObjectiveId = gameObject.GameObjectId;
+            return true;
+        }
+        return false;
+    }
+
+    private static PvpSnapshot AssembleSnapshot(Vector3 self, float selfRotation, ulong selfId, ArenaScan scan)
     {
         return new PvpSnapshot
         {
@@ -163,12 +192,12 @@ internal static class MatchState
             SelfId = selfId,
             SelfHp = SelfHpFraction(),
             SelfRole = LocalRole(),
-            Objective = objective,
-            CurrentTarget = players.CurrentTarget,
-            Enemies = players.Enemies,
-            Allies = players.Allies,
-            EnemyCentroid = players.Enemies.Count > 0 ? players.EnemySum / players.Enemies.Count : null,
-            FocusCount = players.FocusCount,
+            Objective = scan.Objective,
+            CurrentTarget = scan.CurrentTarget,
+            Enemies = scan.Enemies,
+            Allies = scan.Allies,
+            EnemyCentroid = scan.Enemies.Count > 0 ? scan.EnemySum / scan.Enemies.Count : null,
+            FocusCount = scan.FocusCount,
         };
     }
 
@@ -198,10 +227,11 @@ internal static class MatchState
     private static float HpFraction(uint currentHp, uint maxHp)
         => maxHp > 0 ? (float)currentHp / maxHp : 1f;
 
-    private readonly record struct ClassifiedPlayers(
+    private readonly record struct ArenaScan(
         List<PvpActor> Enemies,
         List<PvpActor> Allies,
         Vector3 EnemySum,
         int FocusCount,
-        PvpActor? CurrentTarget);
+        PvpActor? CurrentTarget,
+        Vector3? Objective);
 }

@@ -85,7 +85,7 @@ public sealed partial class AboutWindow
         var s = ImGuiHelpers.GlobalScale;
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))
-            iconSize = ImGui.CalcTextSize(icon.ToIconString());
+            iconSize = ImGui.CalcTextSize(Glyph.Of(icon));
         var labelSize = ImGui.CalcTextSize(label);
         return iconSize.X + 6f * s + labelSize.X + 14f * s * 2f;
     }
@@ -121,7 +121,7 @@ public sealed partial class AboutWindow
         drawList.AddRectFilled(origin, end, ImGui.GetColorU32(bg), rounding);
         drawList.AddRect(origin, end, ImGui.GetColorU32(border), rounding, ImDrawFlags.None, 1f);
 
-        var iconStr = icon.ToIconString();
+        var iconStr = Glyph.Of(icon);
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))
             iconSize = ImGui.CalcTextSize(iconStr);
@@ -149,7 +149,7 @@ public sealed partial class AboutWindow
     private static void SectionHeader(FontAwesomeIcon icon, string label, Vector4 accent)
     {
         var s = ImGuiHelpers.GlobalScale;
-        var iconStr = icon.ToIconString();
+        var iconStr = Glyph.Of(icon);
         var labelUp = label.ToUpperInvariant();
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))

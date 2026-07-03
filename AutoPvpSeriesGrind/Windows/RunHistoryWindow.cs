@@ -84,7 +84,7 @@ public sealed class RunHistoryWindow : Window, IDisposable
         var size = new Vector2(-1, 88f * s);
         using (Components.Card.Begin("##apsg_hist_empty", size, Styling.CardBgSoft, Styling.BorderDim))
         {
-            var icon = FontAwesomeIcon.History.ToIconString();
+            var icon = Glyph.Of(FontAwesomeIcon.History);
             ImGui.SetWindowFontScale(1.6f);
             Vector2 iconSize;
             using (ImRaii.PushFont(UiBuilder.IconFont))
@@ -183,7 +183,7 @@ public sealed class RunHistoryWindow : Window, IDisposable
         ImGui.AlignTextToFramePadding();
         using (ImRaii.PushFont(UiBuilder.IconFont))
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
-            ImGui.TextUnformatted(icon.ToIconString());
+            ImGui.TextUnformatted(Glyph.Of(icon));
         ImGui.SameLine(0, 5f * ImGuiHelpers.GlobalScale);
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextDim))
             ImGui.TextUnformatted(label);

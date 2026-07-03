@@ -19,7 +19,7 @@ internal static class IconButton
         using (ImRaii.PushFont(UiBuilder.IconFont))
         using (ImRaii.PushColor(ImGuiCol.Text, color ?? Styling.TextSecondary))
         {
-            clicked = ImGui.Button(icon.ToIconString() + id, new Vector2(size, size));
+            clicked = ImGui.Button(Glyph.Labeled(icon, id), new Vector2(size, size));
         }
 
         if (ImGui.IsItemHovered())

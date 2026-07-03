@@ -29,7 +29,7 @@ internal static class SegmentButton
         drawList.AddRectFilled(origin, end, ImGui.GetColorU32(background), 6f);
         drawList.AddRect(origin, end, ImGui.GetColorU32(border), 6f, ImDrawFlags.None, selected ? 2f : 1f);
 
-        var iconString = icon.ToIconString();
+        var iconString = Glyph.Of(icon);
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))
         {

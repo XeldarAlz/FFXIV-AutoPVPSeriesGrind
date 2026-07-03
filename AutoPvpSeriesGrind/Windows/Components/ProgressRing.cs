@@ -120,7 +120,7 @@ internal static class ProgressRing
 
     public static void CenterIcon(Vector2 center, FontAwesomeIcon icon, Vector4 color, float targetHeight)
     {
-        var glyph = icon.ToIconString();
+        var glyph = Glyph.Of(icon);
         float baseHeight;
         using (ImRaii.PushFont(UiBuilder.IconFont))
         {

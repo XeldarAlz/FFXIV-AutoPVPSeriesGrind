@@ -20,7 +20,7 @@ internal static class StatTile
         dl.AddRectFilled(origin, new Vector2(end.X, origin.Y + 3f * s), ImGui.GetColorU32(accent), Styling.CardRounding, ImDrawFlags.RoundCornersTop);
 
         var pad = 10f * s;
-        var iconStr = icon.ToIconString();
+        var iconStr = Glyph.Of(icon);
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))
             iconSize = ImGui.CalcTextSize(iconStr);

@@ -57,7 +57,7 @@ internal static class DependencyBanner
             using (ImRaii.PushFont(UiBuilder.IconFont))
             using (ImRaii.PushColor(ImGuiCol.Text, bannerColor))
             {
-                ImGui.TextUnformatted(FontAwesomeIcon.ExclamationTriangle.ToIconString());
+                ImGui.TextUnformatted(Glyph.Of(FontAwesomeIcon.ExclamationTriangle));
             }
 
             ImGui.SameLine();

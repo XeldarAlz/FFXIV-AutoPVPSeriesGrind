@@ -21,14 +21,35 @@ internal static class PluginInstaller
 
     private static readonly HashSet<ExternalPlugin> Failed = [];
 
-    public static bool IsInstalling(ExternalPlugin plugin) => InFlight.Contains(plugin);
+    private static readonly object StateGate = new();
 
-    public static bool DidFail(ExternalPlugin plugin) => Failed.Contains(plugin);
+    public static bool IsInstalling(ExternalPlugin plugin)
+    {
+        lock (StateGate)
+        {
+            return InFlight.Contains(plugin);
+        }
+    }
+
+    public static bool DidFail(ExternalPlugin plugin)
+    {
+        lock (StateGate)
+        {
+            return Failed.Contains(plugin);
+        }
+    }
 
     public static async Task<bool> Install(ExternalPlugin plugin)
     {
-        if (!InFlight.Add(plugin)) return false;
-        Failed.Remove(plugin);
+        lock (StateGate)
+        {
+            if (!InFlight.Add(plugin))
+            {
+                return false;
+            }
+            Failed.Remove(plugin);
+        }
+
         try
         {
             var info = ExternalPlugins.Catalog[plugin];
@@ -37,18 +58,33 @@ internal static class PluginInstaller
             ApsgLog.Info(ok
                 ? $"{info.DisplayName} installed."
                 : $"{info.DisplayName} install reported failure; repo may need to be added manually.");
-            if (!ok) Failed.Add(plugin);
+            if (!ok)
+            {
+                MarkFailed(plugin);
+            }
             return ok;
         }
         catch (Exception ex)
         {
             ApsgLog.Warn(ex, "plugin install threw");
-            Failed.Add(plugin);
+            MarkFailed(plugin);
             return false;
         }
         finally
         {
-            InFlight.Remove(plugin);
+            lock (StateGate)
+            {
+                InFlight.Remove(plugin);
+            }
+            ExternalPlugins.InvalidateInstalledCache();
+        }
+    }
+
+    private static void MarkFailed(ExternalPlugin plugin)
+    {
+        lock (StateGate)
+        {
+            Failed.Add(plugin);
         }
     }
 

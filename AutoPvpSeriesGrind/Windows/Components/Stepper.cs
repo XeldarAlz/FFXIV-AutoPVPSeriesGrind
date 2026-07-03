@@ -62,7 +62,7 @@ internal static class Stepper
         using (ImRaii.PushFont(UiBuilder.IconFont))
         using (ImRaii.Disabled(disabled))
         {
-            return ImGui.Button(icon.ToIconString() + buttonId, buttonSize);
+            return ImGui.Button(Glyph.Labeled(icon, buttonId), buttonSize);
         }
     }
 

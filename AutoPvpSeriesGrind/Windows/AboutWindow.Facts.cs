@@ -99,7 +99,7 @@ public sealed partial class AboutWindow
             ImGui.PushTextWrapPos(320f * s);
             using (ImRaii.PushFont(UiBuilder.IconFont))
             using (ImRaii.PushColor(ImGuiCol.Text, category.Color))
-                ImGui.TextUnformatted(category.Icon.ToIconString());
+                ImGui.TextUnformatted(Glyph.Of(category.Icon));
             ImGui.SameLine(0, 6f * s);
             using (ImRaii.PushColor(ImGuiCol.Text, category.Color))
                 ImGui.TextUnformatted(category.Header);

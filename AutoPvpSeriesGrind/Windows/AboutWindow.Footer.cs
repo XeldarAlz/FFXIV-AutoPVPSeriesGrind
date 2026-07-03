@@ -16,7 +16,7 @@ public sealed partial class AboutWindow
         Styling.HairlineRule();
         Styling.VSpace(5);
 
-        var glyph = FontAwesomeIcon.Code.ToIconString();
+        var glyph = Glyph.Of(FontAwesomeIcon.Code);
         var twinkle = Styling.Pulse(2600.0);
         Vector2 glyphSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))

@@ -43,7 +43,7 @@ internal static class DependencyRow
         };
         using (ImRaii.PushFont(UiBuilder.IconFont))
         using (ImRaii.PushColor(ImGuiCol.Text, color))
-            ImGui.TextUnformatted(icon.ToIconString());
+            ImGui.TextUnformatted(Glyph.Of(icon));
     }
 
     private static void DrawName(ExternalPluginInfo info, bool required)
@@ -128,7 +128,7 @@ internal static class DependencyRow
         using (ImRaii.PushFont(UiBuilder.IconFont))
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.AccentRose))
         {
-            ImGui.TextUnformatted(FontAwesomeIcon.ExclamationTriangle.ToIconString());
+            ImGui.TextUnformatted(Glyph.Of(FontAwesomeIcon.ExclamationTriangle));
         }
 
         if (ImGui.IsItemHovered())

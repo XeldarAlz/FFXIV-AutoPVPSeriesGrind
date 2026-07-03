@@ -119,7 +119,7 @@ public sealed partial class AboutWindow
             rounding, ImDrawFlags.None, 1f);
 
         const string label = "Become a Sponsor";
-        var iconStr = FontAwesomeIcon.HandHoldingHeart.ToIconString();
+        var iconStr = Glyph.Of(FontAwesomeIcon.HandHoldingHeart);
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))
             iconSize = ImGui.CalcTextSize(iconStr);

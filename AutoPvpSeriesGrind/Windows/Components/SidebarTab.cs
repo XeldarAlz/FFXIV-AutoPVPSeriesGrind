@@ -38,7 +38,7 @@ internal static class SidebarTab
         }
 
         var paddingX = ContentPaddingX * globalScale;
-        var iconString = icon.ToIconString();
+        var iconString = Glyph.Of(icon);
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))
         {
