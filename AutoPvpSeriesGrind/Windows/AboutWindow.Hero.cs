@@ -17,6 +17,8 @@ public sealed partial class AboutWindow
     private static readonly string IconImagePath =
         Path.Combine(Svc.PluginInterface.AssemblyLocation.DirectoryName ?? "", "Images", IconFile);
 
+    private static readonly bool IconImageExists = File.Exists(IconImagePath);
+
     private void DrawHero()
     {
         var s = ImGuiHelpers.GlobalScale;
@@ -42,7 +44,7 @@ public sealed partial class AboutWindow
         var iconMax = new Vector2(center.X + half, center.Y + half);
 
         var rounding = iconSize * 0.20f * s;
-        if (File.Exists(IconImagePath))
+        if (IconImageExists)
         {
             var texture = Svc.Texture.GetFromFile(IconImagePath).GetWrapOrEmpty();
             if (texture != null)

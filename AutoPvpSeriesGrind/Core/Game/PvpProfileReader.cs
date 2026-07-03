@@ -7,13 +7,51 @@ namespace AutoPvpSeriesGrind.Core.Game;
 
 internal static unsafe class PvpProfileReader
 {
-    public static int SeriesCurrentRank() => Safe.Try("SeriesCurrentRank read failed", () =>
+    private const int CacheTtlMs = 500;
+
+    private static long cacheStampMs;
+    private static int cachedRank;
+    private static float cachedProgress;
+    private static long cachedTotalExp;
+
+    public static int SeriesCurrentRank()
+    {
+        RefreshIfStale();
+        return cachedRank;
+    }
+
+    public static float SeriesRankProgress()
+    {
+        RefreshIfStale();
+        return cachedProgress;
+    }
+
+    public static long SeriesTotalExperience()
+    {
+        RefreshIfStale();
+        return cachedTotalExp;
+    }
+
+    private static void RefreshIfStale()
+    {
+        var now = Environment.TickCount64;
+        if (cacheStampMs != 0 && now - cacheStampMs < CacheTtlMs)
+        {
+            return;
+        }
+        cacheStampMs = now;
+        cachedRank = ReadCurrentRank();
+        cachedProgress = ReadRankProgress();
+        cachedTotalExp = ReadTotalExperience();
+    }
+
+    private static int ReadCurrentRank() => Safe.Try("SeriesCurrentRank read failed", () =>
     {
         var profile = PvPProfile.Instance();
         return profile == null ? 0 : profile->GetSeriesCurrentRank();
     }, fallback: 0);
 
-    public static float SeriesRankProgress() => Safe.Try("SeriesRankProgress read failed", () =>
+    private static float ReadRankProgress() => Safe.Try("SeriesRankProgress read failed", () =>
     {
         var profile = PvPProfile.Instance();
         if (profile == null)
@@ -30,7 +68,7 @@ internal static unsafe class PvpProfileReader
         return toNext > 0 ? Math.Clamp(expIntoCurrentRank / (float)toNext, 0f, 1f) : 0f;
     }, fallback: 0f);
 
-    public static long SeriesTotalExperience() => Safe.Try<long>("SeriesTotalExperience read failed", () =>
+    private static long ReadTotalExperience() => Safe.Try<long>("SeriesTotalExperience read failed", () =>
     {
         var profile = PvPProfile.Instance();
         if (profile == null)
