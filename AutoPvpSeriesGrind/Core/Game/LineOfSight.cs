@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Util;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Common.Component.BGCollision;
 using System.Numerics;
@@ -36,8 +37,9 @@ internal static unsafe class LineOfSight
             RaycastHit hit;
             return !framework->BGCollisionModule->RaycastMaterialFilter(&hit, &from, &direction, distance, 1, materialFilter);
         }
-        catch
+        catch (Exception exception)
         {
+            Safe.Note("LineOfSight raycast failed", exception);
             return true;
         }
     }

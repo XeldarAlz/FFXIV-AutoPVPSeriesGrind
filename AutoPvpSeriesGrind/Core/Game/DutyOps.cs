@@ -37,7 +37,7 @@ internal static unsafe class DutyOps
         return true;
     }, fallback: false);
 
-    public static bool IsQueued() => Safe.TrySilent(() =>
+    public static bool IsQueued() => Safe.TrySilent("IsQueued read failed", () =>
     {
         var contentsFinder = ContentsFinder.Instance();
         if (contentsFinder == null)
@@ -59,7 +59,7 @@ internal static unsafe class DutyOps
             NoCommandArgument, NoCommandArgument, NoCommandArgument, NoCommandArgument);
     });
 
-    public static int ContentTimeLeft() => Safe.TrySilent(() =>
+    public static int ContentTimeLeft() => Safe.TrySilent("ContentTimeLeft read failed", () =>
     {
         var eventFramework = EventFramework.Instance();
         if (eventFramework == null)

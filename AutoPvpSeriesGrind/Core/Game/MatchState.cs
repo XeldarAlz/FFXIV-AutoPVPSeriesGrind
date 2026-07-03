@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Combat;
+using AutoPvpSeriesGrind.Core.Util;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
@@ -79,8 +80,15 @@ internal static class MatchState
 
     public static bool IsEnemyPlayer(IGameObject gameObject)
     {
-        try { return gameObject.IsHostile(); }
-        catch { return false; }
+        try
+        {
+            return gameObject.IsHostile();
+        }
+        catch (Exception exception)
+        {
+            Safe.Note("IsHostile check failed", exception);
+            return false;
+        }
     }
 
     public static Vector3? NearestSafeAnchor(uint territory, Vector3 from)
