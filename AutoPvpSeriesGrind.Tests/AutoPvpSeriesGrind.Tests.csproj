@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Combat logic under test, compiled in directly to stay headless">
+    <Compile Include="..\AutoPvpSeriesGrind\Core\Combat\PvpBrain.cs" Link="Combat\PvpBrain.cs" />
+    <Compile Include="..\AutoPvpSeriesGrind\Core\Combat\PvpSnapshot.cs" Link="Combat\PvpSnapshot.cs" />
+    <Compile Include="..\AutoPvpSeriesGrind\Core\Combat\PvpActor.cs" Link="Combat\PvpActor.cs" />
+    <Compile Include="..\AutoPvpSeriesGrind\Core\Combat\PvpRole.cs" Link="Combat\PvpRole.cs" />
+    <Compile Include="..\AutoPvpSeriesGrind\Core\Combat\PvpStrategy.cs" Link="Combat\PvpStrategy.cs" />
+    <Compile Include="..\AutoPvpSeriesGrind\Core\Combat\StrategyProfile.cs" Link="Combat\StrategyProfile.cs" />
+    <Compile Include="..\AutoPvpSeriesGrind\Core\Combat\CustomStrategyProfile.cs" Link="Combat\CustomStrategyProfile.cs" />
+    <Compile Include="..\AutoPvpSeriesGrind\Core\Combat\MovePlan.cs" Link="Combat\MovePlan.cs" />
+  </ItemGroup>
+
+</Project>
