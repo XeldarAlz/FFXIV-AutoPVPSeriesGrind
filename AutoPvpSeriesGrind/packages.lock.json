@@ -4,12 +4,12 @@
     "net10.0-windows7.0": {
       "croizat.clib": {
         "type": "Direct",
-        "requested": "[1.0.48, )",
-        "resolved": "1.0.48",
-        "contentHash": "7R3PfKOzZE76rvS69qsxE3KwHrMThe0/wMZxZatzlNstGOVAB2NVecjMtIRM9yEoMxITSZLKfQ+o2Xw6JqpgMg==",
+        "requested": "[1.0.79, )",
+        "resolved": "1.0.79",
+        "contentHash": "M5yxdnVq/zA1nWNBDffti4lK2bQWgHSDbL4RajL2m+Mh6jGqHUa8EC7WdrEYKdrFfLO6VsrXjXGXiQ0WfBw9ZA==",
         "dependencies": {
-          "AllaganLib.GameSheets": "2.2.2",
-          "LuminaSupplemental.Excel": "4.3.3"
+          "AllaganLib.GameSheets": "2.2.6",
+          "LuminaSupplemental.Excel": "5.1.0"
         }
       },
       "DalamudPackager": {
@@ -26,14 +26,14 @@
       },
       "AllaganLib.GameSheets": {
         "type": "Transitive",
-        "resolved": "2.2.2",
-        "contentHash": "0aunb4fv7O/FhimPQtQYHcB3Sd719qrjlIf59+QkitvXubw7vu56KBusUWaEPqAKnlRdTMNeI70eTn+1TCXwxA==",
+        "resolved": "2.2.6",
+        "contentHash": "CSxmGA5ZqQ/lGwnjjgdAIQ/wR/FzGdBs4E0IG9BLgNVa9rCsMrjdj66BUuMETG4Gcvat3IhYuD9M22Dt68LsaA==",
         "dependencies": {
           "AllaganLib.Shared": "2.2.0",
           "Autofac": "9.0.0",
           "Autofac.Extensions.DependencyInjection": "10.0.0",
           "CSVFile": "3.2.1",
-          "LuminaSupplemental.Excel": "4.3.3"
+          "LuminaSupplemental.Excel": "4.3.7"
         }
       },
       "AllaganLib.Shared": {
@@ -73,8 +73,8 @@
       },
       "LuminaSupplemental.Excel": {
         "type": "Transitive",
-        "resolved": "4.3.3",
-        "contentHash": "AK79cLkuN+B7g910ojHgXeZ1kMm3rVzWTSPzapdDHdJg1EgnDytM9Wm/B4RqMDx+kHFb6YhFukcninTf9WSvrA==",
+        "resolved": "5.1.0",
+        "contentHash": "it0pwHvWlTek2HpZYT0qM4aZr9C7dqWr7YJBI0VFuaftKUEgJMRghBXfcz5F6yjAhY7iBjn7QfJtwxZEw4XPpA==",
         "dependencies": {
           "CSVFile": "3.2.1",
           "CsvHelper": "30.0.1",
