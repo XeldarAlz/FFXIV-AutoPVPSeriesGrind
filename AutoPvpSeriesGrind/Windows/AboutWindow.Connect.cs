@@ -12,7 +12,7 @@ public sealed partial class AboutWindow
     private static readonly Vector4[] ConnectAccents =
     {
         Styling.AccentViolet, Styling.AccentBlue, Styling.AccentRose,
-        Styling.AccentMint, Styling.AccentAmber,
+        Styling.AccentMint, Styling.AccentAmber, Styling.AccentDiscord,
     };
 
     private readonly Dictionary<string, float> pillHoverProgress = new();

@@ -14,7 +14,8 @@ public sealed partial class AboutWindow : Window, IDisposable
     private const string IconFile = "Icon.png";
     private const string WindowId = "AutoPvpSeriesGrindAbout";
 
-    private const string SponsorUrl = "https://github.com/sponsors/XeldarAlz";
+    private const string PatreonUrl = "https://www.patreon.com/XeldarAlz";
+    private const string DiscordUrl = "https://discord.gg/3HbJCscMyS";
     private const string HubUrl = "https://github.com/XeldarAlz/DalamudPlugins";
     private const string Author = "XeldarAlz";
 
@@ -25,6 +26,7 @@ public sealed partial class AboutWindow : Window, IDisposable
     private static readonly (FontAwesomeIcon Icon, string Label, string Url, int AccentId)[] Links =
     {
         (FontAwesomeIcon.CodeBranch, "GitHub", RepoUrl, 0),
+        (FontAwesomeIcon.Hashtag, "Discord", DiscordUrl, 5),
         (FontAwesomeIcon.Comments, "Discussions", DiscussionsUrl, 1),
         (FontAwesomeIcon.Bug, "Report a bug", IssuesUrl, 2),
         (FontAwesomeIcon.ThLarge, "More plugins", HubUrl, 3),

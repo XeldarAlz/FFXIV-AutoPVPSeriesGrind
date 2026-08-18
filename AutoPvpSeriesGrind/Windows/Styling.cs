@@ -17,6 +17,7 @@ internal static class Styling
     public static readonly Vector4 AccentRose       = new(0.93f, 0.42f, 0.50f, 1.00f);
     public static readonly Vector4 AccentBlue       = new(0.40f, 0.68f, 0.98f, 1.00f);
     public static readonly Vector4 AccentBlueSoft   = new(0.62f, 0.82f, 1.00f, 1.00f);
+    public static readonly Vector4 AccentDiscord    = new(0.345f, 0.396f, 0.949f, 1.00f);
 
     public static readonly Vector4 CardBg        = new(0.075f, 0.090f, 0.105f, 0.85f);
     public static readonly Vector4 CardBgSoft    = new(0.090f, 0.105f, 0.120f, 0.55f);

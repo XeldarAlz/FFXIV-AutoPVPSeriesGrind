@@ -18,7 +18,7 @@ public sealed partial class AboutWindow
         var accent = Styling.PulseColor(Styling.AccentPink, Styling.AccentViolet, 5200.0);
 
         const string title = "Made with care";
-        const string body = "I build and maintain this in my spare time. If it has helped you, a sponsorship lets me keep improving it. No pressure, and thank you for being here.";
+        const string body = "I build and maintain this in my spare time. If it has helped you, a Patreon membership lets me keep improving it. No pressure, and thank you for being here.";
 
         var slotOrigin = ImGui.GetCursorScreenPos();
         var fullAvail = ImGui.GetContentRegionAvail().X;
@@ -60,7 +60,7 @@ public sealed partial class AboutWindow
 
         var btnOrigin = new Vector2(origin.X + pad, end.Y - pad - btnH);
         var btnSize = new Vector2(innerW, btnH);
-        SponsorButton(btnOrigin, btnSize, accent);
+        PatreonButton(btnOrigin, btnSize, accent);
 
         ImGui.SetCursorScreenPos(slotOrigin);
         ImGui.Dummy(new Vector2(fullAvail, height));
@@ -92,7 +92,7 @@ public sealed partial class AboutWindow
         return lines;
     }
 
-    private static void SponsorButton(Vector2 origin, Vector2 size, Vector4 accent)
+    private static void PatreonButton(Vector2 origin, Vector2 size, Vector4 accent)
     {
         var s = ImGuiHelpers.GlobalScale;
         var drawList = ImGui.GetWindowDrawList();
@@ -118,7 +118,7 @@ public sealed partial class AboutWindow
         drawList.AddRect(origin, end, ImGui.GetColorU32(Styling.WithAlpha(Styling.White, hover ? 0.42f : 0.18f)),
             rounding, ImDrawFlags.None, 1f);
 
-        const string label = "Become a Sponsor";
+        const string label = "Support on Patreon";
         var iconStr = FontAwesomeIcon.HandHoldingHeart.ToIconString();
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont))
@@ -147,7 +147,7 @@ public sealed partial class AboutWindow
         ImGui.Dummy(size);
 
         if (!hover) return;
-        UrlActions.HoveredLinkInteraction(SponsorUrl, "Open GitHub Sponsors · right-click to copy");
+        UrlActions.HoveredLinkInteraction(PatreonUrl, "Open Patreon · right-click to copy");
     }
 
     private static void Sheen(Vector2 origin, Vector2 size, double periodMs)
