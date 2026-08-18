@@ -1,12 +1,22 @@
-# When a release is published, refresh the "Plugin version" dropdown options in
-# every .github/ISSUE_TEMPLATE/*.yml: prepend the new version (with the leading
-# `v` stripped), dedupe, keep the most recent 5 versions, and preserve the
-# "Older / not sure" sentinel at the bottom. Can also be dispatched manually
-# (defaults to the latest GitHub release tag) to backfill or recover.
+# Refreshes the "Plugin version" dropdown options in every .github/ISSUE_TEMPLATE/*.yml:
+# prepend the new version (with the leading `v` stripped), dedupe, keep the most recent
+# 5 versions, and preserve the "Older / not sure" sentinel at the bottom. Normally called
+# by release.yml; can also be dispatched manually (defaults to the latest GitHub release
+# tag) to backfill or recover.
 
 name: Update Issue Template Versions
 
 on:
+  # release.yml calls this directly: it publishes with GITHUB_TOKEN, and GitHub will
+  # not start a workflow from an event raised by that token, so `release: published`
+  # never fires here on its own.
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version to inject (with or without `v` prefix). Leave blank to use the latest release tag.'
+        required: false
+        type: string
+        default: ''
   release:
     types: [published]
   workflow_dispatch:
@@ -14,6 +24,7 @@ on:
       version:
         description: 'Version to inject (with or without `v` prefix). Leave blank to use the latest release tag.'
         required: false
+        type: string
         default: ''
 
 permissions:
@@ -34,7 +45,7 @@ jobs:
         id: resolve
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_VERSION: ${{ github.event.inputs.version }}
+          INPUT_VERSION: ${{ inputs.version }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           if [ -n "$RELEASE_TAG" ]; then
