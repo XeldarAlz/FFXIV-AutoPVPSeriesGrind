@@ -52,10 +52,9 @@ internal static class PluginInstaller
         }
     }
 
-    // Installs via Dalamud's internal PluginManager.InstallPluginAsync by reflection. We bind the
-    // arguments to the live method's parameters by name and length so we survive Dalamud signature
-    // drift: ECommons.DalamudReflector.AddPlugin hard-codes a 4-arg call that throws "Parameter
-    // count mismatch" once Dalamud changed InstallPluginAsync to 3 parameters.
+    // Installs via Dalamud's internal PluginManager.InstallPluginAsync by reflection, binding
+    // arguments to the live method's parameters by name so Dalamud signature changes cannot break
+    // us the way ECommons.DalamudReflector's positional argument list does.
     private static async Task<bool> AddPlugin(string masterUrl, string internalName)
     {
         var manifest = await FetchManifest(masterUrl, internalName);
