@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Util;
 using ECommons.Automation;
 using ECommons.GameHelpers;
@@ -67,7 +68,7 @@ internal sealed class GreetingDirector
         portraitHelloSent = true;
         if (!HumanTiming.Maybe(settings.HelloChance)) return false;
 
-        Chat.ExecuteCommand(GameCommands.QuickChatHello);
+        Chat.ExecuteCommand(GameText.QuickChatHello());
         ApsgLog.Info($"quickchat Hello sent at tLeft={timeLeftSeconds} (threshold={portraitHelloThreshold})");
         return true;
     }

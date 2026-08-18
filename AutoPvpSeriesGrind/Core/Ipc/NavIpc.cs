@@ -20,6 +20,8 @@ internal sealed class NavIpc
     private readonly ICallGateSubscriber<bool> isRunning;
     private readonly ICallGateSubscriber<bool> pathfindInProgress;
     private readonly ICallGateSubscriber<Vector3, float, float, Vector3?> nearestPointReachable;
+    private readonly ICallGateSubscriber<bool> isReady;
+    private readonly ICallGateSubscriber<float> buildProgress;
 
     private NavIpc()
     {
@@ -29,6 +31,8 @@ internal sealed class NavIpc
         isRunning = Svc.PluginInterface.GetIpcSubscriber<bool>(IpcGates.NavIsRunning);
         pathfindInProgress = Svc.PluginInterface.GetIpcSubscriber<bool>(IpcGates.NavPathfindInProgress);
         nearestPointReachable = Svc.PluginInterface.GetIpcSubscriber<Vector3, float, float, Vector3?>(IpcGates.NavNearestPointReachable);
+        isReady = Svc.PluginInterface.GetIpcSubscriber<bool>(IpcGates.NavIsReady);
+        buildProgress = Svc.PluginInterface.GetIpcSubscriber<float>(IpcGates.NavBuildProgress);
     }
 
     public bool IsAvailable => moveTo.HasFunction;
@@ -68,6 +72,14 @@ internal sealed class NavIpc
     public bool IsRunning()
         => IpcGate.Invoke(isRunning.HasFunction, isRunning.InvokeFunc, false, "NavIpc: IsRunning failed")
         || IpcGate.Invoke(pathfindInProgress.HasFunction, pathfindInProgress.InvokeFunc, false, "NavIpc: PathfindInProgress failed");
+
+    // vnavmesh silently ignores movement requests while the zone mesh is still building, which reads
+    // as the character standing around doing nothing; surfaced so the log says which one it was.
+    public bool IsReady()
+        => IpcGate.Invoke(isReady.HasFunction, isReady.InvokeFunc, false, "NavIpc: IsReady failed");
+
+    public float BuildProgress()
+        => IpcGate.Invoke(buildProgress.HasFunction, buildProgress.InvokeFunc, -1f, "NavIpc: BuildProgress failed");
 
     public Vector3? NearestPointReachable(Vector3 point, float halfExtentXZ = DefaultHalfExtentXZ, float halfExtentY = DefaultHalfExtentY)
         => IpcGate.Invoke(nearestPointReachable.HasFunction,

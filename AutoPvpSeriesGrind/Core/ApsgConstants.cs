@@ -12,8 +12,9 @@ internal static class ApsgConstants
     // ContentRoulette row id for Crystalline Conflict (Casual Match), the roulette the source script queues.
     public const byte CasualMatchRouletteId = 40;
 
-    // Crystalline Conflict objective object name.
-    public const string CrystalName = "Tactical Crystal";
+    // Crystalline Conflict objective, matched by BNpcName row id: the row carries a separate name per
+    // client language, so comparing against the English text finds nothing on a non-English client.
+    public const uint TacticalCrystalNameId = 11350;
 
     public const uint StatusSpawnProtection = 895; // active in the spawn pen before the gate opens
     public const uint StatusSprint = 1342;         // PvP sprint
@@ -66,9 +67,6 @@ internal static class ApsgConstants
         public const string Sprint = "/pvpac sprint";
         public const string ClearEnemySignOnSelf = "/enemysign clear <me>";
 
-        public const string QuickChatHello = "/quickchat Hello";
-        public const string QuickChatGoodMatch = "/quickchat \"Good Match\"";
-
         // Default emotes only; reward emotes the account may not own fail silently.
         public static readonly string[] GreetEmotes = ["/wave", "/cheer", "/salute", "/thumbsup", "/joy", "/stretch"];
 
@@ -78,7 +76,7 @@ internal static class ApsgConstants
         public const string NavStop = "/vnav stop";
 
         public static string NavMoveTo(Vector3 dest)
-            => FormattableString.Invariant($"/vnavmesh moveto {dest.X} {dest.Y} {dest.Z}");
+            => FormattableString.Invariant($"/vnav moveto {dest.X} {dest.Y} {dest.Z}");
     }
 
     internal static class LifestreamCommands
@@ -94,6 +92,8 @@ internal static class ApsgConstants
         public const string NavIsRunning = "vnavmesh.Path.IsRunning";
         public const string NavPathfindInProgress = "vnavmesh.SimpleMove.PathfindInProgress";
         public const string NavNearestPointReachable = "vnavmesh.Query.Mesh.NearestPointReachable";
+        public const string NavIsReady = "vnavmesh.Nav.IsReady";
+        public const string NavBuildProgress = "vnavmesh.Nav.BuildProgress";
 
         public const string LifestreamExecuteCommand = "Lifestream.ExecuteCommand";
         public const string LifestreamIsBusy = "Lifestream.IsBusy";

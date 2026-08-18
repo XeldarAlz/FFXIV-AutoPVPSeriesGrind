@@ -14,6 +14,7 @@ internal sealed partial class AutoPvpSeries
     private const float LegacyCrystalStopRange = 1.5f;
 
     private const float SpawnExitArrivalRange = 3.5f;
+    private const float ObjectiveFallbackStopRange = 3f;
     private const int SpawnExitTimeoutMs = 8000;
 
     private async Task TickLiveMatch()
@@ -105,10 +106,12 @@ internal sealed partial class AutoPvpSeries
 
         if (!snapshot.HasObjective)
         {
-            BrainTelemetry.Record(snapshot, new MovePlan(MoveKind.Hold, snapshot.Self, snapshot.Self, 0f, false, "no objective"));
-            movement.HaltPathing();
+            WarnMissingObjectiveOnce();
+            AdvanceWithoutObjective(snapshot);
             return;
         }
+
+        matchFlow.LoggedMissingObjective = false;
 
         var anchor = matchFlow.Bases?.Own ?? MatchState.NearestSafeAnchor(territory, snapshot.Self) ?? snapshot.Self;
         var plan = brain.Decide(snapshot, anchor, matchFlow.Bases?.Enemy);
@@ -125,6 +128,33 @@ internal sealed partial class AutoPvpSeries
         movement.Execute(plan);
     }
 
+    // The crystal starts at the arena center, midway along the line joining the two bases. Standing
+    // still until it resolves is what made the bot look parked at the spawn exit, so walk the line instead.
+    private void AdvanceWithoutObjective(in PvpSnapshot snapshot)
+    {
+        if (matchFlow.Bases is not { } bases)
+        {
+            BrainTelemetry.Record(snapshot, new MovePlan(MoveKind.Hold, snapshot.Self, snapshot.Self, 0f, false, "no objective"));
+            movement.HaltPathing();
+            return;
+        }
+
+        var crystalLineCenter = Vector3.Lerp(bases.Own, bases.Enemy, 0.5f);
+        BrainTelemetry.RecordStatus(snapshot, MoveKind.Engage, "no objective yet, advancing to crystal line", Posture.Reposition);
+        movement.IssueMove(crystalLineCenter, bases.Own, ObjectiveFallbackStopRange);
+    }
+
+    private void WarnMissingObjectiveOnce()
+    {
+        if (matchFlow.LoggedMissingObjective)
+        {
+            return;
+        }
+
+        matchFlow.LoggedMissingObjective = true;
+        Warn($"objective not found among {Svc.Objects.Length} loaded objects (Tactical Crystal, BNpcName {TacticalCrystalNameId})");
+    }
+
     private void ApplyBrainTarget(ulong targetId)
     {
         if (settings.BrainTargets && targetId != 0)
@@ -138,6 +168,7 @@ internal sealed partial class AutoPvpSeries
         var snapshot = MatchState.Capture();
         if (snapshot.Objective is not { } crystalPosition)
         {
+            WarnMissingObjectiveOnce();
             BrainTelemetry.RecordStatus(snapshot, MoveKind.Hold, "no objective (legacy)");
             return;
         }

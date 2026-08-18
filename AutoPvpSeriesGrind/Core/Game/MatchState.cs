@@ -79,9 +79,9 @@ internal static class MatchState
     {
         foreach (var gameObject in Svc.Objects)
         {
-            if (gameObject.Name.TextValue == ApsgConstants.CrystalName)
+            if (gameObject is ICharacter character && character.NameId == ApsgConstants.TacticalCrystalNameId)
             {
-                return gameObject.Position;
+                return character.Position;
             }
         }
         return null;

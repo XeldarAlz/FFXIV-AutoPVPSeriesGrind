@@ -47,6 +47,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         public bool AnnouncedEntered;
         public bool AnnouncedPortrait;
         public bool RanSafetyMoveThisDuty;
+        public bool LoggedMissingObjective;
         public bool LeftSpawn;
         public long LeaveSpawnStartedAtMs;
         public TeamBases? Bases;

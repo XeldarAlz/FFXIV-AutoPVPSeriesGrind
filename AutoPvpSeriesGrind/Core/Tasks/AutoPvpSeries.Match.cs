@@ -1,5 +1,6 @@
 using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Ipc;
 using ECommons.DalamudServices;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
@@ -48,7 +49,7 @@ internal sealed partial class AutoPvpSeries
             if (goodbyeAtMs <= lingerMs)
             {
                 if (goodbyeAtMs > 0) await NextFrame(goodbyeAtMs);
-                ExecuteGameCommand(GameCommands.QuickChatGoodMatch);
+                ExecuteGameCommand(GameText.QuickChatGoodMatch());
                 await NextFrame(PostQuickChatMs);
                 waitedMs = goodbyeAtMs + PostQuickChatMs;
             }
@@ -150,6 +151,7 @@ internal sealed partial class AutoPvpSeries
         }
 
         LogDiagnostic($"gate open detected by ContentTimeLeft -> {timeLeftSeconds}");
+        WarnIfNavmeshNotReady();
         matchFlow.InMatchLive = true;
         if (settings.RecordMatches)
         {
@@ -157,6 +159,17 @@ internal sealed partial class AutoPvpSeries
         }
         await EnableRotationAtMatchStart();
         return true;
+    }
+
+    private void WarnIfNavmeshNotReady()
+    {
+        var nav = NavIpc.Instance;
+        if (nav.IsReady())
+        {
+            return;
+        }
+
+        Warn($"navmesh not ready at gate open (build progress {nav.BuildProgress():F2}) -> movement stalls until vnavmesh finishes this zone");
     }
 
     private async Task EnableRotationAtMatchStart()
