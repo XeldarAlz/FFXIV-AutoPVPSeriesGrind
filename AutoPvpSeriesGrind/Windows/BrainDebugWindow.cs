@@ -6,7 +6,6 @@ using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
-using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using System.Numerics;
 
@@ -17,16 +16,14 @@ public sealed class BrainDebugWindow : Window, IDisposable
     private const float HpHealthy = 0.5f;
     private const float HpWounded = 0.25f;
     private const float MinimapMax = 300f;
-    private const double PostureAnimMs = 420.0;
-    private const double DestinationAnimMs = 520.0;
+    private const float PostureAnimMs = 420f;
+    private const float DestinationAnimMs = 520f;
     private const float DestinationMoveThreshold = 3f;
 
-    private const float BannerHeight = 40f;
-    private const float BannerPad = 12f;
+    private const float BannerHeight = 44f;
+    private const float BannerPad = 14f;
     private const float BannerIconBoxRatio = 0.5f;
     private const float BannerLabelGap = 12f;
-    private const float BannerLabelScale = 1.25f;
-    private const float BannerReasonScale = 0.95f;
     private const float BannerTintRest = 0.16f;
     private const float BannerTintFlash = 0.40f;
     private const float BannerBarRest = 3f;
@@ -41,12 +38,11 @@ public sealed class BrainDebugWindow : Window, IDisposable
     private const float LabelSlide = 6f;
     private const float LabelFadeEnergy = 0.5f;
 
-    private const float LegendFontScale = 0.82f;
     private const float LegendGap = 14f;
-    private const float HpBarHeightRatio = 0.85f;
+    private const float HpBarHeight = 18f;
     private const float StatGap = 6f;
-    private const float StatTileHeight = 56f;
-    private const string Dash = "--";
+    private const float StatTileHeight = 62f;
+    private const string Dash = "—";
 
     private static readonly (string Text, Vector4 Color)[] Legend =
     {
@@ -58,12 +54,14 @@ public sealed class BrainDebugWindow : Window, IDisposable
 
     private Posture lastPosture = Posture.Idle;
     private Vector3 lastDestination;
-    private Transition postureChange;
-    private Transition destinationChange;
+    private long postureTick;
+    private long destinationTick;
+    private IDisposable? chrome;
+    private IDisposable? bodyFont;
 
     public BrainDebugWindow() : base("Auto PVP Series Grind: Brain###AutoPvpSeriesGrindBrain")
     {
-        Size = new Vector2(420, 620);
+        Size = new Vector2(420, 660);
         SizeCondition = ImGuiCond.FirstUseEver;
         SizeConstraints = new WindowSizeConstraints
         {
@@ -74,17 +72,30 @@ public sealed class BrainDebugWindow : Window, IDisposable
 
     public void Dispose() { }
 
+    public override void PreDraw()
+    {
+        bodyFont = Fonts.PushBody();
+        chrome = Styling.PushChrome(new Vector2(16f, 14f));
+    }
+
+    public override void PostDraw()
+    {
+        chrome?.Dispose();
+        chrome = null;
+        bodyFont?.Dispose();
+        bodyFont = null;
+    }
+
     public override void Draw()
     {
-        using var style = Styling.PushWindowStyle();
         var cfg = Plugin.Cfg;
 
         if (!cfg.EnableCombatBrain)
         {
             DrawContext(cfg, null);
-            Styling.HairlineRule(3f, 10f);
+            Paint.Divider(8f);
             Styling.TextCentered("The combat brain is off.", Styling.TextSecondary);
-            Styling.TextCentered("Turn it on in Settings → Combat.", Styling.TextMuted);
+            Styling.TextCentered("Turn it on under Settings, Combat.", Styling.TextMuted);
             return;
         }
 
@@ -92,7 +103,7 @@ public sealed class BrainDebugWindow : Window, IDisposable
         if (BrainTelemetry.Plan is not { } plan || (!inMatch && !BrainTelemetry.IsFresh))
         {
             DrawContext(cfg, null);
-            Styling.HairlineRule(3f, 12f);
+            Paint.Divider(8f);
             Styling.TextCentered(inMatch ? "Match starting: the brain spins up at the gate." : "Not in a live match.", Styling.TextMuted);
             return;
         }
@@ -103,27 +114,31 @@ public sealed class BrainDebugWindow : Window, IDisposable
         if (plan.Posture != lastPosture)
         {
             lastPosture = plan.Posture;
-            postureChange.Mark();
+            postureTick = Environment.TickCount64;
         }
 
         if (plan.Kind != MoveKind.Hold && HorizontalDistance(plan.Destination, lastDestination) > DestinationMoveThreshold)
         {
             lastDestination = plan.Destination;
-            destinationChange.Mark();
+            destinationTick = Environment.TickCount64;
         }
 
         DrawContext(cfg, snap.SelfRole);
-        Styling.HairlineRule(3f, 6f);
-        DrawPostureBanner(plan, postureChange.Energy(PostureAnimMs));
+        Paint.Divider(6f);
+        DrawPostureBanner(plan, Energy(postureTick, PostureAnimMs));
         Styling.VSpace(8);
-        DrawMinimap(snap, plan, destinationChange.Energy(DestinationAnimMs));
-        Styling.VSpace(4);
+        DrawMinimap(snap, plan, Energy(destinationTick, DestinationAnimMs));
+        Styling.VSpace(6);
         DrawLegend();
         Styling.VSpace(10);
         DrawHpBar(snap.SelfHp);
         Styling.VSpace(10);
         DrawStats(snap, plan);
     }
+
+    // Energy decays from 1 to 0 over the animation window, so a fresh change flashes and settles.
+    private static float Energy(long markedTick, float durationMs)
+        => markedTick == 0L ? 0f : 1f - Motion.Reveal(markedTick, durationMs);
 
     private static void DrawContext(Configuration cfg, PvpRole? role)
     {
@@ -142,7 +157,7 @@ public sealed class BrainDebugWindow : Window, IDisposable
         if (!NavIpc.Instance.IsAvailable)
         {
             Styling.VSpace(4);
-            Chip.Draw("vnavmesh offline · chat fallback", Styling.AccentRose);
+            Chip.Draw("vnavmesh offline, chat fallback", Styling.AccentRose, FontAwesomeIcon.ExclamationTriangle);
         }
     }
 
@@ -180,33 +195,37 @@ public sealed class BrainDebugWindow : Window, IDisposable
         var pad = BannerPad * scale;
         var origin = ImGui.GetCursorScreenPos();
         var end = origin + new Vector2(width, height);
+        var rounding = Styling.CardRounding * scale;
         var dl = ImGui.GetWindowDrawList();
 
-        dl.AddRectFilled(origin, end, ImGui.GetColorU32(Vector4.Lerp(Styling.CardBg, color, BannerTintRest + BannerTintFlash * energy)), Styling.CardRounding);
-        dl.AddRectFilled(origin, new Vector2(origin.X + (BannerBarRest + BannerBarFlash * energy) * scale, end.Y), ImGui.GetColorU32(color), Styling.CardRounding, ImDrawFlags.RoundCornersLeft);
-        dl.AddRect(origin, end, ImGui.GetColorU32(Styling.WithAlpha(color, BannerBorderRest + BannerBorderFlash * energy)), Styling.CardRounding, ImDrawFlags.None, 1f);
+        Paint.Fill(dl, origin, end, Vector4.Lerp(Styling.Surface1, color, BannerTintRest + BannerTintFlash * energy), rounding);
+        Paint.Fill(dl, origin, new Vector2(origin.X + (BannerBarRest + BannerBarFlash * energy) * scale, end.Y), color, rounding, ImDrawFlags.RoundCornersLeft);
+        Paint.TopLight(dl, origin, end, rounding);
+        Paint.Stroke(dl, origin, end, Styling.WithAlpha(color, BannerBorderRest + BannerBorderFlash * energy), rounding);
 
         var iconBox = height * BannerIconBoxRatio;
         var iconCenter = new Vector2(origin.X + pad + iconBox * 0.5f, origin.Y + height * 0.5f);
         if (energy > 0f)
+        {
             ProgressRing.Glow(iconCenter, iconBox * (IconPingRadiusBase + IconPingRadiusSpread * (1f - energy)), color, IconPingIntensity * energy);
+        }
+
         ProgressRing.CenterIcon(iconCenter, PostureStyle.Icon(plan.Posture), Styling.WithAlpha(color, 1f - IconFadeEnergy * energy), iconBox * (1f + IconPopScale * energy));
 
-        ImGui.SetWindowFontScale(BannerLabelScale);
-        var labelSize = ImGui.CalcTextSize(label);
-        ImGui.SetCursorScreenPos(new Vector2(origin.X + pad + iconBox + (BannerLabelGap + LabelSlide * energy) * scale, origin.Y + (height - labelSize.Y) * 0.5f));
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.WithAlpha(color, 1f - LabelFadeEnergy * energy)))
-            ImGui.TextUnformatted(label);
-        ImGui.SetWindowFontScale(1f);
+        using (Fonts.PushHeadline())
+        {
+            var labelSize = TextDraw.Measure(label);
+            TextDraw.At(label,
+                new Vector2(origin.X + pad + iconBox + (BannerLabelGap + LabelSlide * energy) * scale, origin.Y + (height - labelSize.Y) * 0.5f),
+                Styling.WithAlpha(color, 1f - LabelFadeEnergy * energy));
+        }
 
-        ImGui.SetCursorScreenPos(origin);
         ImGui.Dummy(new Vector2(width, height));
 
-        if (!string.IsNullOrWhiteSpace(plan.Reason))
-        {
-            Styling.VSpace(3);
-            Styling.TextCentered(plan.Reason, Styling.TextSecondary, BannerReasonScale);
-        }
+        if (string.IsNullOrWhiteSpace(plan.Reason)) return;
+        Styling.VSpace(4);
+        using (Fonts.PushCaption())
+            Styling.TextCentered(plan.Reason, Styling.TextSecondary);
     }
 
     private static void DrawMinimap(PvpSnapshot snap, in MovePlan plan, float destinationEnergy)
@@ -218,72 +237,61 @@ public sealed class BrainDebugWindow : Window, IDisposable
     private static void DrawLegend()
     {
         var scale = ImGuiHelpers.GlobalScale;
-        ImGui.SetWindowFontScale(LegendFontScale);
+        using var font = Fonts.PushCaption();
         var gap = LegendGap * scale;
+        var origin = ImGui.GetCursorScreenPos();
+        var avail = ImGui.GetContentRegionAvail().X;
+
         var total = 0f;
-        for (var partIndex = 0; partIndex < Legend.Length; partIndex++)
+        for (var index = 0; index < Legend.Length; index++)
         {
-            if (partIndex > 0)
-                total += gap;
-            total += ImGui.CalcTextSize(Legend[partIndex].Text).X;
+            if (index > 0) total += gap;
+            total += TextDraw.Measure(Legend[index].Text).X;
         }
-        Styling.CenterNextItem(total);
-        for (var partIndex = 0; partIndex < Legend.Length; partIndex++)
+
+        var x = origin.X + MathF.Max(0f, (avail - total) * 0.5f);
+        var lineHeight = ImGui.GetTextLineHeight();
+        for (var index = 0; index < Legend.Length; index++)
         {
-            if (partIndex > 0)
-                ImGui.SameLine(0, gap);
-            using (ImRaii.PushColor(ImGuiCol.Text, Legend[partIndex].Color))
-                ImGui.TextUnformatted(Legend[partIndex].Text);
+            TextDraw.At(Legend[index].Text, new Vector2(x, origin.Y), Legend[index].Color);
+            x += TextDraw.Measure(Legend[index].Text).X + gap;
         }
-        ImGui.SetWindowFontScale(1f);
+
+        ImGui.Dummy(new Vector2(avail, lineHeight));
     }
 
     private static void DrawHpBar(float hp)
     {
+        var scale = ImGuiHelpers.GlobalScale;
         var color = hp > HpHealthy ? Styling.AccentMint : hp > HpWounded ? Styling.AccentAmber : Styling.AccentRose;
         var width = ImGui.GetContentRegionAvail().X;
-        var height = ImGui.GetFrameHeight() * HpBarHeightRatio;
+        var height = HpBarHeight * scale;
         var origin = ImGui.GetCursorScreenPos();
-        var end = origin + new Vector2(width, height);
         var dl = ImGui.GetWindowDrawList();
 
-        dl.AddRectFilled(origin, end, ImGui.GetColorU32(Styling.CardBgSoft), height * 0.5f);
-        if (hp > 0)
-            dl.AddRectFilled(origin, new Vector2(origin.X + width * Math.Clamp(hp, 0f, 1f), end.Y), ImGui.GetColorU32(color), height * 0.5f);
-        dl.AddRect(origin, end, ImGui.GetColorU32(Styling.BorderDim), height * 0.5f);
+        Paint.Bar(dl, origin, width, height, hp, color);
 
         var text = $"HP {hp:P0}";
-        var textSize = ImGui.CalcTextSize(text);
-        ImGui.SetCursorScreenPos(new Vector2(origin.X + (width - textSize.X) * 0.5f, origin.Y + (height - textSize.Y) * 0.5f));
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextStrong))
-            ImGui.TextUnformatted(text);
+        var textSize = TextDraw.Measure(text);
+        TextDraw.At(text, new Vector2(origin.X + (width - textSize.X) * 0.5f, origin.Y + (height - textSize.Y) * 0.5f), Styling.TextStrong);
 
-        ImGui.SetCursorScreenPos(origin);
         ImGui.Dummy(new Vector2(width, height));
     }
 
     private static void DrawStats(PvpSnapshot snap, in MovePlan plan)
     {
-        var tiles = new (FontAwesomeIcon Icon, string Value, string Caption, Vector4 Accent)[]
-        {
-            (FontAwesomeIcon.Skull, Distance(snap.Enemies.Count, snap.NearestEnemyDistance), "ENEMY", Styling.AccentRose),
-            (FontAwesomeIcon.Users, Distance(snap.Allies.Count, snap.NearestAllyDistance), "ALLY", Styling.AccentMint),
-            (FontAwesomeIcon.Gem, snap.HasObjective ? Yalms(HorizontalDistance(snap.Self, snap.Objective!.Value)) : Dash, "POINT", Styling.AccentAmber),
-            (FontAwesomeIcon.Bullseye, TargetHp(snap, plan) is { } hp ? $"{hp * 100:F0}%" : Dash, "TARGET", Styling.AccentVioletSoft),
-        };
-
         var scale = ImGuiHelpers.GlobalScale;
         var gap = StatGap * scale;
         var avail = ImGui.GetContentRegionAvail().X;
-        var size = new Vector2((avail - gap * (tiles.Length - 1)) / tiles.Length, StatTileHeight * scale);
+        var tileWidth = (avail - gap * 3f) / 4f;
 
-        for (var tileIndex = 0; tileIndex < tiles.Length; tileIndex++)
-        {
-            if (tileIndex > 0)
-                ImGui.SameLine(0, gap);
-            var tile = tiles[tileIndex];
-            StatTile.Draw(tile.Icon, tile.Value, tile.Caption, tile.Accent, size);
-        }
+        StatTile.Draw("Enemy", Distance(snap.Enemies.Count, snap.NearestEnemyDistance), null, Styling.AccentRose, tileWidth, StatTileHeight);
+        ImGui.SameLine(0, gap);
+        StatTile.Draw("Ally", Distance(snap.Allies.Count, snap.NearestAllyDistance), null, Styling.AccentMint, tileWidth, StatTileHeight);
+        ImGui.SameLine(0, gap);
+        StatTile.Draw("Point", snap.HasObjective ? Yalms(HorizontalDistance(snap.Self, snap.Objective!.Value)) : Dash, null, Styling.AccentAmber, tileWidth, StatTileHeight);
+        ImGui.SameLine(0, gap);
+        StatTile.Draw("Target", TargetHp(snap, plan) is { } hp ? $"{hp * 100:F0}%" : Dash, null, Styling.AccentVioletSoft, tileWidth, StatTileHeight);
     }
 
     private static string Distance(int count, float nearest) => count == 0 ? Dash : Yalms(nearest);
@@ -292,11 +300,12 @@ public sealed class BrainDebugWindow : Window, IDisposable
 
     private static float? TargetHp(PvpSnapshot snap, in MovePlan plan)
     {
-        if (plan.TargetId == 0)
-            return null;
+        if (plan.TargetId == 0) return null;
         for (var enemyIndex = 0; enemyIndex < snap.Enemies.Count; enemyIndex++)
-            if (snap.Enemies[enemyIndex].Id == plan.TargetId)
-                return snap.Enemies[enemyIndex].Hp;
+        {
+            if (snap.Enemies[enemyIndex].Id == plan.TargetId) return snap.Enemies[enemyIndex].Hp;
+        }
+
         return null;
     }
 

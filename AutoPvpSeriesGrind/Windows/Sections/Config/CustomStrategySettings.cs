@@ -1,9 +1,7 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility;
-using Dalamud.Interface.Utility.Raii;
-using System.Numerics;
+using Dalamud.Interface;
 
 namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
@@ -110,31 +108,21 @@ internal static class CustomStrategySettings
                 row.Minimum, row.Maximum, row.Format));
     }
 
-    private const float ResetButtonWidth = 170f;
+    private const string ResetLabel = "Reset to defaults";
 
     private static void DrawResetRow(Configuration cfg)
     {
         var armed = ImGui.GetIO().KeyCtrl;
-        var width = ResetButtonWidth * ImGuiHelpers.GlobalScale;
+        var width = PillButton.Width(ResetLabel, FontAwesomeIcon.Undo);
         ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, ImGui.GetContentRegionAvail().X - width));
 
-        using var colors = ImRaii.PushColor(ImGuiCol.Button, Styling.CardBgSoft)
-            .Push(ImGuiCol.ButtonHovered, Styling.WithAlpha(Styling.AccentRose, 0.30f))
-            .Push(ImGuiCol.ButtonActive, Styling.WithAlpha(Styling.AccentRose, 0.45f))
-            .Push(ImGuiCol.Border, Styling.BorderDim)
-            .Push(ImGuiCol.Text, armed ? Styling.AccentRose : Styling.TextDim);
-        using var rounding = ImRaii.PushStyle(ImGuiStyleVar.FrameRounding, Styling.FrameRounding);
-        using var border = ImRaii.PushStyle(ImGuiStyleVar.FrameBorderSize, 1f);
-
-        if (ImGui.Button("Reset to defaults", new Vector2(width, ImGui.GetFrameHeight())) && armed)
+        var emphasis = armed ? PillButton.Emphasis.Tinted : PillButton.Emphasis.Ghost;
+        if (PillButton.Draw("##cs_reset", ResetLabel, Styling.AccentRose, emphasis, FontAwesomeIcon.Undo,
+                tooltip: "Sets every value above back to the Moderate baseline. Hold Ctrl and click to confirm.")
+            && armed)
         {
             cfg.CustomStrategy = new CustomStrategyProfile();
             cfg.Save();
-        }
-
-        if (ImGui.IsItemHovered())
-        {
-            SettingsRow.HelpTooltip("Sets every value above back to the Moderate baseline. Hold Ctrl and click to confirm.");
         }
     }
 }

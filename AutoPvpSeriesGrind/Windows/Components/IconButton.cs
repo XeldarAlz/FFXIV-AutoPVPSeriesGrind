@@ -1,32 +1,31 @@
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
-using Dalamud.Interface.Utility.Raii;
 using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Windows.Components;
 
 internal static class IconButton
 {
-    public static bool Draw(FontAwesomeIcon icon, string id, string tooltip, Vector4? color, float size)
+    public static bool Draw(FontAwesomeIcon icon, string id, float size, Vector4? color = null, string? tooltip = null, bool enabled = true)
     {
-        using var bg = ImRaii.PushColor(ImGuiCol.Button, Styling.CardBg)
-            .Push(ImGuiCol.ButtonHovered, Styling.CardBgHover)
-            .Push(ImGuiCol.ButtonActive, Styling.WithAlpha(Styling.AccentViolet, 0.55f))
-            .Push(ImGuiCol.Border, Styling.BorderDim);
-        using var border = ImRaii.PushStyle(ImGuiStyleVar.FrameBorderSize, 1f);
+        var origin = ImGui.GetCursorScreenPos();
+        var box = new Vector2(size, size);
+        var hit = Hit.Area(id, box, enabled);
+        var hover = Motion.Hover(Motion.Key(id), hit.Hovered);
+        var dl = ImGui.GetWindowDrawList();
+        var center = origin + box * 0.5f;
 
-        bool clicked;
-        using (ImRaii.PushFont(UiBuilder.IconFont))
-        using (ImRaii.PushColor(ImGuiCol.Text, color ?? Styling.TextSecondary))
+        if (hover > 0.01f)
         {
-            clicked = ImGui.Button(icon.ToIconString() + id, new Vector2(size, size));
+            var alpha = hover * (hit.Held ? 1f : 0.85f);
+            dl.AddCircleFilled(center, size * 0.5f, Paint.Col(Styling.WithAlpha(Styling.Surface3, alpha)));
         }
 
-        if (ImGui.IsItemHovered())
-        {
-            ImGui.SetTooltip(tooltip);
-        }
+        var tint = color ?? Styling.TextSecondary;
+        var glyphColor = enabled ? Vector4.Lerp(tint, Styling.TextStrong, hover * 0.55f) : Styling.TextMuted;
+        TextDraw.IconCentered(icon, center, glyphColor);
 
-        return clicked;
+        if (hit.Hovered && tooltip is not null) Tooltip.Show(tooltip);
+        return hit.Clicked;
     }
 }

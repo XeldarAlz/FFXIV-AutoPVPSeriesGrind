@@ -17,7 +17,7 @@ internal static class MatchSettings
         SettingsRow.Draw("Say hello",
             "Sends /quickchat Hello once during the portrait phase, at a random moment so it doesn't look scripted.",
             SettingsControls.ToggleWidth,
-            () => SettingsControls.DrawToggle(cfg, () => cfg.SendHelloOnEntry, value => cfg.SendHelloOnEntry = value),
+            () => SettingsControls.DrawToggle(cfg, () => cfg.SendHelloOnEntry, value => cfg.SendHelloOnEntry = value, "##mch_hello"),
             SettingsRow.ToggleHeight);
 
         if (cfg.SendHelloOnEntry)
@@ -39,7 +39,7 @@ internal static class MatchSettings
         SettingsRow.Draw("Occasional emotes",
             "Plays a random friendly emote (wave, cheer, salute, and the like) at a random moment of the pre-match countdown, sometimes twice. Waits until your character is free so the emote actually plays.",
             SettingsControls.ToggleWidth,
-            () => SettingsControls.DrawToggle(cfg, () => cfg.RandomEmotes, value => cfg.RandomEmotes = value),
+            () => SettingsControls.DrawToggle(cfg, () => cfg.RandomEmotes, value => cfg.RandomEmotes = value, "##mch_emotes"),
             SettingsRow.ToggleHeight);
     }
 
@@ -50,7 +50,7 @@ internal static class MatchSettings
         SettingsRow.Draw("Say “Good Match”",
             "Sends /quickchat \"Good Match\" when the results screen appears at the end of a match.",
             SettingsControls.ToggleWidth,
-            () => SettingsControls.DrawToggle(cfg, () => cfg.SendGoodMatchOnResults, value => cfg.SendGoodMatchOnResults = value),
+            () => SettingsControls.DrawToggle(cfg, () => cfg.SendGoodMatchOnResults, value => cfg.SendGoodMatchOnResults = value, "##mch_goodmatch"),
             SettingsRow.ToggleHeight);
 
         if (!cfg.SendGoodMatchOnResults)

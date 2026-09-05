@@ -4,6 +4,7 @@ using AutoPvpSeriesGrind.Core.External;
 using AutoPvpSeriesGrind.Core.Stats;
 using AutoPvpSeriesGrind.Core.Tasks;
 using AutoPvpSeriesGrind.Windows;
+using AutoPvpSeriesGrind.Windows.Shell;
 using clib;
 using Dalamud.Game.Command;
 using Dalamud.IoC;
@@ -32,12 +33,9 @@ public sealed class Plugin : IDalamudPlugin
     internal RunHistory History { get; }
     internal AutoPvpSeriesController Controller { get; }
 
-    private readonly MainWindow mainWindow;
-    private readonly ConfigWindow configWindow;
-    private readonly AboutWindow aboutWindow;
-    private readonly DependenciesWindow dependenciesWindow;
-    private readonly RunHistoryWindow runHistoryWindow;
-    private readonly BrainDebugWindow brainWindow;
+    private readonly AppWindow appWindow;
+
+    internal BrainDebugWindow BrainWindow { get; }
 
     private readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskHandler;
 
@@ -58,12 +56,9 @@ public sealed class Plugin : IDalamudPlugin
         History = new RunHistory();
         Controller = new AutoPvpSeriesController();
 
-        mainWindow = new MainWindow(this);
-        configWindow = new ConfigWindow(this);
-        aboutWindow = new AboutWindow();
-        dependenciesWindow = new DependenciesWindow();
-        runHistoryWindow = new RunHistoryWindow();
-        brainWindow = new BrainDebugWindow();
+        Fonts.Initialize(PluginInterface.UiBuilder, PluginDirectory);
+        appWindow = new AppWindow(this);
+        BrainWindow = new BrainDebugWindow();
 
         AddWindows();
 
@@ -73,14 +68,12 @@ public sealed class Plugin : IDalamudPlugin
         HookUiEvents();
     }
 
+    private static string PluginDirectory => PluginInterface.AssemblyLocation.DirectoryName ?? string.Empty;
+
     private void AddWindows()
     {
-        WindowSystem.AddWindow(mainWindow);
-        WindowSystem.AddWindow(configWindow);
-        WindowSystem.AddWindow(aboutWindow);
-        WindowSystem.AddWindow(dependenciesWindow);
-        WindowSystem.AddWindow(runHistoryWindow);
-        WindowSystem.AddWindow(brainWindow);
+        WindowSystem.AddWindow(appWindow);
+        WindowSystem.AddWindow(BrainWindow);
     }
 
     private Dictionary<string, Action> BuildSubcommands() => new(StringComparer.OrdinalIgnoreCase)
@@ -144,12 +137,9 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenMainUi -= ToggleMainUi;
 
         WindowSystem.RemoveAllWindows();
-        mainWindow.Dispose();
-        configWindow.Dispose();
-        aboutWindow.Dispose();
-        dependenciesWindow.Dispose();
-        runHistoryWindow.Dispose();
-        brainWindow.Dispose();
+        appWindow.Dispose();
+        BrainWindow.Dispose();
+        Fonts.Dispose();
 
         CommandManager.RemoveHandler(ApsgConstants.PrimaryCommand);
         CommandManager.RemoveHandler(ApsgConstants.AliasCommand);
@@ -168,10 +158,10 @@ public sealed class Plugin : IDalamudPlugin
             ToggleMainUi();
     }
 
-    public void ToggleMainUi() => mainWindow.Toggle();
-    public void ToggleConfigUi() => configWindow.Toggle();
-    public void ToggleAboutUi() => aboutWindow.Toggle();
-    public void ToggleDependenciesUi() => dependenciesWindow.Toggle();
-    public void ToggleHistoryUi() => runHistoryWindow.Toggle();
-    public void ToggleBrainUi() => brainWindow.Toggle();
+    public void ToggleMainUi() => appWindow.TogglePage(AppWindow.Page.Grind);
+    public void ToggleConfigUi() => appWindow.TogglePage(AppWindow.Page.Settings);
+    public void ToggleAboutUi() => appWindow.TogglePage(AppWindow.Page.About);
+    public void ToggleDependenciesUi() => appWindow.TogglePage(AppWindow.Page.Plugins);
+    public void ToggleHistoryUi() => appWindow.TogglePage(AppWindow.Page.History);
+    public void ToggleBrainUi() => BrainWindow.Toggle();
 }

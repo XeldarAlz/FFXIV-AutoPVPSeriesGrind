@@ -8,14 +8,12 @@ namespace AutoPvpSeriesGrind.Windows.Components;
 
 internal static class SettingsRow
 {
-    private const float RowHeight = 36f;
+    private const float RowHeight = 40f;
     private const float HelpIconGap = 7f;
-    private const float TooltipWrapWidth = 300f;
-    private const float CaptionFontScale = 0.92f;
     private const float CaptionPullUp = 7f;
-    private const float CaptionBottomGap = 8f;
+    private const float CaptionBottomGap = 10f;
 
-    public const float ToggleHeight = 20f;
+    public const float ToggleHeight = 22f;
 
     private readonly record struct RowArea(Vector2 Origin, float RightEdge, float MiddleY, bool Hovered)
     {
@@ -32,7 +30,7 @@ internal static class SettingsRow
 
         if (!string.IsNullOrEmpty(help) && (labelHovered || iconHovered))
         {
-            HelpTooltip(help);
+            Tooltip.Show(help);
         }
 
         DrawControl(area, controlWidth, controlHeight, drawControl);
@@ -46,7 +44,7 @@ internal static class SettingsRow
         ImGui.SetCursorScreenPos(cursor with { Y = cursor.Y - CaptionPullUp * scale });
 
         var wrapLocalX = ImGui.GetCursorPosX() + (SettingsGroup.ContentRightEdge - ImGui.GetCursorScreenPos().X);
-        ImGui.SetWindowFontScale(CaptionFontScale);
+        using (Fonts.PushCaption())
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
         {
             ImGui.PushTextWrapPos(wrapLocalX);
@@ -54,23 +52,10 @@ internal static class SettingsRow
             ImGui.PopTextWrapPos();
         }
 
-        ImGui.SetWindowFontScale(1f);
         Styling.VSpace(CaptionBottomGap);
     }
 
-    public static void HelpTooltip(string help)
-    {
-        using (ImRaii.Tooltip())
-        {
-            ImGui.PushTextWrapPos(TooltipWrapWidth * ImGuiHelpers.GlobalScale);
-            using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
-            {
-                ImGui.TextUnformatted(help);
-            }
-
-            ImGui.PopTextWrapPos();
-        }
-    }
+    public static void HelpTooltip(string help) => Tooltip.Show(help);
 
     private static RowArea BeginRow()
     {

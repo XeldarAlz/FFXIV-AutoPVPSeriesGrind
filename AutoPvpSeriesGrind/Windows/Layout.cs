@@ -1,13 +1,23 @@
-using System.Numerics;
-
 namespace AutoPvpSeriesGrind.Windows;
 
 internal static class Layout
 {
-    public const float PrimaryButtonHeight = 44f;
-    public const float HeroRingRadius = 58f;
-    public const float HeroRingIconRatio = 0.62f;
-    public const string WideDotSeparator = "     ·     ";
+    public const float HeaderHeight = 52f;
+    public const float RailWidth = 64f;
+    public const float RailButton = 42f;
+    public const float MiniPlayerHeight = 62f;
+    public const float DockHeight = 78f;
+    public const float ContentPadding = 26f;
+    public const float ContentRightInset = 6f;
 
-    public static readonly Vector4 RingTrackColor = Styling.WithAlpha(Styling.BorderDim, 0.85f);
+    public const float HeroButtonHeight = 54f;
+    public const float SegmentHeight = 40f;
+
+    public const float HeroCardHeight = 148f;
+    public const float StatTileHeight = 66f;
+
+    public const float SettingsNavWidth = 196f;
+    public const float PluginCardHeight = 76f;
+    public const float HistoryRowHeight = 60f;
+    public const float ChartHeight = 96f;
 }

@@ -8,7 +8,7 @@ namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class SettingsControls
 {
-    public const float ToggleWidth = 38f;
+    public const float ToggleWidth = 40f;
     public const float RowSliderWidth = 180f;
     public const float RowComboWidth = 170f;
 
@@ -19,10 +19,10 @@ internal static class SettingsControls
     public static float RangeInlineWidth()
         => RangeDragWidth * 2f + RangeDashSlot;
 
-    public static void DrawToggle(Configuration cfg, Func<bool> getter, Action<bool> setter)
+    public static void DrawToggle(Configuration cfg, Func<bool> getter, Action<bool> setter, string id)
     {
         var value = getter();
-        if (ToggleSwitch.Draw(ref value))
+        if (ToggleSwitch.Draw(id, ref value))
         {
             setter(value);
             cfg.SaveDebounced();
@@ -81,18 +81,18 @@ internal static class SettingsControls
 
         ImGui.SameLine(0f, 0f);
         var slotOrigin = ImGui.GetCursorScreenPos();
-        var dashSize = ImGui.CalcTextSize("–");
+        var dashSize = ImGui.CalcTextSize("-");
         ImGui.SetCursorScreenPos(slotOrigin + new Vector2((dashSlot - dashSize.X) * 0.5f, (ImGui.GetFrameHeight() - dashSize.Y) * 0.5f));
         using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
         {
-            ImGui.TextUnformatted("–");
+            ImGui.TextUnformatted("-");
         }
 
         ImGui.SameLine(0f, 0f);
         ImGui.SetCursorScreenPos(slotOrigin with { X = slotOrigin.X + dashSlot });
     }
 
-    private static IDisposable PushFrameColors()
+    public static IDisposable PushFrameColors()
         => ImRaii.PushColor(ImGuiCol.SliderGrab, Styling.AccentViolet)
             .Push(ImGuiCol.SliderGrabActive, Styling.AccentVioletSoft)
             .Push(ImGuiCol.FrameBg, Styling.SliderBg)
@@ -103,58 +103,39 @@ internal static class SettingsControls
     {
         public readonly record struct Choice(string Name, string Detail);
 
-        private const float PopupWidth = 320f;
-        private const float ItemPaddingX = 6f;
-        private const float ItemPaddingY = 5f;
-        private const float NameDetailGap = 2f;
+        private const float PanelWidth = 320f;
+
+        private static string[] names = [];
+        private static string[] details = [];
 
         public static void DrawCombo(string id, Choice[] options, int selected, Action<int> onSelect,
             float width = RowComboWidth)
         {
-            var scale = ImGuiHelpers.GlobalScale;
-            ImGui.SetNextItemWidth(width * scale);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(PopupWidth * scale, 0f), new Vector2(PopupWidth * scale, 600f * scale));
+            Resolve(options);
 
-            using var frameColors = PushFrameColors();
-            using var combo = ImRaii.Combo(id, options[selected].Name);
-            if (!combo)
+            var picked = selected;
+            if (Dropdown.DrawDetailed(id, names.AsSpan(0, options.Length), details.AsSpan(0, options.Length),
+                ref picked, width, PanelWidth))
             {
-                return;
-            }
-
-            for (var optionIndex = 0; optionIndex < options.Length; optionIndex++)
-            {
-                if (DrawItem(id, options[optionIndex], optionIndex, optionIndex == selected))
-                {
-                    onSelect(optionIndex);
-                }
+                onSelect(picked);
             }
         }
 
-        private static bool DrawItem(string comboId, Choice option, int optionIndex, bool selected)
+        // The dropdown reads spans, so refilling shared buffers keeps the per frame option list
+        // allocation free.
+        private static void Resolve(Choice[] options)
         {
-            var scale = ImGuiHelpers.GlobalScale;
-            var paddingX = ItemPaddingX * scale;
-            var paddingY = ItemPaddingY * scale;
-            var nameDetailGap = NameDetailGap * scale;
-            var lineHeight = ImGui.GetTextLineHeight();
-            var wrapWidth = ImGui.GetContentRegionAvail().X - paddingX * 2f;
+            if (names.Length < options.Length)
+            {
+                names = new string[options.Length];
+                details = new string[options.Length];
+            }
 
-            var detailSize = ImGui.CalcTextSize(option.Detail, false, wrapWidth);
-            var itemHeight = paddingY * 2f + lineHeight + nameDetailGap + detailSize.Y;
-
-            var itemOrigin = ImGui.GetCursorScreenPos();
-            var clicked = ImGui.Selectable($"##{comboId}_opt{optionIndex}", selected,
-                ImGuiSelectableFlags.None, new Vector2(0f, itemHeight));
-
-            var drawList = ImGui.GetWindowDrawList();
-            var nameColor = selected ? Styling.AccentVioletSoft : Styling.TextStrong;
-            drawList.AddText(itemOrigin + new Vector2(paddingX, paddingY), ImGui.GetColorU32(nameColor), option.Name);
-            drawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(),
-                itemOrigin + new Vector2(paddingX, paddingY + lineHeight + nameDetailGap),
-                ImGui.GetColorU32(Styling.TextMuted), option.Detail, wrapWidth);
-
-            return clicked;
+            for (var index = 0; index < options.Length; index++)
+            {
+                names[index] = options[index].Name;
+                details[index] = options[index].Detail;
+            }
         }
     }
 }

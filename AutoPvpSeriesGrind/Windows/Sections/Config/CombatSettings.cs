@@ -68,7 +68,7 @@ internal static class CombatSettings
             "RotationSolver runs in manual mode and presses skills on that target; another rotation plugin must attack your current target. " +
             "Off: the rotation plugin picks targets itself (RotationSolver uses lowest HP in range).",
             SettingsControls.ToggleWidth,
-            () => SettingsControls.DrawToggle(cfg, () => cfg.BrainPicksTargets, value => cfg.BrainPicksTargets = value),
+            () => SettingsControls.DrawToggle(cfg, () => cfg.BrainPicksTargets, value => cfg.BrainPicksTargets = value, "##cmb_targeting"),
             SettingsRow.ToggleHeight);
     }
 
@@ -93,7 +93,7 @@ internal static class CombatSettings
             "Writes every brain decision (positions, HP, posture, reason) to a per-match log file in the plugin folder, " +
             "for reviewing and tuning how it played. Roughly 1 MB per match; only the last 30 matches are kept.",
             SettingsControls.ToggleWidth,
-            () => SettingsControls.DrawToggle(cfg, () => cfg.RecordBrainLogs, value => cfg.RecordBrainLogs = value),
+            () => SettingsControls.DrawToggle(cfg, () => cfg.RecordBrainLogs, value => cfg.RecordBrainLogs = value, "##cmb_record"),
             SettingsRow.ToggleHeight);
     }
 

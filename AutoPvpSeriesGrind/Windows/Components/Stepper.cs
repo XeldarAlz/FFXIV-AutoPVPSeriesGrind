@@ -1,5 +1,6 @@
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using System.Numerics;
 
@@ -7,73 +8,61 @@ namespace AutoPvpSeriesGrind.Windows.Components;
 
 internal static class Stepper
 {
-    private const float InputFieldWidth = 58f;
-    private const float InnerSpacing = 4f;
+    public const float DefaultWidth = 168f;
 
-    private static readonly Dictionary<string, (string MinusId, string InputId, string PlusId)> cachedIds = new();
+    private const string DragHint = "Drag to adjust, or click the buttons.";
 
-    public static bool DrawCentered(string id, ref int value, int minimum, int maximum, int step, float scale)
+    public static bool Draw(string id, ref int value, int step, int min, int max, string format, float width = DefaultWidth)
     {
-        var frameHeight = ImGui.GetFrameHeight();
-        var inputWidth = InputFieldWidth * scale;
-        var innerSpacing = InnerSpacing * scale;
-        var width = frameHeight + innerSpacing + inputWidth + innerSpacing + frameHeight;
-        Styling.CenterNextItem(width);
+        var scale = ImGuiHelpers.GlobalScale;
+        var height = ImGui.GetFrameHeight();
+        var size = new Vector2(width * scale, height);
+        var origin = ImGui.GetCursorScreenPos();
+        var end = origin + size;
+        var dl = ImGui.GetWindowDrawList();
+        var rounding = height * 0.5f;
 
-        var (minusId, inputId, plusId) = IdsFor(id);
-        var buttonSize = new Vector2(frameHeight, frameHeight);
+        Paint.Fill(dl, origin, end, Styling.WithAlpha(Styling.Surface0, 0.9f), rounding);
+        Paint.Stroke(dl, origin, end, Styling.WithAlpha(Styling.BorderDim, 0.6f), rounding);
 
         var changed = false;
-        using (ImRaii.PushColor(ImGuiCol.Button, Styling.CardBgSoft)
-            .Push(ImGuiCol.ButtonHovered, Vector4.Lerp(Styling.CardBg, Styling.AccentViolet, 0.30f))
-            .Push(ImGuiCol.ButtonActive, Styling.AccentViolet * 0.7f)
-            .Push(ImGuiCol.Border, Styling.BorderDim))
-        using (ImRaii.PushStyle(ImGuiStyleVar.FrameBorderSize, 1f))
-        using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(innerSpacing, ImGui.GetStyle().ItemSpacing.Y)))
+        ImGui.PushID(id);
+
+        ImGui.SetCursorScreenPos(origin);
+        if (IconButton.Draw(FontAwesomeIcon.Minus, "##dec", height, enabled: value > min))
         {
-            if (DrawStepButton(FontAwesomeIcon.Minus, minusId, value <= minimum, buttonSize))
-            {
-                value = Math.Max(minimum, value - step);
-                changed = true;
-            }
+            value = Math.Max(min, value - step);
+            changed = true;
+        }
 
-            ImGui.SameLine();
-            var inputValue = value;
-            ImGui.SetNextItemWidth(inputWidth);
-            if (ImGui.InputInt(inputId, ref inputValue, 0, 0))
+        ImGui.SetCursorScreenPos(origin + new Vector2(height, 0f));
+        ImGui.SetNextItemWidth(size.X - height * 2f);
+        using (ImRaii.PushColor(ImGuiCol.FrameBg, Vector4.Zero)
+            .Push(ImGuiCol.FrameBgHovered, Styling.WithAlpha(Styling.Surface2, 0.6f))
+            .Push(ImGuiCol.FrameBgActive, Styling.WithAlpha(Styling.Surface3, 0.6f))
+            .Push(ImGuiCol.Text, Styling.TextStrong))
+        using (ImRaii.PushStyle(ImGuiStyleVar.FrameRounding, 0f))
+        {
+            var edited = value;
+            if (ImGui.DragInt("##value", ref edited, MathF.Max(0.25f, step * 0.1f), min, max, format))
             {
-                value = Math.Clamp(inputValue, minimum, maximum);
-                changed = true;
-            }
-
-            ImGui.SameLine();
-            if (DrawStepButton(FontAwesomeIcon.Plus, plusId, value >= maximum, buttonSize))
-            {
-                value = Math.Min(maximum, value + step);
+                value = Math.Clamp(edited, min, max);
                 changed = true;
             }
         }
 
+        if (ImGui.IsItemHovered()) Tooltip.Show(DragHint);
+
+        ImGui.SetCursorScreenPos(new Vector2(end.X - height, origin.Y));
+        if (IconButton.Draw(FontAwesomeIcon.Plus, "##inc", height, enabled: value < max))
+        {
+            value = Math.Min(max, value + step);
+            changed = true;
+        }
+
+        ImGui.PopID();
+        ImGui.SetCursorScreenPos(origin);
+        ImGui.Dummy(size);
         return changed;
-    }
-
-    private static bool DrawStepButton(FontAwesomeIcon icon, string buttonId, bool disabled, Vector2 buttonSize)
-    {
-        using (ImRaii.PushFont(UiBuilder.IconFont))
-        using (ImRaii.Disabled(disabled))
-        {
-            return ImGui.Button(icon.ToIconString() + buttonId, buttonSize);
-        }
-    }
-
-    private static (string MinusId, string InputId, string PlusId) IdsFor(string id)
-    {
-        if (!cachedIds.TryGetValue(id, out var ids))
-        {
-            ids = ($"##{id}_minus", $"##{id}", $"##{id}_plus");
-            cachedIds[id] = ids;
-        }
-
-        return ids;
     }
 }

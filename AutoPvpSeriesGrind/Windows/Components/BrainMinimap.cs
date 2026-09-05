@@ -69,14 +69,12 @@ internal static class BrainMinimap
     private const float ReticleTickOuter = 4f;
     private const float ReticleTickThickness = 1.5f;
 
-    private const float PillFontScale = 0.82f;
     private const float PillPadX = 6f;
     private const float PillPadY = 3f;
     private const float PillBackgroundAlpha = 0.88f;
     private const float PillBorderAlpha = 0.55f;
     private const float BadgeInset = 4f;
 
-    private const float RangeLabelFontScale = 0.8f;
     private const float RangeLabelInset = 3f;
 
     private static readonly Dot PlayerNode = new(4.8f, Styling.AccentVioletSoft);
@@ -258,31 +256,24 @@ internal static class BrainMinimap
     private static void Pill(Vector2 anchor, bool alignRight, string text, Vector4 color, float scale)
     {
         var dl = ImGui.GetWindowDrawList();
-        ImGui.SetWindowFontScale(PillFontScale);
-        var textSize = ImGui.CalcTextSize(text);
+        using var font = Fonts.PushCaption();
+        var textSize = TextDraw.Measure(text);
         var padX = PillPadX * scale;
         var padY = PillPadY * scale;
         var box = new Vector2(textSize.X + padX * 2f, textSize.Y + padY * 2f);
         var min = alignRight ? anchor with { X = anchor.X - box.X } : anchor;
         var max = min + box;
 
-        dl.AddRectFilled(min, max, ImGui.GetColorU32(Styling.WithAlpha(Styling.CardBg, PillBackgroundAlpha)), box.Y * 0.5f);
-        dl.AddRect(min, max, ImGui.GetColorU32(Styling.WithAlpha(color, PillBorderAlpha)), box.Y * 0.5f);
-        ImGui.SetCursorScreenPos(new Vector2(min.X + padX, min.Y + padY));
-        using (ImRaii.PushColor(ImGuiCol.Text, color))
-            ImGui.TextUnformatted(text);
-        ImGui.SetWindowFontScale(1f);
+        Paint.Pill(dl, min, max, Styling.WithAlpha(Styling.Surface1, PillBackgroundAlpha), Styling.WithAlpha(color, PillBorderAlpha));
+        TextDraw.At(text, new Vector2(min.X + padX, min.Y + padY), color);
     }
 
     private static void DrawRange(Vector2 center, float radius, float range, float scale)
     {
         var text = $"~{(int)range}y";
-        ImGui.SetWindowFontScale(RangeLabelFontScale);
-        var textSize = ImGui.CalcTextSize(text);
-        ImGui.SetCursorScreenPos(new Vector2(center.X - textSize.X * 0.5f, center.Y + radius - textSize.Y - RangeLabelInset * scale));
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextMuted))
-            ImGui.TextUnformatted(text);
-        ImGui.SetWindowFontScale(1f);
+        using var font = Fonts.PushCaption();
+        var textSize = TextDraw.Measure(text);
+        TextDraw.At(text, new Vector2(center.X - textSize.X * 0.5f, center.Y + radius - textSize.Y - RangeLabelInset * scale), Styling.TextMuted);
     }
 
     private static void DrawDot(Vector2 position, Dot dot, float scale)

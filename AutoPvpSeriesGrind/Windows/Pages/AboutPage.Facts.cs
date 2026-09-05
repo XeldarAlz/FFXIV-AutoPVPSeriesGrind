@@ -1,11 +1,12 @@
+using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
-using Dalamud.Interface.Utility.Raii;
+using Dalamud.Interface.Utility;
 using System.Numerics;
 
-namespace AutoPvpSeriesGrind.Windows;
+namespace AutoPvpSeriesGrind.Windows.Pages;
 
-public sealed partial class AboutWindow
+internal sealed partial class AboutPage
 {
     private readonly record struct FactCategory(FontAwesomeIcon Icon, string Header, Vector4 Color, string[] Lines);
 
@@ -69,16 +70,17 @@ public sealed partial class AboutWindow
         }),
     };
 
-    private int factCategoryIndex = -1;
-    private int factLineIndex;
-    private bool iconHovered;
-    private readonly int[][] factBags = new int[Categories.Length][];
-    private readonly int[] factBagPositions = new int[Categories.Length];
-    private readonly int[] factLastServed = new int[Categories.Length];
+    private static readonly int[][] factBags = new int[Categories.Length][];
+    private static readonly int[] factBagPositions = new int[Categories.Length];
+    private static readonly int[] factLastServed = new int[Categories.Length];
 
-    private void IconEasterEgg(Vector2 min, Vector2 max, float s)
+    private static int factCategoryIndex = -1;
+    private static int factLineIndex;
+    private static bool iconHovered;
+
+    private static void IconEasterEgg(Vector2 min, Vector2 max)
     {
-        if (!ImGui.IsMouseHoveringRect(min, max))
+        if (!Hit.HoveringRect(min, max))
         {
             iconHovered = false;
             return;
@@ -92,53 +94,53 @@ public sealed partial class AboutWindow
         }
 
         var category = Categories[Math.Max(0, factCategoryIndex)];
-        var line = category.Lines[factLineIndex];
         ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-        using (ImRaii.Tooltip())
+
+        using (Tooltip.Begin())
         {
-            ImGui.PushTextWrapPos(320f * s);
-            using (ImRaii.PushFont(UiBuilder.IconFont))
-            using (ImRaii.PushColor(ImGuiCol.Text, category.Color))
-                ImGui.TextUnformatted(category.Icon.ToIconString());
-            ImGui.SameLine(0, 6f * s);
-            using (ImRaii.PushColor(ImGuiCol.Text, category.Color))
-                ImGui.TextUnformatted(category.Header);
-            ImGui.Spacing();
-            using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextSecondary))
-                ImGui.TextUnformatted(line);
-            ImGui.PopTextWrapPos();
+            var scale = ImGuiHelpers.GlobalScale;
+            var origin = ImGui.GetCursorScreenPos();
+            var iconSize = TextDraw.IconSize(category.Icon);
+            var headerSize = TextDraw.Measure(category.Header);
+            TextDraw.Icon(category.Icon, new Vector2(origin.X, origin.Y + (headerSize.Y - iconSize.Y) * 0.5f), category.Color);
+            TextDraw.At(category.Header, new Vector2(origin.X + iconSize.X + 6f * scale, origin.Y), category.Color);
+            ImGui.Dummy(new Vector2(iconSize.X + 6f * scale + headerSize.X, headerSize.Y));
+            Styling.VSpace(4f);
+            Tooltip.Text(category.Lines[factLineIndex]);
         }
     }
 
-    private int NextLineInCategory(int categoryIndex)
+    private static int NextLineInCategory(int categoryIndex)
     {
         var count = Categories[categoryIndex].Lines.Length;
-        if (factBags[categoryIndex] == null || factBagPositions[categoryIndex] >= count)
+        if (factBags[categoryIndex] is null || factBagPositions[categoryIndex] >= count)
         {
-            var avoidFirst = factBags[categoryIndex] == null ? -1 : factLastServed[categoryIndex];
+            var avoidFirst = factBags[categoryIndex] is null ? -1 : factLastServed[categoryIndex];
             factBags[categoryIndex] = Shuffle(count, avoidFirst);
             factBagPositions[categoryIndex] = 0;
         }
 
-        var line = factBags[categoryIndex][factBagPositions[categoryIndex]++];
+        var line = factBags[categoryIndex]![factBagPositions[categoryIndex]++];
         factLastServed[categoryIndex] = line;
         return line;
     }
 
-    private static int[] Shuffle(int n, int avoidFirst)
+    private static int[] Shuffle(int count, int avoidFirst)
     {
-        var a = new int[n];
-        for (var i = 0; i < n; i++) a[i] = i;
-        for (var i = n - 1; i > 0; i--)
+        var order = new int[count];
+        for (var index = 0; index < count; index++) order[index] = index;
+        for (var index = count - 1; index > 0; index--)
         {
-            var j = Random.Shared.Next(i + 1);
-            (a[i], a[j]) = (a[j], a[i]);
+            var swap = Random.Shared.Next(index + 1);
+            (order[index], order[swap]) = (order[swap], order[index]);
         }
-        if (n > 1 && a[0] == avoidFirst)
+
+        if (count > 1 && order[0] == avoidFirst)
         {
-            var j = 1 + Random.Shared.Next(n - 1);
-            (a[0], a[j]) = (a[j], a[0]);
+            var swap = 1 + Random.Shared.Next(count - 1);
+            (order[0], order[swap]) = (order[swap], order[0]);
         }
-        return a;
+
+        return order;
     }
 }

@@ -1,5 +1,5 @@
+using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility.Raii;
 using ECommons.DalamudServices;
 using System.Diagnostics;
 
@@ -13,10 +13,10 @@ internal static class UrlActions
         {
             Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
             ImGui.SetClipboardText(url);
-            onError?.Invoke(ex);
+            onError?.Invoke(exception);
         }
     }
 
@@ -27,8 +27,7 @@ internal static class UrlActions
     public static void HoveredLinkInteraction(string url, string tooltip)
     {
         ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-        using (ImRaii.Tooltip())
-            ImGui.TextUnformatted(tooltip);
+        Tooltip.Show(tooltip);
         if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
         {
             OpenOrCopy(url);

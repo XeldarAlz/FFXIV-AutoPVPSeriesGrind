@@ -1,56 +1,56 @@
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface;
 using Dalamud.Interface.Utility;
-using Dalamud.Interface.Utility.Raii;
 using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Windows.Components;
 
 internal static class Chip
 {
-    private const float FontScale = 0.9f;
-    private const float PadX = 8f;
-    private const float PadY = 3f;
+    private const float PadX = 10f;
+    private const float PadY = 4f;
     private const float DotRadius = 3f;
-    private const float DotGap = 6f;
-    private const float FillTint = 0.20f;
-    private const float BorderAlpha = 0.45f;
-    private const float DotPulseBase = 0.45f;
-    private const float DotPulseRange = 0.55f;
+    private const float IconGap = 6f;
 
-    public static void Draw(string text, Vector4 accent, bool dot = false, bool pulse = false)
+    public static void Draw(string label, Vector4 accent, FontAwesomeIcon? icon = null, bool dot = false,
+        bool pulse = false, string? tooltip = null)
     {
         var scale = ImGuiHelpers.GlobalScale;
-        ImGui.SetWindowFontScale(FontScale);
-        var textSize = ImGui.CalcTextSize(text);
+        using var font = Fonts.PushCaption();
 
         var padX = PadX * scale;
-        var padY = PadY * scale;
-        var dotRadius = dot ? DotRadius * scale : 0f;
-        var dotGap = dot ? DotGap * scale : 0f;
-        var size = new Vector2(textSize.X + padX * 2f + dotRadius * 2f + dotGap, textSize.Y + padY * 2f);
+        var iconGap = IconGap * scale;
+        var textSize = TextDraw.Measure(label);
+        var iconWidth = icon is { } glyph ? TextDraw.IconSize(glyph).X + iconGap : 0f;
+        var dotWidth = dot ? DotRadius * 2f * scale + iconGap : 0f;
+        var size = new Vector2(padX * 2f + iconWidth + dotWidth + textSize.X, textSize.Y + PadY * 2f * scale);
 
         var origin = ImGui.GetCursorScreenPos();
-        var max = origin + size;
-        var rounding = size.Y * 0.5f;
+        var end = origin + size;
         var dl = ImGui.GetWindowDrawList();
-        dl.AddRectFilled(origin, max, ImGui.GetColorU32(Vector4.Lerp(Styling.CardBg, accent, FillTint)), rounding);
-        dl.AddRect(origin, max, ImGui.GetColorU32(Styling.WithAlpha(accent, BorderAlpha)), rounding);
+        Paint.Pill(dl, origin, end, Styling.WithAlpha(accent, 0.14f), Styling.WithAlpha(accent, 0.42f));
 
-        var textX = origin.X + padX;
+        var midY = origin.Y + size.Y * 0.5f;
+        var x = origin.X + padX;
+
         if (dot)
         {
-            var alpha = pulse ? DotPulseBase + DotPulseRange * Styling.Pulse(Styling.PulseCalm) : 1f;
-            dl.AddCircleFilled(new Vector2(origin.X + padX + dotRadius, origin.Y + size.Y * 0.5f), dotRadius,
-                ImGui.GetColorU32(Styling.WithAlpha(accent, alpha)));
-            textX += dotRadius * 2f + dotGap;
+            var radius = DotRadius * scale;
+            var alpha = pulse ? 0.45f + 0.55f * Styling.Pulse(Styling.PulseCalm) : 1f;
+            dl.AddCircleFilled(new Vector2(x + radius, midY), radius, Paint.Col(Styling.WithAlpha(accent, alpha)));
+            x += radius * 2f + iconGap;
         }
 
-        ImGui.SetCursorScreenPos(new Vector2(textX, origin.Y + padY));
-        using (ImRaii.PushColor(ImGuiCol.Text, accent))
-            ImGui.TextUnformatted(text);
+        if (icon is { } iconGlyph)
+        {
+            var iconSize = TextDraw.IconSize(iconGlyph);
+            TextDraw.Icon(iconGlyph, new Vector2(x, midY - iconSize.Y * 0.5f), accent);
+            x += iconSize.X + iconGap;
+        }
 
-        ImGui.SetCursorScreenPos(origin);
+        TextDraw.At(label, new Vector2(x, midY - textSize.Y * 0.5f), Styling.TextSecondary);
+
         ImGui.Dummy(size);
-        ImGui.SetWindowFontScale(1f);
+        if (tooltip is not null && ImGui.IsItemHovered()) Tooltip.Show(tooltip);
     }
 }

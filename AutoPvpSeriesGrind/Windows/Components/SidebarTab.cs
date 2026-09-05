@@ -1,80 +1,50 @@
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
-using Dalamud.Interface.Utility.Raii;
 using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Windows.Components;
 
 internal static class SidebarTab
 {
-    private const float TabHeight = 40f;
-    private const float CornerRounding = 6f;
-    private const float SelectionBarWidth = 3f;
-    private const float SelectionBarRounding = 1f;
-    private const float ContentPaddingX = 14f;
-    private const float IconLabelGap = 10f;
+    private const float Height = 40f;
+    private const float PadX = 14f;
+    private const float IconGap = 11f;
 
     public static bool Draw(string label, FontAwesomeIcon icon, Vector4 accent, bool selected)
     {
-        var globalScale = ImGuiHelpers.GlobalScale;
-        var height = TabHeight * globalScale;
-        var width = ImGui.GetContentRegionAvail().X;
-
+        var scale = ImGuiHelpers.GlobalScale;
+        var size = new Vector2(ImGui.GetContentRegionAvail().X, Height * scale);
         var origin = ImGui.GetCursorScreenPos();
-        var end = origin + new Vector2(width, height);
-        var drawList = ImGui.GetWindowDrawList();
-        var hovered = ImGui.IsMouseHoveringRect(origin, end);
+        var end = origin + size;
+        var hit = Hit.Area(label, size);
+        var hover = Motion.Hover(Motion.Key(label), hit.Hovered);
+        var active = Motion.Approach(Motion.Key(label, 1), selected ? 1f : 0f, 16f);
+        var dl = ImGui.GetWindowDrawList();
+        var rounding = 9f * scale;
 
-        var background = selected
-            ? Vector4.Lerp(Styling.CardBg, accent, 0.18f)
-            : hovered ? Styling.CardBgHover : new Vector4(0, 0, 0, 0);
-
-        drawList.AddRectFilled(origin, end, ImGui.GetColorU32(background), CornerRounding);
-        if (selected)
+        var backgroundAlpha = MathF.Max(hover * 0.7f, active) * 0.9f;
+        if (backgroundAlpha > 0.01f)
         {
-            drawList.AddRectFilled(origin, new Vector2(origin.X + SelectionBarWidth * globalScale, end.Y),
-                ImGui.GetColorU32(accent), SelectionBarRounding);
+            Paint.Fill(dl, origin, end, Styling.WithAlpha(Styling.Tint(Styling.Surface2, accent, active * 0.18f), backgroundAlpha), rounding);
         }
 
-        var paddingX = ContentPaddingX * globalScale;
-        var iconString = icon.ToIconString();
-        Vector2 iconSize;
-        using (ImRaii.PushFont(UiBuilder.IconFont))
+        if (active > 0.01f)
         {
-            iconSize = ImGui.CalcTextSize(iconString);
+            var barMin = new Vector2(origin.X, origin.Y + size.Y * (0.5f - 0.25f * active));
+            var barMax = new Vector2(origin.X + 3f * scale, origin.Y + size.Y * (0.5f + 0.25f * active));
+            Paint.Fill(dl, barMin, barMax, Styling.WithAlpha(accent, active), 2f * scale);
         }
 
-        var iconPos = new Vector2(origin.X + paddingX, origin.Y + (height - iconSize.Y) * 0.5f);
-        ImGui.SetCursorScreenPos(iconPos);
-        using (ImRaii.PushFont(UiBuilder.IconFont))
-        using (ImRaii.PushColor(ImGuiCol.Text, selected ? accent : Styling.TextSecondary))
-        {
-            ImGui.TextUnformatted(iconString);
-        }
+        var iconColor = Vector4.Lerp(Styling.TextDim, accent, active);
+        var textColor = Vector4.Lerp(Styling.TextSecondary, Styling.TextStrong, MathF.Max(hover, active));
+        var midY = origin.Y + size.Y * 0.5f;
+        var iconSize = TextDraw.IconSize(icon);
+        TextDraw.Icon(icon, new Vector2(origin.X + PadX * scale, midY - iconSize.Y * 0.5f), iconColor);
 
-        var labelSize = ImGui.CalcTextSize(label);
-        var labelPos = new Vector2(
-            origin.X + paddingX + iconSize.X + IconLabelGap * globalScale,
-            origin.Y + (height - labelSize.Y) * 0.5f);
-        ImGui.SetCursorScreenPos(labelPos);
-        using (ImRaii.PushColor(ImGuiCol.Text, selected ? Styling.TextStrong : Styling.TextSecondary))
-        {
-            ImGui.TextUnformatted(label);
-        }
+        var labelSize = TextDraw.Measure(label);
+        TextDraw.At(label, new Vector2(origin.X + PadX * scale + iconSize.X + IconGap * scale, midY - labelSize.Y * 0.5f), textColor);
 
-        ImGui.SetCursorScreenPos(origin);
-        ImGui.Dummy(new Vector2(width, height));
-
-        if (hovered)
-        {
-            ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-            if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return hit.Clicked;
     }
 }

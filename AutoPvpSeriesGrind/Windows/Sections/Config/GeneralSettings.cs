@@ -8,7 +8,7 @@ internal static class GeneralSettings
     {
         DrawPacingGroup(cfg);
         DrawBreaksGroup(cfg);
-        SettingsGroup.Footnote("Run length and what happens afterwards are set on the main window, under “Run until”.");
+        SettingsGroup.Footnote("How long a run lasts and what happens afterwards live on the Grind page, in the plan sentence.");
     }
 
     private static void DrawPacingGroup(Configuration cfg)
@@ -36,7 +36,7 @@ internal static class GeneralSettings
         SettingsRow.Draw("Take breaks",
             "Idle for a while every so often, the way a person steps away between sessions.",
             SettingsControls.ToggleWidth,
-            () => SettingsControls.DrawToggle(cfg, () => cfg.TakeBreaks, value => cfg.TakeBreaks = value),
+            () => SettingsControls.DrawToggle(cfg, () => cfg.TakeBreaks, value => cfg.TakeBreaks = value, "##ses_breaks"),
             SettingsRow.ToggleHeight);
 
         if (!cfg.TakeBreaks)
