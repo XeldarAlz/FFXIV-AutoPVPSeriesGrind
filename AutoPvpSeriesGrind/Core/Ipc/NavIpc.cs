@@ -37,28 +37,27 @@ internal sealed class NavIpc
 
     public bool IsAvailable => moveTo.HasFunction;
 
-    public void MoveTo(Vector3 dest, bool fly = false)
+    // vnavmesh answers false and drops the request while an earlier pathfind is still running.
+    public bool MoveTo(Vector3 dest, bool fly = false)
     {
-        if (moveTo.HasFunction)
-        {
-            IpcGate.Run(true, () => { _ = moveTo.InvokeFunc(dest, fly); }, "NavIpc: PathfindAndMoveTo failed");
-        }
-        else
+        if (!moveTo.HasFunction)
         {
             MoveToViaChatCommand(dest);
+            return true;
         }
+
+        return IpcGate.Invoke(true, () => moveTo.InvokeFunc(dest, fly), false, "NavIpc: PathfindAndMoveTo failed");
     }
 
-    public void MoveCloseTo(Vector3 dest, float range, bool fly = false)
+    public bool MoveCloseTo(Vector3 dest, float range, bool fly = false)
     {
-        if (moveCloseTo.HasFunction)
-        {
-            IpcGate.Run(true, () => { _ = moveCloseTo.InvokeFunc(dest, fly, range); }, "NavIpc: PathfindAndMoveCloseTo failed");
-        }
-        else
+        if (!moveCloseTo.HasFunction)
         {
             MoveToViaChatCommand(dest);
+            return true;
         }
+
+        return IpcGate.Invoke(true, () => moveCloseTo.InvokeFunc(dest, fly, range), false, "NavIpc: PathfindAndMoveCloseTo failed");
     }
 
     public void Stop()

@@ -68,36 +68,69 @@ internal sealed partial class AutoPvpSeries
         }
     }
 
+    private Vector3? SpawnExit(uint territory, Vector3 self)
+        => matchFlow.Bases?.Own ?? MatchState.NearestSafeAnchor(territory, self);
+
+    // Players are already pressed against the barrier when it drops. Requesting the gate path a few
+    // seconds early hides pathfind latency, so the character is moving the moment the gate opens.
+    private void ApproachGate(uint territory)
+    {
+        if (MatchState.PlayerPosition() is not { } self || SpawnExit(territory, self) is not { } exit)
+        {
+            return;
+        }
+
+        movement.IssueMove(exit, exit, SpawnExitArrivalRange);
+        BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Engage, "gate opening soon, moving up", Posture.Reposition);
+    }
+
     private bool TryLeaveSpawn(uint territory)
     {
         if (MatchState.PlayerPosition() is not { } self)
             return true;
 
-        if ((matchFlow.Bases?.Own ?? MatchState.NearestSafeAnchor(territory, self)) is not { } exit)
+        if (SpawnExit(territory, self) is not { } exit)
         {
             matchFlow.LeftSpawn = true;
             return true;
         }
 
-        if (matchFlow.LeaveSpawnStartedAtMs == 0)
+        var now = Environment.TickCount64;
+        var moveIssued = matchFlow.LeaveSpawnStartedAtMs != 0;
+        if (!moveIssued)
         {
-            matchFlow.LeaveSpawnStartedAtMs = Environment.TickCount64;
+            matchFlow.LeaveSpawnStartedAtMs = now;
         }
 
         var flat = VectorMath.HorizontalDistance(self, exit);
-        var timedOut = Environment.TickCount64 - matchFlow.LeaveSpawnStartedAtMs > SpawnExitTimeoutMs;
-        if (flat <= SpawnExitArrivalRange || timedOut)
+        var arrived = flat <= SpawnExitArrivalRange;
+        var pathEnded = moveIssued && !movement.IsPathing;
+        var timedOut = now - matchFlow.LeaveSpawnStartedAtMs > SpawnExitTimeoutMs;
+        if (arrived || pathEnded || timedOut)
         {
             matchFlow.LeftSpawn = true;
-            LogDiagnostic(timedOut
-                ? $"leave-spawn timeout ({SpawnExitTimeoutMs}ms, {flat:F1}y out) -> handing off to brain"
-                : $"off the spawn platform (anchor {flat:F1}y) -> brain takes over");
+            LogDiagnostic(SpawnHandoffReason(arrived, pathEnded, flat));
             return true;
         }
 
         movement.IssueMove(exit, exit, SpawnExitArrivalRange);
         BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Engage, "leaving spawn, to gate anchor", Posture.Reposition);
         return false;
+    }
+
+    private static string SpawnHandoffReason(bool arrived, bool pathEnded, float flat)
+    {
+        if (arrived)
+        {
+            return $"off the spawn platform (anchor {flat:F1}y) -> brain takes over";
+        }
+
+        if (pathEnded)
+        {
+            return $"spawn exit path ended {flat:F1}y from anchor -> brain takes over";
+        }
+
+        return $"leave-spawn timeout ({SpawnExitTimeoutMs}ms, {flat:F1}y out) -> handing off to brain";
     }
 
     private async Task RunBrainTick(uint territory)

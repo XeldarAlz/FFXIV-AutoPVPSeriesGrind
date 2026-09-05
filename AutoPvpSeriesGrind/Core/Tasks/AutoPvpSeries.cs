@@ -50,6 +50,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         public bool LoggedMissingObjective;
         public bool LeftSpawn;
         public long LeaveSpawnStartedAtMs;
+        public int GateApproachStartSec;
         public TeamBases? Bases;
 
         public void Reset() => this = default;

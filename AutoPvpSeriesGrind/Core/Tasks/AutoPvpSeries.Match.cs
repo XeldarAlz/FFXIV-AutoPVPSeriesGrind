@@ -1,6 +1,7 @@
 using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Ipc;
+using AutoPvpSeriesGrind.Core.Util;
 using ECommons.DalamudServices;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
@@ -15,6 +16,8 @@ internal sealed partial class AutoPvpSeries
     private const int PostQuickChatMs = 500;
     private const int LeaveDutyTimeoutMs = 10_000;
     private const int PortraitPhasePollMs = 250;
+    private const int GateApproachEarliestSec = 3;
+    private const int GateApproachLatestSec = 2;
 
     private async Task<bool> TryHandleMatchEnd()
     {
@@ -134,9 +137,21 @@ internal sealed partial class AutoPvpSeries
         {
             LogDiagnostic("intro/portraits phase detected (timer ~31s)");
             matchFlow.AnnouncedPortrait = true;
+            matchFlow.GateApproachStartSec = HumanTiming.RandomSecondsInclusive(GateApproachLatestSec, GateApproachEarliestSec);
         }
 
-        movement.HaltPathing();
+        var territory = Svc.ClientState.TerritoryType;
+        CaptureBasesAtSpawn(territory);
+
+        if (timeLeftSeconds <= matchFlow.GateApproachStartSec)
+        {
+            ApproachGate(territory);
+        }
+        else
+        {
+            movement.HaltPathing();
+        }
+
         greeting.TickIntro(timeLeftSeconds, settings);
 
         await NextFrame(PortraitPhasePollMs);

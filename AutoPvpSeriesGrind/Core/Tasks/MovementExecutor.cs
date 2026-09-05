@@ -25,6 +25,8 @@ internal sealed class MovementExecutor
 
     private static NavIpc Nav => NavIpc.Instance;
 
+    public bool IsPathing => Nav.IsRunning();
+
     private readonly StuckDetector stuck = new();
 
     private Vector3 lastMoveDestination;
@@ -113,14 +115,19 @@ internal sealed class MovementExecutor
             return;
         }
 
-        lastMoveDestination = destination;
-        lastMoveAtMs = Environment.TickCount64;
-        destinationCommittedAtMs = lastMoveAtMs;
         var target = Nav.NearestPointReachable(destination)
                      ?? (fallback != destination ? Nav.NearestPointReachable(fallback) : null)
                      ?? fallback;
-        if (stopRange > MinStopRangeForMoveCloseTo) Nav.MoveCloseTo(target, stopRange);
-        else Nav.MoveTo(target);
+        var accepted = stopRange > MinStopRangeForMoveCloseTo ? Nav.MoveCloseTo(target, stopRange) : Nav.MoveTo(target);
+        if (!accepted)
+        {
+            ApsgLog.Debug($"move to {destination:F0} dropped by vnavmesh (pathfind pending), retrying next tick");
+            return;
+        }
+
+        lastMoveDestination = destination;
+        lastMoveAtMs = Environment.TickCount64;
+        destinationCommittedAtMs = lastMoveAtMs;
     }
 
     private bool TryRecoverFromStuck(in MovePlan plan)
