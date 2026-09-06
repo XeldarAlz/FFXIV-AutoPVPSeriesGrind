@@ -174,9 +174,7 @@
     },
     "whatToQueue": "Neye sıraya girilecek",
     "queue": {
-      "casualHelp": "Casual maçlar, Seri çubuğunu ilerletmenin en hızlı yolu.",
-      "frontline": "Frontline",
-      "frontlineHelp": "Henüz bağlanmadı. Yakında geliyor, takipte kal."
+      "casualHelp": "Casual maçlar, Seri çubuğunu ilerletmenin en hızlı yolu."
     },
     "endlessHelp": "Sen Durdur'a basana kadar maç üstüne maç sıraya girer.",
     "stopAfter": "Şundan sonra dur",

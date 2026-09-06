@@ -174,9 +174,7 @@
     },
     "whatToQueue": "Qué encolar",
     "queue": {
-      "casualHelp": "Partidas casuales, la forma más rápida de subir la barra de serie.",
-      "frontline": "Frontline",
-      "frontlineHelp": "Todavía sin conectar. Muy pronto, atento."
+      "casualHelp": "Partidas casuales, la forma más rápida de subir la barra de serie."
     },
     "endlessHelp": "Encola partida tras partida hasta que pulses Detener.",
     "stopAfter": "Detener tras",

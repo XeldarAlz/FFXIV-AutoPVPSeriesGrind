@@ -174,9 +174,7 @@
     },
     "whatToQueue": "Was anmelden",
     "queue": {
-      "casualHelp": "Casual Matches, der schnellste Weg, die Serienleiste zu füllen.",
-      "frontline": "Frontline",
-      "frontlineHelp": "Noch nicht angebunden. Kommt bald, bleib dran."
+      "casualHelp": "Casual Matches, der schnellste Weg, die Serienleiste zu füllen."
     },
     "endlessHelp": "Meldet Match für Match an, bis du Stopp drückst.",
     "stopAfter": "Stoppen nach",

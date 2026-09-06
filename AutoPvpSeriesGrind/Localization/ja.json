@@ -174,9 +174,7 @@
     },
     "whatToQueue": "申請するコンテンツ",
     "queue": {
-      "casualHelp": "カジュアルマッチ。シリーズゲージを最速で伸ばせます。",
-      "frontline": "Frontline",
-      "frontlineHelp": "まだ未対応です。近日対応予定、お楽しみに。"
+      "casualHelp": "カジュアルマッチ。シリーズゲージを最速で伸ばせます。"
     },
     "endlessHelp": "停止を押すまで、試合を次々と申請し続けます。",
     "stopAfter": "経過したら停止",

@@ -132,8 +132,6 @@ internal static class L
 
         public static readonly LocString WhatToQueue = new("plan.whatToQueue", "What to queue");
         public static readonly LocString QueueCasualHelp = new("plan.queue.casualHelp", "Casual matches, the fastest way to move the Series bar.");
-        public static readonly LocString QueueFrontline = new("plan.queue.frontline", "Frontline");
-        public static readonly LocString QueueFrontlineHelp = new("plan.queue.frontlineHelp", "Not wired up yet. Coming soon, stay tuned.");
 
         public static readonly LocString EndlessHelp = new("plan.endlessHelp", "Queues match after match until you press Stop.");
         public static readonly LocString StopAfter = new("plan.stopAfter", "Stop after");

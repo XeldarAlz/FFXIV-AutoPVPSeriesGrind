@@ -174,9 +174,7 @@
     },
     "whatToQueue": "O que entrar na fila",
     "queue": {
-      "casualHelp": "Partidas casuais, o jeito mais rápido de subir a barra de série.",
-      "frontline": "Frontline",
-      "frontlineHelp": "Ainda não conectado. Em breve, fique de olho."
+      "casualHelp": "Partidas casuais, o jeito mais rápido de subir a barra de série."
     },
     "endlessHelp": "Entra em partida após partida até você apertar Parar.",
     "stopAfter": "Parar após",

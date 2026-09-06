@@ -174,9 +174,7 @@
     },
     "whatToQueue": "What to queue",
     "queue": {
-      "casualHelp": "Casual matches, the fastest way to move the Series bar.",
-      "frontline": "Frontline",
-      "frontlineHelp": "Not wired up yet. Coming soon, stay tuned."
+      "casualHelp": "Casual matches, the fastest way to move the Series bar."
     },
     "endlessHelp": "Queues match after match until you press Stop.",
     "stopAfter": "Stop after",

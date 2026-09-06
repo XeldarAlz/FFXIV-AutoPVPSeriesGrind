@@ -312,8 +312,6 @@ internal static class PlanCard
         {
             ImGui.CloseCurrentPopup();
         }
-
-        DrawLockedRow(1, Loc.T(L.Plan.QueueFrontline), Loc.T(L.Plan.QueueFrontlineHelp), width);
     }
 
     private static void DrawGoalPopover(Configuration cfg)
@@ -465,29 +463,5 @@ internal static class PlanCard
         }
 
         return hit.Clicked;
-    }
-
-    private static void DrawLockedRow(int index, string name, string detail, float width)
-    {
-        var scale = ImGuiHelpers.GlobalScale;
-        var padX = 10f * scale;
-        var padY = 8f * scale;
-        var lineHeight = ImGui.GetTextLineHeight();
-        float detailHeight;
-        using (Fonts.PushCaption())
-            detailHeight = TextDraw.Measure(detail).Y;
-        var size = new Vector2(width, padY * 2f + lineHeight + 2f * scale + detailHeight);
-        var origin = ImGui.GetCursorScreenPos();
-
-        ImGui.PushID((nint)(index + 1));
-        Hit.Area("##locked", size, enabled: false);
-        ImGui.PopID();
-
-        TextDraw.At(name, new Vector2(origin.X + padX, origin.Y + padY), Styling.TextDim);
-        using (Fonts.PushCaption())
-            TextDraw.At(detail, new Vector2(origin.X + padX, origin.Y + padY + lineHeight + 2f * scale), Styling.TextMuted);
-
-        var lockSize = TextDraw.IconSize(FontAwesomeIcon.Lock);
-        TextDraw.Icon(FontAwesomeIcon.Lock, new Vector2(origin.X + size.X - padX - lockSize.X, origin.Y + padY + (lineHeight - lockSize.Y) * 0.5f), Styling.TextMuted);
     }
 }

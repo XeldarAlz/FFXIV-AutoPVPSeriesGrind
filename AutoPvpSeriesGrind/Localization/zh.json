@@ -174,9 +174,7 @@
     },
     "whatToQueue": "排什么",
     "queue": {
-      "casualHelp": "休闲比赛，提升系列进度最快的方式。",
-      "frontline": "Frontline",
-      "frontlineHelp": "尚未接入。即将推出，敬请期待。"
+      "casualHelp": "休闲比赛，提升系列进度最快的方式。"
     },
     "endlessHelp": "一场接一场地排队，直到你按下停止。",
     "stopAfter": "之后停止",

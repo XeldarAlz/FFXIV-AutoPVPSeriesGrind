@@ -174,9 +174,7 @@
     },
     "whatToQueue": "Quoi lancer",
     "queue": {
-      "casualHelp": "Matchs décontractés, le moyen le plus rapide de faire monter la barre de série.",
-      "frontline": "Frontline",
-      "frontlineHelp": "Pas encore branché. Bientôt disponible, restez à l'écoute."
+      "casualHelp": "Matchs décontractés, le moyen le plus rapide de faire monter la barre de série."
     },
     "endlessHelp": "Enchaîne les matchs jusqu'à ce que vous appuyiez sur Stop.",
     "stopAfter": "Arrêter après",
