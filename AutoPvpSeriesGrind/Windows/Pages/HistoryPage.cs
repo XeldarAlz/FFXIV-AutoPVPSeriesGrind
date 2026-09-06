@@ -67,7 +67,7 @@ internal sealed class HistoryPage
         var avail = ImGui.GetContentRegionAvail().X;
         var tileWidth = (avail - gap * 3f) / 4f;
 
-        StatTile.Draw(Loc.T(L.History.TileRuns), totals.Runs.ToString("N0", Loc.Culture), null, Styling.AccentViolet, tileWidth);
+        StatTile.Draw(Loc.T(L.History.TileRuns), totals.Runs.ToString("N0", Loc.Culture), null, Styling.AccentArc, tileWidth);
         ImGui.SameLine(0, gap);
         StatTile.Draw(Loc.T(L.History.TileMatches), totals.Matches.ToString("N0", Loc.Culture),
             totals.MatchesPerHour > 0 ? $"{totals.MatchesPerHour:F1}/h" : null, Styling.AccentBlue, tileWidth);
@@ -171,7 +171,7 @@ internal sealed class HistoryPage
         var hover = Motion.Hover(Motion.Key("##run"), hit.Hovered);
         ImGui.PopID();
 
-        Paint.Glass(dl, origin, end, Styling.CardRounding * scale, Styling.AccentViolet, 0.02f, hover);
+        Paint.Glass(dl, origin, end, Styling.CardRounding * scale, Styling.AccentArc, 0.02f, hover);
 
         var padX = PadX * scale;
         var midY = origin.Y + size.Y * 0.5f;
@@ -248,7 +248,7 @@ internal sealed class HistoryPage
 
         var x = origin.X + avail - noWidth - slide;
         ImGui.SetCursorScreenPos(new Vector2(x, origin.Y));
-        if (PillButton.Draw("##apsg_hist_clear_no", no, Styling.AccentViolet, PillButton.Emphasis.Ghost)) confirmClear = false;
+        if (PillButton.Draw("##apsg_hist_clear_no", no, Styling.AccentArc, PillButton.Emphasis.Ghost)) confirmClear = false;
 
         x -= gap + yesWidth;
         ImGui.SetCursorScreenPos(new Vector2(x, origin.Y));

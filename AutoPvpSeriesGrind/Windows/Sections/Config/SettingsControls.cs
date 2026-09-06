@@ -133,8 +133,8 @@ internal static class SettingsControls
     }
 
     public static IDisposable PushFrameColors()
-        => ImRaii.PushColor(ImGuiCol.SliderGrab, Styling.AccentViolet)
-            .Push(ImGuiCol.SliderGrabActive, Styling.AccentVioletSoft)
+        => ImRaii.PushColor(ImGuiCol.SliderGrab, Styling.AccentArc)
+            .Push(ImGuiCol.SliderGrabActive, Styling.AccentArcSoft)
             .Push(ImGuiCol.FrameBg, Styling.SliderBg)
             .Push(ImGuiCol.FrameBgHovered, Styling.CardBgHover)
             .Push(ImGuiCol.FrameBgActive, Styling.CardBgHover);

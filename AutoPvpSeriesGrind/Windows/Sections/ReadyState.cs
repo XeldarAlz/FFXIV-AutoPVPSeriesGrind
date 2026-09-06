@@ -97,7 +97,7 @@ internal static class ReadyState
         Stage.Preparing => (Styling.AccentBlue,   Styling.AccentBlueSoft,   Loc.T(L.Grind.StageStarting)),
         Stage.Queueing  => (Styling.AccentBlue,   Styling.AccentBlueSoft,   Loc.T(L.Grind.StageInQueue)),
         Stage.Portraits => (Styling.AccentAmber,  Styling.AccentAmberSoft,  Loc.T(L.Grind.StagePortraits)),
-        Stage.Fighting  => (Styling.AccentViolet, Styling.AccentVioletSoft, Loc.T(L.Grind.StageFighting)),
+        Stage.Fighting  => (Styling.AccentArc, Styling.AccentArcSoft, Loc.T(L.Grind.StageFighting)),
         Stage.Finishing => (Styling.AccentMint,   Styling.AccentMintSoft,   Loc.T(L.Grind.StageDone)),
         _               => (Styling.AccentBlue,   Styling.AccentBlueSoft,   Loc.T(L.Grind.StageInMatch)),
     };

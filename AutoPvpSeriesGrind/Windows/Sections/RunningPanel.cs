@@ -253,6 +253,6 @@ internal static class RunningPanel
         ImGui.SameLine(0, gap);
         StatTile.Draw(Loc.T(L.Run.TileMatchesPerHour), perHour > 0 ? perHour.ToString("F1") : "–", null, Styling.AccentMint, tileWidth);
         ImGui.SameLine(0, gap);
-        StatTile.Draw(Loc.T(L.Run.TileElapsed), Formatting.Elapsed(elapsed), ReadyState.StopSummary(cfg), Styling.AccentViolet, tileWidth);
+        StatTile.Draw(Loc.T(L.Run.TileElapsed), Formatting.Elapsed(elapsed), ReadyState.StopSummary(cfg), Styling.AccentArc, tileWidth);
     }
 }

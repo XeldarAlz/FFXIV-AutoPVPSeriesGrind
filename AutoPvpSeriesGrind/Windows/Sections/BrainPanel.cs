@@ -78,7 +78,7 @@ internal static class BrainPanel
     private static readonly (LocString Text, Vector4 Color)[] Legend =
     {
         (L.Brain.LegendEnemy, Styling.AccentRose),
-        (L.Brain.LegendTarget, Styling.AccentVioletSoft),
+        (L.Brain.LegendTarget, Styling.AccentArcSoft),
         (L.Brain.LegendAlly, Styling.AccentMint),
         (L.Brain.LegendPoint, Styling.AccentAmber),
     };
@@ -388,7 +388,7 @@ internal static class BrainPanel
         DrawReadout(x, y, columnWidth, metrics, 0, Loc.T(L.Brain.Enemy), Nearest(snap.Enemies.Count, snap.NearestEnemyDistance), Count(snap.Enemies.Count), Styling.AccentRose);
         DrawReadout(x, y, columnWidth, metrics, 1, Loc.T(L.Brain.Ally), Nearest(snap.Allies.Count, snap.NearestAllyDistance), Count(snap.Allies.Count), Styling.AccentMint);
         DrawReadout(x, y, columnWidth, metrics, 2, Loc.T(L.Brain.Point), snap.Objective is { } objective ? Yalms(HorizontalDistance(snap.Self, objective)) : Dash, null, Styling.AccentAmber);
-        DrawReadout(x, y, columnWidth, metrics, 3, Loc.T(L.Brain.Target), targetHp is { } value ? Percent(value) : Dash, null, Styling.AccentVioletSoft);
+        DrawReadout(x, y, columnWidth, metrics, 3, Loc.T(L.Brain.Target), targetHp is { } value ? Percent(value) : Dash, null, Styling.AccentArcSoft);
     }
 
     private static void DrawReadout(float x, float y, float columnWidth, in Metrics metrics, int index, string label, string value, string? sub, Vector4 accent)
@@ -467,7 +467,7 @@ internal static class BrainPanel
         PvpStrategy.Defensive => Styling.AccentBlue,
         PvpStrategy.Aggressive => Styling.AccentRose,
         PvpStrategy.Custom => Styling.AccentMint,
-        _ => Styling.AccentVioletSoft,
+        _ => Styling.AccentArcSoft,
     };
 
     private static string RoleLabel(PvpRole role) => role switch

@@ -11,7 +11,7 @@ internal sealed partial class AboutPage
 {
     private static readonly Vector4[] ConnectAccents =
     {
-        Styling.AccentViolet, Styling.AccentBlue, Styling.AccentRose,
+        Styling.AccentArc, Styling.AccentMagenta, Styling.AccentRose,
         Styling.AccentMint, Styling.AccentAmber, Styling.AccentDiscord,
     };
 

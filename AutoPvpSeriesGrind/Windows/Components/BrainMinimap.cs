@@ -78,7 +78,7 @@ internal static class BrainMinimap
 
     private const float RangeLabelInset = 3f;
 
-    private static readonly Dot PlayerNode = new(4.8f, Styling.AccentVioletSoft);
+    private static readonly Dot PlayerNode = new(4.8f, Styling.AccentArcSoft);
     private static readonly Ring PlayerNodeRing = new(4.8f, 1.2f, Styling.WithAlpha(Styling.TextStrong, 0.7f));
     private static readonly Dot EnemyDot = new(3.6f, Styling.AccentRose);
     private static readonly Dot AllyDot = new(3.2f, Styling.WithAlpha(Styling.AccentMint, 0.9f));
@@ -86,7 +86,7 @@ internal static class BrainMinimap
     private static readonly Ring FocusRing = new(6.5f, 1f, Styling.WithAlpha(Styling.AccentRose, 0.7f));
     private static readonly Ring GuardRing = new(4.8f, 1f, Styling.WithAlpha(Styling.AccentBlue, 0.85f));
     private static readonly Ring CastRing = new(9f, 1.2f, Styling.WithAlpha(Styling.AccentAmberSoft, 0.9f));
-    private static readonly Ring ReticleRing = new(7.5f, 1.5f, Styling.AccentVioletSoft);
+    private static readonly Ring ReticleRing = new(7.5f, 1.5f, Styling.AccentArcSoft);
 
     private readonly record struct Dot(float Radius, Vector4 Color);
 
@@ -121,7 +121,7 @@ internal static class BrainMinimap
 
         var engage = radius * (EngageRingYalms / range);
         if (engage < edge)
-            ProgressRing.Track(center, engage, GridSubRingThickness * scale, Styling.WithAlpha(Styling.AccentVioletSoft, EngageRingAlpha));
+            ProgressRing.Track(center, engage, GridSubRingThickness * scale, Styling.WithAlpha(Styling.AccentArcSoft, EngageRingAlpha));
 
         var cross = ImGui.GetColorU32(Styling.WithAlpha(Styling.BorderDim, GridCrossAlpha));
         dl.AddLine(center with { X = center.X - radius }, center with { X = center.X + radius }, cross, scale);
@@ -143,10 +143,10 @@ internal static class BrainMinimap
             var angle = -FacingHalfAngle + t * FacingHalfAngle * 2f;
             var falloff = 1f - MathF.Abs(angle) / FacingHalfAngle * FacingFalloff;
             dl.AddLine(center, center + Rotate(heading, angle) * length,
-                ImGui.GetColorU32(Styling.WithAlpha(Styling.AccentVioletSoft, FacingBaseAlpha * falloff)), FacingThickness * scale);
+                ImGui.GetColorU32(Styling.WithAlpha(Styling.AccentArcSoft, FacingBaseAlpha * falloff)), FacingThickness * scale);
         }
         dl.AddLine(center, center + heading * (length + FacingTipExtra * scale),
-            ImGui.GetColorU32(Styling.WithAlpha(Styling.AccentVioletSoft, FacingTipAlpha)), FacingTipThickness * scale);
+            ImGui.GetColorU32(Styling.WithAlpha(Styling.AccentArcSoft, FacingTipAlpha)), FacingTipThickness * scale);
     }
 
     private static void DrawDestination(PvpSnapshot snap, in MovePlan plan, Vector2 center, float radius, float range, float edge, float scale, float energy)

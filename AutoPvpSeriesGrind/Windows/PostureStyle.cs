@@ -11,7 +11,7 @@ internal static class PostureStyle
         Posture.Retreat => Styling.AccentRose,
         Posture.Regroup => Styling.AccentAmberSoft,
         Posture.Reposition => Styling.AccentAmber,
-        Posture.Stage => Styling.AccentVioletSoft,
+        Posture.Stage => Styling.AccentArcSoft,
         Posture.Push => Styling.AccentAmber,
         Posture.Hold => Styling.AccentMint,
         _ => Styling.TextMuted,

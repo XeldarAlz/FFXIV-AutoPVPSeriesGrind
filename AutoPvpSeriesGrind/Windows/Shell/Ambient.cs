@@ -14,11 +14,11 @@ internal static class Ambient
 
         dl.PushClipRect(min, max, true);
         Blob(dl, min + new Vector2(width * (0.20f + 0.08f * Motion.Wave(16000)), height * (0.14f + 0.06f * Motion.Wave(21000))),
-            width * 0.45f, Styling.AccentViolet, 0.055f);
+            width * 0.45f, Styling.AccentArc, 0.055f);
         Blob(dl, min + new Vector2(width * (0.86f + 0.06f * Motion.Wave(19000)), height * (0.32f + 0.08f * Motion.Wave(14000))),
-            width * 0.40f, Styling.AccentBlue, 0.040f);
+            width * 0.40f, Styling.AccentMagenta, 0.040f);
         Blob(dl, min + new Vector2(width * (0.55f + 0.10f * Motion.Wave(23000)), height * (0.96f + 0.05f * Motion.Wave(17000))),
-            width * 0.42f, Styling.AccentPink, 0.035f);
+            width * 0.42f, Styling.AccentMint, 0.035f);
         dl.PopClipRect();
     }
 

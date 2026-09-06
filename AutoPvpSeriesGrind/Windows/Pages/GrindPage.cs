@@ -66,7 +66,7 @@ internal sealed class GrindPage
         var label = Loc.T(L.Grind.BackToPlan);
         var width = PillButton.Width(label, FontAwesomeIcon.ArrowRight);
         Styling.CenterNextItem(width);
-        if (PillButton.Draw("##apsg_payoff_dismiss", label, Styling.AccentViolet, PillButton.Emphasis.Tinted, FontAwesomeIcon.ArrowRight))
+        if (PillButton.Draw("##apsg_payoff_dismiss", label, Styling.AccentArc, PillButton.Emphasis.Tinted, FontAwesomeIcon.ArrowRight))
         {
             ctrl.ClearLastResult();
         }

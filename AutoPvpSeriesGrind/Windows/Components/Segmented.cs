@@ -53,11 +53,11 @@ internal static class Segmented
         var indicatorWidth = Motion.Approach(Motion.Key("##seg", 1), segmentWidths[current], 18f);
         var indicatorMin = new Vector2(origin.X + inset + indicatorX, origin.Y + inset);
         var indicatorMax = indicatorMin + new Vector2(indicatorWidth, size.Y - inset * 2f);
-        var indicatorAccent = enabled ? Styling.AccentViolet : Styling.Surface3;
+        var indicatorAccent = enabled ? Styling.AccentArc : Styling.Surface3;
         Paint.Gradient(dl, indicatorMin, indicatorMax,
             Styling.Tint(Styling.Surface3, indicatorAccent, 0.55f), Styling.Tint(Styling.Surface2, indicatorAccent, 0.45f), rounding - inset);
         Paint.TopLight(dl, indicatorMin, indicatorMax, rounding - inset, 0.10f);
-        Paint.Stroke(dl, indicatorMin, indicatorMax, Styling.WithAlpha(enabled ? Styling.AccentVioletSoft : Styling.BorderDim, 0.55f), rounding - inset);
+        Paint.Stroke(dl, indicatorMin, indicatorMax, Styling.WithAlpha(enabled ? Styling.AccentArcSoft : Styling.BorderDim, 0.55f), rounding - inset);
 
         var changed = false;
         var segmentX = origin.X + inset;
@@ -155,7 +155,7 @@ internal static class Segmented
 
         if (item.Icon is { } glyph)
         {
-            var iconColor = !enabled ? Styling.TextMuted : selected ? Styling.AccentVioletSoft : textColor;
+            var iconColor = !enabled ? Styling.TextMuted : selected ? Styling.AccentArcSoft : textColor;
             TextDraw.Icon(glyph, new Vector2(x, midY - metric.Icon.Y * 0.5f), iconColor);
             x += iconSpan;
         }

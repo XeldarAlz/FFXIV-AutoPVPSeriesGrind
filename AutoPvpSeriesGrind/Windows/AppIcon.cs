@@ -26,7 +26,7 @@ internal static class AppIcon
             return;
         }
 
-        Paint.Gradient(dl, min, max, Styling.AccentVioletSoft, Styling.AccentViolet, rounding);
+        Paint.Gradient(dl, min, max, Styling.AccentArc, Styling.AccentMagenta, rounding);
         TextDraw.IconCentered(FontAwesomeIcon.Trophy, (min + max) * 0.5f, Styling.WithAlpha(Styling.TextStrong, alpha));
     }
 }

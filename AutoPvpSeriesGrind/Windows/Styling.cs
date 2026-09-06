@@ -7,35 +7,36 @@ namespace AutoPvpSeriesGrind.Windows;
 
 internal static class Styling
 {
-    public static readonly Vector4 AccentViolet     = new(0.62f, 0.42f, 0.96f, 1.00f);
-    public static readonly Vector4 AccentVioletSoft = new(0.78f, 0.60f, 1.00f, 1.00f);
-    public static readonly Vector4 AccentPink       = new(0.95f, 0.45f, 0.78f, 1.00f);
-    public static readonly Vector4 AccentMint       = new(0.46f, 0.86f, 0.66f, 1.00f);
-    public static readonly Vector4 AccentMintSoft   = new(0.66f, 0.96f, 0.80f, 1.00f);
-    public static readonly Vector4 AccentAmber      = new(0.92f, 0.74f, 0.34f, 1.00f);
-    public static readonly Vector4 AccentAmberSoft  = new(1.00f, 0.86f, 0.52f, 1.00f);
-    public static readonly Vector4 AccentRose       = new(0.93f, 0.42f, 0.50f, 1.00f);
-    public static readonly Vector4 AccentRoseSoft   = new(1.00f, 0.62f, 0.68f, 1.00f);
-    public static readonly Vector4 AccentBlue       = new(0.40f, 0.68f, 0.98f, 1.00f);
-    public static readonly Vector4 AccentBlueSoft   = new(0.62f, 0.82f, 1.00f, 1.00f);
-    public static readonly Vector4 AccentDiscord    = new(0.345f, 0.396f, 0.949f, 1.00f);
+    public static readonly Vector4 AccentArc         = new(0.239f, 0.545f, 1.000f, 1.00f);
+    public static readonly Vector4 AccentArcSoft     = new(0.498f, 0.706f, 1.000f, 1.00f);
+    public static readonly Vector4 AccentMagenta     = new(0.886f, 0.310f, 0.784f, 1.00f);
+    public static readonly Vector4 AccentMagentaSoft = new(0.961f, 0.522f, 0.867f, 1.00f);
+    public static readonly Vector4 AccentMint        = new(0.46f, 0.86f, 0.66f, 1.00f);
+    public static readonly Vector4 AccentMintSoft    = new(0.66f, 0.96f, 0.80f, 1.00f);
+    public static readonly Vector4 AccentAmber       = new(0.92f, 0.74f, 0.34f, 1.00f);
+    public static readonly Vector4 AccentAmberSoft   = new(1.00f, 0.86f, 0.52f, 1.00f);
+    public static readonly Vector4 AccentRose        = new(0.93f, 0.42f, 0.50f, 1.00f);
+    public static readonly Vector4 AccentRoseSoft    = new(1.00f, 0.62f, 0.68f, 1.00f);
+    public static readonly Vector4 AccentBlue        = new(0.46f, 0.62f, 0.92f, 1.00f);
+    public static readonly Vector4 AccentBlueSoft    = new(0.66f, 0.78f, 0.98f, 1.00f);
+    public static readonly Vector4 AccentDiscord     = new(0.345f, 0.396f, 0.949f, 1.00f);
 
-    public static readonly Vector4 WindowBg = new(0.050f, 0.054f, 0.076f, 0.985f);
-    public static readonly Vector4 Surface0 = new(0.082f, 0.090f, 0.118f, 1.00f);
-    public static readonly Vector4 Surface1 = new(0.108f, 0.118f, 0.152f, 1.00f);
-    public static readonly Vector4 Surface2 = new(0.142f, 0.155f, 0.196f, 1.00f);
-    public static readonly Vector4 Surface3 = new(0.180f, 0.196f, 0.244f, 1.00f);
+    public static readonly Vector4 WindowBg = new(0.043f, 0.052f, 0.098f, 0.985f);
+    public static readonly Vector4 Surface0 = new(0.068f, 0.082f, 0.142f, 1.00f);
+    public static readonly Vector4 Surface1 = new(0.090f, 0.108f, 0.178f, 1.00f);
+    public static readonly Vector4 Surface2 = new(0.120f, 0.142f, 0.226f, 1.00f);
+    public static readonly Vector4 Surface3 = new(0.155f, 0.182f, 0.282f, 1.00f);
 
-    public static readonly Vector4 CardBg      = new(0.082f, 0.090f, 0.118f, 0.90f);
-    public static readonly Vector4 CardBgSoft  = new(0.108f, 0.118f, 0.152f, 0.62f);
-    public static readonly Vector4 CardBgHover = new(0.142f, 0.155f, 0.196f, 0.95f);
-    public static readonly Vector4 SliderBg    = new(0.160f, 0.175f, 0.220f, 1.00f);
-    public static readonly Vector4 BorderDim   = new(0.235f, 0.262f, 0.330f, 1.00f);
+    public static readonly Vector4 CardBg      = new(0.068f, 0.082f, 0.142f, 0.90f);
+    public static readonly Vector4 CardBgSoft  = new(0.090f, 0.108f, 0.178f, 0.62f);
+    public static readonly Vector4 CardBgHover = new(0.120f, 0.142f, 0.226f, 0.95f);
+    public static readonly Vector4 SliderBg    = new(0.136f, 0.160f, 0.252f, 1.00f);
+    public static readonly Vector4 BorderDim   = new(0.205f, 0.238f, 0.352f, 1.00f);
 
-    public static readonly Vector4 TextStrong    = new(0.965f, 0.965f, 0.975f, 1.00f);
-    public static readonly Vector4 TextSecondary = new(0.780f, 0.800f, 0.840f, 1.00f);
-    public static readonly Vector4 TextDim       = new(0.560f, 0.590f, 0.640f, 1.00f);
-    public static readonly Vector4 TextMuted     = new(0.400f, 0.420f, 0.470f, 1.00f);
+    public static readonly Vector4 TextStrong    = new(0.962f, 0.966f, 0.980f, 1.00f);
+    public static readonly Vector4 TextSecondary = new(0.775f, 0.798f, 0.850f, 1.00f);
+    public static readonly Vector4 TextDim       = new(0.552f, 0.582f, 0.652f, 1.00f);
+    public static readonly Vector4 TextMuted     = new(0.392f, 0.418f, 0.482f, 1.00f);
 
     public static readonly Vector4 Hairline = new(1f, 1f, 1f, 0.055f);
     public static readonly Vector4 White    = new(1f, 1f, 1f, 1f);
@@ -131,20 +132,20 @@ internal static class Styling
             .Push(ImGuiCol.ScrollbarGrabActive, new Vector4(1f, 1f, 1f, 0.28f))
             .Push(ImGuiCol.Button, Surface1)
             .Push(ImGuiCol.ButtonHovered, Surface2)
-            .Push(ImGuiCol.ButtonActive, Tint(Surface2, AccentViolet, 0.35f))
-            .Push(ImGuiCol.Header, Tint(Surface1, AccentViolet, 0.30f))
+            .Push(ImGuiCol.ButtonActive, Tint(Surface2, AccentArc, 0.35f))
+            .Push(ImGuiCol.Header, Tint(Surface1, AccentArc, 0.30f))
             .Push(ImGuiCol.HeaderHovered, Surface2)
-            .Push(ImGuiCol.HeaderActive, Tint(Surface2, AccentViolet, 0.40f))
-            .Push(ImGuiCol.CheckMark, AccentVioletSoft)
-            .Push(ImGuiCol.SliderGrab, AccentViolet)
-            .Push(ImGuiCol.SliderGrabActive, AccentVioletSoft)
+            .Push(ImGuiCol.HeaderActive, Tint(Surface2, AccentArc, 0.40f))
+            .Push(ImGuiCol.CheckMark, AccentArcSoft)
+            .Push(ImGuiCol.SliderGrab, AccentArc)
+            .Push(ImGuiCol.SliderGrabActive, AccentArcSoft)
             .Push(ImGuiCol.Text, TextStrong)
             .Push(ImGuiCol.TextDisabled, TextMuted)
             .Push(ImGuiCol.Separator, Hairline)
             .Push(ImGuiCol.ResizeGrip, Vector4.Zero)
             .Push(ImGuiCol.ResizeGripHovered, Vector4.Zero)
             .Push(ImGuiCol.ResizeGripActive, Vector4.Zero)
-            .Push(ImGuiCol.TextSelectedBg, WithAlpha(AccentViolet, 0.35f));
+            .Push(ImGuiCol.TextSelectedBg, WithAlpha(AccentArc, 0.35f));
 
         return new ChromeScope(style, color);
     }

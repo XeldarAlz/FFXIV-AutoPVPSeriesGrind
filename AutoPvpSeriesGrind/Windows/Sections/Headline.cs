@@ -58,7 +58,7 @@ internal static class Headline
     {
         >= 5 and < 12  => (FontAwesomeIcon.Sun,       Styling.AccentAmber,      Loc.T(L.Grind.GreetingMorning)),
         >= 12 and < 17 => (FontAwesomeIcon.Sun,       Styling.AccentAmber,      Loc.T(L.Grind.GreetingAfternoon)),
-        >= 17 and < 22 => (FontAwesomeIcon.CloudMoon, Styling.AccentVioletSoft, Loc.T(L.Grind.GreetingEvening)),
+        >= 17 and < 22 => (FontAwesomeIcon.CloudMoon, Styling.AccentArcSoft, Loc.T(L.Grind.GreetingEvening)),
         _              => (FontAwesomeIcon.Moon,      Styling.AccentBlue,       Loc.T(L.Grind.GreetingNight)),
     };
 

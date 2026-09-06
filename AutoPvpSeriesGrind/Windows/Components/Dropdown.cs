@@ -136,11 +136,11 @@ internal static class Dropdown
 
         if (unfurl > 0.01f)
         {
-            Paint.Glow(dl, origin, end, rounding, Styling.AccentViolet, unfurl);
+            Paint.Glow(dl, origin, end, rounding, Styling.AccentArc, unfurl);
         }
 
-        var top = Styling.Tint(Vector4.Lerp(Styling.Surface2, Styling.Surface3, hover), Styling.AccentViolet, unfurl * 0.22f);
-        var bottom = Styling.Tint(Vector4.Lerp(Styling.Surface1, Styling.Surface2, hover), Styling.AccentViolet, unfurl * 0.12f);
+        var top = Styling.Tint(Vector4.Lerp(Styling.Surface2, Styling.Surface3, hover), Styling.AccentArc, unfurl * 0.22f);
+        var bottom = Styling.Tint(Vector4.Lerp(Styling.Surface1, Styling.Surface2, hover), Styling.AccentArc, unfurl * 0.12f);
         if (hit.Held)
         {
             top = Styling.Darken(top, 0.10f);
@@ -150,7 +150,7 @@ internal static class Dropdown
         Paint.Gradient(dl, origin, end, top, bottom, rounding);
         Paint.TopLight(dl, origin, end, rounding);
         Paint.Stroke(dl, origin, end,
-            Vector4.Lerp(Styling.WithAlpha(Styling.BorderDim, 0.85f), Styling.WithAlpha(Styling.AccentVioletSoft, 0.90f), lift), rounding);
+            Vector4.Lerp(Styling.WithAlpha(Styling.BorderDim, 0.85f), Styling.WithAlpha(Styling.AccentArcSoft, 0.90f), lift), rounding);
 
         var padX = TriggerPadX * scale;
         var caretHalf = CaretHalf * scale;
@@ -162,7 +162,7 @@ internal static class Dropdown
         TextDraw.At(text, new Vector2(origin.X + padX, origin.Y + (size.Y - textSize.Y) * 0.5f),
             Vector4.Lerp(Styling.TextSecondary, Styling.TextStrong, lift));
         DrawCaret(dl, caretCenter, caretHalf, unfurl,
-            Vector4.Lerp(Styling.TextDim, Styling.AccentVioletSoft, lift), CaretThickness * scale);
+            Vector4.Lerp(Styling.TextDim, Styling.AccentArcSoft, lift), CaretThickness * scale);
 
         return hit.Hovered && ImGui.IsMouseClicked(ImGuiMouseButton.Left);
     }
@@ -260,7 +260,7 @@ internal static class Dropdown
 
         Paint.Gradient(dl, min, max, Styling.Surface2 with { W = 0.99f }, Styling.Surface0 with { W = 0.99f }, rounding);
         Paint.TopLight(dl, min, max, rounding, 0.09f);
-        Paint.Stroke(dl, min, max, Styling.WithAlpha(Styling.AccentViolet, 0.42f), rounding);
+        Paint.Stroke(dl, min, max, Styling.WithAlpha(Styling.AccentArc, 0.42f), rounding);
     }
 
     private static int BuildRows(ReadOnlySpan<string> labels, ReadOnlySpan<string> details, string filter,
@@ -421,7 +421,7 @@ internal static class Dropdown
         var max = min + size;
 
         var fill = selected
-            ? Styling.WithAlpha(Styling.AccentViolet, (0.17f + 0.10f * hover) * appear)
+            ? Styling.WithAlpha(Styling.AccentArc, (0.17f + 0.10f * hover) * appear)
             : Styling.WithAlpha(Styling.Surface3, 0.75f * hover * appear);
         if (fill.W > 0.004f)
         {
@@ -438,14 +438,14 @@ internal static class Dropdown
             var inset = RailInset * scale;
             var railMin = new Vector2(min.X + inset, min.Y + inset);
             var railMax = new Vector2(railMin.X + RailWidth * scale, max.Y - inset);
-            Paint.Fill(dl, railMin, railMax, Styling.WithAlpha(Styling.AccentVioletSoft, appear), RailWidth * scale * 0.5f);
+            Paint.Fill(dl, railMin, railMax, Styling.WithAlpha(Styling.AccentArcSoft, appear), RailWidth * scale * 0.5f);
             Paint.Check(dl, new Vector2(max.X - padX - checkSize * 0.5f, min.Y + padY + lineHeight * 0.5f),
-                checkSize, Styling.WithAlpha(Styling.AccentVioletSoft, appear), 2f * scale);
+                checkSize, Styling.WithAlpha(Styling.AccentArcSoft, appear), 2f * scale);
         }
 
         var textLeft = min.X + padX;
         var textRight = max.X - padX - (selected ? checkSize * 2f : 0f);
-        var nameColor = selected ? Styling.AccentVioletSoft : Vector4.Lerp(Styling.TextSecondary, Styling.TextStrong, hover);
+        var nameColor = selected ? Styling.AccentArcSoft : Vector4.Lerp(Styling.TextSecondary, Styling.TextStrong, hover);
         TextDraw.At(TextDraw.Truncate(name, textRight - textLeft), new Vector2(textLeft, min.Y + padY),
             Styling.WithAlpha(nameColor, appear));
 

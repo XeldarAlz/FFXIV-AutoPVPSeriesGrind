@@ -31,17 +31,17 @@ internal static class ToggleSwitch
         var rounding = size.Y * 0.5f;
 
         var offColor = Vector4.Lerp(Styling.Surface2, Styling.Surface3, hover);
-        var onColor = Vector4.Lerp(Styling.AccentViolet, Styling.AccentVioletSoft, hover * 0.4f);
+        var onColor = Vector4.Lerp(Styling.AccentArc, Styling.AccentArcSoft, hover * 0.4f);
         var track = Vector4.Lerp(offColor, onColor, on);
 
         if (on > 0.01f)
         {
             var grow = new Vector2(2f * scale, 2f * scale);
-            dl.AddRectFilled(origin - grow, end + grow, Paint.Col(Styling.WithAlpha(Styling.AccentViolet, 0.18f * on)), rounding + grow.X);
+            dl.AddRectFilled(origin - grow, end + grow, Paint.Col(Styling.WithAlpha(Styling.AccentArc, 0.18f * on)), rounding + grow.X);
         }
 
         Paint.Fill(dl, origin, end, track, rounding);
-        var border = Vector4.Lerp(Styling.WithAlpha(Styling.BorderDim, 0.8f), Styling.WithAlpha(Styling.AccentVioletSoft, 0.6f), on);
+        var border = Vector4.Lerp(Styling.WithAlpha(Styling.BorderDim, 0.8f), Styling.WithAlpha(Styling.AccentArcSoft, 0.6f), on);
         Paint.Stroke(dl, origin, end, border, rounding);
 
         var inset = KnobInset * scale;

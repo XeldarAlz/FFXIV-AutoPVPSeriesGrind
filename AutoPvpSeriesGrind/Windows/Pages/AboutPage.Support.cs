@@ -14,7 +14,7 @@ internal sealed partial class AboutPage
         var scale = ImGuiHelpers.GlobalScale;
         var dl = ImGui.GetWindowDrawList();
         var pulse = Styling.Pulse(Styling.PulseBreath);
-        var accent = Styling.PulseColor(Styling.AccentPink, Styling.AccentViolet, 5200.0);
+        var accent = Styling.PulseColor(Styling.AccentMagenta, Styling.AccentArc, 5200.0);
 
         var slotOrigin = ImGui.GetCursorScreenPos();
         var fullAvail = ImGui.GetContentRegionAvail().X;
@@ -36,7 +36,7 @@ internal sealed partial class AboutPage
         var centerX = origin.X + availX * 0.5f;
         var rounding = Styling.PanelRounding * scale;
 
-        Paint.Fill(dl, origin, end, Vector4.Lerp(Styling.Surface1, Styling.AccentPink, 0.07f) with { W = 0.95f }, rounding);
+        Paint.Fill(dl, origin, end, Vector4.Lerp(Styling.Surface1, Styling.AccentMagenta, 0.07f) with { W = 0.95f }, rounding);
         Paint.TopLight(dl, origin, end, rounding);
         Paint.Stroke(dl, origin, end, Styling.WithAlpha(accent, 0.55f + 0.35f * pulse), rounding, 1.5f);
 

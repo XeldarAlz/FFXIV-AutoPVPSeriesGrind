@@ -97,9 +97,9 @@ internal sealed partial class AboutPage
         dl.PushClipRect(min, max, true);
 
         SoftBlob(min + new Vector2(width * (0.26f + 0.12f * Motion.Wave(11000)), height * (0.20f + 0.10f * Motion.Wave(13700))),
-            width * 0.55f, Styling.AccentViolet, 0.075f);
+            width * 0.55f, Styling.AccentArc, 0.075f);
         SoftBlob(min + new Vector2(width * (0.80f + 0.12f * Motion.Wave(15500)), height * (0.32f + 0.10f * Motion.Wave(9300))),
-            width * 0.48f, Styling.AccentPink, 0.060f);
+            width * 0.48f, Styling.AccentMagenta, 0.060f);
         SoftBlob(min + new Vector2(width * (0.55f + 0.14f * Motion.Wave(17900)), height * (0.82f + 0.08f * Motion.Wave(12100))),
             width * 0.52f, Styling.AccentBlue, 0.050f);
 

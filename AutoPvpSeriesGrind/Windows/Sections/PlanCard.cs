@@ -92,7 +92,7 @@ internal static class PlanCard
         var end = new Vector2(origin.X + width, ImGui.GetItemRectMax().Y + padY);
 
         dl.ChannelsSetCurrent(0);
-        Paint.Glass(dl, origin, end, Styling.PanelRounding * scale, Styling.AccentViolet, 0.07f, 0f, elevated: true);
+        Paint.Glass(dl, origin, end, Styling.PanelRounding * scale, Styling.AccentArc, 0.07f, 0f, elevated: true);
         dl.ChannelsMerge();
 
         ImGui.SetCursorScreenPos(origin);
@@ -147,7 +147,7 @@ internal static class PlanCard
             else
             {
                 ImGui.SetCursorScreenPos(new Vector2(x, y));
-                var clicked = DrawToken(TokenId(piece.Kind), piece.Text, Styling.AccentViolet, editable);
+                var clicked = DrawToken(TokenId(piece.Kind), piece.Text, Styling.AccentArc, editable);
                 var anchor = new Vector2(x, y + tokenHeight + PopoverGap * scale);
                 switch (piece.Kind)
                 {
@@ -448,10 +448,10 @@ internal static class PlanCard
         ImGui.PopID();
 
         var dl = ImGui.GetWindowDrawList();
-        var fill = selected ? Styling.WithAlpha(Styling.AccentViolet, 0.18f + 0.08f * hover) : Styling.WithAlpha(Styling.Surface2, 0.8f * hover);
+        var fill = selected ? Styling.WithAlpha(Styling.AccentArc, 0.18f + 0.08f * hover) : Styling.WithAlpha(Styling.Surface2, 0.8f * hover);
         if (fill.W > 0.01f) Paint.Fill(dl, origin, origin + size, fill, 8f * scale);
 
-        var nameColor = selected ? Styling.AccentVioletSoft : Vector4.Lerp(Styling.TextSecondary, Styling.TextStrong, hover);
+        var nameColor = selected ? Styling.AccentArcSoft : Vector4.Lerp(Styling.TextSecondary, Styling.TextStrong, hover);
         TextDraw.At(name, new Vector2(origin.X + padX, origin.Y + padY), nameColor);
         using (Fonts.PushCaption())
             TextDraw.At(detail, new Vector2(origin.X + padX, origin.Y + padY + lineHeight + 2f * scale), Styling.TextMuted);
@@ -459,7 +459,7 @@ internal static class PlanCard
         if (selected)
         {
             var checkSize = TextDraw.IconSize(FontAwesomeIcon.Check);
-            TextDraw.Icon(FontAwesomeIcon.Check, new Vector2(origin.X + size.X - padX - checkSize.X, origin.Y + padY + (lineHeight - checkSize.Y) * 0.5f), Styling.AccentVioletSoft);
+            TextDraw.Icon(FontAwesomeIcon.Check, new Vector2(origin.X + size.X - padX - checkSize.X, origin.Y + padY + (lineHeight - checkSize.Y) * 0.5f), Styling.AccentArcSoft);
         }
 
         return hit.Clicked;

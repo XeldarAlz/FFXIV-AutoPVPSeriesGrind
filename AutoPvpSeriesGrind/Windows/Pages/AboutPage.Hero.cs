@@ -24,11 +24,11 @@ internal sealed partial class AboutPage
         var bob = Motion.Wave(3000) * 3f * scale;
         var center = new Vector2(start.X + avail * 0.5f, start.Y + RingRadius * scale + bob);
 
-        ProgressRing.Glow(center, RingRadius * scale, Styling.AccentViolet, 0.55f + 0.5f * Styling.Pulse(Styling.PulseBreath));
+        ProgressRing.Glow(center, RingRadius * scale, Styling.AccentArc, 0.55f + 0.5f * Styling.Pulse(Styling.PulseBreath));
         ProgressRing.Track(center, RingRadius * scale, 1.5f * scale, Styling.WithAlpha(Styling.BorderDim, 0.7f));
-        ProgressRing.Sweep(center, RingRadius * scale, 2.6f * scale, Styling.AccentVioletSoft, Styling.PulseOrbit, MathF.PI * 0.55f, 1f);
-        OrbitParticles(center, RingRadius * scale, 3, 4600, +1, Styling.AccentVioletSoft, 2.4f * scale);
-        OrbitParticles(center, RingRadius * scale * 0.74f, 2, 6000, -1, Styling.AccentPink, 2.0f * scale);
+        ProgressRing.Sweep(center, RingRadius * scale, 2.6f * scale, Styling.AccentArcSoft, Styling.PulseOrbit, MathF.PI * 0.55f, 1f);
+        OrbitParticles(center, RingRadius * scale, 3, 4600, +1, Styling.AccentArcSoft, 2.4f * scale);
+        OrbitParticles(center, RingRadius * scale * 0.74f, 2, 6000, -1, Styling.AccentMagenta, 2.0f * scale);
 
         var half = IconSize * 0.5f * scale;
         var iconMin = new Vector2(center.X - half, center.Y - half);
@@ -36,7 +36,7 @@ internal sealed partial class AboutPage
         var rounding = IconSize * 0.20f * scale;
 
         AppIcon.Draw(dl, iconMin, iconMax, rounding, 0.92f + 0.08f * Styling.Pulse(2200.0));
-        Paint.Stroke(dl, iconMin, iconMax, Styling.WithAlpha(Styling.AccentVioletSoft, 0.55f), rounding, 1.5f * scale);
+        Paint.Stroke(dl, iconMin, iconMax, Styling.WithAlpha(Styling.AccentArcSoft, 0.55f), rounding, 1.5f * scale);
 
         IconEasterEgg(iconMin, iconMax);
 
@@ -44,12 +44,12 @@ internal sealed partial class AboutPage
         ImGui.Dummy(new Vector2(avail, RingRadius * 2f * scale));
 
         Styling.VSpace(10);
-        ShimmerCentered(Name, Styling.TextStrong, Styling.AccentVioletSoft, Styling.PulseOrbit, 0.42f);
+        ShimmerCentered(Name, Styling.TextStrong, Styling.AccentArcSoft, Styling.PulseOrbit, 0.42f);
         Styling.VSpace(9);
 
         var version = typeof(AboutPage).Assembly.GetName().Version?.ToString() ?? "?";
         CenteredPill(Loc.T(L.About.Version, version), Styling.TextSecondary,
-            Styling.WithAlpha(Styling.AccentViolet, 0.45f), Styling.CardBgSoft);
+            Styling.WithAlpha(Styling.AccentArc, 0.45f), Styling.CardBgSoft);
     }
 
     private static void OrbitParticles(Vector2 center, float radius, int count, double periodMs, int direction, Vector4 color, float dotRadius)
@@ -74,7 +74,7 @@ internal sealed partial class AboutPage
         var cursor = ImGui.GetCursorScreenPos();
         var origin = cursor with { X = cursor.X + MathF.Max(0f, (avail - size.X) * 0.5f) };
 
-        var bloom = Styling.WithAlpha(Styling.AccentViolet, 0.22f);
+        var bloom = Styling.WithAlpha(Styling.AccentArc, 0.22f);
         for (var offsetIndex = 0; offsetIndex < BloomOffsets.Length; offsetIndex++)
         {
             TextDraw.At(text, origin + BloomOffsets[offsetIndex] * ImGuiHelpers.GlobalScale, bloom);
