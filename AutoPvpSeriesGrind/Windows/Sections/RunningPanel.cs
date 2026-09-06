@@ -28,8 +28,9 @@ internal static class RunningPanel
         DrawHeaderStrip(accent, accentSoft, stage);
         Styling.VSpace(6f);
         DrawHeroCard(cfg, ctrl, stage, accent, accentSoft, label);
-
         Styling.VSpace(10f);
+
+        if (BrainPanel.Draw(cfg, ctrl)) Styling.VSpace(10f);
         DrawStatTiles(cfg, ctrl);
     }
 
@@ -250,7 +251,7 @@ internal static class RunningPanel
         ImGui.SameLine(0, gap);
         StatTile.Draw(Loc.T(L.Run.TileSeriesExp), $"+{Formatting.Exp(seriesExp)}", expPerHour >= 1 ? $"{Formatting.Exp((long)expPerHour)}/h" : null, Styling.AccentAmber, tileWidth);
         ImGui.SameLine(0, gap);
-        StatTile.Draw(Loc.T(L.Run.TileMatchesPerHour), perHour > 0 ? perHour.ToString("F1") : "—", null, Styling.AccentMint, tileWidth);
+        StatTile.Draw(Loc.T(L.Run.TileMatchesPerHour), perHour > 0 ? perHour.ToString("F1") : "–", null, Styling.AccentMint, tileWidth);
         ImGui.SameLine(0, gap);
         StatTile.Draw(Loc.T(L.Run.TileElapsed), Formatting.Elapsed(elapsed), ReadyState.StopSummary(cfg), Styling.AccentViolet, tileWidth);
     }

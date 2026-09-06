@@ -100,9 +100,8 @@ internal sealed partial class AboutPage
     private static void CenteredPill(string text, Vector4 textColor, Vector4 borderColor, Vector4 backgroundColor)
     {
         var scale = ImGuiHelpers.GlobalScale;
-        using var font = Fonts.PushCaption();
         var padX = 11f * scale;
-        var padY = 4f * scale;
+        var padY = 3f * scale;
         var textSize = TextDraw.Measure(text);
         var size = new Vector2(textSize.X + padX * 2f, textSize.Y + padY * 2f);
 

@@ -46,8 +46,6 @@
     },
     "minimize": "Свернуть в заголовок",
     "restore": "Развернуть",
-    "showBrain": "Показать боевой мозг",
-    "hideBrain": "Скрыть боевой мозг",
     "modeSummary": "Crystalline Conflict, {0}",
     "modeSummaryDot": "Crystalline Conflict  ·  {0}",
     "statusLine": "{0}  ·  {1}",
@@ -486,17 +484,18 @@
       "ally": "● союзник",
       "point": "◆ точка"
     },
-    "off": "Боевой мозг выключен.",
-    "offHint": "Включите его в «Настройки», «Бой».",
-    "notInMatch": "Сейчас не в матче.",
-    "matchStarting": "Матч начинается: мозг запускается на старте.",
+    "title": "Боевой мозг",
     "navFallback": "vnavmesh недоступен, работа через чат",
     "range": "~{0}y",
-    "phase": {
-      "idle": "простой",
-      "inQueue": "в очереди",
-      "inMatch": "в матче",
-      "wrappingUp": "завершение"
+    "sprinting": "спринт",
+    "posture": {
+      "idle": "Простой",
+      "hold": "Держать",
+      "push": "Натиск",
+      "stage": "Выжидать",
+      "reposition": "Смена позиции",
+      "regroup": "Перегруппировка",
+      "retreat": "Отступление"
     },
     "enemy": "Враг",
     "ally": "Союзник",
@@ -511,7 +510,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Открывает или закрывает окно Auto PVP Series Grind. /apsg config | stats | deps | about | brain | target | objects.",
+    "commandHelp": "Открывает или закрывает окно Auto PVP Series Grind. /apsg config | stats | deps | about | target | objects.",
     "commandHelpAlias": "Синоним /apsg."
   }
 }

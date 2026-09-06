@@ -35,8 +35,6 @@ public sealed class Plugin : IDalamudPlugin
 
     private readonly AppWindow appWindow;
 
-    internal BrainDebugWindow BrainWindow { get; }
-
     private readonly EventHandler<UnobservedTaskExceptionEventArgs> unobservedTaskHandler;
 
     private readonly Dictionary<string, Action> subcommands;
@@ -62,9 +60,7 @@ public sealed class Plugin : IDalamudPlugin
         InitializeLocalization();
         Fonts.Initialize(PluginInterface.UiBuilder, PluginDirectory);
         appWindow = new AppWindow(this);
-        BrainWindow = new BrainDebugWindow();
-
-        AddWindows();
+        WindowSystem.AddWindow(appWindow);
 
         subcommands = BuildSubcommands();
 
@@ -111,12 +107,6 @@ public sealed class Plugin : IDalamudPlugin
         return Languages.IsKnown(osLanguage) ? Languages.Resolve(osLanguage).Code : Languages.English.Code;
     }
 
-    private void AddWindows()
-    {
-        WindowSystem.AddWindow(appWindow);
-        WindowSystem.AddWindow(BrainWindow);
-    }
-
     private Dictionary<string, Action> BuildSubcommands() => new(StringComparer.OrdinalIgnoreCase)
     {
         ["config"] = ToggleConfigUi,
@@ -125,7 +115,6 @@ public sealed class Plugin : IDalamudPlugin
         ["dependencies"] = ToggleDependenciesUi,
         ["stats"] = ToggleHistoryUi,
         ["history"] = ToggleHistoryUi,
-        ["brain"] = ToggleBrainUi,
         ["target"] = TargetDumper.Dump,
         ["objects"] = TargetDumper.DumpObjects,
     };
@@ -173,7 +162,6 @@ public sealed class Plugin : IDalamudPlugin
 
         WindowSystem.RemoveAllWindows();
         appWindow.Dispose();
-        BrainWindow.Dispose();
         Fonts.Dispose();
 
         CommandManager.RemoveHandler(ApsgConstants.PrimaryCommand);
@@ -198,5 +186,4 @@ public sealed class Plugin : IDalamudPlugin
     public void ToggleAboutUi() => appWindow.TogglePage(AppWindow.Page.About);
     public void ToggleDependenciesUi() => appWindow.TogglePage(AppWindow.Page.Plugins);
     public void ToggleHistoryUi() => appWindow.TogglePage(AppWindow.Page.History);
-    public void ToggleBrainUi() => BrainWindow.Toggle();
 }

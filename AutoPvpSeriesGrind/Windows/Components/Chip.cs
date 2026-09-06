@@ -7,8 +7,7 @@ namespace AutoPvpSeriesGrind.Windows.Components;
 
 internal static class Chip
 {
-    private const float PadX = 10f;
-    private const float PadY = 4f;
+    private const float PadX = 11f;
     private const float DotRadius = 3f;
     private const float IconGap = 6f;
 
@@ -16,14 +15,12 @@ internal static class Chip
         bool pulse = false, string? tooltip = null)
     {
         var scale = ImGuiHelpers.GlobalScale;
-        using var font = Fonts.PushCaption();
-
         var padX = PadX * scale;
         var iconGap = IconGap * scale;
         var textSize = TextDraw.Measure(label);
         var iconWidth = icon is { } glyph ? TextDraw.IconSize(glyph).X + iconGap : 0f;
         var dotWidth = dot ? DotRadius * 2f * scale + iconGap : 0f;
-        var size = new Vector2(padX * 2f + iconWidth + dotWidth + textSize.X, textSize.Y + PadY * 2f * scale);
+        var size = new Vector2(padX * 2f + iconWidth + dotWidth + textSize.X, Layout.ChipHeight * scale);
 
         var origin = ImGui.GetCursorScreenPos();
         var end = origin + size;

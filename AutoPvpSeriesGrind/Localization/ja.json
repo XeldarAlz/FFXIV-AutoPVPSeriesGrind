@@ -46,8 +46,6 @@
     },
     "minimize": "タイトルバーに最小化",
     "restore": "元に戻す",
-    "showBrain": "戦闘ブレインを表示",
-    "hideBrain": "戦闘ブレインを隠す",
     "modeSummary": "Crystalline Conflict、{0}",
     "modeSummaryDot": "Crystalline Conflict  ·  {0}",
     "statusLine": "{0}  ·  {1}",
@@ -486,17 +484,18 @@
       "ally": "● 味方",
       "point": "◆ 拠点"
     },
-    "off": "戦闘ブレインはオフです。",
-    "offHint": "設定の「戦闘」からオンにしてください。",
-    "notInMatch": "試合中ではありません。",
-    "matchStarting": "試合開始：ゲート前でブレインが起動します。",
+    "title": "戦闘ブレイン",
     "navFallback": "vnavmeshがオフライン、チャットで代替",
     "range": "~{0}y",
-    "phase": {
+    "sprinting": "スプリント中",
+    "posture": {
       "idle": "待機",
-      "inQueue": "待機列",
-      "inMatch": "試合中",
-      "wrappingUp": "終了処理中"
+      "hold": "維持",
+      "push": "押し込み",
+      "stage": "待機位置",
+      "reposition": "位置調整",
+      "regroup": "再集結",
+      "retreat": "撤退"
     },
     "enemy": "敵",
     "ally": "味方",
@@ -511,7 +510,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grindのウィンドウを開閉します。/apsg config | stats | deps | about | brain | target | objects。",
+    "commandHelp": "Auto PVP Series Grindのウィンドウを開閉します。/apsg config | stats | deps | about | target | objects。",
     "commandHelpAlias": "/apsg の別名です。"
   }
 }

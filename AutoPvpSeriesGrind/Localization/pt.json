@@ -46,8 +46,6 @@
     },
     "minimize": "Minimizar para a barra de título",
     "restore": "Restaurar",
-    "showBrain": "Mostrar o cérebro de combate",
-    "hideBrain": "Ocultar o cérebro de combate",
     "modeSummary": "Crystalline Conflict, {0}",
     "modeSummaryDot": "Crystalline Conflict  ·  {0}",
     "statusLine": "{0}  ·  {1}",
@@ -486,17 +484,18 @@
       "ally": "● aliado",
       "point": "◆ ponto"
     },
-    "off": "O cérebro de combate está desligado.",
-    "offHint": "Ligue em Configurações, Combate.",
-    "notInMatch": "Não está em uma partida ao vivo.",
-    "matchStarting": "Partida começando: o cérebro liga no portão.",
+    "title": "Cérebro de combate",
     "navFallback": "vnavmesh offline, usando o chat",
     "range": "~{0}y",
-    "phase": {
-      "idle": "parado",
-      "inQueue": "na fila",
-      "inMatch": "em partida",
-      "wrappingUp": "finalizando"
+    "sprinting": "correndo",
+    "posture": {
+      "idle": "Parado",
+      "hold": "Segurar",
+      "push": "Avançar",
+      "stage": "Posicionar",
+      "reposition": "Reposicionar",
+      "regroup": "Reagrupar",
+      "retreat": "Recuar"
     },
     "enemy": "Inimigo",
     "ally": "Aliado",
@@ -511,7 +510,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Abre ou fecha a janela do Auto PVP Series Grind. /apsg config | stats | deps | about | brain | target | objects.",
+    "commandHelp": "Abre ou fecha a janela do Auto PVP Series Grind. /apsg config | stats | deps | about | target | objects.",
     "commandHelpAlias": "Atalho para /apsg."
   }
 }

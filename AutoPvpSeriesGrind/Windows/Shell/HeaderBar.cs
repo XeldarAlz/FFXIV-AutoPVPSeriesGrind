@@ -19,20 +19,12 @@ internal static class HeaderBar
     private const float IconBox = 26f;
     private const float ButtonSize = 30f;
     private const float ButtonGap = 6f;
-    private const int MaxButtonCount = 3;
+    private const int ButtonCount = 2;
     private const float CompactBarWidth = 90f;
 
-    public const float MinimumWidth = PadX * 2f + IconBox + 12f + ButtonSize * MaxButtonCount + ButtonGap * (MaxButtonCount - 1);
+    public const float MinimumWidth = PadX * 2f + IconBox + 12f + ButtonSize * ButtonCount + ButtonGap * (ButtonCount - 1);
 
-    // The brain button only exists while the combat brain is on, so the cluster width has to be
-    // measured rather than assumed: the title, status pill and drag strip all size against it.
-    private static int ButtonCount() => Plugin.Cfg.EnableCombatBrain ? MaxButtonCount : MaxButtonCount - 1;
-
-    public static float ButtonsWidth()
-    {
-        var count = ButtonCount();
-        return (ButtonSize * count + ButtonGap * (count - 1)) * ImGuiHelpers.GlobalScale;
-    }
+    public static float ButtonsWidth() => (ButtonSize * ButtonCount + ButtonGap * (ButtonCount - 1)) * ImGuiHelpers.GlobalScale;
 
     public static bool HandleDrag(Vector2 windowPos, float width, float height)
     {
@@ -82,10 +74,10 @@ internal static class HeaderBar
 
         if (compact) DrawCompactInfo(plugin, info, x, buttonsLeft - 14f * scale, midY);
 
-        DrawButtons(window, plugin, end, midY, compact);
+        DrawButtons(window, end, midY, compact);
     }
 
-    private static void DrawButtons(AppWindow window, Plugin plugin, Vector2 end, float midY, bool compact)
+    private static void DrawButtons(AppWindow window, Vector2 end, float midY, bool compact)
     {
         var scale = ImGuiHelpers.GlobalScale;
         var padX = PadX * scale;
@@ -105,28 +97,6 @@ internal static class HeaderBar
         {
             window.ToggleCompact();
         }
-
-        if (!plugin.Configuration.EnableCombatBrain) return;
-
-        var brainOpen = plugin.BrainWindow.IsOpen;
-        ImGui.SetCursorScreenPos(new Vector2(end.X - padX - buttonSize - stride * 2f, top));
-        if (IconButton.Draw(FontAwesomeIcon.Brain, "##apsg_brain", buttonSize,
-                brainOpen ? Styling.AccentVioletSoft : BrainTint(),
-                Loc.T(brainOpen ? L.Shell.HideBrain : L.Shell.ShowBrain)))
-        {
-            plugin.BrainWindow.Toggle();
-        }
-    }
-
-    private static Vector4? BrainTint()
-    {
-        if (!Core.Combat.BrainTelemetry.IsFresh || Core.Combat.BrainTelemetry.Plan is not { } plan) return null;
-        return plan.Kind switch
-        {
-            Core.Combat.MoveKind.Retreat => Styling.AccentRose,
-            Core.Combat.MoveKind.Engage => Styling.AccentAmber,
-            _ => Styling.AccentMint,
-        };
     }
 
     private static float DrawStatusPill(ImDrawListPtr dl, ReadyState.Info info, float x, float rightLimit, float midY)

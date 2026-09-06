@@ -14,7 +14,6 @@ internal sealed partial class AboutPage
         var scale = ImGuiHelpers.GlobalScale;
         Paint.Divider(6f);
 
-        using var font = Fonts.PushCaption();
         var twinkle = Styling.Pulse(2600.0);
         var glyphSize = TextDraw.IconSize(FontAwesomeIcon.Code);
         var textSize = TextDraw.Measure(madeByText);

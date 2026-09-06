@@ -4,7 +4,7 @@ namespace AutoPvpSeriesGrind.Core.Combat;
 
 internal enum MoveKind { Hold, Engage, Retreat }
 
-// Posture is the high-level intent shown in the overlay; MoveKind is how the executor actually moves.
+// Posture is the high-level intent shown in the brain panel; MoveKind is how the executor actually moves.
 internal enum Posture { Idle, Hold, Push, Stage, Reposition, Regroup, Retreat }
 
 internal readonly record struct MovePlan(

@@ -12,6 +12,7 @@ internal static class Layout
 
     public const float HeroButtonHeight = 54f;
     public const float SegmentHeight = 40f;
+    public const float ChipHeight = 32f;
 
     public const float HeroCardHeight = 148f;
     public const float StatTileHeight = 66f;

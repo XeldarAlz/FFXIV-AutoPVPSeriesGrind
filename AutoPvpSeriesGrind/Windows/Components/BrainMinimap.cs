@@ -92,13 +92,10 @@ internal static class BrainMinimap
 
     private readonly record struct Ring(float Radius, float Thickness, Vector4 Color);
 
-    public static void Draw(PvpSnapshot snap, in MovePlan plan, float diameter, float destinationEnergy = 0f)
+    public static void Draw(PvpSnapshot snap, in MovePlan plan, Vector2 center, float diameter, float destinationEnergy = 0f)
     {
         var scale = ImGuiHelpers.GlobalScale;
-        var availX = ImGui.GetContentRegionAvail().X;
-        var origin = ImGui.GetCursorScreenPos();
         var radius = diameter * 0.5f;
-        var center = new Vector2(origin.X + availX * 0.5f, origin.Y + radius);
         var edge = radius - GridEdgeInset * scale;
         var range = ComputeRange(snap, plan);
 
@@ -112,9 +109,6 @@ internal static class BrainMinimap
         DrawPlayer(center, scale);
         DrawBadges(snap, center, radius, scale);
         DrawRange(center, radius, range, scale);
-
-        ImGui.SetCursorScreenPos(origin);
-        ImGui.Dummy(new Vector2(availX, diameter));
     }
 
     private static void DrawGrid(Vector2 center, float radius, float edge, float range, float scale)

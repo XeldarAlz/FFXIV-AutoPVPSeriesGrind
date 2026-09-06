@@ -46,8 +46,6 @@
     },
     "minimize": "Başlık çubuğuna küçült",
     "restore": "Geri yükle",
-    "showBrain": "Savaş beynini göster",
-    "hideBrain": "Savaş beynini gizle",
     "modeSummary": "Crystalline Conflict, {0}",
     "modeSummaryDot": "Crystalline Conflict  ·  {0}",
     "statusLine": "{0}  ·  {1}",
@@ -486,17 +484,18 @@
       "ally": "● dost",
       "point": "◆ nokta"
     },
-    "off": "Savaş beyni kapalı.",
-    "offHint": "Ayarlar, Savaş altından aç.",
-    "notInMatch": "Canlı bir maçta değilsin.",
-    "matchStarting": "Maç başlıyor: beyin kapıda devreye giriyor.",
+    "title": "Savaş beyni",
     "navFallback": "vnavmesh çevrimdışı, sohbete geri dönüldü",
     "range": "~{0}y",
-    "phase": {
-      "idle": "boşta",
-      "inQueue": "sırada",
-      "inMatch": "maçta",
-      "wrappingUp": "toparlanıyor"
+    "sprinting": "koşuyor",
+    "posture": {
+      "idle": "Boşta",
+      "hold": "Tut",
+      "push": "Bastır",
+      "stage": "Konumlan",
+      "reposition": "Yer değiştir",
+      "regroup": "Toparlan",
+      "retreat": "Geri çekil"
     },
     "enemy": "Düşman",
     "ally": "Dost",
@@ -511,7 +510,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | about | brain | target | objects.",
+    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | about | target | objects.",
     "commandHelpAlias": "/apsg için kısayol."
   }
 }

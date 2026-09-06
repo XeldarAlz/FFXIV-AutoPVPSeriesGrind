@@ -25,8 +25,6 @@ internal static class L
         public static readonly LocString NavAbout = new("shell.nav.about", "About");
         public static readonly LocString Minimize = new("shell.minimize", "Minimize to the header bar");
         public static readonly LocString Restore = new("shell.restore", "Restore");
-        public static readonly LocString ShowBrain = new("shell.showBrain", "Show the combat brain");
-        public static readonly LocString HideBrain = new("shell.hideBrain", "Hide the combat brain");
         public static readonly LocString ModeSummary = new("shell.modeSummary", "Crystalline Conflict, {0}");
         public static readonly LocString ModeSummaryDot = new("shell.modeSummaryDot", "Crystalline Conflict  ·  {0}");
         public static readonly LocString StatusLine = new("shell.statusLine", "{0}  ·  {1}");
@@ -461,16 +459,17 @@ internal static class L
         public static readonly LocString LegendTarget = new("brain.legend.target", "◎ target");
         public static readonly LocString LegendAlly = new("brain.legend.ally", "● ally");
         public static readonly LocString LegendPoint = new("brain.legend.point", "◆ point");
-        public static readonly LocString Off = new("brain.off", "The combat brain is off.");
-        public static readonly LocString OffHint = new("brain.offHint", "Turn it on under Settings, Combat.");
-        public static readonly LocString NotInMatch = new("brain.notInMatch", "Not in a live match.");
-        public static readonly LocString MatchStarting = new("brain.matchStarting", "Match starting: the brain spins up at the gate.");
+        public static readonly LocString Title = new("brain.title", "Combat brain");
         public static readonly LocString NavFallback = new("brain.navFallback", "vnavmesh offline, chat fallback");
         public static readonly LocString Range = new("brain.range", "~{0}y");
-        public static readonly LocString PhaseIdle = new("brain.phase.idle", "idle");
-        public static readonly LocString PhaseInQueue = new("brain.phase.inQueue", "in queue");
-        public static readonly LocString PhaseInMatch = new("brain.phase.inMatch", "in match");
-        public static readonly LocString PhaseWrappingUp = new("brain.phase.wrappingUp", "wrapping up");
+        public static readonly LocString Sprinting = new("brain.sprinting", "sprinting");
+        public static readonly LocString PostureIdle = new("brain.posture.idle", "Idle");
+        public static readonly LocString PostureHold = new("brain.posture.hold", "Hold");
+        public static readonly LocString PosturePush = new("brain.posture.push", "Push");
+        public static readonly LocString PostureStage = new("brain.posture.stage", "Stage");
+        public static readonly LocString PostureReposition = new("brain.posture.reposition", "Reposition");
+        public static readonly LocString PostureRegroup = new("brain.posture.regroup", "Regroup");
+        public static readonly LocString PostureRetreat = new("brain.posture.retreat", "Retreat");
         public static readonly LocString Enemy = new("brain.enemy", "Enemy");
         public static readonly LocString Ally = new("brain.ally", "Ally");
         public static readonly LocString Point = new("brain.point", "Point");
@@ -484,7 +483,7 @@ internal static class L
 
     internal static class Plugin
     {
-        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | about | brain | target | objects.");
+        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | about | target | objects.");
         public static readonly LocString CommandHelpAlias = new("plugin.commandHelpAlias", "Alias for /apsg.");
     }
 }

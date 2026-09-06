@@ -46,8 +46,6 @@
     },
     "minimize": "最小化到标题栏",
     "restore": "还原",
-    "showBrain": "显示战斗大脑",
-    "hideBrain": "隐藏战斗大脑",
     "modeSummary": "Crystalline Conflict，{0}",
     "modeSummaryDot": "Crystalline Conflict  ·  {0}",
     "statusLine": "{0}  ·  {1}",
@@ -486,17 +484,18 @@
       "ally": "● 队友",
       "point": "◆ 据点"
     },
-    "off": "战斗大脑已关闭。",
-    "offHint": "在设置的“战斗”里打开。",
-    "notInMatch": "当前不在比赛中。",
-    "matchStarting": "比赛开始：大脑在出闸时启动。",
+    "title": "战斗大脑",
     "navFallback": "vnavmesh 离线，改用聊天指令",
     "range": "~{0}y",
-    "phase": {
+    "sprinting": "冲刺中",
+    "posture": {
       "idle": "空闲",
-      "inQueue": "排队中",
-      "inMatch": "比赛中",
-      "wrappingUp": "收尾中"
+      "hold": "坚守",
+      "push": "推进",
+      "stage": "集结",
+      "reposition": "换位",
+      "regroup": "重组",
+      "retreat": "撤退"
     },
     "enemy": "敌人",
     "ally": "队友",
@@ -511,7 +510,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg config | stats | deps | about | brain | target | objects。",
+    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg config | stats | deps | about | target | objects。",
     "commandHelpAlias": "/apsg 的别名。"
   }
 }
