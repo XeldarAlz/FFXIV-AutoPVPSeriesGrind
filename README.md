@@ -59,6 +59,12 @@ The plugin drives a few helpers for movement and combat. Open `/apsg deps` after
 | `/apsg stats` | Open run history |
 | `/apsg target` | Log targeted object's BaseId (debug helper) |
 
+## Languages
+
+The windows are available in English, Deutsch, Français, Español, Português (Brasil), Русский, Türkçe, 日本語, and 中文. The plugin picks a language from your Dalamud and game client settings on first launch; change it any time under Settings, Session, Language. Game data such as job and map names always follows the game client.
+
+Spotted a wrong or awkward translation? Open a [translation issue](https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/issues/new?template=translation_report.yml) and tell me what it should say instead.
+
 ## More from me
 
 If you liked this plugin, take a look at my other Dalamud work. You might find something else there for you.
