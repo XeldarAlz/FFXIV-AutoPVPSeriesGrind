@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Tasks;
 using AutoPvpSeriesGrind.Windows.Components;
 using AutoPvpSeriesGrind.Windows.Sections;
@@ -93,14 +94,14 @@ internal static class HeaderBar
         var top = midY - buttonSize * 0.5f;
 
         ImGui.SetCursorScreenPos(new Vector2(end.X - padX - buttonSize, top));
-        if (IconButton.Draw(FontAwesomeIcon.Times, "##apsg_close", buttonSize, tooltip: "Close"))
+        if (IconButton.Draw(FontAwesomeIcon.Times, "##apsg_close", buttonSize, tooltip: Loc.T(L.Common.Close)))
         {
             window.IsOpen = false;
         }
 
         ImGui.SetCursorScreenPos(new Vector2(end.X - padX - buttonSize - stride, top));
         if (IconButton.Draw(compact ? FontAwesomeIcon.ChevronUp : FontAwesomeIcon.ChevronDown, "##apsg_minimize", buttonSize,
-                tooltip: compact ? "Restore" : "Minimize to the header bar"))
+                tooltip: Loc.T(compact ? L.Shell.Restore : L.Shell.Minimize)))
         {
             window.ToggleCompact();
         }
@@ -111,7 +112,7 @@ internal static class HeaderBar
         ImGui.SetCursorScreenPos(new Vector2(end.X - padX - buttonSize - stride * 2f, top));
         if (IconButton.Draw(FontAwesomeIcon.Brain, "##apsg_brain", buttonSize,
                 brainOpen ? Styling.AccentVioletSoft : BrainTint(),
-                brainOpen ? "Hide the combat brain" : "Show the combat brain"))
+                Loc.T(brainOpen ? L.Shell.HideBrain : L.Shell.ShowBrain)))
         {
             plugin.BrainWindow.Toggle();
         }
@@ -163,7 +164,7 @@ internal static class HeaderBar
 
         if (!ctrl.Running)
         {
-            var plan = $"Crystalline Conflict, {ReadyState.StopSummary(cfg)}";
+            var plan = Loc.T(L.Shell.ModeSummary, ReadyState.StopSummary(cfg));
             using (Fonts.PushCaption())
             {
                 var planSize = TextDraw.Measure(plan);
@@ -195,7 +196,7 @@ internal static class HeaderBar
         if (textWidth <= 0f) return;
 
         var (_, _, label) = ReadyState.StagePalette(stage);
-        var text = $"{label}  ·  {ctrl.Status}";
+        var text = Loc.T(L.Shell.StatusLine, label, ctrl.Status);
         using (Fonts.PushCaption())
         {
             var textSize = TextDraw.Measure(text);

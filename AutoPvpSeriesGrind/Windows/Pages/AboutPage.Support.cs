@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
@@ -8,10 +9,6 @@ namespace AutoPvpSeriesGrind.Windows.Pages;
 
 internal sealed partial class AboutPage
 {
-    private const string SupportTitle = "Made with care";
-    private const string SupportBody = "I build and maintain this in my spare time. If it has helped you, a Patreon " +
-        "membership lets me keep improving it. No pressure, and thank you for being here.";
-
     private static void DrawSupport()
     {
         var scale = ImGuiHelpers.GlobalScale;
@@ -32,7 +29,7 @@ internal sealed partial class AboutPage
         float titleHeight;
         using (Fonts.PushHeadline())
             titleHeight = ImGui.GetTextLineHeight();
-        var bodyHeight = TextDraw.MeasureWrapped(SupportBody, innerWidth).Y;
+        var bodyHeight = TextDraw.MeasureWrapped(Loc.T(L.About.SupportBody), innerWidth).Y;
         var height = pad + medalRadius * 2f + 14f * scale + titleHeight + 8f * scale + bodyHeight + 16f * scale + buttonHeight + pad;
 
         var end = new Vector2(origin.X + availX, origin.Y + height);
@@ -53,12 +50,12 @@ internal sealed partial class AboutPage
         var y = origin.Y + pad + medalRadius * 2f + 14f * scale;
         using (Fonts.PushHeadline())
         {
-            var titleSize = TextDraw.Measure(SupportTitle);
-            TextDraw.At(SupportTitle, new Vector2(centerX - titleSize.X * 0.5f, y), Styling.TextStrong);
+            var titleSize = TextDraw.Measure(Loc.T(L.About.SupportTitle));
+            TextDraw.At(Loc.T(L.About.SupportTitle), new Vector2(centerX - titleSize.X * 0.5f, y), Styling.TextStrong);
             y += titleSize.Y + 8f * scale;
         }
 
-        TextDraw.Wrapped(SupportBody, new Vector2(origin.X + pad, y), innerWidth, Styling.TextSecondary);
+        TextDraw.Wrapped(Loc.T(L.About.SupportBody), new Vector2(origin.X + pad, y), innerWidth, Styling.TextSecondary);
 
         var buttonOrigin = new Vector2(origin.X + pad, end.Y - pad - buttonHeight);
         PatreonButton(buttonOrigin, new Vector2(innerWidth, buttonHeight), accent);
@@ -91,7 +88,7 @@ internal sealed partial class AboutPage
         Sheen(origin, size, 3000.0);
         Paint.Stroke(dl, origin, end, Styling.WithAlpha(Styling.White, hovered ? 0.42f : 0.18f), rounding);
 
-        const string label = "Support on Patreon";
+        var label = Loc.T(L.About.SupportButton);
         var iconSize = TextDraw.IconSize(FontAwesomeIcon.HandHoldingHeart);
         var labelSize = TextDraw.Measure(label);
         var innerGap = 9f * scale;
@@ -106,7 +103,7 @@ internal sealed partial class AboutPage
         ImGui.Dummy(size);
 
         if (!hovered) return;
-        UrlActions.HoveredLinkInteraction(PatreonUrl, "Open Patreon, right-click to copy the link.");
+        UrlActions.HoveredLinkInteraction(PatreonUrl, Loc.T(L.About.PatreonHint));
     }
 
     private static void Sheen(Vector2 origin, Vector2 size, double periodMs)

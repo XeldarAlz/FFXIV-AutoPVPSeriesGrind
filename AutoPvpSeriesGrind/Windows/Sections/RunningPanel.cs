@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Modes;
 using AutoPvpSeriesGrind.Core.Tasks;
 using AutoPvpSeriesGrind.Windows.Components;
@@ -45,12 +46,12 @@ internal static class RunningPanel
         Paint.Dot(dl, new Vector2(origin.X + radius + 3f * scale, midY), radius,
             Styling.PulseColor(accent, accentSoft, Styling.PulseMedium));
 
-        const string status = "Running";
+        var status = Loc.T(L.Run.Running);
         var statusSize = TextDraw.SmallCapsSize(status);
         TextDraw.SmallCaps(status, new Vector2(origin.X + radius * 2f + 12f * scale, midY - statusSize.Y * 0.5f), Styling.TextSecondary);
 
         var footer = stage is ReadyState.Stage.Preparing or ReadyState.Stage.Queueing
-            ? "Crystalline Conflict, casual"
+            ? Loc.T(L.Run.ModeCasual)
             : MiniPlayer.CurrentMapName();
         using (Fonts.PushCaption())
         {
@@ -119,7 +120,9 @@ internal static class RunningPanel
 
         using (Fonts.PushCaption())
         {
-            var left = inMatch ? $"{Formatting.Time(timeLeft)} left" : TextDraw.Truncate(ctrl.Status, columnWidth * 0.6f);
+            var left = inMatch
+                ? Loc.T(L.Run.TimeLeft, Formatting.Time(timeLeft))
+                : TextDraw.Truncate(ctrl.Status, columnWidth * 0.6f);
             TextDraw.At(left, new Vector2(columnX, y), Styling.TextDim);
             TextDraw.Right(goal.Remaining, columnRight, y, Styling.WithAlpha(accentSoft, 0.9f));
         }
@@ -132,17 +135,17 @@ internal static class RunningPanel
         if (inMatch)
         {
             var job = ctrl.SessionSnapshot?.JobAbbr;
-            var prefix = string.IsNullOrEmpty(job) ? string.Empty : $"{job}  ·  ";
+            var prefix = string.IsNullOrEmpty(job) ? string.Empty : Loc.T(L.Run.JobPrefix, job);
             return prefix + MiniPlayer.CurrentMapName();
         }
 
         return stage switch
         {
-            ReadyState.Stage.Preparing => "Preparing to queue",
-            ReadyState.Stage.Queueing  => "In queue for a casual match",
-            ReadyState.Stage.Portraits => $"Match starting  ·  {MiniPlayer.CurrentMapName()}",
-            ReadyState.Stage.Finishing => "Wrapping up the session",
-            _                          => string.IsNullOrWhiteSpace(ctrl.Status) ? "Working" : ctrl.Status,
+            ReadyState.Stage.Preparing => Loc.T(L.Run.HeadlinePreparing),
+            ReadyState.Stage.Queueing  => Loc.T(L.Run.HeadlineInQueue),
+            ReadyState.Stage.Portraits => Loc.T(L.Run.HeadlineMatchStarting, MiniPlayer.CurrentMapName()),
+            ReadyState.Stage.Finishing => Loc.T(L.Run.HeadlineWrappingUp),
+            _                          => string.IsNullOrWhiteSpace(ctrl.Status) ? Loc.T(L.Run.HeadlineWorking) : ctrl.Status,
         };
     }
 
@@ -204,28 +207,28 @@ internal static class RunningPanel
             {
                 var target = Math.Max(1, cfg.TargetMatchCount);
                 var left = Math.Max(0, target - matches);
-                return new GoalInfo(matches / (float)target, matches.ToString(), $"/ {target}",
-                    left == 0 ? "goal reached" : $"{left} to go", false);
+                return new GoalInfo(matches / (float)target, matches.ToString(), Loc.T(L.Run.GoalOf, target),
+                    left == 0 ? Loc.T(L.Run.GoalReached) : Loc.T(L.Run.GoalToGo, left), false);
             }
             case TimeBoxedMode.ModeId:
             {
                 var target = Math.Max(1, cfg.TargetMinutes);
                 var elapsed = session?.Elapsed.TotalMinutes ?? 0;
                 var left = Math.Max(0, target - (int)elapsed);
-                return new GoalInfo((float)(elapsed / target), ((int)elapsed).ToString(), $"/ {target}m",
-                    left == 0 ? "goal reached" : $"{left}m to go", false);
+                return new GoalInfo((float)(elapsed / target), ((int)elapsed).ToString(), Loc.T(L.Run.GoalOfMinutes, target),
+                    left == 0 ? Loc.T(L.Run.GoalReached) : Loc.T(L.Run.GoalMinutesToGo, left), false);
             }
             case SeriesRankMode.ModeId:
             {
                 var rank = PvpProfileReader.SeriesCurrentRank();
                 var left = Math.Max(0, cfg.TargetSeriesRank - rank);
-                return new GoalInfo(PvpProfileReader.SeriesRankProgress(), rank.ToString(), $"to {cfg.TargetSeriesRank}",
-                    left == 0 ? "goal reached" : $"{left} ranks to go", false);
+                return new GoalInfo(PvpProfileReader.SeriesRankProgress(), rank.ToString(), Loc.T(L.Run.GoalToRank, cfg.TargetSeriesRank),
+                    left == 0 ? Loc.T(L.Run.GoalReached) : Loc.T(L.Run.GoalRanksToGo, left), false);
             }
             default:
                 // Endless has no goal fill, so the rotating comet is the hero and the centre reads
                 // as "matches so far, forever".
-                return new GoalInfo(null, matches.ToString(), "∞", "runs until you stop it", true);
+                return new GoalInfo(null, matches.ToString(), "∞", Loc.T(L.Run.GoalEndless), true);
         }
     }
 
@@ -243,12 +246,12 @@ internal static class RunningPanel
         var seriesExp = session?.SeriesExpGained ?? 0;
         var expPerHour = elapsed.TotalHours > 0 ? seriesExp / elapsed.TotalHours : 0;
 
-        StatTile.Draw("Matches", matches.ToString(), null, Styling.AccentBlue, tileWidth);
+        StatTile.Draw(Loc.T(L.Run.TileMatches), matches.ToString(), null, Styling.AccentBlue, tileWidth);
         ImGui.SameLine(0, gap);
-        StatTile.Draw("Series EXP", $"+{Formatting.Exp(seriesExp)}", expPerHour >= 1 ? $"{Formatting.Exp((long)expPerHour)}/h" : null, Styling.AccentAmber, tileWidth);
+        StatTile.Draw(Loc.T(L.Run.TileSeriesExp), $"+{Formatting.Exp(seriesExp)}", expPerHour >= 1 ? $"{Formatting.Exp((long)expPerHour)}/h" : null, Styling.AccentAmber, tileWidth);
         ImGui.SameLine(0, gap);
-        StatTile.Draw("Matches/h", perHour > 0 ? perHour.ToString("F1") : "—", null, Styling.AccentMint, tileWidth);
+        StatTile.Draw(Loc.T(L.Run.TileMatchesPerHour), perHour > 0 ? perHour.ToString("F1") : "—", null, Styling.AccentMint, tileWidth);
         ImGui.SameLine(0, gap);
-        StatTile.Draw("Elapsed", Formatting.Elapsed(elapsed), ReadyState.StopSummary(cfg), Styling.AccentViolet, tileWidth);
+        StatTile.Draw(Loc.T(L.Run.TileElapsed), Formatting.Elapsed(elapsed), ReadyState.StopSummary(cfg), Styling.AccentViolet, tileWidth);
     }
 }

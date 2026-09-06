@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
@@ -31,7 +32,7 @@ internal sealed partial class AboutPage
         var count = Math.Min(Links.Length, MaxLinks);
         for (var index = 0; index < count; index++)
         {
-            linkWidths[index] = PillWidth(Links[index].Icon, Links[index].Label);
+            linkWidths[index] = PillWidth(Links[index].Icon, Loc.T(Links[index].Label));
         }
 
         var rowCount = ComputeFlowRows(count, gap, avail);
@@ -49,7 +50,7 @@ internal sealed partial class AboutPage
                 else ImGui.SameLine(0, gap);
 
                 var (icon, label, url, accentId) = Links[index];
-                LinkPill(icon, label, url, ConnectAccents[accentId % ConnectAccents.Length], new Vector2(linkWidths[index], pillHeight));
+                LinkPill(icon, Loc.T(label), url, ConnectAccents[accentId % ConnectAccents.Length], new Vector2(linkWidths[index], pillHeight));
             }
         }
     }
@@ -129,7 +130,7 @@ internal sealed partial class AboutPage
             Vector4.Lerp(Styling.TextSecondary, Styling.TextStrong, hover));
 
         if (!hit.Hovered) return;
-        Tooltip.Show("Click to open, right-click to copy the link.");
+        Tooltip.Show(Loc.T(L.About.LinkHint));
         if (hit.Clicked) UrlActions.OpenOrCopy(url);
         else if (ImGui.IsMouseClicked(ImGuiMouseButton.Right)) ImGui.SetClipboardText(url);
     }

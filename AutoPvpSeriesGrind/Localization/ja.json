@@ -1,0 +1,517 @@
+{
+  "plugins": {
+    "missing": {
+      "one": "必須プラグインが1つ不足しています。",
+      "other": "必要なプラグインが {0}件不足しています。"
+    },
+    "title": "プラグイン",
+    "intro": {
+      "install": "「インストール」はプラグイン独自のリポジトリをDalamudに追加し、インストールを開始します。 ",
+      "fallback": "ワンクリックインストールが失敗した場合は、プラグイン名を右クリックしてリポジトリURLをコピーし、次の場所に手動で追加してください： ",
+      "path": "/xlsettings、Experimental、Custom Plugin Repositories。"
+    },
+    "allInstalled": "ボットに必要なものはすべてインストール済みです。",
+    "linkHint": "クリックで{0}を開きます。右クリックでコピーします。",
+    "required": "必須",
+    "optional": "任意",
+    "installed": "導入済み",
+    "installing": "インストール中",
+    "install": "導入",
+    "purpose": {
+      "vnavmesh": "試合中の目標地点へのパス探索と移動。",
+      "rotation": "試合中の戦闘を担当します（/rotation auto LowHP）。",
+      "lifestream": "任意：最初の申請前に、設定した移動コマンドを実行します。",
+      "autoLb": "PvPのリミットブレイクを発動します。このプラグインがクラスごとの実績ある設定を自動で送ります。"
+    }
+  },
+  "common": {
+    "close": "閉じる",
+    "cancel": "キャンセル",
+    "start": "開始",
+    "stop": "停止",
+    "stopRun": "周回を停止",
+    "done": "完了",
+    "working": "処理中",
+    "search": "検索",
+    "noMatches": "「{0}」に一致するものはありません",
+    "dragAdjustHint": "ドラッグして調整、またはボタンをクリック。"
+  },
+  "shell": {
+    "nav": {
+      "grind": "周回",
+      "settings": "設定",
+      "history": "履歴",
+      "plugins": "プラグイン",
+      "about": "情報"
+    },
+    "minimize": "タイトルバーに最小化",
+    "restore": "元に戻す",
+    "showBrain": "戦闘ブレインを表示",
+    "hideBrain": "戦闘ブレインを隠す",
+    "modeSummary": "Crystalline Conflict、{0}",
+    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "statusLine": "{0}  ·  {1}",
+    "sessionSummary": "{0}試合  ·  {1}",
+    "installRequired": "必須プラグインをインストール",
+    "matchTimeLeft": "残り{0}  ·  {1}",
+    "theArena": "アリーナ"
+  },
+  "grind": {
+    "greeting": {
+      "morning": "おはようございます",
+      "afternoon": "こんにちは",
+      "evening": "こんばんは",
+      "night": "深夜のセッション"
+    },
+    "openPlugins": "プラグインを開く",
+    "noRunsYet": "周回記録なし",
+    "noRunsYetDetail": "ここに戦績が表示されます",
+    "lastRun": {
+      "exp": "+{0} シリーズ",
+      "noExp": "シリーズEXPなし",
+      "title": "前回の周回：{0}試合",
+      "detail": "{0}  ·  {1}"
+    },
+    "title": {
+      "wrappingUp": "終了処理中",
+      "grinding": "周回中",
+      "almostThere": "あと少し",
+      "ready": "いつでも始められます"
+    },
+    "detail": {
+      "wrappingUp": "周回の最後の手順を実行しています。",
+      "almostThere": "必須プラグインを入れれば準備完了です。",
+      "ready": "開始を押せば、あとはマッチングにお任せ。"
+    },
+    "stage": {
+      "starting": "開始中",
+      "inQueue": "待機列",
+      "portraits": "紹介画面",
+      "fighting": "戦闘中",
+      "done": "完了",
+      "inMatch": "試合中"
+    },
+    "stageDetail": {
+      "starting": "マッチング申請の準備中です。",
+      "inQueue": "カジュアルマッチを待っています。",
+      "portraits": "まもなく試合が始まります。",
+      "fighting": "クリスタルを巡って戦闘中です。",
+      "done": "周回の最後の手順を実行しています。",
+      "inMatch": "試合を進行中です。"
+    },
+    "status": {
+      "running": "実行中",
+      "wrappingUp": "終了処理中",
+      "ready": "準備完了",
+      "setupNeeded": "要セットアップ",
+      "idle": "待機中"
+    },
+    "stops": {
+      "matches": "{0}試合で終了",
+      "rank": "ランク{0}で終了",
+      "minutes": "{0}分で終了",
+      "command": "止めるまで続行"
+    },
+    "session": {
+      "complete": "セッション完了",
+      "matches": "{0}試合",
+      "exp": "シリーズEXPを+{0}獲得",
+      "backToPlan": "プランに戻る"
+    }
+  },
+  "plan": {
+    "title": "プラン",
+    "mode": "Crystalline Conflict",
+    "sentence": {
+      "queue": "キュー",
+      "until": "終了条件:",
+      "then": "その後:",
+      "end": ""
+    },
+    "unit": {
+      "matches": "試合",
+      "rank": "ランク",
+      "minutes": "分"
+    },
+    "locked": "周回中はプランを変更できません。",
+    "after": {
+      "stay": {
+        "phrase": "その場に留まる",
+        "label": "その場に留まる",
+        "help": "止めるだけ。最後の試合が終わった場所にそのまま立ち続けます。"
+      },
+      "inn": {
+        "phrase": "宿屋に戻る",
+        "label": "宿屋に戻る",
+        "help": "Lifestreamで宿屋へ移動し、部屋に入ります。"
+      },
+      "logout": {
+        "phrase": "タイトル画面に戻る",
+        "label": "タイトルへログアウト",
+        "help": "タイトル画面へログアウトします。"
+      },
+      "close": {
+        "phrase": "ゲームを終了",
+        "label": "ゲームを終了",
+        "help": "XIVLauncherの/xlkillでFFXIVを完全に終了します。"
+      },
+      "title": "目標達成時の動作"
+    },
+    "seriesRank": "シリーズランク{0}",
+    "rangedFaster": "遠隔ジョブの方が周回が速い",
+    "rangedFasterHelp": "近接ジョブは距離を詰める時間が長く、1時間あたりの試合数が少なくなります。",
+    "breakEvery": "{0}試合ごとに休憩",
+    "breakEveryHelp": "{1}試合ごとに約{0}分待機します。",
+    "goal": {
+      "matches": "{0}試合",
+      "rank": "シリーズランク{0}",
+      "minutes": "{0}分",
+      "endless": "止めると言うまで"
+    },
+    "tab": {
+      "matches": "試合数",
+      "rank": "ランク",
+      "time": "時間",
+      "endless": "無制限"
+    },
+    "whatToQueue": "申請するコンテンツ",
+    "queue": {
+      "casualHelp": "カジュアルマッチ。シリーズゲージを最速で伸ばせます。",
+      "frontline": "Frontline",
+      "frontlineHelp": "まだ未対応です。近日対応予定、お楽しみに。"
+    },
+    "endlessHelp": "停止を押すまで、試合を次々と申請し続けます。",
+    "stopAfter": "経過したら停止",
+    "stopAfterMatchesHelp": "リザルト画面まで到達した試合を数えるので、途中離脱した試合はカウントされません。",
+    "reachRank": "到達ランク",
+    "reachRankHelp": "現在ランク{0}です。周回は進行中の試合を終えてから停止します。",
+    "stopAfterTimeHelp": "タイマーは新しい申請を止めるだけで、進行中の試合は最後まで行われます。"
+  },
+  "run": {
+    "running": "実行中",
+    "modeCasual": "Crystalline Conflict、カジュアル",
+    "timeLeft": "残り{0}",
+    "jobPrefix": "{0}  ·  ",
+    "headline": {
+      "preparing": "申請の準備中",
+      "inQueue": "カジュアルマッチ待機中",
+      "matchStarting": "試合開始  ·  {0}",
+      "wrappingUp": "セッションの終了処理中",
+      "working": "処理中"
+    },
+    "goal": {
+      "of": "/ {0}",
+      "ofMinutes": "/ {0}分",
+      "toRank": "{0}まで",
+      "reached": "目標達成",
+      "toGo": "あと{0}",
+      "minutesToGo": "あと{0}分",
+      "ranksToGo": "あと{0}ランク",
+      "endless": "止めるまで続行"
+    },
+    "tile": {
+      "matches": "試合数",
+      "seriesExp": "シリーズEXP",
+      "matchesPerHour": "試合/時",
+      "elapsed": "経過"
+    }
+  },
+  "history": {
+    "title": "履歴",
+    "empty": "まだ記録がありません。",
+    "emptyDetail": "周回を終えるか停止すると、ここに表示されます。",
+    "summary": "{0}周回  ·  {1}の周回時間  ·  1時間あたり{2}試合",
+    "chartTitle": "周回ごとの試合数",
+    "recentRuns": "最近の周回",
+    "tile": {
+      "runs": "周回",
+      "matches": "試合数",
+      "seriesExp": "シリーズEXP",
+      "timeGrinding": "周回時間"
+    },
+    "lastRuns": "直近{0}周回",
+    "best": "最高{0}",
+    "perHour": "1時間あたり",
+    "unit": {
+      "matches": "試合"
+    },
+    "series": "シリーズ",
+    "rowSummary": "{0} {2}で{1}試合 シリーズEXP +{3}",
+    "rowJob": "{0}  ·  {1}",
+    "tooltip": {
+      "job": " {0}でプレイ",
+      "matches": " {1}で{0}試合",
+      "exp": " シリーズEXP +{0}"
+    },
+    "clear": "履歴を消去",
+    "clearConfirm": "記録した周回をすべて削除しますか？",
+    "clearYes": "はい、消去",
+    "time": {
+      "justNow": "たった今",
+      "minutesAgo": "{0}分前",
+      "hoursAgo": "{0}時間前",
+      "daysAgo": "{0}日前"
+    }
+  },
+  "about": {
+    "connect": "リンク",
+    "support": {
+      "title": "心を込めて",
+      "body": "このプラグインは空き時間に開発と保守をしています。役に立ったなら、Patreonでの支援が改善を続ける力になります。無理はせず、ここにいてくれてありがとう。",
+      "button": "Patreonで支援する",
+      "hint": "Patreonを開きます。右クリックでリンクをコピー。"
+    },
+    "linkHint": "クリックで開きます。右クリックでリンクをコピー。",
+    "madeBy": "制作: {0}",
+    "version": "v {0}",
+    "link": {
+      "github": "GitHub",
+      "discord": "Discord",
+      "discussions": "ディスカッション",
+      "bug": "不具合を報告",
+      "more": "他のプラグイン",
+      "security": "セキュリティ"
+    },
+    "reminder": {
+      "title": "ちょっとひと息",
+      "1": "長く続けていませんか？肩を回して、ゆっくり深呼吸をひとつ。",
+      "2": "水分補給チェック。最後に水を飲んだのはいつですか？",
+      "3": "何度かまばたきをして、目を少し休ませましょう。",
+      "4": "立ち上がって伸びをして、手をぶらぶら振ってみましょう。あとで体が喜びます。",
+      "5": "背筋を伸ばして、楽な姿勢に座り直しましょう。腰があとで感謝します。",
+      "6": "今日もちゃんと何か食べましたか？どんなスコアよりあなたが大切です。",
+      "7": "目が疲れたら、二十秒ほど遠くを眺めてみましょう。",
+      "8": "何を追いかけていても、休憩はいつでもしていいんです。",
+      "9": "よくがんばっています。今日は自分に少しやさしくしてあげましょう。",
+      "10": "コップ一杯の水と軽いストレッチで、長いセッションも仕切り直せます。",
+      "11": "奥歯の力を抜いて、肩をすとんと落として。はい、その調子。",
+      "12": "休むことも旅のうち。必要なときは画面から離れましょう。"
+    },
+    "facts": {
+      "title": "知っていましたか？",
+      "1": "はちみつは腐りません。3000年以上前の壺から、今でも食べられるはちみつが見つかっています。",
+      "2": "タコには心臓が三つあり、血は青色です。",
+      "3": "金星では一日が一年より長く続きます。",
+      "4": "バナナは植物学的にはベリーですが、イチゴはベリーではありません。",
+      "5": "チェスの可能な対局数は、観測可能な宇宙にある原子の数より多いといわれます。",
+      "6": "サメは樹木よりも古くから地球にいます。",
+      "7": "フラミンゴがピンク色なのは、食べているエビや藻の色素のせいです。",
+      "8": "ミツバチは人間の顔を見分けられます。",
+      "9": "ウォンバットのふんは立方体です。",
+      "10": "エッフェル塔は暑い日には15センチ以上高くなります。",
+      "11": "お湯のほうが冷たい水より早く凍ることがあります。",
+      "12": "雷の温度は太陽の表面のおよそ五倍です。"
+    },
+    "quotes": {
+      "title": "心にとめておきたい言葉",
+      "1": "完璧より完了。磨くのはあとからでもできます。",
+      "2": "千里の道も一歩から。",
+      "3": "人と比べると楽しさが逃げていきます。自分のペースで走りましょう。",
+      "4": "完璧さより前進を。",
+      "5": "始めるのに偉大である必要はありません。でも偉大になるには始めなければ。",
+      "6": "自分に辛抱強く。成長には時間がかかります。",
+      "7": "始めるのに一番よかったのは昨日。次によいのは今です。",
+      "8": "小さな勝利も祝いましょう。ちゃんと数に入ります。",
+      "9": "継続は力なり。",
+      "10": "本当のライバルは、昨日の自分だけ。"
+    },
+    "jokes": {
+      "title": "ひと笑い",
+      "1": "布団が吹っ飛んだ。",
+      "2": "アルミ缶の上にあるみかん。",
+      "3": "トイレに行っといれ。",
+      "4": "イルカはいるか？",
+      "5": "電話に誰も出んわ。",
+      "6": "カレーは辛え。",
+      "7": "ニューヨークで入浴。",
+      "8": "パンダの好物はパンだ。",
+      "9": "猫が寝転んだ。",
+      "10": "このイクラはいくら？"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "language": "言語",
+    "languageHelp": "このプラグインのウィンドウの言語です。ジョブ名とマップ名は常にゲームクライアントに従います。",
+    "cat": {
+      "session": "セッション",
+      "sessionSub": "試合と試合の間のペース配分と、人が取るような休憩。",
+      "combat": "バトル",
+      "combatSub": "ボットの立ち位置と、戦うかどうかの判断。",
+      "match": "試合中",
+      "matchSub": "ボットが毎試合で行う社交的なしぐさ。"
+    },
+    "session": {
+      "footnote": "1回の周回の長さと、その後の動作はGrindページのプラン文で設定します。",
+      "pacing": "ペース",
+      "leaveDuty": "退出までの待ち時間",
+      "leaveDutyHelp": "リザルト画面が出てから、この時間だけ待ってコンテンツを退出します。0なら試合終了後すぐ退出します。",
+      "requeue": "再申請までの待ち時間",
+      "requeueHelp": "次の試合を申請するまで、この範囲でランダムに待ちます。試合終了直後の申請は機械的に見えます。0 – 0なら即座に申請します。",
+      "breaks": "休憩",
+      "takeBreaks": "休憩を取る",
+      "takeBreaksHelp": "人がセッションの合間に席を立つように、時々何もせず待機します。",
+      "breakEvery": "休憩の間隔",
+      "breakEveryHelp": "休憩と休憩の間に何試合はさむか。",
+      "breakLength": "休憩時間",
+      "breakLengthHelp": "各休憩のおおよその長さ。毎回±20 %の幅で変動します。"
+    },
+    "combat": {
+      "introMovement": "挙動が制御するのは移動だけです：どこに立ち、いつ引くか。 ",
+      "introRotation": "スキルはあなたのローテーションプラグインが押します。必須のAuto PVP LBプラグインが、クラスに合わせて自動設定されたリミットブレイクを発動します。",
+      "group": "バトル",
+      "rotationPlugin": "ローテーションプラグイン",
+      "rotationPluginHelp": "試合中に戦闘スキルを押すプラグイン。",
+      "behavior": "動作",
+      "behaviorHelp": "ボットの立ち位置と、戦うかどうかの判断。",
+      "smartTargeting": "スマートターゲット",
+      "smartTargetingHelpOn": "オン：攻撃相手をこのプラグインが決めます。味方のフォーカスターゲットに合わせ、HPが低く打たれ弱い敵（まずヒーラー）を優先し、ガード中の相手は避けます。 ",
+      "smartTargetingHelpManual": "RotationSolverは手動モードで動き、そのターゲットにスキルを使います。他のローテーションプラグインを使う場合は、現在のターゲットを攻撃する設定にしてください。 ",
+      "smartTargetingHelpOff": "オフ：ローテーションプラグインが自分でターゲットを選びます（RotationSolverは射程内で最もHPの低い相手を狙います）。",
+      "reactionTime": "反応時間",
+      "reactionTimeHelp": "ボットが行動を切り替える前に、人間らしい反応の遅れを加えます。",
+      "recordMatches": "試合を記録",
+      "recordMatchesHelp": "ブレインの判断（位置、HP、姿勢、理由）を試合ごとのログファイルとしてプラグインフォルダーに書き出します。 ",
+      "recordMatchesHelpSize": "動きの振り返りや調整に使えます。1試合あたり約1 MBで、直近30試合のみ保持されます。"
+    },
+    "rotation": {
+      "rsr": "RotationSolver Reborn",
+      "rsrHelp": "自動でインストールされ、このプラグインが制御します。スキル、ガード、リカバリーはお任せです。推奨の既定値です。",
+      "manual": "その他 / 手動",
+      "manualHelp": "好きなローテーションプラグインを使えます（例：Wrath Combo）。スキル、ガード、リカバリーはそちらが行う必要があり、RotationSolverは不要になります。"
+    },
+    "strategy": {
+      "rush": "クリスタルへ突撃",
+      "rushHelp": "戦術なし：目標へ走り、その上に立ち続けます。決して退かず、数的不利では倒されます。",
+      "defensive": "守備的",
+      "defensiveHelp": "飛び込まずに拠点を維持し、狙われたらカイトし、HP約55 %未満で後退します。遠隔とヒーラーは大きく下がります。",
+      "moderate": "標準",
+      "moderateHelp": "バランス型：優勢なら短く追い、数的不利では下がり、HP約35 %未満で後退します。おすすめの既定値です。",
+      "aggressive": "攻撃的",
+      "aggressiveHelp": "敵陣を押し込みキルを狙います。瀕死（HP約18 %）になるまで退きません。",
+      "custom": "カスタム",
+      "customHelp": "手動調整：以下のしきい値はすべて自由に設定できます。標準を基準に始まります。"
+    },
+    "reaction": {
+      "off": "オフ",
+      "offHelp": "フレーム単位の正確な動きで、即座に反応します。",
+      "light": "軽め",
+      "lightHelp": "約80–220 msの反応遅延。",
+      "realistic": "リアル",
+      "realisticHelp": "約140–380 msの反応遅延。おすすめの既定値です。",
+      "heavy": "重め",
+      "heavyHelp": "約260–650 msの反応遅延。はっきりとゆったりした動きです。"
+    },
+    "custom": {
+      "health": "HP",
+      "retreatBelow": "後退するHP",
+      "retreatBelowHelp": "敵に張り付かれている、または味方が数的不利のときに、HPがこれを下回ったら安全な場所へ下がります。",
+      "rejoinAbove": "復帰するHP",
+      "rejoinAboveHelp": "HPがこの値まで回復したら、戦線に戻ります。",
+      "alwaysFleeBelow": "必ず逃げるHP",
+      "alwaysFleeBelowHelp": "HPがこれを下回ったら、状況にかかわらず安全な場所へ逃げます。",
+      "heavyDamage": "大ダメージ判定",
+      "heavyDamageHelp": "1秒あたりのHP減少がこれより速い場合、大ダメージとみなして早めに下がります。",
+      "aggression": "積極性",
+      "chaseAhead": "追撃する優勢差",
+      "chaseAheadHelp": "キルを狙って追う前に、近くの味方側がどれだけ優勢である必要があるか。負傷者は低く数え、すでに倒れた敵は0.5人分として数えます。0＝互角でも追う、0未満＝やや不利でも追う。",
+      "fallBackBehind": "下がる劣勢差",
+      "fallBackBehindHelp": "味方のもとへ下がる前に、近くの敵がどれだけ優勢である必要があるか。負傷者は低く数えます。0＝数で上回られた時点で下がる。",
+      "positioning": "立ち位置",
+      "meleeHold": "近接：クリスタル付近で待機",
+      "meleeHoldHelp": "近接またはタンクで追う相手がいないとき、クリスタルからどれだけ離れて立つか。",
+      "meleeChase": "近接：追撃距離",
+      "meleeChaseHelp": "近接またはタンクで相手を追うとき、攻撃前にどこまで近づくか。",
+      "rangedHold": "遠隔：クリスタル後方で待機",
+      "rangedHoldHelp": "遠隔またはヒーラーで位置を保つとき、クリスタルのどれだけ後方に立つか。",
+      "rangedAttack": "遠隔：攻撃距離",
+      "rangedAttackHelp": "遠隔またはヒーラーで攻撃するとき、ターゲットからどれだけ離れて立つか。",
+      "keepBack": "待機中に取る距離",
+      "keepBackHelp": "味方の到着を待つ間、敵の集団から最低でもこれだけ距離を取ります。",
+      "focus": "敵に狙われたとき",
+      "inDangerAt": "危険とみなす人数",
+      "inDangerAtHelp": "何人の敵に狙われたら危険とみなすか。「後退するHP」と連動し、狙う敵が多いほど早く下がります。",
+      "sidestepAt": "回避する人数",
+      "sidestepAtHelp": "これ以上の敵に狙われたら、HPが満タンでも横に回避します。",
+      "sidestepDistance": "回避距離",
+      "sidestepDistanceHelp": "敵に狙われたとき、1回の回避で動く距離。味方に近く最も安全な地点へ向かいます。",
+      "retreatStep": "後退の歩幅",
+      "retreatStepHelp": "後退1歩で進む距離。方向は、敵をかわしつつ味方の近くに留まり、視線を切れるように選ばれます。",
+      "limits": "距離と上限",
+      "backupRange": "援護とみなす距離",
+      "backupRangeHelp": "この距離以内の味方は援護として数えます。誰もいない場合は、単独として行動します。",
+      "enemyNearRange": "敵の接近距離",
+      "enemyNearRangeHelp": "この距離以内の敵は、数的不利の判定に数えます。",
+      "fightZone": "戦闘エリアの広さ",
+      "fightZoneHelp": "クリスタル周辺の、優劣を判断するための範囲。ここに敵がいなければ拠点は空きとみなし、押し込むために上に立ちます。",
+      "maxChase": "クリスタルからの追撃上限",
+      "maxChaseHelp": "クリスタルからこれ以上離れて相手を追いません。それより遠い敵は無視します。",
+      "maxFromTeam": "味方からの最大距離",
+      "maxFromTeamHelp": "味方の中心からこれ以上離れません。",
+      "resetDefaults": "初期値に戻す",
+      "resetDefaultsHelp": "上のすべての値を標準の基準値に戻します。Ctrlを押しながらクリックで確定します。"
+    },
+    "match": {
+      "intro": "試合開始前",
+      "sayHello": "あいさつする",
+      "sayHelloHelp": "紹介画面の間に/quickchat Helloを1回送ります。スクリプトらしく見えないよう、タイミングはランダムです。",
+      "chance": "発生率",
+      "helloChanceHelp": "あいさつが実際に出る頻度。低くすると、黙っていることもあります。",
+      "after": "遅延",
+      "helloAfterHelp": "紹介画面が出てから、この範囲でランダムに待ちます。開始直後にあいさつが飛ばないようにするためです。",
+      "emotes": "たまにエモート",
+      "emotesHelp": "試合前のカウントダウン中、ランダムなタイミングで友好的なエモート（手を振る、応援する、敬礼など）を再生します。まれに2回。エモートが確実に出るよう、キャラクターが動ける状態になるまで待ちます。",
+      "results": "リザルト画面",
+      "goodMatch": "「Good Match」と言う",
+      "goodMatchHelp": "試合終了時にリザルト画面が出たら、/quickchat \"Good Match\" を送ります。",
+      "goodMatchChanceHelp": "試合後に \"Good Match\" が実際に出る頻度。",
+      "goodMatchAfterHelp": "リザルト画面が出てから、この範囲でランダムに待ちます。「退出までの待ち時間」（セッション）より遅くなる場合、ボットは先に退出し、あいさつを省略します。"
+    },
+    "format": {
+      "seconds": "%d秒",
+      "minutes": "%d分",
+      "matches": "%d試合",
+      "yards": "%d yd",
+      "attackers": "%d人",
+      "percent": "%d%%",
+      "count": "%d",
+      "percentOfMatches": "試合の%d%%",
+      "percentPerSecond": "%d%%/秒"
+    }
+  },
+  "brain": {
+    "legend": {
+      "enemy": "● 敵",
+      "target": "◎ ターゲット",
+      "ally": "● 味方",
+      "point": "◆ 拠点"
+    },
+    "off": "戦闘ブレインはオフです。",
+    "offHint": "設定の「戦闘」からオンにしてください。",
+    "notInMatch": "試合中ではありません。",
+    "matchStarting": "試合開始：ゲート前でブレインが起動します。",
+    "navFallback": "vnavmeshがオフライン、チャットで代替",
+    "range": "~{0}y",
+    "phase": {
+      "idle": "待機",
+      "inQueue": "待機列",
+      "inMatch": "試合中",
+      "wrappingUp": "終了処理中"
+    },
+    "enemy": "敵",
+    "ally": "味方",
+    "point": "拠点",
+    "target": "ターゲット",
+    "role": {
+      "tank": "タンク",
+      "melee": "近接",
+      "ranged": "遠隔",
+      "healer": "ヒーラー",
+      "unknown": "ロール不明"
+    }
+  },
+  "plugin": {
+    "commandHelp": "Auto PVP Series Grindのウィンドウを開閉します。/apsg config | stats | deps | about | brain | target | objects。",
+    "commandHelpAlias": "/apsg の別名です。"
+  }
+}

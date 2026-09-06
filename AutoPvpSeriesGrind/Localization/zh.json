@@ -1,0 +1,517 @@
+{
+  "plugins": {
+    "missing": {
+      "one": "缺少 1 个必需插件。",
+      "other": "缺少 {0} 个必需插件。"
+    },
+    "title": "插件",
+    "intro": {
+      "install": "“安装”会把插件自己的仓库添加到 Dalamud 并开始安装。 ",
+      "fallback": "如果一键安装失败，右键点击插件名复制其仓库地址，然后手动添加到 ",
+      "path": "/xlsettings，Experimental，Custom Plugin Repositories。"
+    },
+    "allInstalled": "机器人需要的一切都已安装并加载。",
+    "linkHint": "点击打开 {0} 右键复制链接。",
+    "required": "必需",
+    "optional": "可选",
+    "installed": "已安装",
+    "installing": "安装中",
+    "install": "安装",
+    "purpose": {
+      "vnavmesh": "比赛中的寻路与移动到目标点。",
+      "rotation": "比赛中负责战斗（/rotation auto LowHP）。",
+      "lifestream": "可选：在第一次排队前执行你配置的传送指令。",
+      "autoLb": "释放你的 PvP 极限技。本插件会自动把各职业的成熟配置推送给它。"
+    }
+  },
+  "common": {
+    "close": "关闭",
+    "cancel": "取消",
+    "start": "开始",
+    "stop": "停止",
+    "stopRun": "停止运行",
+    "done": "完成",
+    "working": "处理中",
+    "search": "搜索",
+    "noMatches": "没有匹配“{0}”的结果",
+    "dragAdjustHint": "拖动调整，或点击按钮。"
+  },
+  "shell": {
+    "nav": {
+      "grind": "刷取",
+      "settings": "设置",
+      "history": "历史",
+      "plugins": "插件",
+      "about": "关于"
+    },
+    "minimize": "最小化到标题栏",
+    "restore": "还原",
+    "showBrain": "显示战斗大脑",
+    "hideBrain": "隐藏战斗大脑",
+    "modeSummary": "Crystalline Conflict，{0}",
+    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "statusLine": "{0}  ·  {1}",
+    "sessionSummary": "{0} 场  ·  {1}",
+    "installRequired": "请安装必需插件",
+    "matchTimeLeft": "剩余 {0}  ·  {1}",
+    "theArena": "竞技场"
+  },
+  "grind": {
+    "greeting": {
+      "morning": "早上好",
+      "afternoon": "下午好",
+      "evening": "晚上好",
+      "night": "深夜时段"
+    },
+    "openPlugins": "打开插件页",
+    "noRunsYet": "暂无记录",
+    "noRunsYetDetail": "你的统计会显示在这里",
+    "lastRun": {
+      "exp": "+{0} 系列",
+      "noExp": "没有系列经验",
+      "title": "上次刷取：{0} 场",
+      "detail": "{0}  ·  {1}"
+    },
+    "title": {
+      "wrappingUp": "收尾中",
+      "grinding": "刷取中",
+      "almostThere": "就快好了",
+      "ready": "随时可以开始"
+    },
+    "detail": {
+      "wrappingUp": "正在完成本次刷取的最后步骤。",
+      "almostThere": "装好必需插件，机器人就可以开工了。",
+      "ready": "按下开始，排队交给它就行。"
+    },
+    "stage": {
+      "starting": "启动中",
+      "inQueue": "排队中",
+      "portraits": "出场展示",
+      "fighting": "战斗中",
+      "done": "完成",
+      "inMatch": "比赛中"
+    },
+    "stageDetail": {
+      "starting": "正在准备排队。",
+      "inQueue": "正在等待休闲比赛。",
+      "portraits": "比赛即将开始。",
+      "fighting": "正在争夺水晶。",
+      "done": "正在完成本次刷取的最后步骤。",
+      "inMatch": "比赛进行中。"
+    },
+    "status": {
+      "running": "运行中",
+      "wrappingUp": "收尾中",
+      "ready": "就绪",
+      "setupNeeded": "需要设置",
+      "idle": "空闲"
+    },
+    "stops": {
+      "matches": "{0} 场后停止",
+      "rank": "到 {0} 级后停止",
+      "minutes": "{0} 分钟后停止",
+      "command": "你说停才停"
+    },
+    "session": {
+      "complete": "本次结束",
+      "matches": "{0} 场",
+      "exp": "获得系列经验 +{0}",
+      "backToPlan": "返回计划"
+    }
+  },
+  "plan": {
+    "title": "计划",
+    "mode": "Crystalline Conflict",
+    "sentence": {
+      "queue": "队列",
+      "until": "直到:",
+      "then": "然后:",
+      "end": ""
+    },
+    "unit": {
+      "matches": "场",
+      "rank": "等级",
+      "minutes": "分钟"
+    },
+    "locked": "刷取进行时无法修改计划。",
+    "after": {
+      "stay": {
+        "phrase": "留在原地",
+        "label": "留在原地",
+        "help": "直接停下。上一场比赛把你放在哪，你就站在哪。"
+      },
+      "inn": {
+        "phrase": "返回旅馆",
+        "label": "返回旅馆",
+        "help": "通过 Lifestream 前往旅馆并进入房间。"
+      },
+      "logout": {
+        "phrase": "退回标题画面",
+        "label": "登出到标题画面",
+        "help": "登出并返回标题画面。"
+      },
+      "close": {
+        "phrase": "关闭游戏",
+        "label": "关闭游戏",
+        "help": "通过 XIVLauncher 的 /xlkill 完全关闭 FFXIV。"
+      },
+      "title": "达成目标后"
+    },
+    "seriesRank": "系列等级 {0}",
+    "rangedFaster": "远程职业刷得更快",
+    "rangedFasterHelp": "近战职业要花更多时间拉近距离，所以每小时完成的场次更少。",
+    "breakEvery": "每 {0} 场休息",
+    "breakEveryHelp": "每 {1} 场休息约 {0} 分钟。",
+    "goal": {
+      "matches": "{0} 场",
+      "rank": "系列等级 {0}",
+      "minutes": "{0} 分钟",
+      "endless": "你说停"
+    },
+    "tab": {
+      "matches": "场次",
+      "rank": "等级",
+      "time": "时间",
+      "endless": "无限"
+    },
+    "whatToQueue": "排什么",
+    "queue": {
+      "casualHelp": "休闲比赛，提升系列进度最快的方式。",
+      "frontline": "Frontline",
+      "frontlineHelp": "尚未接入。即将推出，敬请期待。"
+    },
+    "endlessHelp": "一场接一场地排队，直到你按下停止。",
+    "stopAfter": "之后停止",
+    "stopAfterMatchesHelp": "只统计进入结算画面的比赛，中途退出的不算。",
+    "reachRank": "达到等级",
+    "reachRankHelp": "你现在是 {0} 级。刷取会先打完当前这场再停止。",
+    "stopAfterTimeHelp": "计时结束只是不再排新的比赛；正在进行的那场会打完。"
+  },
+  "run": {
+    "running": "运行中",
+    "modeCasual": "Crystalline Conflict，休闲",
+    "timeLeft": "还剩 {0}",
+    "jobPrefix": "{0}  ·  ",
+    "headline": {
+      "preparing": "正在准备排队",
+      "inQueue": "正在排休闲比赛",
+      "matchStarting": "比赛开始  ·  {0}",
+      "wrappingUp": "正在收尾",
+      "working": "处理中"
+    },
+    "goal": {
+      "of": "/ {0}",
+      "ofMinutes": "/ {0}分",
+      "toRank": "至 {0}",
+      "reached": "已达成目标",
+      "toGo": "还差 {0}",
+      "minutesToGo": "还差 {0} 分钟",
+      "ranksToGo": "还差 {0} 级",
+      "endless": "直到你停止"
+    },
+    "tile": {
+      "matches": "场次",
+      "seriesExp": "系列经验",
+      "matchesPerHour": "场次/时",
+      "elapsed": "已用时"
+    }
+  },
+  "history": {
+    "title": "历史",
+    "empty": "还没有记录。",
+    "emptyDetail": "完成或停止一次刷取，它就会出现在这里。",
+    "summary": "{0} 次  ·  刷取 {1}  ·  每小时 {2} 场",
+    "chartTitle": "每次刷取场数",
+    "recentRuns": "最近运行",
+    "tile": {
+      "runs": "运行",
+      "matches": "场次",
+      "seriesExp": "系列经验",
+      "timeGrinding": "刷取时长"
+    },
+    "lastRuns": "最近 {0} 次",
+    "best": "最高 {0}",
+    "perHour": "每小时",
+    "unit": {
+      "matches": "场"
+    },
+    "series": "系列",
+    "rowSummary": "{0} {2} 内 {1} 场 系列经验 +{3}",
+    "rowJob": "{0}  ·  {1}",
+    "tooltip": {
+      "job": " 使用 {0}",
+      "matches": " {1} 内 {0} 场",
+      "exp": " 系列经验 +{0}"
+    },
+    "clear": "清除历史",
+    "clearConfirm": "删除所有已记录的刷取？",
+    "clearYes": "是，清除",
+    "time": {
+      "justNow": "刚刚",
+      "minutesAgo": "{0} 分钟前",
+      "hoursAgo": "{0} 小时前",
+      "daysAgo": "{0} 天前"
+    }
+  },
+  "about": {
+    "connect": "联系",
+    "support": {
+      "title": "用心制作",
+      "body": "我利用业余时间开发并维护这个插件。如果它帮到了你，Patreon会员能支持我继续改进。没有压力，感谢你的到来。",
+      "button": "在Patreon上支持",
+      "hint": "打开 Patreon，右键复制链接。"
+    },
+    "linkHint": "点击打开，右键复制链接。",
+    "madeBy": "作者：{0}",
+    "version": "v {0}",
+    "link": {
+      "github": "GitHub",
+      "discord": "Discord",
+      "discussions": "讨论区",
+      "bug": "报告问题",
+      "more": "更多插件",
+      "security": "安全"
+    },
+    "reminder": {
+      "title": "小小提醒",
+      "1": "玩了挺久了吧？转转肩膀，慢慢深呼吸一次。",
+      "2": "补水提醒：你上一次喝水是什么时候？",
+      "3": "多眨几下眼，让眼睛歇一会儿。",
+      "4": "站起来伸个懒腰，甩甩手。以后的你会感谢现在的你。",
+      "5": "坐直一点，找个舒服的姿势。你的腰会感谢你。",
+      "6": "记得今天吃点东西。你比任何分数都重要。",
+      "7": "眼睛累了？看看远处二十秒。",
+      "8": "不管在追求什么，随时都可以休息一下。",
+      "9": "你做得很好。今天对自己温柔一点。",
+      "10": "一杯水加一次伸展，就能让漫长的一局重新开始。",
+      "11": "松开下巴，放下肩膀。对，就是这样。",
+      "12": "休息也是旅程的一部分。需要时就离开屏幕一会儿。"
+    },
+    "facts": {
+      "title": "你知道吗？",
+      "1": "蜂蜜永远不会变质。三千多年前的蜂蜜出土后仍然可以食用。",
+      "2": "章鱼有三颗心脏，血液是蓝色的。",
+      "3": "金星上的一天比金星上的一年还长。",
+      "4": "香蕉是浆果，草莓反而不是。",
+      "5": "国际象棋可能的对局数比可观测宇宙中的原子还多。",
+      "6": "鲨鱼在地球上存在的时间比树木还久。",
+      "7": "火烈鸟之所以是粉色，是因为吃了大量虾类和藻类。",
+      "8": "蜜蜂能够认出不同的人脸。",
+      "9": "袋熊的粪便是立方体的。",
+      "10": "天热的时候，埃菲尔铁塔会长高十五厘米以上。",
+      "11": "热水有时比冷水结冰更快。",
+      "12": "一道闪电的温度大约是太阳表面的五倍。"
+    },
+    "quotes": {
+      "title": "值得记住的话",
+      "1": "完成胜过完美。以后总能再打磨。",
+      "2": "千里之行，始于足下。",
+      "3": "攀比偷走快乐。跑好自己的路。",
+      "4": "要进步，不要完美。",
+      "5": "开始不必伟大，但想伟大必须先开始。",
+      "6": "对自己耐心一点。成长需要时间。",
+      "7": "种一棵树最好的时间是十年前，其次是现在。",
+      "8": "庆祝小小的胜利。它们同样算数。",
+      "9": "不积跬步，无以至千里。",
+      "10": "你唯一真正的对手，是昨天的自己。"
+    },
+    "jokes": {
+      "title": "轻松一下",
+      "1": "为什么数学书总是很忧郁？因为它有太多问题。",
+      "2": "什么动物最没有方向感？麋鹿，因为它总是迷路。",
+      "3": "什么东西越洗越脏？水。",
+      "4": "冰箱里有两根香肠，一根说：好冷啊。另一根尖叫：啊，会说话的香肠！",
+      "5": "老师问：一加一等于几？小明答：王。",
+      "6": "什么东西有头没有脚？砖头。",
+      "7": "什么门永远关不上？球门。",
+      "8": "什么马不能骑？木马和斑马线。",
+      "9": "布和纸最怕什么？布怕一万，纸怕万一。",
+      "10": "为什么飞机飞得再高也撞不到星星？因为星星会闪。"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "languageHelp": "本插件窗口使用的语言。职业名和地图名始终跟随游戏客户端。",
+    "cat": {
+      "session": "会话",
+      "sessionSub": "比赛之间的节奏，以及真人会有的休息。",
+      "combat": "战斗",
+      "combatSub": "机器人如何走位、如何挑选战斗。",
+      "match": "比赛中",
+      "matchSub": "机器人在每场比赛中的社交小动作。"
+    },
+    "session": {
+      "footnote": "一次刷取持续多久、结束后做什么，都在 Grind 页面的计划句子里设置。",
+      "pacing": "节奏",
+      "leaveDuty": "多久后退出副本",
+      "leaveDutyHelp": "结算画面出现后，等待这么久再退出副本。0 表示比赛一结束就退出。",
+      "requeue": "多久后重新排队",
+      "requeueHelp": "在这个区间内随机等待后再排下一场；比赛刚结束就立刻排队显得很机械。0 – 0 表示立即排队。",
+      "breaks": "休息",
+      "takeBreaks": "适时休息",
+      "takeBreaksHelp": "时不时闲置一会儿，就像真人在两段游戏之间离开一下。",
+      "breakEvery": "每多少场休息",
+      "breakEveryHelp": "两次休息之间隔多少场比赛。",
+      "breakLength": "休息时长",
+      "breakLengthHelp": "每次休息大概多久，每次上下浮动 ±20 %。"
+    },
+    "combat": {
+      "introMovement": "行为只控制移动：站在哪里，什么时候后撤。 ",
+      "introRotation": "技能由你的循环插件按下；必需的 Auto PVP LB 插件负责释放极限技，并按你的职业自动配置。",
+      "group": "战斗",
+      "rotationPlugin": "循环插件",
+      "rotationPluginHelp": "比赛中由哪个插件按下你的战斗技能。",
+      "behavior": "行为",
+      "behaviorHelp": "机器人如何走位、如何挑选战斗。",
+      "smartTargeting": "智能选敌",
+      "smartTargetingHelpOn": "开启：由本插件决定攻击谁。它会跟随队伍的集火目标，优先选血量低、脆皮的敌人（先打治疗），并跳过开了 Guard 的人。 ",
+      "smartTargetingHelpManual": "RotationSolver 以手动模式运行，对该目标释放技能；换用其他循环插件时，它必须攻击你的当前目标。 ",
+      "smartTargetingHelpOff": "关闭：由循环插件自行选目标（RotationSolver 会选射程内血量最低的）。",
+      "reactionTime": "反应时间",
+      "reactionTimeHelp": "在机器人改变动作之前，加入接近真人的反应延迟。",
+      "recordMatches": "记录比赛",
+      "recordMatchesHelp": "把大脑的每次判断（位置、血量、姿态、原因）写入插件目录下每场一个的日志文件， ",
+      "recordMatchesHelpSize": "便于回看和调整它的打法。每场约 1 MB；只保留最近 30 场。"
+    },
+    "rotation": {
+      "rsr": "RotationSolver Reborn",
+      "rsrHelp": "由本插件自动安装并驱动；技能、Guard 和 Purify 都替你处理好。推荐的默认选项。",
+      "manual": "其他 / 手动",
+      "manualHelp": "使用你自己的循环插件（例如 Wrath Combo）。它必须自己按技能、Guard 和 Purify；此时不再需要 RotationSolver。"
+    },
+    "strategy": {
+      "rush": "直冲水晶",
+      "rushHelp": "没有战术：跑到目标点就站着。从不后撤；人数劣势时会被打掉。",
+      "defensive": "保守",
+      "defensiveHelp": "守点但不突进，被集火时风筝，血量低于约 55 % 后撤。远程和治疗待在很后面。",
+      "moderate": "适中",
+      "moderateHelp": "平衡：占优时短距离追击，人数劣势时回撤，血量低于约 35 % 后撤。不错的默认选项。",
+      "aggressive": "激进",
+      "aggressiveHelp": "压制敌方阵线、追着人头打；只有濒死（约 18 % 血量）才后撤。",
+      "custom": "自定义",
+      "customHelp": "手动调校：下面每个阈值都归你设。以“适中”为起点。"
+    },
+    "reaction": {
+      "off": "关闭",
+      "offHelp": "立即反应，移动精确到帧。",
+      "light": "轻微",
+      "lightHelp": "约 80–220 毫秒反应延迟。",
+      "realistic": "真实",
+      "realisticHelp": "约 140–380 毫秒反应延迟。不错的默认选项。",
+      "heavy": "明显",
+      "heavyHelp": "约 260–650 毫秒反应延迟，明显从容。"
+    },
+    "custom": {
+      "health": "血量",
+      "retreatBelow": "低于多少后撤",
+      "retreatBelowHelp": "当敌人贴着你，或你方人数劣势，且血量掉到这个值以下时，撤到安全处。",
+      "rejoinAbove": "高于多少归队",
+      "rejoinAboveHelp": "当你回血到这个血量以上，重新回到战斗。",
+      "alwaysFleeBelow": "低于多少必逃",
+      "alwaysFleeBelowHelp": "血量掉到这个值以下时，无论发生什么都往安全处跑。",
+      "heavyDamage": "重伤判定",
+      "heavyDamageHelp": "如果每秒掉血比这更快，就当作正在承受重创，提前后撤。",
+      "aggression": "进攻性",
+      "chaseAhead": "领先多少才追击",
+      "chaseAheadHelp": "追人头之前，你附近这一方需要强多少。受伤的算得少些，已经阵亡的敌人算半个战力。0 = 势均力敌也追；小于 0 = 稍处劣势也追。",
+      "fallBackBehind": "落后多少就回撤",
+      "fallBackBehindHelp": "撤回队伍之前，附近的敌人需要强多少。受伤的算得少些。0 = 一旦人数被压过就回撤。",
+      "positioning": "站位",
+      "meleeHold": "近战：守在水晶附近",
+      "meleeHoldHelp": "作为近战或坦克且无人可追时，站在离水晶多远的位置。",
+      "meleeChase": "近战：追到多近",
+      "meleeChaseHelp": "作为近战或坦克追击目标时，靠近到多少距离再攻击。",
+      "rangedHold": "远程：站在水晶后方",
+      "rangedHoldHelp": "作为远程或治疗守位时，站在水晶后方多远。",
+      "rangedAttack": "远程：攻击距离",
+      "rangedAttackHelp": "作为远程或治疗攻击时，站在离目标多远的位置。",
+      "keepBack": "等待时保持距离",
+      "keepBackHelp": "等待队友赶到时，至少与敌方队伍保持这么远。",
+      "focus": "被敌人集火时",
+      "inDangerAt": "多少人算危险",
+      "inDangerAtHelp": "多少敌人瞄准你才算处于危险。与“低于多少后撤”联动：攻击你的人越多，你就越早后撤。",
+      "sidestepAt": "多少人就侧移",
+      "sidestepAtHelp": "当至少这么多敌人瞄准你时，即使满血也侧向躲开。",
+      "sidestepDistance": "侧移距离",
+      "sidestepDistanceHelp": "被集火时，一次侧移走多远，方向朝着最安全且离队友最近的位置。",
+      "retreatStep": "后撤步长",
+      "retreatStepHelp": "后撤时每一步走多远。方向会选择绕开敌人、贴近队友并切断他们视线的路线。",
+      "limits": "距离与上限",
+      "backupRange": "支援判定距离",
+      "backupRangeHelp": "在这个距离内的队友算作支援。范围内没人时，你按独自一人处理。",
+      "enemyNearRange": "敌人接近距离",
+      "enemyNearRangeHelp": "在这个距离内的敌人计入人数劣势判断。",
+      "fightZone": "交战区大小",
+      "fightZoneHelp": "水晶周围用来判断谁占上风的范围。范围内没有敌人时，该点视为无人占据，你会站上去推进。",
+      "maxChase": "离水晶最远追击",
+      "maxChaseHelp": "绝不把目标追到离水晶超过这个距离。更远的敌人会被忽略。",
+      "maxFromTeam": "离队伍最远距离",
+      "maxFromTeamHelp": "绝不离开队伍中心超过这个距离。",
+      "resetDefaults": "恢复默认",
+      "resetDefaultsHelp": "把上面每个数值恢复为“适中”的基准。按住 Ctrl 点击确认。"
+    },
+    "match": {
+      "intro": "赛前",
+      "sayHello": "打招呼",
+      "sayHelloHelp": "在出场展示阶段发送一次 /quickchat Hello，时机随机，避免看起来像脚本。",
+      "chance": "概率",
+      "helloChanceHelp": "打招呼真正发出的频率。调低就会时不时保持沉默。",
+      "after": "延迟",
+      "helloAfterHelp": "出场展示出现后，在这个区间内随机等待，这样问候不会在开场瞬间就发出。",
+      "emotes": "偶尔做表情",
+      "emotesHelp": "在赛前倒计时的随机时刻播放一个友好表情（挥手、欢呼、敬礼之类），偶尔两次。会等角色空闲，确保表情真的能播出来。",
+      "results": "结算画面",
+      "goodMatch": "说“Good Match”",
+      "goodMatchHelp": "比赛结束出现结算画面时，发送 /quickchat \"Good Match\"。",
+      "goodMatchChanceHelp": "赛后 \"Good Match\" 真正发出的频率。",
+      "goodMatchAfterHelp": "结算画面出现后，在这个区间内随机等待。如果比“多久后退出副本”（会话页）还晚，机器人会先退出并跳过道别。"
+    },
+    "format": {
+      "seconds": "%d 秒",
+      "minutes": "%d 分钟",
+      "matches": "%d 场",
+      "yards": "%d yd",
+      "attackers": "%d 人",
+      "percent": "%d%%",
+      "count": "%d",
+      "percentOfMatches": "%d%% 的比赛",
+      "percentPerSecond": "%d%%/秒"
+    }
+  },
+  "brain": {
+    "legend": {
+      "enemy": "● 敌人",
+      "target": "◎ 目标",
+      "ally": "● 队友",
+      "point": "◆ 据点"
+    },
+    "off": "战斗大脑已关闭。",
+    "offHint": "在设置的“战斗”里打开。",
+    "notInMatch": "当前不在比赛中。",
+    "matchStarting": "比赛开始：大脑在出闸时启动。",
+    "navFallback": "vnavmesh 离线，改用聊天指令",
+    "range": "~{0}y",
+    "phase": {
+      "idle": "空闲",
+      "inQueue": "排队中",
+      "inMatch": "比赛中",
+      "wrappingUp": "收尾中"
+    },
+    "enemy": "敌人",
+    "ally": "队友",
+    "point": "据点",
+    "target": "目标",
+    "role": {
+      "tank": "坦克",
+      "melee": "近战",
+      "ranged": "远程",
+      "healer": "治疗",
+      "unknown": "职能未知"
+    }
+  },
+  "plugin": {
+    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg config | stats | deps | about | brain | target | objects。",
+    "commandHelpAlias": "/apsg 的别名。"
+  }
+}

@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
@@ -22,14 +23,14 @@ internal sealed partial class AboutPage
     private const string DiscussionsUrl = RepoUrl + "/discussions";
     private const string SecurityUrl = RepoUrl + "/security/advisories/new";
 
-    private static readonly (FontAwesomeIcon Icon, string Label, string Url, int AccentId)[] Links =
+    private static readonly (FontAwesomeIcon Icon, LocString Label, string Url, int AccentId)[] Links =
     {
-        (FontAwesomeIcon.CodeBranch, "GitHub", RepoUrl, 0),
-        (FontAwesomeIcon.Hashtag, "Discord", DiscordUrl, 5),
-        (FontAwesomeIcon.Comments, "Discussions", DiscussionsUrl, 1),
-        (FontAwesomeIcon.Bug, "Report a bug", IssuesUrl, 2),
-        (FontAwesomeIcon.ThLarge, "More plugins", HubUrl, 3),
-        (FontAwesomeIcon.ShieldAlt, "Security", SecurityUrl, 4),
+        (FontAwesomeIcon.CodeBranch, L.About.LinkGitHub, RepoUrl, 0),
+        (FontAwesomeIcon.Hashtag, L.About.LinkDiscord, DiscordUrl, 5),
+        (FontAwesomeIcon.Comments, L.About.LinkDiscussions, DiscussionsUrl, 1),
+        (FontAwesomeIcon.Bug, L.About.LinkBug, IssuesUrl, 2),
+        (FontAwesomeIcon.ThLarge, L.About.LinkMore, HubUrl, 3),
+        (FontAwesomeIcon.ShieldAlt, L.About.LinkSecurity, SecurityUrl, 4),
     };
 
     private static readonly Vector2[] BloomOffsets =
@@ -58,7 +59,7 @@ internal sealed partial class AboutPage
         });
         RevealSection(2, () =>
         {
-            SectionHeader(FontAwesomeIcon.Link, "Connect", Styling.AccentBlue);
+            SectionHeader(FontAwesomeIcon.Link, Loc.T(L.About.Connect), Styling.AccentBlue);
             Styling.VSpace(6);
             DrawConnect();
             Styling.VSpace(16);

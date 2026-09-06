@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using ECommons.DalamudServices;
 
 namespace AutoPvpSeriesGrind.Core.External;
@@ -11,26 +12,26 @@ internal static class ExternalPlugins
             InternalName: "vnavmesh",
             DisplayName: "vnavmesh",
             RepoUrl: "https://puni.sh/api/repository/veyn",
-            Purpose: "Pathfinding and movement to the objective during a match.",
+            Purpose: L.Plugins.PurposeVnavmesh,
             Required: true),
         [ExternalPlugin.RotationSolver] = new(
             InternalName: "RotationSolver",
             DisplayName: "RotationSolver Reborn",
             RepoUrl: "https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json",
-            Purpose: "Drives combat during the match (/rotation auto LowHP).",
+            Purpose: L.Plugins.PurposeRotation,
             Required: true,
             Aliases: ["RotationSolverReborn"]),
         [ExternalPlugin.Lifestream] = new(
             InternalName: "Lifestream",
             DisplayName: "Lifestream",
             RepoUrl: "https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json",
-            Purpose: "Optional: runs your configured travel command before the first queue.",
+            Purpose: L.Plugins.PurposeLifestream,
             Required: false),
         [ExternalPlugin.PvpAutoLb] = new(
             InternalName: "PvpAutoLb",
             DisplayName: "Auto PVP LB",
             RepoUrl: "https://raw.githubusercontent.com/XeldarAlz/FFXIV-AutoPVPLimitBreak/master/repo.json",
-            Purpose: "Fires your PvP Limit Break. This plugin pushes proven per-class settings to it automatically.",
+            Purpose: L.Plugins.PurposeAutoLb,
             Required: true),
     };
 

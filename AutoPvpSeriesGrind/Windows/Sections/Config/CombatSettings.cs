@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Combat;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 
 namespace AutoPvpSeriesGrind.Windows.Sections.Config;
@@ -8,8 +9,8 @@ internal static class CombatSettings
     public static void Draw(Configuration cfg)
     {
         DrawCombatGroup(cfg);
-        SettingsGroup.Footnote("Behavior controls movement only: where to stand and when to back off. " +
-            "Your rotation plugin presses the skills; the required Auto PVP LB plugin fires the Limit Break, auto-configured for your class.");
+        SettingsGroup.Footnote(Loc.T(L.Settings.CombatIntroMovement) +
+            Loc.T(L.Settings.CombatIntroRotation));
 
         if (cfg.EnableCombatBrain && cfg.Strategy == PvpStrategy.Custom)
         {
@@ -19,7 +20,7 @@ internal static class CombatSettings
 
     private static void DrawCombatGroup(Configuration cfg)
     {
-        using var group = SettingsGroup.Begin("Combat");
+        using var group = SettingsGroup.Begin(Loc.T(L.Settings.GroupCombat));
 
         DrawRotationProviderRow(cfg);
         DrawBehaviorRow(cfg);
@@ -36,8 +37,8 @@ internal static class CombatSettings
     private static void DrawRotationProviderRow(Configuration cfg)
     {
         var selected = RotationProviderChoices.IndexFor(cfg.RotationProvider);
-        SettingsRow.Draw("Rotation plugin",
-            "Which plugin presses your combat skills during matches.",
+        SettingsRow.Draw(Loc.T(L.Settings.RotationPlugin),
+            Loc.T(L.Settings.RotationPluginHelp),
             SettingsControls.RowComboWidth,
             () => SettingsControls.Choices.DrawCombo("##rotprovider", RotationProviderChoices.Options, selected, choiceIndex =>
             {
@@ -49,8 +50,8 @@ internal static class CombatSettings
     private static void DrawBehaviorRow(Configuration cfg)
     {
         var selected = BehaviorChoices.IndexFor(cfg);
-        SettingsRow.Draw("Behavior",
-            "How the bot positions itself and picks its fights.",
+        SettingsRow.Draw(Loc.T(L.Settings.Behavior),
+            Loc.T(L.Settings.BehaviorHelp),
             SettingsControls.RowComboWidth,
             () => SettingsControls.Choices.DrawCombo("##behavior", BehaviorChoices.Options, selected, choiceIndex =>
             {
@@ -58,15 +59,15 @@ internal static class CombatSettings
                 cfg.SaveDebounced();
             }));
 
-        SettingsRow.Caption(BehaviorChoices.All[selected].Detail);
+        SettingsRow.Caption(Loc.T(BehaviorChoices.All[selected].Detail));
     }
 
     private static void DrawTargetingRow(Configuration cfg)
     {
-        SettingsRow.Draw("Smart targeting",
-            "On: this plugin decides who to attack. It joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. " +
-            "RotationSolver runs in manual mode and presses skills on that target; another rotation plugin must attack your current target. " +
-            "Off: the rotation plugin picks targets itself (RotationSolver uses lowest HP in range).",
+        SettingsRow.Draw(Loc.T(L.Settings.SmartTargeting),
+            Loc.T(L.Settings.SmartTargetingHelpOn) +
+            Loc.T(L.Settings.SmartTargetingHelpManual) +
+            Loc.T(L.Settings.SmartTargetingHelpOff),
             SettingsControls.ToggleWidth,
             () => SettingsControls.DrawToggle(cfg, () => cfg.BrainPicksTargets, value => cfg.BrainPicksTargets = value, "##cmb_targeting"),
             SettingsRow.ToggleHeight);
@@ -75,8 +76,8 @@ internal static class CombatSettings
     private static void DrawHumanizeRow(Configuration cfg)
     {
         var selected = HumanizeChoices.IndexFor(cfg.Humanize);
-        SettingsRow.Draw("Reaction time",
-            "Adds a human reaction delay before the bot changes what it's doing.",
+        SettingsRow.Draw(Loc.T(L.Settings.ReactionTime),
+            Loc.T(L.Settings.ReactionTimeHelp),
             SettingsControls.RowComboWidth,
             () => SettingsControls.Choices.DrawCombo("##humanize", HumanizeChoices.Options, selected, choiceIndex =>
             {
@@ -84,14 +85,14 @@ internal static class CombatSettings
                 cfg.SaveDebounced();
             }));
 
-        SettingsRow.Caption(HumanizeChoices.All[selected].Detail);
+        SettingsRow.Caption(Loc.T(HumanizeChoices.All[selected].Detail));
     }
 
     private static void DrawRecorderRow(Configuration cfg)
     {
-        SettingsRow.Draw("Record matches",
-            "Writes every brain decision (positions, HP, posture, reason) to a per-match log file in the plugin folder, " +
-            "for reviewing and tuning how it played. Roughly 1 MB per match; only the last 30 matches are kept.",
+        SettingsRow.Draw(Loc.T(L.Settings.RecordMatches),
+            Loc.T(L.Settings.RecordMatchesHelp) +
+            Loc.T(L.Settings.RecordMatchesHelpSize),
             SettingsControls.ToggleWidth,
             () => SettingsControls.DrawToggle(cfg, () => cfg.RecordBrainLogs, value => cfg.RecordBrainLogs = value, "##cmb_record"),
             SettingsRow.ToggleHeight);
@@ -99,15 +100,15 @@ internal static class CombatSettings
 
     private static class RotationProviderChoices
     {
-        public readonly record struct Entry(string Name, string Detail, RotationProvider Provider);
+        public readonly record struct Entry(LocString Name, LocString Detail, RotationProvider Provider);
 
         public static readonly Entry[] All =
         [
-            new("RotationSolver Reborn",
-                "Auto-installed and driven by this plugin; skills, Guard, and Purify are handled for you. The recommended default.",
+            new(L.Settings.RotationRsr,
+                L.Settings.RotationRsrHelp,
                 RotationProvider.RotationSolver),
-            new("Other / manual",
-                "Bring your own rotation plugin (e.g. Wrath Combo). It must press skills, Guard, and Purify itself; RotationSolver is no longer required.",
+            new(L.Settings.RotationManual,
+                L.Settings.RotationManualHelp,
                 RotationProvider.External),
         ];
 
@@ -120,24 +121,24 @@ internal static class CombatSettings
 
     private static class BehaviorChoices
     {
-        public readonly record struct Entry(string Name, string Detail, bool BrainEnabled, PvpStrategy Strategy);
+        public readonly record struct Entry(LocString Name, LocString Detail, bool BrainEnabled, PvpStrategy Strategy);
 
         public static readonly Entry[] All =
         [
-            new("Rush the crystal",
-                "No tactics: runs to the objective and stands on it. Never retreats; will feed when outnumbered.",
+            new(L.Settings.StrategyRush,
+                L.Settings.StrategyRushHelp,
                 BrainEnabled: false, PvpStrategy.Moderate),
-            new("Defensive",
-                "Holds the point without diving, kites when focused, retreats below ~55% HP. Ranged and healers stay far back.",
+            new(L.Settings.StrategyDefensive,
+                L.Settings.StrategyDefensiveHelp,
                 BrainEnabled: true, PvpStrategy.Defensive),
-            new("Moderate",
-                "Balanced: short chases when ahead, falls back when outnumbered, retreats below ~35% HP. A good default.",
+            new(L.Settings.StrategyModerate,
+                L.Settings.StrategyModerateHelp,
                 BrainEnabled: true, PvpStrategy.Moderate),
-            new("Aggressive",
-                "Pushes the enemy line and chases kills; retreats only when nearly dead (~18% HP).",
+            new(L.Settings.StrategyAggressive,
+                L.Settings.StrategyAggressiveHelp,
                 BrainEnabled: true, PvpStrategy.Aggressive),
-            new("Custom",
-                "Hand-tuned: every threshold below is yours to set. Starts from the Moderate baseline.",
+            new(L.Settings.StrategyCustom,
+                L.Settings.StrategyCustomHelp,
                 BrainEnabled: true, PvpStrategy.Custom),
         ];
 
@@ -166,14 +167,14 @@ internal static class CombatSettings
 
     private static class HumanizeChoices
     {
-        public readonly record struct Entry(string Name, string Detail, HumanizeLevel Level);
+        public readonly record struct Entry(LocString Name, LocString Detail, HumanizeLevel Level);
 
         public static readonly Entry[] All =
         [
-            new("Off", "Reacts instantly, with frame-perfect movement.", HumanizeLevel.Off),
-            new("Light", "~80–220 ms reaction delay.", HumanizeLevel.Light),
-            new("Realistic", "~140–380 ms reaction delay. A good default.", HumanizeLevel.Realistic),
-            new("Heavy", "~260–650 ms reaction delay, clearly unhurried.", HumanizeLevel.Heavy),
+            new(L.Settings.ReactionOff, L.Settings.ReactionOffHelp, HumanizeLevel.Off),
+            new(L.Settings.ReactionLight, L.Settings.ReactionLightHelp, HumanizeLevel.Light),
+            new(L.Settings.ReactionRealistic, L.Settings.ReactionRealisticHelp, HumanizeLevel.Realistic),
+            new(L.Settings.ReactionHeavy, L.Settings.ReactionHeavyHelp, HumanizeLevel.Heavy),
         ];
 
         public static readonly SettingsControls.Choices.Choice[] Options =

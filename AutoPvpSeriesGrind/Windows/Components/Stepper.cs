@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
@@ -9,8 +10,6 @@ namespace AutoPvpSeriesGrind.Windows.Components;
 internal static class Stepper
 {
     public const float DefaultWidth = 168f;
-
-    private const string DragHint = "Drag to adjust, or click the buttons.";
 
     public static bool Draw(string id, ref int value, int step, int min, int max, string format, float width = DefaultWidth)
     {
@@ -51,7 +50,7 @@ internal static class Stepper
             }
         }
 
-        if (ImGui.IsItemHovered()) Tooltip.Show(DragHint);
+        if (ImGui.IsItemHovered()) Tooltip.Show(Loc.T(L.Common.DragAdjustHint));
 
         ImGui.SetCursorScreenPos(new Vector2(end.X - height, origin.Y));
         if (IconButton.Draw(FontAwesomeIcon.Plus, "##inc", height, enabled: value < max))

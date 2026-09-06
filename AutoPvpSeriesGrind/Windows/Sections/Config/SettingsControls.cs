@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
@@ -11,6 +12,8 @@ internal static class SettingsControls
     public const float ToggleWidth = 40f;
     public const float RowSliderWidth = 180f;
     public const float RowComboWidth = 170f;
+
+    private static readonly string[] languageLabels = BuildLanguageLabels();
 
     private const float RangeDragWidth = 62f;
     private const float RangeDashSlot = 14f;
@@ -46,8 +49,9 @@ internal static class SettingsControls
 
     public static void DrawRangeInline(Configuration cfg, string minId, string maxId,
         Func<int> getMin, Action<int> setMin, Func<int> getMax, Action<int> setMax,
-        int maxValue, string format = "%d s")
+        int maxValue, string? format = null)
     {
+        format ??= Loc.T(L.Settings.FormatSeconds);
         using var colors = PushFrameColors();
 
         DrawRangeBound(cfg, minId, getMin, setMin, maxValue, format,
@@ -92,6 +96,42 @@ internal static class SettingsControls
         ImGui.SetCursorScreenPos(slotOrigin with { X = slotOrigin.X + dashSlot });
     }
 
+    public static void DrawLanguageCombo(Configuration cfg, float width = RowComboWidth)
+    {
+        var languages = Languages.All;
+        var selected = 0;
+        for (var index = 0; index < languages.Length; index++)
+        {
+            if (ReferenceEquals(languages[index], Loc.Current)) selected = index;
+        }
+
+        if (Dropdown.Draw("##apsg_language", languageLabels, ref selected, width))
+        {
+            ApplyLanguage(cfg, languages[selected].Code);
+        }
+    }
+
+    private static string[] BuildLanguageLabels()
+    {
+        var languages = Languages.All;
+        var labels = new string[languages.Length];
+        for (var index = 0; index < languages.Length; index++)
+        {
+            labels[index] = languages[index].NativeName;
+        }
+
+        return labels;
+    }
+
+    private static void ApplyLanguage(Configuration cfg, string code)
+    {
+        cfg.Language = code;
+        cfg.Save();
+        Loc.SetLanguage(code);
+        Fonts.OnLanguageChanged();
+        Plugin.Instance.OnLanguageChanged();
+    }
+
     public static IDisposable PushFrameColors()
         => ImRaii.PushColor(ImGuiCol.SliderGrab, Styling.AccentViolet)
             .Push(ImGuiCol.SliderGrabActive, Styling.AccentVioletSoft)
@@ -101,7 +141,7 @@ internal static class SettingsControls
 
     internal static class Choices
     {
-        public readonly record struct Choice(string Name, string Detail);
+        public readonly record struct Choice(LocString Name, LocString Detail);
 
         private const float PanelWidth = 320f;
 
@@ -133,8 +173,8 @@ internal static class SettingsControls
 
             for (var index = 0; index < options.Length; index++)
             {
-                names[index] = options[index].Name;
-                details[index] = options[index].Detail;
+                names[index] = Loc.T(options[index].Name);
+                details[index] = Loc.T(options[index].Detail);
             }
         }
     }

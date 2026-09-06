@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Combat;
+using AutoPvpSeriesGrind.Core.Localization;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
@@ -270,7 +271,7 @@ internal static class BrainMinimap
 
     private static void DrawRange(Vector2 center, float radius, float range, float scale)
     {
-        var text = $"~{(int)range}y";
+        var text = Loc.T(L.Brain.Range, (int)range);
         using var font = Fonts.PushCaption();
         var textSize = TextDraw.Measure(text);
         TextDraw.At(text, new Vector2(center.X - textSize.X * 0.5f, center.Y + radius - textSize.Y - RangeLabelInset * scale), Styling.TextMuted);

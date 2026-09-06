@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 using AutoPvpSeriesGrind.Windows.Sections.Config;
 using Dalamud.Bindings.ImGui;
@@ -12,13 +13,13 @@ internal sealed class SettingsPage
 {
     private enum Tab { Session, Combat, Match }
 
-    private readonly record struct Entry(Tab Tab, string Label, FontAwesomeIcon Icon, string Subtitle);
+    private readonly record struct Entry(Tab Tab, LocString Label, FontAwesomeIcon Icon, LocString Subtitle);
 
     private static readonly Entry[] entries =
     [
-        new(Tab.Session, "Session",  FontAwesomeIcon.Flag,         "Pacing between matches, and the breaks a person would take."),
-        new(Tab.Combat,  "Combat",   FontAwesomeIcon.Brain,        "How the bot positions itself and picks its fights."),
-        new(Tab.Match,   "In match", FontAwesomeIcon.CommentDots,  "The social touches the bot performs during each match."),
+        new(Tab.Session, L.Settings.CatSession, FontAwesomeIcon.Flag,        L.Settings.CatSessionSub),
+        new(Tab.Combat,  L.Settings.CatCombat,  FontAwesomeIcon.Brain,       L.Settings.CatCombatSub),
+        new(Tab.Match,   L.Settings.CatMatch,   FontAwesomeIcon.CommentDots, L.Settings.CatMatchSub),
     ];
 
     private Tab activeTab = Tab.Session;
@@ -50,7 +51,7 @@ internal sealed class SettingsPage
     {
         var scale = ImGuiHelpers.GlobalScale;
         var origin = ImGui.GetCursorScreenPos();
-        const string title = "Settings";
+        var title = Loc.T(L.Settings.Title);
         using (Fonts.PushTitle())
         {
             TextDraw.At(title, new Vector2(origin.X + 6f * scale, origin.Y), Styling.TextStrong);
@@ -60,7 +61,7 @@ internal sealed class SettingsPage
         for (var index = 0; index < entries.Length; index++)
         {
             var entry = entries[index];
-            if (SidebarTab.Draw(entry.Label, entry.Icon, Styling.AccentViolet, activeTab == entry.Tab)) Select(entry.Tab);
+            if (SidebarTab.Draw(Loc.T(entry.Label), entry.Icon, Styling.AccentViolet, activeTab == entry.Tab)) Select(entry.Tab);
         }
     }
 
@@ -85,7 +86,7 @@ internal sealed class SettingsPage
         using var reveal = Motion.PushSwitch("##apsg_settings_tab", (int)activeTab);
         using var group = ImRaii.Group();
         ImGui.Dummy(new Vector2(0f, 2f * scale));
-        PageHeader.Draw(entry.Label, entry.Subtitle);
+        PageHeader.Draw(Loc.T(entry.Label), Loc.T(entry.Subtitle));
 
         switch (activeTab)
         {

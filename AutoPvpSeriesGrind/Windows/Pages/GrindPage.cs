@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Tasks;
 using AutoPvpSeriesGrind.Windows.Components;
 using AutoPvpSeriesGrind.Windows.Sections;
@@ -46,21 +47,23 @@ internal sealed class GrindPage
 
         Styling.VSpace(30f);
         using (Fonts.PushCaption())
-            Styling.TextCentered(TextDraw.Upper("Done"), Styling.AccentAmberSoft);
+            Styling.TextCentered(TextDraw.Upper(Loc.T(L.Common.Done)), Styling.AccentAmberSoft);
         Styling.VSpace(16f);
 
         DrawPayoffRing(scale);
         Styling.VSpace(18f);
 
         using (Fonts.PushTitle())
-            Styling.TextCentered($"{ctrl.LastMatches} matches", Styling.TextStrong);
+            Styling.TextCentered(Loc.T(L.Grind.SessionMatches, ctrl.LastMatches), Styling.TextStrong);
         Styling.VSpace(8f);
 
-        var detail = ctrl.LastSeriesExp > 0 ? $"+{Formatting.Exp(ctrl.LastSeriesExp)} Series EXP earned" : "Session complete";
+        var detail = ctrl.LastSeriesExp > 0
+            ? Loc.T(L.Grind.SessionExp, Formatting.Exp(ctrl.LastSeriesExp))
+            : Loc.T(L.Grind.SessionComplete);
         Styling.TextCentered(detail, Styling.TextSecondary);
         Styling.VSpace(20f);
 
-        var label = "Back to the plan";
+        var label = Loc.T(L.Grind.BackToPlan);
         var width = PillButton.Width(label, FontAwesomeIcon.ArrowRight);
         Styling.CenterNextItem(width);
         if (PillButton.Draw("##apsg_payoff_dismiss", label, Styling.AccentViolet, PillButton.Emphasis.Tinted, FontAwesomeIcon.ArrowRight))

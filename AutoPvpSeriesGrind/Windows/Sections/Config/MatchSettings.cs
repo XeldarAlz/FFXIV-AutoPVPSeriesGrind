@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 
 namespace AutoPvpSeriesGrind.Windows.Sections.Config;
@@ -12,32 +13,32 @@ internal static class MatchSettings
 
     private static void DrawIntroGroup(Configuration cfg)
     {
-        using var group = SettingsGroup.Begin("Match intro");
+        using var group = SettingsGroup.Begin(Loc.T(L.Settings.GroupMatchIntro));
 
-        SettingsRow.Draw("Say hello",
-            "Sends /quickchat Hello once during the portrait phase, at a random moment so it doesn't look scripted.",
+        SettingsRow.Draw(Loc.T(L.Settings.SayHello),
+            Loc.T(L.Settings.SayHelloHelp),
             SettingsControls.ToggleWidth,
             () => SettingsControls.DrawToggle(cfg, () => cfg.SendHelloOnEntry, value => cfg.SendHelloOnEntry = value, "##mch_hello"),
             SettingsRow.ToggleHeight);
 
         if (cfg.SendHelloOnEntry)
         {
-            SettingsRow.Draw("Chance",
-                "How often the hello actually fires. Lower means it sometimes stays silent.",
+            SettingsRow.Draw(Loc.T(L.Settings.Chance),
+                Loc.T(L.Settings.HelloChanceHelp),
                 SettingsControls.RowSliderWidth,
                 () => SettingsControls.DrawIntSlider(cfg, "##hellochance",
-                    () => cfg.HelloChancePercent, value => cfg.HelloChancePercent = value, 0, 100, "%d%% of matches"));
+                    () => cfg.HelloChancePercent, value => cfg.HelloChancePercent = value, 0, 100, Loc.T(L.Settings.FormatPercentOfMatches)));
 
-            SettingsRow.Draw("After",
-                "Waits a random time in this range after the portraits appear, so the greeting never fires the instant the intro starts.",
+            SettingsRow.Draw(Loc.T(L.Settings.After),
+                Loc.T(L.Settings.HelloAfterHelp),
                 SettingsControls.RangeInlineWidth(),
                 () => SettingsControls.DrawRangeInline(cfg, "##hellodelay_min", "##hellodelay_max",
                     () => cfg.HelloDelayMinSeconds, value => cfg.HelloDelayMinSeconds = value,
                     () => cfg.HelloDelayMaxSeconds, value => cfg.HelloDelayMaxSeconds = value, 30));
         }
 
-        SettingsRow.Draw("Occasional emotes",
-            "Plays a random friendly emote (wave, cheer, salute, and the like) at a random moment of the pre-match countdown, sometimes twice. Waits until your character is free so the emote actually plays.",
+        SettingsRow.Draw(Loc.T(L.Settings.Emotes),
+            Loc.T(L.Settings.EmotesHelp),
             SettingsControls.ToggleWidth,
             () => SettingsControls.DrawToggle(cfg, () => cfg.RandomEmotes, value => cfg.RandomEmotes = value, "##mch_emotes"),
             SettingsRow.ToggleHeight);
@@ -45,10 +46,10 @@ internal static class MatchSettings
 
     private static void DrawResultsGroup(Configuration cfg)
     {
-        using var group = SettingsGroup.Begin("Results screen");
+        using var group = SettingsGroup.Begin(Loc.T(L.Settings.GroupResults));
 
-        SettingsRow.Draw("Say “Good Match”",
-            "Sends /quickchat \"Good Match\" when the results screen appears at the end of a match.",
+        SettingsRow.Draw(Loc.T(L.Settings.GoodMatch),
+            Loc.T(L.Settings.GoodMatchHelp),
             SettingsControls.ToggleWidth,
             () => SettingsControls.DrawToggle(cfg, () => cfg.SendGoodMatchOnResults, value => cfg.SendGoodMatchOnResults = value, "##mch_goodmatch"),
             SettingsRow.ToggleHeight);
@@ -58,14 +59,14 @@ internal static class MatchSettings
             return;
         }
 
-        SettingsRow.Draw("Chance",
-            "How often \"Good Match\" actually fires after a match.",
+        SettingsRow.Draw(Loc.T(L.Settings.Chance),
+            Loc.T(L.Settings.GoodMatchChanceHelp),
             SettingsControls.RowSliderWidth,
             () => SettingsControls.DrawIntSlider(cfg, "##gmchance",
-                () => cfg.GoodMatchChancePercent, value => cfg.GoodMatchChancePercent = value, 0, 100, "%d%% of matches"));
+                () => cfg.GoodMatchChancePercent, value => cfg.GoodMatchChancePercent = value, 0, 100, Loc.T(L.Settings.FormatPercentOfMatches)));
 
-        SettingsRow.Draw("After",
-            "Waits a random time in this range after the results screen appears. If it lands later than \"Leave duty after\" (under Session), the bot leaves first and skips the goodbye.",
+        SettingsRow.Draw(Loc.T(L.Settings.After),
+            Loc.T(L.Settings.GoodMatchAfterHelp),
             SettingsControls.RangeInlineWidth(),
             () => SettingsControls.DrawRangeInline(cfg, "##gmdelay_min", "##gmdelay_max",
                 () => cfg.GoodMatchDelayMinSeconds, value => cfg.GoodMatchDelayMinSeconds = value,

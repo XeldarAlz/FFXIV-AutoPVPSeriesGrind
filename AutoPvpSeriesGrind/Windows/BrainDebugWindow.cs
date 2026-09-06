@@ -1,6 +1,7 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Ipc;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Tasks;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
@@ -44,12 +45,12 @@ public sealed class BrainDebugWindow : Window, IDisposable
     private const float StatTileHeight = 62f;
     private const string Dash = "—";
 
-    private static readonly (string Text, Vector4 Color)[] Legend =
+    private static readonly (LocString Text, Vector4 Color)[] Legend =
     {
-        ("● enemy", Styling.AccentRose),
-        ("◎ target", Styling.AccentVioletSoft),
-        ("● ally", Styling.AccentMint),
-        ("◆ point", Styling.AccentAmber),
+        (L.Brain.LegendEnemy, Styling.AccentRose),
+        (L.Brain.LegendTarget, Styling.AccentVioletSoft),
+        (L.Brain.LegendAlly, Styling.AccentMint),
+        (L.Brain.LegendPoint, Styling.AccentAmber),
     };
 
     private Posture lastPosture = Posture.Idle;
@@ -94,8 +95,8 @@ public sealed class BrainDebugWindow : Window, IDisposable
         {
             DrawContext(cfg, null);
             Paint.Divider(8f);
-            Styling.TextCentered("The combat brain is off.", Styling.TextSecondary);
-            Styling.TextCentered("Turn it on under Settings, Combat.", Styling.TextMuted);
+            Styling.TextCentered(Loc.T(L.Brain.Off), Styling.TextSecondary);
+            Styling.TextCentered(Loc.T(L.Brain.OffHint), Styling.TextMuted);
             return;
         }
 
@@ -104,7 +105,7 @@ public sealed class BrainDebugWindow : Window, IDisposable
         {
             DrawContext(cfg, null);
             Paint.Divider(8f);
-            Styling.TextCentered(inMatch ? "Match starting: the brain spins up at the gate." : "Not in a live match.", Styling.TextMuted);
+            Styling.TextCentered(Loc.T(inMatch ? L.Brain.MatchStarting : L.Brain.NotInMatch), Styling.TextMuted);
             return;
         }
 
@@ -157,16 +158,16 @@ public sealed class BrainDebugWindow : Window, IDisposable
         if (!NavIpc.Instance.IsAvailable)
         {
             Styling.VSpace(4);
-            Chip.Draw("vnavmesh offline, chat fallback", Styling.AccentRose, FontAwesomeIcon.ExclamationTriangle);
+            Chip.Draw(Loc.T(L.Brain.NavFallback), Styling.AccentRose, FontAwesomeIcon.ExclamationTriangle);
         }
     }
 
     private static string PhaseLabel(AutoPhase phase) => phase switch
     {
-        AutoPhase.Queueing => "in queue",
-        AutoPhase.InMatch => "in match",
-        AutoPhase.Finishing => "wrapping up",
-        _ => "idle",
+        AutoPhase.Queueing => Loc.T(L.Brain.PhaseInQueue),
+        AutoPhase.InMatch => Loc.T(L.Brain.PhaseInMatch),
+        AutoPhase.Finishing => Loc.T(L.Brain.PhaseWrappingUp),
+        _ => Loc.T(L.Brain.PhaseIdle),
     };
 
     private static Vector4 PhaseColor(AutoPhase phase) => phase switch
@@ -246,15 +247,16 @@ public sealed class BrainDebugWindow : Window, IDisposable
         for (var index = 0; index < Legend.Length; index++)
         {
             if (index > 0) total += gap;
-            total += TextDraw.Measure(Legend[index].Text).X;
+            total += TextDraw.Measure(Loc.T(Legend[index].Text)).X;
         }
 
         var x = origin.X + MathF.Max(0f, (avail - total) * 0.5f);
         var lineHeight = ImGui.GetTextLineHeight();
         for (var index = 0; index < Legend.Length; index++)
         {
-            TextDraw.At(Legend[index].Text, new Vector2(x, origin.Y), Legend[index].Color);
-            x += TextDraw.Measure(Legend[index].Text).X + gap;
+            var entry = Loc.T(Legend[index].Text);
+            TextDraw.At(entry, new Vector2(x, origin.Y), Legend[index].Color);
+            x += TextDraw.Measure(entry).X + gap;
         }
 
         ImGui.Dummy(new Vector2(avail, lineHeight));
@@ -285,13 +287,13 @@ public sealed class BrainDebugWindow : Window, IDisposable
         var avail = ImGui.GetContentRegionAvail().X;
         var tileWidth = (avail - gap * 3f) / 4f;
 
-        StatTile.Draw("Enemy", Distance(snap.Enemies.Count, snap.NearestEnemyDistance), null, Styling.AccentRose, tileWidth, StatTileHeight);
+        StatTile.Draw(Loc.T(L.Brain.Enemy), Distance(snap.Enemies.Count, snap.NearestEnemyDistance), null, Styling.AccentRose, tileWidth, StatTileHeight);
         ImGui.SameLine(0, gap);
-        StatTile.Draw("Ally", Distance(snap.Allies.Count, snap.NearestAllyDistance), null, Styling.AccentMint, tileWidth, StatTileHeight);
+        StatTile.Draw(Loc.T(L.Brain.Ally), Distance(snap.Allies.Count, snap.NearestAllyDistance), null, Styling.AccentMint, tileWidth, StatTileHeight);
         ImGui.SameLine(0, gap);
-        StatTile.Draw("Point", snap.HasObjective ? Yalms(HorizontalDistance(snap.Self, snap.Objective!.Value)) : Dash, null, Styling.AccentAmber, tileWidth, StatTileHeight);
+        StatTile.Draw(Loc.T(L.Brain.Point), snap.HasObjective ? Yalms(HorizontalDistance(snap.Self, snap.Objective!.Value)) : Dash, null, Styling.AccentAmber, tileWidth, StatTileHeight);
         ImGui.SameLine(0, gap);
-        StatTile.Draw("Target", TargetHp(snap, plan) is { } hp ? $"{hp * 100:F0}%" : Dash, null, Styling.AccentVioletSoft, tileWidth, StatTileHeight);
+        StatTile.Draw(Loc.T(L.Brain.Target), TargetHp(snap, plan) is { } hp ? $"{hp * 100:F0}%" : Dash, null, Styling.AccentVioletSoft, tileWidth, StatTileHeight);
     }
 
     private static string Distance(int count, float nearest) => count == 0 ? Dash : Yalms(nearest);
@@ -311,11 +313,11 @@ public sealed class BrainDebugWindow : Window, IDisposable
 
     private static string RoleLabel(PvpRole role) => role switch
     {
-        PvpRole.Tank => "tank",
-        PvpRole.Melee => "melee",
-        PvpRole.Ranged => "ranged",
-        PvpRole.Healer => "healer",
-        _ => "unknown role",
+        PvpRole.Tank => Loc.T(L.Brain.RoleTank),
+        PvpRole.Melee => Loc.T(L.Brain.RoleMelee),
+        PvpRole.Ranged => Loc.T(L.Brain.RoleRanged),
+        PvpRole.Healer => Loc.T(L.Brain.RoleHealer),
+        _ => Loc.T(L.Brain.RoleUnknown),
     };
 
     private static float HorizontalDistance(Vector3 a, Vector3 b)

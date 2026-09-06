@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 using AutoPvpSeriesGrind.Windows.Sections;
 using Dalamud.Bindings.ImGui;
@@ -68,11 +69,11 @@ internal static class MiniPlayer
         var top = midY - (phaseSize.Y + gap + lineHeight) * 0.5f;
         TextDraw.SmallCaps(label, new Vector2(textX, top), accentSoft);
 
-        var main = inMatch ? $"{Formatting.Time(timeLeft)} left  ·  {CurrentMapName()}" : ctrl.Status;
+        var main = inMatch ? Loc.T(L.Shell.MatchTimeLeft, Formatting.Time(timeLeft), CurrentMapName()) : ctrl.Status;
         TextDraw.At(TextDraw.Truncate(main, barX - 16f * scale - textX), new Vector2(textX, top + phaseSize.Y + gap), Styling.TextStrong);
 
         ImGui.SetCursorScreenPos(new Vector2(end.X - padX - buttonSize, midY - buttonSize * 0.5f));
-        if (IconButton.Draw(FontAwesomeIcon.Stop, "##apsg_mini_stop", buttonSize, Styling.AccentRose, "Stop the run"))
+        if (IconButton.Draw(FontAwesomeIcon.Stop, "##apsg_mini_stop", buttonSize, Styling.AccentRose, Loc.T(L.Common.StopRun)))
         {
             ctrl.Stop();
         }
@@ -91,7 +92,7 @@ internal static class MiniPlayer
         if (cachedMapName is null || territoryId != cachedTerritoryId)
         {
             var name = Svc.Data.GetExcelSheet<Lumina.Excel.Sheets.TerritoryType>()?.GetRowOrDefault(territoryId)?.PlaceName.ValueNullable?.Name.ExtractText();
-            cachedMapName = string.IsNullOrEmpty(name) ? "the arena" : name;
+            cachedMapName = string.IsNullOrEmpty(name) ? Loc.T(L.Shell.TheArena) : name;
             cachedTerritoryId = territoryId;
         }
 

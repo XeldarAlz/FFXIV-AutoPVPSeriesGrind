@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Stats;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
@@ -21,9 +22,9 @@ internal sealed class HistoryPage
         var history = plugin.History;
         var totals = history.Lifetime;
         var subtitle = history.Records.Count == 0
-            ? "Nothing recorded yet."
-            : $"{history.Records.Count} runs  ·  {Formatting.Elapsed(totals.Duration)} grinding  ·  {totals.MatchesPerHour:F1} matches an hour";
-        PageHeader.Draw("History", subtitle);
+            ? Loc.T(L.History.Empty)
+            : Loc.T(L.History.Summary, history.Records.Count, Formatting.Elapsed(totals.Duration), totals.MatchesPerHour.ToString("F1", Loc.Culture));
+        PageHeader.Draw(Loc.T(L.History.Title), subtitle);
 
         DrawLifetime(totals);
         Styling.VSpace(14f);
@@ -34,11 +35,11 @@ internal sealed class HistoryPage
             return;
         }
 
-        Label("Matches per run");
+        Label(Loc.T(L.History.ChartTitle));
         DrawChart(history);
         Styling.VSpace(12f);
 
-        Label("Recent runs");
+        Label(Loc.T(L.History.RecentRuns));
         var records = history.Records;
         for (var index = 0; index < records.Count; index++)
         {
@@ -66,14 +67,14 @@ internal sealed class HistoryPage
         var avail = ImGui.GetContentRegionAvail().X;
         var tileWidth = (avail - gap * 3f) / 4f;
 
-        StatTile.Draw("Runs", totals.Runs.ToString("N0"), null, Styling.AccentViolet, tileWidth);
+        StatTile.Draw(Loc.T(L.History.TileRuns), totals.Runs.ToString("N0", Loc.Culture), null, Styling.AccentViolet, tileWidth);
         ImGui.SameLine(0, gap);
-        StatTile.Draw("Matches", totals.Matches.ToString("N0"),
+        StatTile.Draw(Loc.T(L.History.TileMatches), totals.Matches.ToString("N0", Loc.Culture),
             totals.MatchesPerHour > 0 ? $"{totals.MatchesPerHour:F1}/h" : null, Styling.AccentBlue, tileWidth);
         ImGui.SameLine(0, gap);
-        StatTile.Draw("Series EXP", Formatting.Exp(totals.SeriesExp), null, Styling.AccentAmber, tileWidth);
+        StatTile.Draw(Loc.T(L.History.TileSeriesExp), Formatting.Exp(totals.SeriesExp), null, Styling.AccentAmber, tileWidth);
         ImGui.SameLine(0, gap);
-        StatTile.Draw("Time grinding", Formatting.Elapsed(totals.Duration), null, Styling.AccentMint, tileWidth);
+        StatTile.Draw(Loc.T(L.History.TileTimeGrinding), Formatting.Elapsed(totals.Duration), null, Styling.AccentMint, tileWidth);
     }
 
     private static void DrawEmptyState()
@@ -87,7 +88,7 @@ internal sealed class HistoryPage
 
         var center = new Vector2((origin.X + end.X) * 0.5f, origin.Y + size.Y * 0.42f);
         ProgressRing.CenterIcon(center, FontAwesomeIcon.History, Styling.TextMuted, 26f * scale);
-        TextDraw.Center("Finish or stop a grind and it shows up here.", center.X, center.Y + 22f * scale, Styling.TextMuted);
+        TextDraw.Center(Loc.T(L.History.EmptyDetail), center.X, center.Y + 22f * scale, Styling.TextMuted);
         ImGui.Dummy(size);
     }
 
@@ -114,8 +115,8 @@ internal sealed class HistoryPage
 
         using (Fonts.PushCaption())
         {
-            TextDraw.At($"last {count} runs", new Vector2(plotMin.X, origin.Y + 9f * scale), Styling.TextMuted);
-            TextDraw.Right($"best {peak}", plotMax.X, origin.Y + 9f * scale, Styling.TextMuted);
+            TextDraw.At(Loc.T(L.History.LastRuns, count), new Vector2(plotMin.X, origin.Y + 9f * scale), Styling.TextMuted);
+            TextDraw.Right(Loc.T(L.History.Best, peak), plotMax.X, origin.Y + 9f * scale, Styling.TextMuted);
         }
 
         dl.AddLine(new Vector2(plotMin.X, plotMax.Y), new Vector2(plotMax.X, plotMax.Y), Paint.Col(Styling.WithAlpha(Styling.BorderDim, 0.7f)), 1f);
@@ -144,7 +145,8 @@ internal sealed class HistoryPage
         if (hovered >= 0)
         {
             var record = records[count - 1 - hovered];
-            Tooltip.Show($"{Formatting.RelativeTime(record.EndedAtUtc)}\n{record.MatchesCompleted} matches in {Formatting.Elapsed(record.Duration)}\n+{Formatting.Exp(record.SeriesExpGained)} Series EXP");
+            Tooltip.Show(Loc.T(L.History.RowSummary, Formatting.RelativeTime(record.EndedAtUtc), record.MatchesCompleted,
+                Formatting.Elapsed(record.Duration), Formatting.Exp(record.SeriesExpGained)));
         }
 
         ImGui.Dummy(size);
@@ -175,7 +177,7 @@ internal sealed class HistoryPage
         var midY = origin.Y + size.Y * 0.5f;
         var when = Formatting.RelativeTime(record.EndedAtUtc);
         var job = string.IsNullOrEmpty(record.JobAbbr) ? "—" : record.JobAbbr;
-        var detail = $"{job}  ·  {Formatting.Elapsed(record.Duration)}";
+        var detail = Loc.T(L.History.RowJob, job, Formatting.Elapsed(record.Duration));
 
         var whenSize = TextDraw.Measure(when);
         Vector2 detailSize;
@@ -189,11 +191,11 @@ internal sealed class HistoryPage
         var metricWidth = MetricWidth * scale;
         var rate = record.Duration.TotalHours > 0 ? record.MatchesCompleted / record.Duration.TotalHours : 0;
         var x = end.X - padX - metricWidth;
-        DrawMetric(x, midY, metricWidth, rate > 0 ? rate.ToString("F1") : "—", "per hour", rate > 0 ? Styling.AccentMint : Styling.TextMuted);
+        DrawMetric(x, midY, metricWidth, rate > 0 ? rate.ToString("F1") : "—", Loc.T(L.History.PerHour), rate > 0 ? Styling.AccentMint : Styling.TextMuted);
         x -= metricWidth;
-        DrawMetric(x, midY, metricWidth, record.SeriesExpGained > 0 ? $"+{Formatting.Exp(record.SeriesExpGained)}" : "—", "Series", record.SeriesExpGained > 0 ? Styling.AccentAmber : Styling.TextMuted);
+        DrawMetric(x, midY, metricWidth, record.SeriesExpGained > 0 ? $"+{Formatting.Exp(record.SeriesExpGained)}" : "—", Loc.T(L.History.Series), record.SeriesExpGained > 0 ? Styling.AccentAmber : Styling.TextMuted);
         x -= metricWidth;
-        DrawMetric(x, midY, metricWidth, record.MatchesCompleted.ToString(), "matches", Styling.AccentBlue);
+        DrawMetric(x, midY, metricWidth, record.MatchesCompleted.ToString(), Loc.T(L.History.UnitMatches), Styling.AccentBlue);
 
         if (hit.Hovered) Tooltip.Show(RunTooltip(record));
     }
@@ -211,10 +213,10 @@ internal sealed class HistoryPage
 
     private static string RunTooltip(RunRecord record)
     {
-        var lines = record.EndedAtUtc.ToLocalTime().ToString("g");
-        if (!string.IsNullOrEmpty(record.JobAbbr)) lines += $"\nPlayed as {record.JobAbbr}";
-        lines += $"\n{record.MatchesCompleted} matches in {Formatting.Elapsed(record.Duration)}";
-        if (record.SeriesExpGained > 0) lines += $"\n+{Formatting.Exp(record.SeriesExpGained)} Series EXP";
+        var lines = record.EndedAtUtc.ToLocalTime().ToString("g", Loc.Culture);
+        if (!string.IsNullOrEmpty(record.JobAbbr)) lines += "\n" + Loc.T(L.History.TooltipJob, record.JobAbbr);
+        lines += "\n" + Loc.T(L.History.TooltipMatches, record.MatchesCompleted, Formatting.Elapsed(record.Duration));
+        if (record.SeriesExpGained > 0) lines += "\n" + Loc.T(L.History.TooltipExp, Formatting.Exp(record.SeriesExpGained));
         return lines;
     }
 
@@ -229,15 +231,15 @@ internal sealed class HistoryPage
 
         if (!confirmClear)
         {
-            const string label = "Clear history";
+            var label = Loc.T(L.History.Clear);
             ImGui.SetCursorScreenPos(new Vector2(origin.X + avail - PillButton.Width(label, FontAwesomeIcon.Trash) - slide, origin.Y));
             if (PillButton.Draw("##apsg_hist_clear", label, Styling.AccentRose, PillButton.Emphasis.Ghost, FontAwesomeIcon.Trash)) confirmClear = true;
             return;
         }
 
-        const string question = "Delete every recorded run?";
-        const string yes = "Yes, clear";
-        const string no = "Cancel";
+        var question = Loc.T(L.History.ClearConfirm);
+        var yes = Loc.T(L.History.ClearYes);
+        var no = Loc.T(L.Common.Cancel);
         var questionSize = TextDraw.Measure(question);
         var yesWidth = PillButton.Width(yes);
         var noWidth = PillButton.Width(no);

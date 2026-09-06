@@ -1,6 +1,7 @@
 using AutoPvpSeriesGrind.Core;
 using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.External;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Stats;
 using AutoPvpSeriesGrind.Core.Tasks;
 using AutoPvpSeriesGrind.Windows;
@@ -13,15 +14,14 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.DalamudServices;
+using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind;
 
 public sealed class Plugin : IDalamudPlugin
 {
-    private const string PrimaryCommandHelp = "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | about | brain | target | objects.";
-    private const string AliasCommandHelp = "Alias for /apsg.";
-
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
 
@@ -41,6 +41,9 @@ public sealed class Plugin : IDalamudPlugin
 
     private readonly Dictionary<string, Action> subcommands;
 
+    private readonly CommandInfo primaryCommand;
+    private readonly CommandInfo aliasCommand;
+
     public Plugin()
     {
         Instance = this;
@@ -56,6 +59,7 @@ public sealed class Plugin : IDalamudPlugin
         History = new RunHistory();
         Controller = new AutoPvpSeriesController();
 
+        InitializeLocalization();
         Fonts.Initialize(PluginInterface.UiBuilder, PluginDirectory);
         appWindow = new AppWindow(this);
         BrainWindow = new BrainDebugWindow();
@@ -64,11 +68,48 @@ public sealed class Plugin : IDalamudPlugin
 
         subcommands = BuildSubcommands();
 
+        primaryCommand = new CommandInfo(OnCommand) { HelpMessage = Loc.T(L.Plugin.CommandHelp) };
+        aliasCommand = new CommandInfo(OnCommand) { HelpMessage = Loc.T(L.Plugin.CommandHelpAlias) };
+
         RegisterCommands();
         HookUiEvents();
     }
 
     private static string PluginDirectory => PluginInterface.AssemblyLocation.DirectoryName ?? string.Empty;
+
+    public void OnLanguageChanged()
+    {
+        primaryCommand.HelpMessage = Loc.T(L.Plugin.CommandHelp);
+        aliasCommand.HelpMessage = Loc.T(L.Plugin.CommandHelpAlias);
+    }
+
+    private static void InitializeLocalization()
+    {
+        var directory = Path.Combine(PluginDirectory, "Localization");
+        if (string.IsNullOrEmpty(Cfg.Language))
+        {
+            Cfg.Language = DetectLanguage();
+            Cfg.Save();
+        }
+
+        Loc.Initialize(Cfg.Language, directory);
+    }
+
+    private static string DetectLanguage()
+    {
+        var dalamudLanguage = PluginInterface.UiLanguage;
+        if (Languages.IsKnown(dalamudLanguage)) return Languages.Resolve(dalamudLanguage).Code;
+
+        switch (Svc.ClientState.ClientLanguage)
+        {
+            case Dalamud.Game.ClientLanguage.German: return Languages.German.Code;
+            case Dalamud.Game.ClientLanguage.French: return Languages.French.Code;
+            case Dalamud.Game.ClientLanguage.Japanese: return Languages.Japanese.Code;
+        }
+
+        var osLanguage = CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
+        return Languages.IsKnown(osLanguage) ? Languages.Resolve(osLanguage).Code : Languages.English.Code;
+    }
 
     private void AddWindows()
     {
@@ -91,14 +132,8 @@ public sealed class Plugin : IDalamudPlugin
 
     private void RegisterCommands()
     {
-        CommandManager.AddHandler(ApsgConstants.PrimaryCommand, new CommandInfo(OnCommand)
-        {
-            HelpMessage = PrimaryCommandHelp,
-        });
-        CommandManager.AddHandler(ApsgConstants.AliasCommand, new CommandInfo(OnCommand)
-        {
-            HelpMessage = AliasCommandHelp,
-        });
+        CommandManager.AddHandler(ApsgConstants.PrimaryCommand, primaryCommand);
+        CommandManager.AddHandler(ApsgConstants.AliasCommand, aliasCommand);
     }
 
     private void HookUiEvents()

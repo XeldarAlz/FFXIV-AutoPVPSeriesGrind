@@ -1,3 +1,5 @@
+using AutoPvpSeriesGrind.Core.Localization;
+
 namespace AutoPvpSeriesGrind.Windows;
 
 internal static class Formatting
@@ -25,10 +27,10 @@ internal static class Formatting
     public static string RelativeTime(DateTime utc)
     {
         var span = DateTime.UtcNow - utc;
-        if (span.TotalSeconds < 60) return "just now";
-        if (span.TotalMinutes < 60) return $"{(int)span.TotalMinutes}m ago";
-        if (span.TotalHours < 24) return $"{(int)span.TotalHours}h ago";
-        if (span.TotalDays < 7) return $"{(int)span.TotalDays}d ago";
-        return utc.ToLocalTime().ToString("MMM d");
+        if (span.TotalSeconds < 60) return Loc.T(L.History.JustNow);
+        if (span.TotalMinutes < 60) return Loc.T(L.History.MinutesAgo, (int)span.TotalMinutes);
+        if (span.TotalHours < 24) return Loc.T(L.History.HoursAgo, (int)span.TotalHours);
+        if (span.TotalDays < 7) return Loc.T(L.History.DaysAgo, (int)span.TotalDays);
+        return utc.ToLocalTime().ToString("MMM d", Loc.Culture);
     }
 }

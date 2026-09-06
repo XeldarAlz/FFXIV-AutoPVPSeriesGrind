@@ -11,6 +11,8 @@ public sealed class Configuration : IPluginConfiguration
 {
     public int Version { get; set; }
 
+    public string Language { get; set; } = "";
+
     public string ModeId { get; set; } = MatchCountMode.ModeId;
 
     [Newtonsoft.Json.JsonIgnore]

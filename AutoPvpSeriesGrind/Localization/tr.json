@@ -1,0 +1,517 @@
+{
+  "plugins": {
+    "missing": {
+      "one": "1 gerekli eklenti eksik.",
+      "other": "{0} gerekli eklenti eksik."
+    },
+    "title": "Eklentiler",
+    "intro": {
+      "install": "Kur, eklentinin kendi deposunu Dalamud'a ekler ve kurulumu başlatır. ",
+      "fallback": "Tek tıkla kurulum başarısız olursa, eklenti adına sağ tıklayıp depo adresini kopyala ve elle şuraya ekle: ",
+      "path": "/xlsettings, Experimental, Custom Plugin Repositories."
+    },
+    "allInstalled": "Botun ihtiyacı olan her şey kurulu ve yüklü.",
+    "linkHint": "Açmak için tıkla: {0} Kopyalamak için sağ tıkla.",
+    "required": "Gerekli",
+    "optional": "İsteğe bağlı",
+    "installed": "Kurulu",
+    "installing": "Kuruluyor",
+    "install": "Kur",
+    "purpose": {
+      "vnavmesh": "Maç sırasında hedefe yol bulma ve hareket.",
+      "rotation": "Maç sırasında savaşı yönetir (/rotation auto LowHP).",
+      "lifestream": "İsteğe bağlı: ilk sıraya girmeden önce ayarladığın seyahat komutunu çalıştırır.",
+      "autoLb": "PvP Limit Break'ini kullanır. Bu eklenti ona sınıfına göre denenmiş ayarları otomatik gönderir."
+    }
+  },
+  "common": {
+    "close": "Kapat",
+    "cancel": "İptal",
+    "start": "Başlat",
+    "stop": "Durdur",
+    "stopRun": "Oturumu durdur",
+    "done": "Bitti",
+    "working": "Çalışıyor",
+    "search": "Ara",
+    "noMatches": "\"{0}\" ile eşleşen yok",
+    "dragAdjustHint": "Ayarlamak için sürükle, ya da düğmelere tıkla."
+  },
+  "shell": {
+    "nav": {
+      "grind": "Farm",
+      "settings": "Ayarlar",
+      "history": "Geçmiş",
+      "plugins": "Eklentiler",
+      "about": "Hakkında"
+    },
+    "minimize": "Başlık çubuğuna küçült",
+    "restore": "Geri yükle",
+    "showBrain": "Savaş beynini göster",
+    "hideBrain": "Savaş beynini gizle",
+    "modeSummary": "Crystalline Conflict, {0}",
+    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "statusLine": "{0}  ·  {1}",
+    "sessionSummary": "{0} maç  ·  {1}",
+    "installRequired": "Gerekli eklentileri kur",
+    "matchTimeLeft": "{0} kaldı  ·  {1}",
+    "theArena": "arena"
+  },
+  "grind": {
+    "greeting": {
+      "morning": "Günaydın",
+      "afternoon": "Tünaydın",
+      "evening": "İyi akşamlar",
+      "night": "Gece seansı"
+    },
+    "openPlugins": "Eklentileri aç",
+    "noRunsYet": "Henüz oturum yok",
+    "noRunsYetDetail": "İstatistiklerin burada görünecek",
+    "lastRun": {
+      "exp": "+{0} Seri",
+      "noExp": "Seri EXP yok",
+      "title": "Son koşu: {0} maç",
+      "detail": "{0}  ·  {1}"
+    },
+    "title": {
+      "wrappingUp": "Toparlanıyor",
+      "grinding": "Farmlanıyor",
+      "almostThere": "Az kaldı",
+      "ready": "Sen hazır olunca"
+    },
+    "detail": {
+      "wrappingUp": "Koşunun son adımları tamamlanıyor.",
+      "almostThere": "Gerekli eklentileri kur, bot hazır olsun.",
+      "ready": "Başlat'a bas, gerisini sıra halleder."
+    },
+    "stage": {
+      "starting": "Başlıyor",
+      "inQueue": "Sırada",
+      "portraits": "Portreler",
+      "fighting": "Savaşıyor",
+      "done": "Bitti",
+      "inMatch": "Maçta"
+    },
+    "stageDetail": {
+      "starting": "Sıraya girmeye hazırlanıyor.",
+      "inQueue": "Casual maç bekleniyor.",
+      "portraits": "Maç birazdan başlıyor.",
+      "fighting": "Kristal için savaşıyor.",
+      "done": "Koşunun son adımları tamamlanıyor.",
+      "inMatch": "Maç oynanıyor."
+    },
+    "status": {
+      "running": "Çalışıyor",
+      "wrappingUp": "Toparlanıyor",
+      "ready": "Hazır",
+      "setupNeeded": "Kurulum gerekli",
+      "idle": "Boşta"
+    },
+    "stops": {
+      "matches": "{0} maç sonra durur",
+      "rank": "{0}. rütbede durur",
+      "minutes": "{0} dakika sonra durur",
+      "command": "sen durdurunca durur"
+    },
+    "session": {
+      "complete": "Seans tamamlandı",
+      "matches": "{0} maç",
+      "exp": "+{0} Seri EXP kazanıldı",
+      "backToPlan": "Plana dön"
+    }
+  },
+  "plan": {
+    "title": "Plan",
+    "mode": "Crystalline Conflict",
+    "sentence": {
+      "queue": "Sıra",
+      "until": "hedef:",
+      "then": "sonra:",
+      "end": ""
+    },
+    "unit": {
+      "matches": "maç",
+      "rank": "rütbe",
+      "minutes": "dakika"
+    },
+    "locked": "Koşu sürerken plan kilitlidir.",
+    "after": {
+      "stay": {
+        "phrase": "olduğun yerde kal",
+        "label": "Olduğun yerde kal",
+        "help": "Sadece dur. Son maçın seni bıraktığı yerde kalırsın."
+      },
+      "inn": {
+        "phrase": "hana dön",
+        "label": "Hana dön",
+        "help": "Lifestream ile hana git ve odana gir."
+      },
+      "logout": {
+        "phrase": "başlık ekranına çık",
+        "label": "Başlık ekranına çık",
+        "help": "Başlık ekranına çıkış yapar."
+      },
+      "close": {
+        "phrase": "oyunu kapat",
+        "label": "Oyunu kapat",
+        "help": "XIVLauncher'ın /xlkill komutuyla FFXIV'i tamamen kapat."
+      },
+      "title": "Hedefe ulaşılınca"
+    },
+    "seriesRank": "Seri rütbesi {0}",
+    "rangedFaster": "Menzilli joblar daha hızlı ilerler",
+    "rangedFasterHelp": "Yakın dövüş jobları maçın daha büyük kısmını mesafe kapatarak geçirir, bu yüzden saatte daha az maç bitirir.",
+    "breakEvery": "Her {0} maçta mola",
+    "breakEveryHelp": "Her {1} maçta yaklaşık {0} dakika boşta bekler.",
+    "goal": {
+      "matches": "{0} maç",
+      "rank": "Seri rütbesi {0}",
+      "minutes": "{0} dakika",
+      "endless": "sen durdurana kadar"
+    },
+    "tab": {
+      "matches": "Maçlar",
+      "rank": "Rütbe",
+      "time": "Süre",
+      "endless": "Sonsuz"
+    },
+    "whatToQueue": "Neye sıraya girilecek",
+    "queue": {
+      "casualHelp": "Casual maçlar, Seri çubuğunu ilerletmenin en hızlı yolu.",
+      "frontline": "Frontline",
+      "frontlineHelp": "Henüz bağlanmadı. Yakında geliyor, takipte kal."
+    },
+    "endlessHelp": "Sen Durdur'a basana kadar maç üstüne maç sıraya girer.",
+    "stopAfter": "Şundan sonra dur",
+    "stopAfterMatchesHelp": "Sonuç ekranına ulaşan maçları sayar, yani terk ettiğin maç sayılmaz.",
+    "reachRank": "Şu rütbeye ulaş",
+    "reachRankHelp": "Şu an {0}. rütbedesin. Koşu, durmadan önce içinde bulunduğu maçı bitirir.",
+    "stopAfterTimeHelp": "Sayaç yeni maçlara sıraya girmeyi durdurur; devam eden maç sonuna kadar oynanır."
+  },
+  "run": {
+    "running": "Çalışıyor",
+    "modeCasual": "Crystalline Conflict, casual",
+    "timeLeft": "{0} kaldı",
+    "jobPrefix": "{0}  ·  ",
+    "headline": {
+      "preparing": "Sıraya girmeye hazırlanıyor",
+      "inQueue": "Casual maç için sırada",
+      "matchStarting": "Maç başlıyor  ·  {0}",
+      "wrappingUp": "Seans toparlanıyor",
+      "working": "Çalışıyor"
+    },
+    "goal": {
+      "of": "/ {0}",
+      "ofMinutes": "/ {0} dk",
+      "toRank": "{0}'e",
+      "reached": "hedefe ulaşıldı",
+      "toGo": "{0} kaldı",
+      "minutesToGo": "{0} dk kaldı",
+      "ranksToGo": "{0} rütbe kaldı",
+      "endless": "sen durdurana kadar sürer"
+    },
+    "tile": {
+      "matches": "Maçlar",
+      "seriesExp": "Seri EXP",
+      "matchesPerHour": "Maç/sa",
+      "elapsed": "Geçen"
+    }
+  },
+  "history": {
+    "title": "Geçmiş",
+    "empty": "Henüz kayıt yok.",
+    "emptyDetail": "Bir koşuyu bitir ya da durdur, burada görünsün.",
+    "summary": "{0} koşu  ·  {1} çalışma  ·  saatte {2} maç",
+    "chartTitle": "Koşu başına maç",
+    "recentRuns": "Son oturumlar",
+    "tile": {
+      "runs": "Oturum",
+      "matches": "Maçlar",
+      "seriesExp": "Seri EXP",
+      "timeGrinding": "Geçen süre"
+    },
+    "lastRuns": "son {0} koşu",
+    "best": "en iyi {0}",
+    "perHour": "saatte",
+    "unit": {
+      "matches": "maç"
+    },
+    "series": "Seri",
+    "rowSummary": "{0} {2} içinde {1} maç +{3} Seri EXP",
+    "rowJob": "{0}  ·  {1}",
+    "tooltip": {
+      "job": " {0} ile oynandı",
+      "matches": " {1} içinde {0} maç",
+      "exp": " +{0} Seri EXP"
+    },
+    "clear": "Geçmişi temizle",
+    "clearConfirm": "Kayıtlı tüm koşular silinsin mi?",
+    "clearYes": "Evet, temizle",
+    "time": {
+      "justNow": "az önce",
+      "minutesAgo": "{0} dk önce",
+      "hoursAgo": "{0} sa önce",
+      "daysAgo": "{0} gün önce"
+    }
+  },
+  "about": {
+    "connect": "Bağlantı",
+    "support": {
+      "title": "Özenle yapıldı",
+      "body": "Bu eklentiyi boş zamanlarımda geliştirip sürdürüyorum. Size yardımcı olduysa, bir Patreon üyeliği onu geliştirmeye devam etmemi sağlar. Baskı yok, ve burada olduğunuz için teşekkürler.",
+      "button": "Patreon'da destekle",
+      "hint": "Patreon'u aç, bağlantıyı kopyalamak için sağ tıkla."
+    },
+    "linkHint": "Açmak için tıkla, bağlantıyı kopyalamak için sağ tıkla.",
+    "madeBy": "{0} tarafından yapıldı",
+    "version": "v {0}",
+    "link": {
+      "github": "GitHub",
+      "discord": "Discord",
+      "discussions": "Tartışmalar",
+      "bug": "Hata bildir",
+      "more": "Diğer eklentiler",
+      "security": "Güvenlik"
+    },
+    "reminder": {
+      "title": "Küçük bir hatırlatma",
+      "1": "Epeydir başındasınız galiba. Omuzlarınızı çevirin, bir kez derin nefes alın.",
+      "2": "Su molası: En son ne zaman su içtiniz?",
+      "3": "Birkaç kez göz kırpın, gözleriniz biraz dinlensin.",
+      "4": "Ayağa kalkın, gerinin, ellerinizi silkeleyin. Geleceğiniz size teşekkür ediyor.",
+      "5": "Dik oturun, rahatınıza bakın. Beliniz sonra minnettar kalacak.",
+      "6": "Bugün bir şeyler yemeyi unutmayın. Hiçbir skor sizden önemli değil.",
+      "7": "Gözleriniz yoruldu mu? Yirmi saniye uzağa bakın.",
+      "8": "Neyin peşinde olursanız olun, istediğiniz an mola verebilirsiniz.",
+      "9": "Gayet iyi gidiyorsunuz. Bugün kendinize biraz daha nazik olun.",
+      "10": "Bir bardak su ve kısa bir esneme, uzun bir oturumu tazeler.",
+      "11": "Çenenizi gevşetin, omuzlarınızı indirin. İşte böyle.",
+      "12": "Dinlenmek de yolculuğun parçası. Gerektiğinde ekrandan uzaklaşın."
+    },
+    "facts": {
+      "title": "Biliyor muydunuz?",
+      "1": "Bal hiç bozulmaz. 3.000 yıllık kavanozlarda hâlâ yenebilir bal bulundu.",
+      "2": "Ahtapotların üç kalbi ve mavi kanı vardır.",
+      "3": "Venüs'te bir gün, Venüs'teki bir yıldan daha uzun sürer.",
+      "4": "Muz aslında bir üzümsü meyve, çilek ise değil.",
+      "5": "Olası satranç oyunlarının sayısı, gözlemlenebilir evrendeki atomlardan fazladır.",
+      "6": "Köpek balıkları ağaçlardan daha eskidir.",
+      "7": "Flamingolar yedikleri karidesler ve yosunlar yüzünden pembedir.",
+      "8": "Bal arıları insan yüzlerini ayırt edebilir.",
+      "9": "Vombatların dışkısı küp şeklindedir.",
+      "10": "Eyfel Kulesi sıcak günlerde 15 santimden fazla uzar.",
+      "11": "Sıcak su bazen soğuk sudan daha hızlı donar.",
+      "12": "Bir yıldırım, Güneş'in yüzeyinden yaklaşık beş kat daha sıcaktır."
+    },
+    "quotes": {
+      "title": "Kulağa küpe sözler",
+      "1": "Bitmiş, mükemmelden iyidir. Cilasını sonra da atarsınız.",
+      "2": "Damlaya damlaya göl olur.",
+      "3": "Kıyaslamak keyfinizi çalar. Kendi yarışınızı koşun.",
+      "4": "Mükemmellik değil, ilerleme.",
+      "5": "Başlamak için harika olmanız gerekmez ama harika olmak için başlamanız gerekir.",
+      "6": "Kendinize sabır gösterin. Büyümek zaman ister.",
+      "7": "Başlamak için en iyi zaman dündü. İkinci en iyi zaman şimdi.",
+      "8": "Küçük zaferleri de kutlayın. Onlar da sayılır.",
+      "9": "Yavaş da olsa ilerlemek, ilerlemektir.",
+      "10": "Tek gerçek rakibiniz dünkü hâliniz."
+    },
+    "jokes": {
+      "title": "Sadece gülümsemek için",
+      "1": "Hangi ayda 28 gün vardır? Hepsinde.",
+      "2": "Bir annenin dört çocuğu var: Nisan, Mayıs, Haziran ve... Ahmet.",
+      "3": "Fil suya girmiş, ne olmuş? Islanmış.",
+      "4": "Karınca ile fil plajdaymış. Fil denize girmiş, karınca bağırmış: Çık! Fil çıkmış. Karınca: Tamam, mayomu sen giydin sandım.",
+      "5": "Denizde en çok ne olur? Su.",
+      "6": "Kaplumbağa neden acele etmez? Evi zaten sırtında.",
+      "7": "Bilgisayar neden hapşırmış? Virüs kapmış.",
+      "8": "Domates neden kızarmış? Salatalığı soyunurken görmüş.",
+      "9": "Doktor bey, kimse beni fark etmiyor. Sıradaki hasta!",
+      "10": "Fizikçilerin en sevdiği yemek? Kütle köfte."
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "language": "Dil",
+    "languageHelp": "Bu eklentinin pencerelerinin dili. Job ve harita adları her zaman oyun istemcisini izler.",
+    "cat": {
+      "session": "Seans",
+      "sessionSub": "Maçlar arasındaki tempo ve bir insanın vereceği molalar.",
+      "combat": "Savaş",
+      "combatSub": "Botun nasıl konumlandığı ve hangi kavgaları seçtiği.",
+      "match": "Maçta",
+      "matchSub": "Botun her maçta yaptığı sosyal dokunuşlar."
+    },
+    "session": {
+      "footnote": "Bir koşunun ne kadar süreceği ve sonrasında ne olacağı Grind sayfasındaki plan cümlesinde.",
+      "pacing": "Tempo",
+      "leaveDuty": "Görevden şu kadar sonra çık",
+      "leaveDutyHelp": "Sonuç ekranı çıktıktan sonra görevden ayrılmadan önce bu kadar bekler. 0, maç biter bitmez çıkar.",
+      "requeue": "Şu kadar sonra tekrar sıraya gir",
+      "requeueHelp": "Sonraki maça sıraya girmeden önce bu aralıkta rastgele bekler; maç biter bitmez sıraya girmek robot gibi durur. 0 – 0 hemen sıraya girer.",
+      "breaks": "Molalar",
+      "takeBreaks": "Mola ver",
+      "takeBreaksHelp": "Arada bir boşta bekler, tıpkı bir insanın seanslar arasında kalkıp uzaklaşması gibi.",
+      "breakEvery": "Şu kadar maçta bir mola",
+      "breakEveryHelp": "Molalar arasında kaç maç olacağı.",
+      "breakLength": "Mola süresi",
+      "breakLengthHelp": "Her molanın kabaca ne kadar süreceği, her seferinde ±%20 değişerek."
+    },
+    "combat": {
+      "introMovement": "Davranış yalnızca hareketi yönetir: nerede duracağı ve ne zaman geri çekileceği. ",
+      "introRotation": "Yetenekleri senin rotasyon eklentin basar; gerekli Auto PVP LB eklentisi ise sınıfına göre otomatik ayarlanmış Limit Break'i kullanır.",
+      "group": "Savaş",
+      "rotationPlugin": "Rotasyon eklentisi",
+      "rotationPluginHelp": "Maçlarda savaş yeteneklerini hangi eklentinin basacağı.",
+      "behavior": "Davranış",
+      "behaviorHelp": "Botun nasıl konumlandığı ve hangi kavgaları seçtiği.",
+      "smartTargeting": "Akıllı hedefleme",
+      "smartTargetingHelpOn": "Açık: kime saldırılacağına bu eklenti karar verir. Takımın odak hedefine katılır, canı az ve dayanıksız düşmanları tercih eder (önce healer'lar) ve Guard'ı açık olanları atlar. ",
+      "smartTargetingHelpManual": "RotationSolver manuel modda çalışır ve yetenekleri o hedefe basar; başka bir rotasyon eklentisi mevcut hedefine saldırmalıdır. ",
+      "smartTargetingHelpOff": "Kapalı: hedefleri rotasyon eklentisi kendi seçer (RotationSolver menzildeki en düşük canlıyı kullanır).",
+      "reactionTime": "Tepki süresi",
+      "reactionTimeHelp": "Bot yaptığı şeyi değiştirmeden önce insana benzer bir tepki gecikmesi ekler.",
+      "recordMatches": "Maçları kaydet",
+      "recordMatchesHelp": "Her beyin kararını (konum, can, duruş, gerekçe) eklenti klasöründe maç başına bir günlük dosyasına yazar, ",
+      "recordMatchesHelpSize": "nasıl oynadığını inceleyip ince ayar yapmak için. Maç başına yaklaşık 1 MB; yalnızca son 30 maç saklanır."
+    },
+    "rotation": {
+      "rsr": "RotationSolver Reborn",
+      "rsrHelp": "Otomatik kurulur ve bu eklenti tarafından yönetilir; yetenekler, Guard ve Purify senin için halledilir. Önerilen varsayılan.",
+      "manual": "Diğer / manuel",
+      "manualHelp": "Kendi rotasyon eklentini kullan (ör. Wrath Combo). Yetenekleri, Guard'ı ve Purify'ı kendisi basmalı; RotationSolver artık gerekmez."
+    },
+    "strategy": {
+      "rush": "Kristale koş",
+      "rushHelp": "Taktik yok: hedefe koşar ve üstünde durur. Asla geri çekilmez; sayıca azken ölür.",
+      "defensive": "Savunmacı",
+      "defensiveHelp": "Dalmadan noktayı tutar, odaklanınca kite eder, canı ~%55'in altına inince çekilir. Menzilliler ve healer'lar çok geride durur.",
+      "moderate": "Dengeli",
+      "moderateHelp": "Dengeli: öndeyken kısa kovalamalar, sayıca azken geri çekilme, can ~%35'in altına inince çekilir. İyi bir varsayılan.",
+      "aggressive": "Agresif",
+      "aggressiveHelp": "Düşman hattını iter ve kill kovalar; ancak ölmek üzereyken çekilir (~%18 can).",
+      "custom": "Özel",
+      "customHelp": "Elle ayarlı: aşağıdaki her eşik senin. Dengeli temelinden başlar."
+    },
+    "reaction": {
+      "off": "Kapalı",
+      "offHelp": "Anında tepki verir, kare kare kusursuz hareketle.",
+      "light": "Hafif",
+      "lightHelp": "~80–220 ms tepki gecikmesi.",
+      "realistic": "Gerçekçi",
+      "realisticHelp": "~140–380 ms tepki gecikmesi. İyi bir varsayılan.",
+      "heavy": "Yüksek",
+      "heavyHelp": "~260–650 ms tepki gecikmesi, belirgin şekilde acelesiz."
+    },
+    "custom": {
+      "health": "Can",
+      "retreatBelow": "Şunun altında çekil",
+      "retreatBelowHelp": "Üstünde düşman varken ya da tarafın sayıca azken canın bunun altına düşerse güvenli bir yere çekil.",
+      "rejoinAbove": "Şunun üstünde dön",
+      "rejoinAboveHelp": "Canın bu seviyenin üstüne iyileştiğinde savaşa geri dön.",
+      "alwaysFleeBelow": "Şunun altında hep kaç",
+      "alwaysFleeBelowHelp": "Canın bunun altına düşerse, başka ne olursa olsun güvenli yere koş.",
+      "heavyDamage": "Ağır hasar eşiği",
+      "heavyDamageHelp": "Canın saniyede bundan hızlı düşüyorsa bunu ağır hasar say ve erken geri çekil.",
+      "aggression": "Saldırganlık",
+      "chaseAhead": "Şu kadar öndeyken kovala",
+      "chaseAheadHelp": "Bir kill kovalamadan önce yakındaki tarafının ne kadar güçlü olması gerektiği. Yaralılar daha az sayılır ve ölmüş her düşman yarım savaşçı sayılır. 0 = eşit durumda da kovala; 0'ın altı = hafif sayıca azken bile kovala.",
+      "fallBackBehind": "Şu kadar gerideyken çekil",
+      "fallBackBehindHelp": "Takımına çekilmeden önce yakındaki düşmanların ne kadar güçlü olması gerektiği. Yaralılar daha az sayılır. 0 = sayıca üstün olur olmaz geri çekil.",
+      "positioning": "Nerede durulacak",
+      "meleeHold": "Yakın dövüş: kristalin yanında dur",
+      "meleeHoldHelp": "Yakın dövüşçü ya da tank olarak kovalayacak kimse yokken kristalden ne kadar uzakta durulacağı.",
+      "meleeChase": "Yakın dövüş: şuraya kadar kovala",
+      "meleeChaseHelp": "Yakın dövüşçü ya da tank olarak hedef kovalarken saldırmadan önce ne kadar yaklaşılacağı.",
+      "rangedHold": "Menzilli: kristalin arkasında dur",
+      "rangedHoldHelp": "Menzilli ya da healer olarak pozisyon tutarken kristalin ne kadar arkasında durulacağı.",
+      "rangedAttack": "Menzilli: şuradan saldır",
+      "rangedAttackHelp": "Menzilli ya da healer olarak saldırırken hedefinden ne kadar uzakta durulacağı.",
+      "keepBack": "Beklerken geride kal",
+      "keepBackHelp": "Takım arkadaşlarını beklerken düşman grubuna en az bu kadar mesafede kal.",
+      "focus": "Düşmanlar seni odakladığında",
+      "inDangerAt": "Şu kadarında tehlikede",
+      "inDangerAtHelp": "Tehlikede sayılman için kaç düşmanın sana nişan alması gerektiği. \"Şunun altında çekil\" ile birlikte çalışır: saldıran ne kadar çoksa o kadar erken çekilirsin.",
+      "sidestepAt": "Şu kadarında yana kaç",
+      "sidestepAtHelp": "En az bu kadar düşman sana nişan aldığında, canın tamken bile yana kaç.",
+      "sidestepDistance": "Yana kaçma mesafesi",
+      "sidestepDistanceHelp": "Düşmanlar seni odakladığında tek adımda ne kadar hareket edileceği; en güvenli ve takımına en yakın noktaya doğru.",
+      "retreatStep": "Çekilme adımı",
+      "retreatStepHelp": "Çekilmenin her adımının seni ne kadar götüreceği. Yön; düşmanların yanından sıyrılacak, takımına yakın kalacak ve görüş hattını kesecek şekilde seçilir.",
+      "limits": "Mesafeler ve sınırlar",
+      "backupRange": "Yakın destek menzili",
+      "backupRangeHelp": "Bu mesafedeki bir takım arkadaşı destek sayılır. İçeride kimse yoksa yalnızmışsın gibi davranırsın.",
+      "enemyNearRange": "Yakın düşman menzili",
+      "enemyNearRangeHelp": "Bu mesafedeki düşmanlar sayıca azlık hesabına katılır.",
+      "fightZone": "Kavga bölgesi boyutu",
+      "fightZoneHelp": "Kavgayı kimin kazandığını değerlendirmek için kristalin çevresinde kullanılan alan. İçinde düşman yoksa nokta boş sayılır ve itmek için üstüne çıkarsın.",
+      "maxChase": "Kristalden azami kovalama",
+      "maxChaseHelp": "Bir hedefi kristalden bundan uzağa asla kovalama. Ötesindeki düşmanlar yok sayılır.",
+      "maxFromTeam": "Takımdan azami mesafe",
+      "maxFromTeamHelp": "Takımının ortasından asla bundan uzağa gitme.",
+      "resetDefaults": "Varsayılanlara dön",
+      "resetDefaultsHelp": "Yukarıdaki her değeri Dengeli temeline döndürür. Onaylamak için Ctrl'ye basılı tutup tıkla."
+    },
+    "match": {
+      "intro": "Maç girişi",
+      "sayHello": "Selam ver",
+      "sayHelloHelp": "Portre aşamasında bir kez /quickchat Hello gönderir, senaryo gibi durmasın diye rastgele bir anda.",
+      "chance": "Olasılık",
+      "helloChanceHelp": "Selamın gerçekten ne sıklıkta çıkacağı. Düşük değer bazen sessiz kalması demektir.",
+      "after": "Şu kadar sonra",
+      "helloAfterHelp": "Portreler çıktıktan sonra bu aralıkta rastgele bekler, böylece selam giriş başlar başlamaz çıkmaz.",
+      "emotes": "Ara sıra emote",
+      "emotesHelp": "Maç öncesi geri sayımın rastgele bir anında rastgele bir dostane emote oynatır (el sallama, tezahürat, selam ve benzeri), bazen iki kez. Emote'un gerçekten oynaması için karakterin boşta olmasını bekler.",
+      "results": "Sonuç ekranı",
+      "goodMatch": "\"Good Match\" de",
+      "goodMatchHelp": "Maç sonunda sonuç ekranı çıktığında /quickchat \"Good Match\" gönderir.",
+      "goodMatchChanceHelp": "Maç sonrası \"Good Match\" mesajının gerçekten ne sıklıkta çıkacağı.",
+      "goodMatchAfterHelp": "Sonuç ekranı çıktıktan sonra bu aralıkta rastgele bekler. Süre \"Görevden şu kadar sonra çık\" (Seans altında) değerinden sonraya denk gelirse bot önce çıkar ve veda etmez."
+    },
+    "format": {
+      "seconds": "%d sn",
+      "minutes": "%d dk",
+      "matches": "%d maç",
+      "yards": "%d yd",
+      "attackers": "%d saldıran",
+      "percent": "%d%%",
+      "count": "%d",
+      "percentOfMatches": "maçların %%%d'i",
+      "percentPerSecond": "%%%d/sn"
+    }
+  },
+  "brain": {
+    "legend": {
+      "enemy": "● düşman",
+      "target": "◎ hedef",
+      "ally": "● dost",
+      "point": "◆ nokta"
+    },
+    "off": "Savaş beyni kapalı.",
+    "offHint": "Ayarlar, Savaş altından aç.",
+    "notInMatch": "Canlı bir maçta değilsin.",
+    "matchStarting": "Maç başlıyor: beyin kapıda devreye giriyor.",
+    "navFallback": "vnavmesh çevrimdışı, sohbete geri dönüldü",
+    "range": "~{0}y",
+    "phase": {
+      "idle": "boşta",
+      "inQueue": "sırada",
+      "inMatch": "maçta",
+      "wrappingUp": "toparlanıyor"
+    },
+    "enemy": "Düşman",
+    "ally": "Dost",
+    "point": "Nokta",
+    "target": "Hedef",
+    "role": {
+      "tank": "tank",
+      "melee": "yakın dövüş",
+      "ranged": "menzilli",
+      "healer": "healer",
+      "unknown": "bilinmeyen rol"
+    }
+  },
+  "plugin": {
+    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | about | brain | target | objects.",
+    "commandHelpAlias": "/apsg için kısayol."
+  }
+}

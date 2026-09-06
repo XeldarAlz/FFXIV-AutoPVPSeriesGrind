@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.External;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
@@ -9,7 +10,7 @@ namespace AutoPvpSeriesGrind.Windows.Shell;
 
 internal static class NavRail
 {
-    private readonly record struct Entry(AppWindow.Page Page, FontAwesomeIcon Icon, string Id, string Label);
+    private readonly record struct Entry(AppWindow.Page Page, FontAwesomeIcon Icon, string Id, LocString Label);
 
     private const float TopPad = 12f;
     private const float Gap = 8f;
@@ -17,11 +18,11 @@ internal static class NavRail
 
     private static readonly Entry[] entries =
     [
-        new(AppWindow.Page.Grind,    FontAwesomeIcon.Play,       "##apsg_nav_grind",    "Grind"),
-        new(AppWindow.Page.Settings, FontAwesomeIcon.SlidersH,   "##apsg_nav_settings", "Settings"),
-        new(AppWindow.Page.History,  FontAwesomeIcon.ChartLine,  "##apsg_nav_history",  "History"),
-        new(AppWindow.Page.Plugins,  FontAwesomeIcon.Plug,       "##apsg_nav_plugins",  "Plugins"),
-        new(AppWindow.Page.About,    FontAwesomeIcon.InfoCircle, "##apsg_nav_about",    "About"),
+        new(AppWindow.Page.Grind,    FontAwesomeIcon.Play,       "##apsg_nav_grind",    L.Shell.NavGrind),
+        new(AppWindow.Page.Settings, FontAwesomeIcon.SlidersH,   "##apsg_nav_settings", L.Shell.NavSettings),
+        new(AppWindow.Page.History,  FontAwesomeIcon.ChartLine,  "##apsg_nav_history",  L.Shell.NavHistory),
+        new(AppWindow.Page.Plugins,  FontAwesomeIcon.Plug,       "##apsg_nav_plugins",  L.Shell.NavPlugins),
+        new(AppWindow.Page.About,    FontAwesomeIcon.InfoCircle, "##apsg_nav_about",    L.Shell.NavAbout),
     ];
 
     public static AppWindow.Page? Draw(AppWindow.Page current, Plugin plugin)
@@ -73,7 +74,7 @@ internal static class NavRail
 
             DrawBadge(dl, entry.Page, center, button, missingPlugins, running);
 
-            if (hit.Hovered) Tooltip.Show(entry.Label);
+            if (hit.Hovered) Tooltip.Show(Loc.T(entry.Label));
             if (hit.Clicked) clicked = entry.Page;
         }
 

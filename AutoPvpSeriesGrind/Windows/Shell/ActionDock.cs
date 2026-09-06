@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.External;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 using AutoPvpSeriesGrind.Windows.Sections;
 using Dalamud.Bindings.ImGui;
@@ -38,7 +39,7 @@ internal static class ActionDock
         var session = ctrl.SessionSnapshot;
         var sub = session is null
             ? null
-            : $"{session.MatchesCompleted} matches  ·  {Formatting.Elapsed(session.Elapsed)}";
+            : Loc.T(L.Shell.SessionSummary, session.MatchesCompleted, Formatting.Elapsed(session.Elapsed));
         if (StopButton.Draw(sub, innerWidth)) ctrl.Stop();
     }
 
@@ -47,8 +48,8 @@ internal static class ActionDock
         var cfg = plugin.Configuration;
         var ctrl = plugin.Controller;
         var depsOk = ExternalPlugins.AllRequiredInstalled();
-        var reason = depsOk ? null : "Install the required plugins";
-        var sub = $"Crystalline Conflict  ·  {ReadyState.StopSummary(cfg)}";
+        var reason = depsOk ? null : Loc.T(L.Shell.InstallRequired);
+        var sub = Loc.T(L.Shell.ModeSummaryDot, ReadyState.StopSummary(cfg));
 
         if (StartButton.Draw(sub, depsOk, reason, innerWidth)) ctrl.Start();
     }

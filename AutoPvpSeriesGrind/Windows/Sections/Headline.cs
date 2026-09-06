@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Stats;
 using AutoPvpSeriesGrind.Core.Tasks;
 using AutoPvpSeriesGrind.Windows.Components;
@@ -55,10 +56,10 @@ internal static class Headline
 
     private static (FontAwesomeIcon Icon, Vector4 Color, string Greeting) Greeting() => DateTime.Now.Hour switch
     {
-        >= 5 and < 12  => (FontAwesomeIcon.Sun,       Styling.AccentAmber,      "Good morning"),
-        >= 12 and < 17 => (FontAwesomeIcon.Sun,       Styling.AccentAmber,      "Good afternoon"),
-        >= 17 and < 22 => (FontAwesomeIcon.CloudMoon, Styling.AccentVioletSoft, "Good evening"),
-        _              => (FontAwesomeIcon.Moon,      Styling.AccentBlue,       "Late night session"),
+        >= 5 and < 12  => (FontAwesomeIcon.Sun,       Styling.AccentAmber,      Loc.T(L.Grind.GreetingMorning)),
+        >= 12 and < 17 => (FontAwesomeIcon.Sun,       Styling.AccentAmber,      Loc.T(L.Grind.GreetingAfternoon)),
+        >= 17 and < 22 => (FontAwesomeIcon.CloudMoon, Styling.AccentVioletSoft, Loc.T(L.Grind.GreetingEvening)),
+        _              => (FontAwesomeIcon.Moon,      Styling.AccentBlue,       Loc.T(L.Grind.GreetingNight)),
     };
 
     private static float DrawRightColumn(ReadyState.Info info, RunHistory history, float rightX, float midY, out bool openPlugins)
@@ -69,7 +70,7 @@ internal static class Headline
         if (info.Kind == ReadyState.Kind.SetupNeeded)
         {
             const float buttonHeight = 30f;
-            const string label = "Open plugins";
+            var label = Loc.T(L.Grind.OpenPlugins);
             var buttonWidth = PillButton.Width(label, FontAwesomeIcon.Plug);
             ImGui.SetCursorScreenPos(new Vector2(rightX - buttonWidth, midY - buttonHeight * scale * 0.5f));
             openPlugins = PillButton.Draw("##apsg_open_plugins", label, Styling.AccentRose, PillButton.Emphasis.Tinted, FontAwesomeIcon.Plug, height: buttonHeight);
@@ -94,11 +95,14 @@ internal static class Headline
         var records = history.Records;
         if (records.Count == 0)
         {
-            return ("No runs yet", "Your stats will show up here");
+            return (Loc.T(L.Grind.NoRunsYet), Loc.T(L.Grind.NoRunsYetDetail));
         }
 
         var record = records[0];
-        var exp = record.SeriesExpGained > 0 ? $"+{Formatting.Exp(record.SeriesExpGained)} Series" : "no Series EXP";
-        return ($"Last run: {record.MatchesCompleted} matches", $"{Formatting.Elapsed(record.Duration)}  ·  {exp}");
+        var exp = record.SeriesExpGained > 0
+            ? Loc.T(L.Grind.LastRunExp, Formatting.Exp(record.SeriesExpGained))
+            : Loc.T(L.Grind.LastRunNoExp);
+        return (Loc.T(L.Grind.LastRunTitle, record.MatchesCompleted),
+            Loc.T(L.Grind.LastRunDetail, Formatting.Elapsed(record.Duration), exp));
     }
 }

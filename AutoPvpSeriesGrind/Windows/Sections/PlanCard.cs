@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Modes;
 using AutoPvpSeriesGrind.Core.Tasks;
 using AutoPvpSeriesGrind.Windows.Components;
@@ -31,17 +32,15 @@ internal static class PlanCard
     private const string GoalPopup = "##apsg_goal_popover";
     private const string AfterPopup = "##apsg_after_popover";
 
-    private const string ActivityName = "Crystalline Conflict";
-
     private static readonly AfterRunAction[] afterRunOrder =
         [AfterRunAction.StayLoggedIn, AfterRunAction.ReturnToInn, AfterRunAction.Logout, AfterRunAction.CloseGame];
 
-    private static readonly (string Token, string Name, string Detail)[] afterRunChoices =
+    private static readonly (LocString Token, LocString Name, LocString Detail)[] afterRunChoices =
     [
-        ("stay where you are", "Stay where you are", "Just stop. You are left standing wherever the last match dropped you."),
-        ("return to the inn",  "Return to the inn",  "Travel to the inn and enter your room, via Lifestream."),
-        ("log out to title",   "Log out to title",   "Log out to the title screen."),
-        ("close the game",     "Close the game",     "Close FFXIV entirely, via XIVLauncher's /xlkill."),
+        (L.Plan.AfterStayPhrase,   L.Plan.AfterStayLabel,   L.Plan.AfterStayHelp),
+        (L.Plan.AfterInnPhrase,    L.Plan.AfterInnLabel,    L.Plan.AfterInnHelp),
+        (L.Plan.AfterLogoutPhrase, L.Plan.AfterLogoutLabel, L.Plan.AfterLogoutHelp),
+        (L.Plan.AfterClosePhrase,  L.Plan.AfterCloseLabel,  L.Plan.AfterCloseHelp),
     ];
 
     private static readonly Segmented.Item[] modeItems = new Segmented.Item[4];
@@ -72,7 +71,7 @@ internal static class PlanCard
         dl.ChannelsSetCurrent(1);
 
         var y = origin.Y + padY;
-        const string planLabel = "Plan";
+        var planLabel = Loc.T(L.Plan.Title);
         var labelSize = TextDraw.SectionTitleSize(planLabel);
         TextDraw.SectionTitle(planLabel, new Vector2(origin.X + padX, y), Styling.TextStrong);
         y += labelSize.Y + 10f * scale;
@@ -112,17 +111,17 @@ internal static class PlanCard
         var endless = cfg.ActiveMode.Id == EndlessMode.ModeId;
 
         var count = 0;
-        pieces[count++] = new Piece(PieceKind.Word, "Queue");
-        pieces[count++] = new Piece(PieceKind.Activity, ActivityName);
-        pieces[count++] = new Piece(PieceKind.Word, "until");
+        pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.Queue));
+        pieces[count++] = new Piece(PieceKind.Activity, Loc.T(L.Plan.Mode));
+        pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.SentenceUntil));
         pieces[count++] = new Piece(PieceKind.Goal, GoalLabel(cfg));
         if (!endless)
         {
-            pieces[count++] = new Piece(PieceKind.Word, "then");
-            pieces[count++] = new Piece(PieceKind.After, afterRunChoices[AfterIndex(cfg)].Token);
+            pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.SentenceThen));
+            pieces[count++] = new Piece(PieceKind.After, Loc.T(afterRunChoices[AfterIndex(cfg)].Token));
         }
 
-        pieces[count++] = new Piece(PieceKind.Word, ".");
+        pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.SentenceEnd));
 
         var x = start.X;
         var y = start.Y;
@@ -177,20 +176,20 @@ internal static class PlanCard
     {
         var scale = ImGuiHelpers.GlobalScale;
         var rank = PvpProfileReader.SeriesCurrentRank();
-        Chip.Draw($"Series rank {rank}", Styling.AccentAmber, FontAwesomeIcon.Medal);
+        Chip.Draw(Loc.T(L.Plan.SeriesRank, rank), Styling.AccentAmber, FontAwesomeIcon.Medal);
 
         if (MatchState.LocalIsMelee())
         {
             ImGui.SameLine(0f, 6f * scale);
-            Chip.Draw("Ranged jobs grind faster", Styling.AccentAmberSoft, FontAwesomeIcon.Lightbulb,
-                tooltip: "Melee jobs spend more of a match closing distance, so they finish fewer matches per hour.");
+            Chip.Draw(Loc.T(L.Plan.RangedFaster), Styling.AccentAmberSoft, FontAwesomeIcon.Lightbulb,
+                tooltip: Loc.T(L.Plan.RangedFasterHelp));
         }
 
         if (cfg.TakeBreaks)
         {
             ImGui.SameLine(0f, 6f * scale);
-            Chip.Draw($"Break every {cfg.BreakEveryMatches}", Styling.AccentMint, FontAwesomeIcon.Coffee,
-                tooltip: $"Idles for roughly {cfg.BreakMinutes} minutes every {cfg.BreakEveryMatches} matches.");
+            Chip.Draw(Loc.T(L.Plan.BreakEvery, cfg.BreakEveryMatches), Styling.AccentMint, FontAwesomeIcon.Coffee,
+                tooltip: Loc.T(L.Plan.BreakEveryHelp, cfg.BreakMinutes, cfg.BreakEveryMatches));
         }
     }
 
@@ -231,16 +230,16 @@ internal static class PlanCard
         TextDraw.Icon(FontAwesomeIcon.ChevronDown, new Vector2(end.X - TokenPadX * scale - chevronSize.X, midY - chevronSize.Y * 0.5f + 1f * scale),
             Styling.WithAlpha(text, 0.75f));
 
-        if (!enabled && Hit.HoveringRect(origin, end)) Tooltip.Show("The plan is locked while a run is going.");
+        if (!enabled && Hit.HoveringRect(origin, end)) Tooltip.Show(Loc.T(L.Plan.Locked));
         return hit.Clicked;
     }
 
     private static string GoalLabel(Configuration cfg) => cfg.ActiveMode.Id switch
     {
-        MatchCountMode.ModeId => $"{cfg.TargetMatchCount} matches",
-        SeriesRankMode.ModeId => $"Series rank {cfg.TargetSeriesRank}",
-        TimeBoxedMode.ModeId  => $"{cfg.TargetMinutes} minutes",
-        _                     => "you say stop",
+        MatchCountMode.ModeId => Loc.T(L.Plan.GoalMatches, cfg.TargetMatchCount),
+        SeriesRankMode.ModeId => Loc.T(L.Plan.GoalRank, cfg.TargetSeriesRank),
+        TimeBoxedMode.ModeId  => Loc.T(L.Plan.GoalMinutes, cfg.TargetMinutes),
+        _                     => Loc.T(L.Plan.GoalEndless),
     };
 
     private static int AfterIndex(Configuration cfg) => Math.Max(0, Array.IndexOf(afterRunOrder, cfg.AfterRun));
@@ -251,10 +250,10 @@ internal static class PlanCard
         {
             modeItems[index] = modes[index].Id switch
             {
-                MatchCountMode.ModeId => new Segmented.Item(FontAwesomeIcon.ListOl, "Matches"),
-                SeriesRankMode.ModeId => new Segmented.Item(FontAwesomeIcon.Medal, "Rank"),
-                TimeBoxedMode.ModeId  => new Segmented.Item(FontAwesomeIcon.Stopwatch, "Time"),
-                EndlessMode.ModeId    => new Segmented.Item(FontAwesomeIcon.Infinity, "Endless"),
+                MatchCountMode.ModeId => new Segmented.Item(FontAwesomeIcon.ListOl, Loc.T(L.Plan.TabMatches)),
+                SeriesRankMode.ModeId => new Segmented.Item(FontAwesomeIcon.Medal, Loc.T(L.Plan.TabRank)),
+                TimeBoxedMode.ModeId  => new Segmented.Item(FontAwesomeIcon.Stopwatch, Loc.T(L.Plan.TabTime)),
+                EndlessMode.ModeId    => new Segmented.Item(FontAwesomeIcon.Infinity, Loc.T(L.Plan.TabEndless)),
                 _                     => new Segmented.Item(FontAwesomeIcon.Flag, modes[index].DisplayName),
             };
         }
@@ -308,13 +307,13 @@ internal static class PlanCard
         using var popover = new Popover(ActivityPopup, activityAnchor, width, activityOpenedTick);
         if (!popover.Open) return;
 
-        Heading("What to queue", width);
-        if (DrawChoiceRow(0, ActivityName, "Casual matches, the fastest way to move the Series bar.", true, width))
+        Heading(Loc.T(L.Plan.WhatToQueue), width);
+        if (DrawChoiceRow(0, Loc.T(L.Plan.Mode), Loc.T(L.Plan.QueueCasualHelp), true, width))
         {
             ImGui.CloseCurrentPopup();
         }
 
-        DrawLockedRow(1, "Frontline", "Not wired up yet. Coming soon, stay tuned.", width);
+        DrawLockedRow(1, Loc.T(L.Plan.QueueFrontline), Loc.T(L.Plan.QueueFrontlineHelp), width);
     }
 
     private static void DrawGoalPopover(Configuration cfg)
@@ -345,19 +344,19 @@ internal static class PlanCard
         Styling.VSpace(14f);
         if (cfg.ActiveMode.Id == EndlessMode.ModeId)
         {
-            Caption("Queues match after match until you press Stop.", width);
+            Caption(Loc.T(L.Plan.EndlessHelp), width);
             return;
         }
 
         var currentRank = PvpProfileReader.SeriesCurrentRank();
         var (label, unit, step, min, max, value, note) = cfg.ActiveMode.Id switch
         {
-            MatchCountMode.ModeId => ("Stop after", "matches", 5, 1, 999, cfg.TargetMatchCount,
-                "Counts matches that reach the results screen, so a match you abandon does not count."),
-            SeriesRankMode.ModeId => ("Reach rank", "rank", 1, Math.Clamp(currentRank + 1, 1, 30), 30, Math.Max(cfg.TargetSeriesRank, Math.Clamp(currentRank + 1, 1, 30)),
-                $"You are rank {currentRank} now. The run finishes the match it is in before stopping."),
-            _                     => ("Stop after", "minutes", 5, 1, 1440, cfg.TargetMinutes,
-                "The timer stops queueing new matches; the one in progress still plays out."),
+            MatchCountMode.ModeId => (Loc.T(L.Plan.StopAfter), Loc.T(L.Plan.UnitMatches), 5, 1, 999, cfg.TargetMatchCount,
+                Loc.T(L.Plan.StopAfterMatchesHelp)),
+            SeriesRankMode.ModeId => (Loc.T(L.Plan.ReachRank), Loc.T(L.Plan.UnitRank), 1, Math.Clamp(currentRank + 1, 1, 30), 30, Math.Max(cfg.TargetSeriesRank, Math.Clamp(currentRank + 1, 1, 30)),
+                Loc.T(L.Plan.ReachRankHelp, currentRank)),
+            _                     => (Loc.T(L.Plan.StopAfter), Loc.T(L.Plan.UnitMinutes), 5, 1, 1440, cfg.TargetMinutes,
+                Loc.T(L.Plan.StopAfterTimeHelp)),
         };
 
         var labelOrigin = ImGui.GetCursorScreenPos();
@@ -401,11 +400,11 @@ internal static class PlanCard
         if (!popover.Open) return;
 
         var current = AfterIndex(cfg);
-        Heading("When the goal is reached", width);
+        Heading(Loc.T(L.Plan.AfterGoalTitle), width);
 
         for (var index = 0; index < afterRunChoices.Length; index++)
         {
-            if (DrawChoiceRow(index, afterRunChoices[index].Name, afterRunChoices[index].Detail, index == current, width))
+            if (DrawChoiceRow(index, Loc.T(afterRunChoices[index].Name), Loc.T(afterRunChoices[index].Detail), index == current, width))
             {
                 cfg.AfterRun = afterRunOrder[index];
                 cfg.SaveDebounced();

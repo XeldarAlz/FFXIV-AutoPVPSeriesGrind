@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
@@ -45,7 +46,6 @@ internal static class Dropdown
     private const string ListId = "##apsg_dropdown_list";
     private const string RowId = "##apsg_dropdown_row";
     private const string SearchId = "##apsg_dropdown_search";
-    private const string DefaultSearchHint = "Search";
 
     private const ImGuiWindowFlags PanelFlags = ImGuiWindowFlags.NoMove
         | ImGuiWindowFlags.NoResize
@@ -488,7 +488,7 @@ internal static class Dropdown
             .Push(ImGuiCol.FrameBgHovered, Vector4.Zero)
             .Push(ImGuiCol.FrameBgActive, Vector4.Zero))
         {
-            ImGui.InputTextWithHint(SearchId, hint ?? DefaultSearchHint, ref filter, FilterMaxLength);
+            ImGui.InputTextWithHint(SearchId, hint ?? Loc.T(L.Common.Search), ref filter, FilterMaxLength);
         }
 
         if (string.Equals(filter, state.Filter, StringComparison.Ordinal))
@@ -505,7 +505,7 @@ internal static class Dropdown
     {
         using (Fonts.PushCaption())
         {
-            var text = $"Nothing matches \"{state.Filter}\"";
+            var text = Loc.T(L.Common.NoMatches, state.Filter);
             var padX = RowPadX * scale;
             TextDraw.At(TextDraw.Truncate(text, width - padX * 2f), origin + new Vector2(padX, RowPadY * scale), Styling.TextMuted);
         }

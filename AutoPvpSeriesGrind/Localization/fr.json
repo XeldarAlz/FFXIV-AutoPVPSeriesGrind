@@ -1,0 +1,517 @@
+{
+  "plugins": {
+    "missing": {
+      "one": "1 plugin requis est manquant.",
+      "other": "{0} plugins requis sont manquants."
+    },
+    "title": "Plugins",
+    "intro": {
+      "install": "Installer ajoute le dépôt du plugin à Dalamud et lance l'installation. ",
+      "fallback": "Si l'installation en un clic échoue, faites un clic droit sur le nom d'un plugin pour copier l'URL de son dépôt et ajoutez-la à la main sous ",
+      "path": "/xlsettings, Expérimental, Dépôts de plugins personnalisés."
+    },
+    "allInstalled": "Tout ce dont le bot a besoin est installé et chargé.",
+    "linkHint": "Cliquez pour ouvrir {0} Clic droit pour copier le lien.",
+    "required": "Requis",
+    "optional": "Optionnel",
+    "installed": "Installé",
+    "installing": "Installation",
+    "install": "Installer",
+    "purpose": {
+      "vnavmesh": "Recherche de chemin et déplacement vers l'objectif pendant un match.",
+      "rotation": "Pilote le combat pendant le match (/rotation auto LowHP).",
+      "lifestream": "Optionnel : exécute votre commande de voyage configurée avant la première inscription.",
+      "autoLb": "Déclenche votre Transcendance JcJ. Ce plugin lui transmet automatiquement des réglages éprouvés par classe."
+    }
+  },
+  "common": {
+    "close": "Fermer",
+    "cancel": "Annuler",
+    "start": "Démarrer",
+    "stop": "Arrêter",
+    "stopRun": "Arrêter la session",
+    "done": "Terminé",
+    "working": "En cours",
+    "search": "Rechercher",
+    "noMatches": "Aucun résultat pour « {0} »",
+    "dragAdjustHint": "Glissez pour ajuster, ou cliquez les boutons."
+  },
+  "shell": {
+    "nav": {
+      "grind": "Farm",
+      "settings": "Réglages",
+      "history": "Historique",
+      "plugins": "Plugins",
+      "about": "À propos"
+    },
+    "minimize": "Réduire à la barre de titre",
+    "restore": "Restaurer",
+    "showBrain": "Afficher le cerveau de combat",
+    "hideBrain": "Masquer le cerveau de combat",
+    "modeSummary": "Crystalline Conflict, {0}",
+    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "statusLine": "{0}  ·  {1}",
+    "sessionSummary": "{0} matchs  ·  {1}",
+    "installRequired": "Installer les plugins requis",
+    "matchTimeLeft": "{0} restant  ·  {1}",
+    "theArena": "l'arène"
+  },
+  "grind": {
+    "greeting": {
+      "morning": "Bonjour",
+      "afternoon": "Bon après-midi",
+      "evening": "Bonsoir",
+      "night": "Session nocturne"
+    },
+    "openPlugins": "Ouvrir les plugins",
+    "noRunsYet": "Aucune session",
+    "noRunsYetDetail": "Vos statistiques apparaîtront ici",
+    "lastRun": {
+      "exp": "+{0} Série",
+      "noExp": "aucun EXP de série",
+      "title": "Dernière session : {0} matchs",
+      "detail": "{0}  ·  {1}"
+    },
+    "title": {
+      "wrappingUp": "Finalisation",
+      "grinding": "En cours",
+      "almostThere": "Presque prêt",
+      "ready": "Prêt quand vous l'êtes"
+    },
+    "detail": {
+      "wrappingUp": "Dernières étapes de la session en cours.",
+      "almostThere": "Installez les plugins requis et le bot est prêt à partir.",
+      "ready": "Appuyez sur Démarrer, la file d'attente s'occupe du reste."
+    },
+    "stage": {
+      "starting": "Démarrage",
+      "inQueue": "En file",
+      "portraits": "Portraits",
+      "fighting": "Combat",
+      "done": "Terminé",
+      "inMatch": "En match"
+    },
+    "stageDetail": {
+      "starting": "Préparation de l'inscription.",
+      "inQueue": "En attente d'un match décontracté.",
+      "portraits": "Le match va commencer.",
+      "fighting": "Combat pour le cristal.",
+      "done": "Dernières étapes de la session en cours.",
+      "inMatch": "Le match se joue."
+    },
+    "status": {
+      "running": "En cours",
+      "wrappingUp": "Finalisation",
+      "ready": "Prêt",
+      "setupNeeded": "Configuration requise",
+      "idle": "Inactif"
+    },
+    "stops": {
+      "matches": "s'arrête après {0} matchs",
+      "rank": "s'arrête au rang {0}",
+      "minutes": "s'arrête après {0} minutes",
+      "command": "s'arrête quand vous le dites"
+    },
+    "session": {
+      "complete": "Session terminée",
+      "matches": "{0} matchs",
+      "exp": "+{0} EXP de série gagnés",
+      "backToPlan": "Retour au plan"
+    }
+  },
+  "plan": {
+    "title": "Plan",
+    "mode": "Crystalline Conflict",
+    "sentence": {
+      "queue": "File",
+      "until": "jusqu'à",
+      "then": "puis",
+      "end": "."
+    },
+    "unit": {
+      "matches": "matchs",
+      "rank": "rang",
+      "minutes": "minutes"
+    },
+    "locked": "Le plan est verrouillé pendant une session.",
+    "after": {
+      "stay": {
+        "phrase": "rester sur place",
+        "label": "Rester sur place",
+        "help": "Simplement s'arrêter. Vous restez là où le dernier match vous a laissé."
+      },
+      "inn": {
+        "phrase": "rentrer à l'auberge",
+        "label": "Rentrer à l'auberge",
+        "help": "Voyager jusqu'à l'auberge et entrer dans votre chambre, via Lifestream."
+      },
+      "logout": {
+        "phrase": "retourner à l'écran-titre",
+        "label": "Retour à l'écran titre",
+        "help": "Se déconnecter vers l'écran titre."
+      },
+      "close": {
+        "phrase": "fermer le jeu",
+        "label": "Fermer le jeu",
+        "help": "Fermer complètement FFXIV, via /xlkill de XIVLauncher."
+      },
+      "title": "Quand l'objectif est atteint"
+    },
+    "seriesRank": "Rang de série {0}",
+    "rangedFaster": "Les jobs à distance enchaînent plus vite",
+    "rangedFasterHelp": "Les jobs de mêlée passent plus de temps à combler la distance, ils terminent donc moins de matchs par heure.",
+    "breakEvery": "Pause tous les {0}",
+    "breakEveryHelp": "Reste inactif environ {0} minutes tous les {1} matchs.",
+    "goal": {
+      "matches": "{0} matchs",
+      "rank": "Rang de série {0}",
+      "minutes": "{0} minutes",
+      "endless": "vous dites stop"
+    },
+    "tab": {
+      "matches": "Matchs",
+      "rank": "Rang",
+      "time": "Temps",
+      "endless": "Sans fin"
+    },
+    "whatToQueue": "Quoi lancer",
+    "queue": {
+      "casualHelp": "Matchs décontractés, le moyen le plus rapide de faire monter la barre de série.",
+      "frontline": "Frontline",
+      "frontlineHelp": "Pas encore branché. Bientôt disponible, restez à l'écoute."
+    },
+    "endlessHelp": "Enchaîne les matchs jusqu'à ce que vous appuyiez sur Stop.",
+    "stopAfter": "Arrêter après",
+    "stopAfterMatchesHelp": "Compte les matchs qui atteignent l'écran de résultats ; un match abandonné ne compte donc pas.",
+    "reachRank": "Atteindre le rang",
+    "reachRankHelp": "Vous êtes au rang {0}. La session termine le match en cours avant de s'arrêter.",
+    "stopAfterTimeHelp": "Le minuteur arrête les nouvelles inscriptions ; le match en cours se joue jusqu'au bout."
+  },
+  "run": {
+    "running": "En cours",
+    "modeCasual": "Crystalline Conflict, décontracté",
+    "timeLeft": "{0} restantes",
+    "jobPrefix": "{0}  ·  ",
+    "headline": {
+      "preparing": "Préparation de l'inscription",
+      "inQueue": "En file pour un match décontracté",
+      "matchStarting": "Match qui commence  ·  {0}",
+      "wrappingUp": "Finalisation de la session",
+      "working": "En cours"
+    },
+    "goal": {
+      "of": "/ {0}",
+      "ofMinutes": "/ {0} min",
+      "toRank": "vers {0}",
+      "reached": "objectif atteint",
+      "toGo": "encore {0}",
+      "minutesToGo": "encore {0} min",
+      "ranksToGo": "encore {0} rangs",
+      "endless": "tourne jusqu'à votre arrêt"
+    },
+    "tile": {
+      "matches": "Matchs",
+      "seriesExp": "EXP de série",
+      "matchesPerHour": "Matchs/h",
+      "elapsed": "Écoulé"
+    }
+  },
+  "history": {
+    "title": "Historique",
+    "empty": "Rien d'enregistré pour l'instant.",
+    "emptyDetail": "Terminez ou arrêtez une session et elle apparaîtra ici.",
+    "summary": "{0} sessions  ·  {1} de farm  ·  {2} matchs par heure",
+    "chartTitle": "Matchs par session",
+    "recentRuns": "Sessions récentes",
+    "tile": {
+      "runs": "Sessions",
+      "matches": "Matchs",
+      "seriesExp": "EXP de série",
+      "timeGrinding": "Temps de farm"
+    },
+    "lastRuns": "{0} dernières sessions",
+    "best": "record {0}",
+    "perHour": "par heure",
+    "unit": {
+      "matches": "matchs"
+    },
+    "series": "Série",
+    "rowSummary": "{0} {1} matchs en {2} +{3} EXP de série",
+    "rowJob": "{0}  ·  {1}",
+    "tooltip": {
+      "job": " Joué en {0}",
+      "matches": " {0} matchs en {1}",
+      "exp": " +{0} EXP de série"
+    },
+    "clear": "Effacer l'historique",
+    "clearConfirm": "Supprimer toutes les sessions enregistrées ?",
+    "clearYes": "Oui, effacer",
+    "time": {
+      "justNow": "à l'instant",
+      "minutesAgo": "il y a {0} min",
+      "hoursAgo": "il y a {0} h",
+      "daysAgo": "il y a {0} j"
+    }
+  },
+  "about": {
+    "connect": "Contact",
+    "support": {
+      "title": "Fait avec soin",
+      "body": "Je développe et maintiens ce plugin sur mon temps libre. S'il vous a aidé, un abonnement Patreon me permet de continuer à l'améliorer. Sans pression, et merci d'être là.",
+      "button": "Soutenir sur Patreon",
+      "hint": "Ouvrir Patreon, clic droit pour copier le lien."
+    },
+    "linkHint": "Cliquez pour ouvrir, clic droit pour copier le lien.",
+    "madeBy": "Réalisé par {0}",
+    "version": "v {0}",
+    "link": {
+      "github": "GitHub",
+      "discord": "Discord",
+      "discussions": "Discussions",
+      "bug": "Signaler un bug",
+      "more": "Autres plugins",
+      "security": "Sécurité"
+    },
+    "reminder": {
+      "title": "Un petit rappel",
+      "1": "Ça fait un moment que vous jouez ? Roulez les épaules et prenez une grande respiration.",
+      "2": "Petit rappel hydratation : à quand remonte votre dernier verre d'eau ?",
+      "3": "Clignez des yeux plusieurs fois et laissez-les se reposer un instant.",
+      "4": "Levez-vous, étirez-vous et secouez vos mains. Votre corps vous dira merci.",
+      "5": "Redressez-vous et installez-vous confortablement. Votre dos vous remerciera plus tard.",
+      "6": "Pensez à manger quelque chose aujourd'hui. Vous comptez plus que n'importe quel score.",
+      "7": "Les yeux fatigués ? Regardez au loin pendant vingt secondes.",
+      "8": "Quoi que vous poursuiviez, vous avez le droit de faire une pause quand vous voulez.",
+      "9": "Vous vous débrouillez très bien. Soyez un peu plus doux avec vous-même aujourd'hui.",
+      "10": "Un verre d'eau et un bon étirement suffisent à relancer une longue session.",
+      "11": "Desserrez la mâchoire, relâchez les épaules. Voilà, c'est mieux.",
+      "12": "Le repos fait aussi partie du voyage. Éloignez-vous de l'écran dès que vous en avez besoin."
+    },
+    "facts": {
+      "title": "Le saviez-vous ?",
+      "1": "Le miel ne se périme jamais. On en a retrouvé, encore comestible, dans des jarres vieilles de plus de 3 000 ans.",
+      "2": "Les pieuvres ont trois cœurs et le sang bleu.",
+      "3": "Sur Vénus, une journée dure plus longtemps qu'une année entière.",
+      "4": "La banane est une baie, mais pas la fraise.",
+      "5": "Il existe plus de parties d'échecs possibles que d'atomes dans l'univers observable.",
+      "6": "Les requins existaient déjà bien avant les premiers arbres.",
+      "7": "Les flamants roses doivent leur couleur aux crevettes et aux algues qu'ils mangent.",
+      "8": "Les abeilles sont capables de reconnaître des visages humains.",
+      "9": "Les crottes de wombat sont en forme de cube.",
+      "10": "La tour Eiffel grandit de plus de 15 cm les jours de forte chaleur.",
+      "11": "L'eau chaude peut parfois geler plus vite que l'eau froide.",
+      "12": "Un éclair est environ cinq fois plus chaud que la surface du Soleil."
+    },
+    "quotes": {
+      "title": "Des mots à garder",
+      "1": "Mieux vaut fait que parfait. Vous pourrez toujours peaufiner plus tard.",
+      "2": "Petit à petit, l'oiseau fait son nid.",
+      "3": "La comparaison est la voleuse de joie. Courez votre propre course.",
+      "4": "Le progrès plutôt que la perfection.",
+      "5": "Pas besoin d'être grand pour commencer, mais il faut commencer pour devenir grand.",
+      "6": "Soyez patient avec vous-même. Grandir prend du temps.",
+      "7": "Le meilleur moment pour commencer, c'était hier. Le deuxième meilleur, c'est maintenant.",
+      "8": "Célébrez les petites victoires. Elles comptent aussi.",
+      "9": "Avancer lentement, c'est encore avancer.",
+      "10": "Votre seul vrai adversaire, c'est la personne que vous étiez hier."
+    },
+    "jokes": {
+      "title": "Juste pour rire",
+      "1": "Que fait une fraise sur un cheval ? Tagada, tagada.",
+      "2": "Pourquoi les poissons n'aiment-ils pas les ordinateurs ? Ils ont peur du net.",
+      "3": "Quel est le comble pour un électricien ? Ne pas être au courant.",
+      "4": "Que dit un escargot quand il croise une limace ? Regarde, un nudiste.",
+      "5": "Pourquoi les plongeurs plongent-ils toujours en arrière ? Parce que sinon, ils tombent dans le bateau.",
+      "6": "Qu'est-ce qui est jaune et qui attend ? Jonathan.",
+      "7": "Que dit un oignon quand il se cogne ? Aïe.",
+      "8": "Quel est le comble pour un jardinier ? Raconter des salades.",
+      "9": "Que fait un crocodile quand il croise une jolie femme ? Il Lacoste.",
+      "10": "Quel est le sport le plus fruité ? La boxe, parce qu'on y prend des pêches."
+    }
+  },
+  "settings": {
+    "title": "Réglages",
+    "language": "Langue",
+    "languageHelp": "La langue des fenêtres de ce plugin. Les noms de job et de carte suivent toujours le client du jeu.",
+    "cat": {
+      "session": "Session",
+      "sessionSub": "Le rythme entre les matchs, et les pauses qu'une personne prendrait.",
+      "combat": "Combat",
+      "combatSub": "Comment le bot se positionne et choisit ses combats.",
+      "match": "En match",
+      "matchSub": "Les touches sociales que le bot exécute pendant chaque match."
+    },
+    "session": {
+      "footnote": "La durée d'une session et ce qui se passe ensuite se règlent sur la page Grind, dans la phrase du plan.",
+      "pacing": "Rythme",
+      "leaveDuty": "Quitter la mission après",
+      "leaveDutyHelp": "Une fois l'écran de résultats affiché, attend ce délai avant de quitter la mission. 0 quitte dès la fin du match.",
+      "requeue": "Se réinscrire après",
+      "requeueHelp": "Attend un délai aléatoire dans cette plage avant de lancer le match suivant ; se réinscrire à l'instant même paraît robotique. 0 – 0 s'inscrit immédiatement.",
+      "breaks": "Pauses",
+      "takeBreaks": "Prendre des pauses",
+      "takeBreaksHelp": "Reste inactif de temps en temps, comme une personne qui s'éloigne entre deux sessions.",
+      "breakEvery": "Pause tous les",
+      "breakEveryHelp": "Combien de matchs séparent deux pauses.",
+      "breakLength": "Durée de la pause",
+      "breakLengthHelp": "La durée approximative de chaque pause, variée de ±20 % à chaque fois."
+    },
+    "combat": {
+      "introMovement": "Le comportement ne contrôle que les déplacements : où se placer et quand reculer. ",
+      "introRotation": "Votre plugin de rotation appuie sur les compétences ; le plugin requis Auto PVP LB déclenche la Transcendance, configurée automatiquement pour votre classe.",
+      "group": "Combat",
+      "rotationPlugin": "Plugin de rotation",
+      "rotationPluginHelp": "Quel plugin appuie sur vos compétences de combat pendant les matchs.",
+      "behavior": "Comportement",
+      "behaviorHelp": "Comment le bot se positionne et choisit ses combats.",
+      "smartTargeting": "Ciblage intelligent",
+      "smartTargetingHelpOn": "Activé : ce plugin décide qui attaquer. Il rejoint la cible focalisée de l'équipe, préfère les ennemis à faibles PV et peu résistants (soigneurs d'abord), et ignore quiconque a Garde actif. ",
+      "smartTargetingHelpManual": "RotationSolver tourne en mode manuel et lance ses compétences sur cette cible ; un autre plugin de rotation doit attaquer votre cible actuelle. ",
+      "smartTargetingHelpOff": "Désactivé : le plugin de rotation choisit ses cibles lui-même (RotationSolver prend les PV les plus bas à portée).",
+      "reactionTime": "Temps de réaction",
+      "reactionTimeHelp": "Ajoute un délai de réaction humain avant que le bot ne change ce qu'il fait.",
+      "recordMatches": "Enregistrer les matchs",
+      "recordMatchesHelp": "Écrit chaque décision du cerveau (positions, PV, posture, raison) dans un fichier journal par match dans le dossier du plugin, ",
+      "recordMatchesHelpSize": "pour revoir et affiner sa façon de jouer. Environ 1 Mo par match ; seuls les 30 derniers matchs sont conservés."
+    },
+    "rotation": {
+      "rsr": "RotationSolver Reborn",
+      "rsrHelp": "Installé automatiquement et piloté par ce plugin ; compétences, Garde et Purification sont gérés pour vous. Le choix recommandé par défaut.",
+      "manual": "Autre / manuel",
+      "manualHelp": "Utilisez votre propre plugin de rotation (par ex. Wrath Combo). Il doit gérer lui-même les compétences, Garde et Purification ; RotationSolver n'est alors plus requis."
+    },
+    "strategy": {
+      "rush": "Foncer sur le cristal",
+      "rushHelp": "Aucune tactique : court à l'objectif et reste dessus. Ne recule jamais ; se fait tuer en infériorité numérique.",
+      "defensive": "Défensif",
+      "defensiveHelp": "Tient le point sans plonger, kite sous focus, se replie sous ~55 % de PV. Distance et soigneurs restent loin derrière.",
+      "moderate": "Modéré",
+      "moderateHelp": "Équilibré : courtes poursuites en supériorité, repli en infériorité, se replie sous ~35 % de PV. Un bon choix par défaut.",
+      "aggressive": "Agressif",
+      "aggressiveHelp": "Pousse la ligne ennemie et poursuit les kills ; ne se replie qu'au bord de la mort (~18 % de PV).",
+      "custom": "Personnalisé",
+      "customHelp": "Réglé à la main : chaque seuil ci-dessous vous appartient. Part de la base Modéré."
+    },
+    "reaction": {
+      "off": "Désactivé",
+      "offHelp": "Réagit instantanément, avec un déplacement à la frame près.",
+      "light": "Léger",
+      "lightHelp": "~80–220 ms de délai de réaction.",
+      "realistic": "Réaliste",
+      "realisticHelp": "~140–380 ms de délai de réaction. Un bon choix par défaut.",
+      "heavy": "Marqué",
+      "heavyHelp": "~260–650 ms de délai de réaction, nettement posé."
+    },
+    "custom": {
+      "health": "Points de vie",
+      "retreatBelow": "Se replier sous",
+      "retreatBelowHelp": "Quand des ennemis sont sur vous, ou que votre camp est en infériorité, et que vos PV passent sous ce seuil, repliez-vous en sécurité.",
+      "rejoinAbove": "Revenir au-dessus de",
+      "rejoinAboveHelp": "Une fois soigné au-dessus de ce niveau de PV, retournez au combat.",
+      "alwaysFleeBelow": "Toujours fuir sous",
+      "alwaysFleeBelowHelp": "Si vos PV passent sous ce seuil, courez vous mettre à l'abri quoi qu'il arrive.",
+      "heavyDamage": "Seuil de gros dégâts",
+      "heavyDamageHelp": "Si vos PV chutent plus vite que cela par seconde, c'est considéré comme de gros dégâts et vous reculez plus tôt.",
+      "aggression": "Agressivité",
+      "chaseAhead": "Poursuivre avec un avantage de",
+      "chaseAheadHelp": "À quel point votre camp proche doit être plus fort avant de poursuivre un kill. Les blessés comptent pour moins, et chaque ennemi déjà mort compte pour un demi-combattant. 0 = poursuivre à égalité ; sous 0 = poursuivre même en légère infériorité.",
+      "fallBackBehind": "Se replier avec un retard de",
+      "fallBackBehindHelp": "À quel point les ennemis proches doivent être plus forts avant que vous ne vous repliiez vers votre équipe. Les blessés comptent pour moins. 0 = se replier dès qu'ils sont plus nombreux.",
+      "positioning": "Où se placer",
+      "meleeHold": "Mêlée : tenir près du cristal",
+      "meleeHoldHelp": "En mêlée ou tank sans personne à poursuivre, à quelle distance du cristal se tenir.",
+      "meleeChase": "Mêlée : poursuivre jusqu'à",
+      "meleeChaseHelp": "En mêlée ou tank poursuivant une cible, à quelle distance s'approcher avant d'attaquer.",
+      "rangedHold": "Distance : tenir derrière le cristal",
+      "rangedHoldHelp": "En distance ou soigneur en position, à quelle distance derrière le cristal se tenir.",
+      "rangedAttack": "Distance : attaquer depuis",
+      "rangedAttackHelp": "En distance ou soigneur, à quelle distance de votre cible se tenir pour attaquer.",
+      "keepBack": "Rester en retrait en attendant",
+      "keepBackHelp": "En attendant vos coéquipiers, gardez au moins cette distance avec le groupe ennemi.",
+      "focus": "Quand les ennemis vous focalisent",
+      "inDangerAt": "En danger à",
+      "inDangerAtHelp": "Combien d'ennemis doivent vous viser pour que vous soyez considéré en danger. Fonctionne avec « Se replier sous » : plus il y a d'attaquants, plus vous reculez tôt.",
+      "sidestepAt": "Esquiver à",
+      "sidestepAtHelp": "Quand au moins ce nombre d'ennemis vous vise, esquivez sur le côté même à pleine vie.",
+      "sidestepDistance": "Distance d'esquive",
+      "sidestepDistanceHelp": "Quand les ennemis vous focalisent, de combien se déplacer en une esquive, vers l'endroit le plus sûr et le plus proche de votre équipe.",
+      "retreatStep": "Pas de repli",
+      "retreatStepHelp": "De combien chaque pas d'un repli vous éloigne. La direction est choisie pour passer les ennemis, rester près de votre équipe et briser leur ligne de vue.",
+      "limits": "Distances et limites",
+      "backupRange": "Portée de renfort",
+      "backupRangeHelp": "Un coéquipier à cette distance compte comme renfort. Sans personne à l'intérieur, vous agissez comme si vous étiez seul.",
+      "enemyNearRange": "Portée ennemie proche",
+      "enemyNearRangeHelp": "Les ennemis à cette distance de vous comptent dans l'infériorité numérique.",
+      "fightZone": "Taille de la zone de combat",
+      "fightZoneHelp": "La zone autour du cristal servant à juger qui gagne le combat. Quand aucun ennemi ne s'y trouve, le point est considéré libre et vous montez dessus pour pousser.",
+      "maxChase": "Poursuite max. depuis le cristal",
+      "maxChaseHelp": "Ne poursuivez jamais une cible plus loin que cela du cristal. Les ennemis au-delà sont ignorés.",
+      "maxFromTeam": "Distance max. de l'équipe",
+      "maxFromTeamHelp": "Ne vous éloignez jamais plus que cela du centre de votre équipe.",
+      "resetDefaults": "Réinitialiser",
+      "resetDefaultsHelp": "Remet chaque valeur ci-dessus à la base Modéré. Maintenez Ctrl et cliquez pour confirmer."
+    },
+    "match": {
+      "intro": "Intro du match",
+      "sayHello": "Dire bonjour",
+      "sayHelloHelp": "Envoie /quickchat Hello une fois pendant la phase des portraits, à un moment aléatoire pour que cela ne paraisse pas scripté.",
+      "chance": "Probabilité",
+      "helloChanceHelp": "À quelle fréquence le bonjour part vraiment. Plus bas, il reste parfois silencieux.",
+      "after": "Après",
+      "helloAfterHelp": "Attend un délai aléatoire dans cette plage après l'apparition des portraits, pour que le salut ne parte jamais dès le début de l'intro.",
+      "emotes": "Emotes occasionnels",
+      "emotesHelp": "Joue un emote amical aléatoire (saluer, applaudir, faire le salut militaire, etc.) à un moment aléatoire du compte à rebours, parfois deux fois. Attend que votre personnage soit libre pour que l'emote se joue vraiment.",
+      "results": "Écran de résultats",
+      "goodMatch": "Dire « Good Match »",
+      "goodMatchHelp": "Envoie /quickchat \"Good Match\" quand l'écran de résultats apparaît à la fin d'un match.",
+      "goodMatchChanceHelp": "À quelle fréquence \"Good Match\" part vraiment après un match.",
+      "goodMatchAfterHelp": "Attend un délai aléatoire dans cette plage après l'apparition de l'écran de résultats. S'il tombe après \"Quitter la mission après\" (sous Session), le bot part d'abord et saute l'au revoir."
+    },
+    "format": {
+      "seconds": "%d s",
+      "minutes": "%d min",
+      "matches": "%d matchs",
+      "yards": "%d yd",
+      "attackers": "%d attaquants",
+      "percent": "%d%%",
+      "count": "%d",
+      "percentOfMatches": "%d%% des matchs",
+      "percentPerSecond": "%d%%/s"
+    }
+  },
+  "brain": {
+    "legend": {
+      "enemy": "● ennemi",
+      "target": "◎ cible",
+      "ally": "● allié",
+      "point": "◆ point"
+    },
+    "off": "Le cerveau de combat est désactivé.",
+    "offHint": "Activez-le dans Paramètres, Combat.",
+    "notInMatch": "Pas dans un match en cours.",
+    "matchStarting": "Match qui démarre : le cerveau se lance à la grille.",
+    "navFallback": "vnavmesh hors ligne, repli sur le chat",
+    "range": "~{0}y",
+    "phase": {
+      "idle": "inactif",
+      "inQueue": "en file",
+      "inMatch": "en match",
+      "wrappingUp": "finalisation"
+    },
+    "enemy": "Ennemi",
+    "ally": "Allié",
+    "point": "Point",
+    "target": "Cible",
+    "role": {
+      "tank": "tank",
+      "melee": "mêlée",
+      "ranged": "distance",
+      "healer": "soigneur",
+      "unknown": "rôle inconnu"
+    }
+  },
+  "plugin": {
+    "commandHelp": "Affiche ou masque la fenêtre Auto PVP Series Grind. /apsg config | stats | deps | about | brain | target | objects.",
+    "commandHelpAlias": "Alias de /apsg."
+  }
+}

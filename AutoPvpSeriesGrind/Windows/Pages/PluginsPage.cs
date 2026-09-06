@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.External;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
@@ -12,10 +13,6 @@ internal sealed class PluginsPage
     private const float PadX = 16f;
     private const float DiscRadius = 17f;
 
-    private const string Footer = "Install adds the plugin's own repository to Dalamud and queues an install. " +
-        "If one-click install fails, right-click a plugin name to copy its repo URL and add it by hand under " +
-        "/xlsettings, Experimental, Custom Plugin Repositories.";
-
     public void Draw()
     {
         var missing = 0;
@@ -26,9 +23,9 @@ internal sealed class PluginsPage
         }
 
         var status = missing == 0
-            ? "Everything the bot needs is installed and loaded."
-            : missing == 1 ? "1 required plugin is missing." : $"{missing} required plugins are missing.";
-        PageHeader.Draw("Plugins", status, missing == 0 ? Styling.AccentMint : Styling.AccentRose);
+            ? Loc.T(L.Plugins.AllInstalled)
+            : Loc.Plural(L.Plugins.Missing, missing);
+        PageHeader.Draw(Loc.T(L.Plugins.Title), status, missing == 0 ? Styling.AccentMint : Styling.AccentRose);
 
         for (var index = 0; index < plugins.Count; index++)
         {
@@ -41,8 +38,9 @@ internal sealed class PluginsPage
         {
             var origin = ImGui.GetCursorScreenPos();
             var width = ImGui.GetContentRegionAvail().X;
-            TextDraw.Wrapped(Footer, origin, width, Styling.TextMuted);
-            ImGui.Dummy(new Vector2(width, TextDraw.MeasureWrapped(Footer, width).Y));
+            var footer = Loc.T(L.Plugins.IntroInstall) + Loc.T(L.Plugins.IntroFallback) + Loc.T(L.Plugins.IntroPath);
+            TextDraw.Wrapped(footer, origin, width, Styling.TextMuted);
+            ImGui.Dummy(new Vector2(width, TextDraw.MeasureWrapped(footer, width).Y));
         }
     }
 
@@ -84,7 +82,7 @@ internal sealed class PluginsPage
             nameHeight = TextDraw.Measure(info.DisplayName).Y;
         float purposeHeight;
         using (Fonts.PushCaption())
-            purposeHeight = TextDraw.Measure(info.Purpose).Y;
+            purposeHeight = TextDraw.Measure(Loc.T(info.Purpose)).Y;
         var top = midY - (nameHeight + 3f * scale + purposeHeight) * 0.5f;
 
         Vector2 nameSize;
@@ -97,14 +95,14 @@ internal sealed class PluginsPage
         DrawRequirementTag(dl, required, textX + nameSize.X + 10f * scale, top + nameHeight * 0.5f);
 
         using (Fonts.PushCaption())
-            TextDraw.At(TextDraw.Truncate(info.Purpose, maxTextWidth), new Vector2(textX, top + nameHeight + 3f * scale), Styling.TextDim);
+            TextDraw.At(TextDraw.Truncate(Loc.T(info.Purpose), maxTextWidth), new Vector2(textX, top + nameHeight + 3f * scale), Styling.TextDim);
 
         var nameMin = new Vector2(textX, top);
         var nameMax = nameMin + nameSize;
         if (Hit.HoveringRect(nameMin, nameMax))
         {
             ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-            Tooltip.Show($"Click to open {info.RepoUrl}\nRight-click to copy it.");
+            Tooltip.Show(Loc.T(L.Plugins.LinkHint, info.RepoUrl));
             if (ImGui.IsMouseClicked(ImGuiMouseButton.Left)) UrlActions.OpenOrCopy(info.RepoUrl);
             else if (ImGui.IsMouseClicked(ImGuiMouseButton.Right)) ImGui.SetClipboardText(info.RepoUrl);
         }
@@ -116,7 +114,7 @@ internal sealed class PluginsPage
     private static void DrawRequirementTag(ImDrawListPtr dl, bool required, float x, float midY)
     {
         var scale = ImGuiHelpers.GlobalScale;
-        var label = TextDraw.Upper(required ? "Required" : "Optional");
+        var label = TextDraw.Upper(Loc.T(required ? L.Plugins.Required : L.Plugins.Optional));
         using (Fonts.PushCaption())
         {
             var labelSize = TextDraw.Measure(label);
@@ -135,7 +133,7 @@ internal sealed class PluginsPage
 
         if (installed)
         {
-            const string label = "Installed";
+            var label = Loc.T(L.Plugins.Installed);
             var labelSize = TextDraw.Measure(label);
             var iconSize = TextDraw.IconSize(FontAwesomeIcon.Check);
             var labelX = end.X - padX - labelSize.X;
@@ -145,7 +143,7 @@ internal sealed class PluginsPage
             return end.X - padX - iconX + 12f * scale;
         }
 
-        var text = installing ? "Installing" : "Install";
+        var text = Loc.T(installing ? L.Plugins.Installing : L.Plugins.Install);
         var width = PillButton.Width(text, FontAwesomeIcon.Download);
         ImGui.SetCursorScreenPos(new Vector2(end.X - padX - width, midY - 15f * scale));
         ImGui.PushID((nint)((int)plugin + 1));

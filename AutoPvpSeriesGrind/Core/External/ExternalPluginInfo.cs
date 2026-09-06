@@ -1,9 +1,11 @@
+using AutoPvpSeriesGrind.Core.Localization;
+
 namespace AutoPvpSeriesGrind.Core.External;
 
 internal sealed record ExternalPluginInfo(
     string InternalName,
     string DisplayName,
     string RepoUrl,
-    string Purpose,
+    LocString Purpose,
     bool Required,
     string[]? Aliases = null);

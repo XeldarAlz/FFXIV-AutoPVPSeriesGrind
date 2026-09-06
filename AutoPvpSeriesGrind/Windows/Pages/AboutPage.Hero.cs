@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
@@ -47,7 +48,7 @@ internal sealed partial class AboutPage
         Styling.VSpace(9);
 
         var version = typeof(AboutPage).Assembly.GetName().Version?.ToString() ?? "?";
-        CenteredPill($"v {version}", Styling.TextSecondary,
+        CenteredPill(Loc.T(L.About.Version, version), Styling.TextSecondary,
             Styling.WithAlpha(Styling.AccentViolet, 0.45f), Styling.CardBgSoft);
     }
 
