@@ -1,7 +1,6 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Ipc;
-using ECommons.Automation;
 using System.Numerics;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
@@ -62,7 +61,7 @@ internal sealed class MovementExecutor
             return;
         }
 
-        Chat.ExecuteCommand(GameCommands.Sprint);
+        ActionOps.UseAction(ActionPvpSprint);
     }
 
     public void HaltPathing()

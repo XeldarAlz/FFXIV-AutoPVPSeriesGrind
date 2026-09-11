@@ -20,6 +20,8 @@ internal static class ApsgConstants
     public const uint StatusSprint = 1342;         // PvP sprint
     public const uint StatusGuard = 3054;          // PvP Guard (90% mitigation); poor target while up
 
+    public const uint ActionPvpSprint = 29057;
+
     // Standard-issue Elixir (PvP): 4.5s cast that refills HP and MP to full. Any movement cancels it,
     // so the brain must hold still whenever the rotation solver is casting it.
     public const uint ActionStandardIssueElixir = 29055;
@@ -64,8 +66,7 @@ internal static class ApsgConstants
         public const string EnableRotationManual = "/rotation manual";
         public const string AddLowHpTargeting = $"/rotation Settings TargetingTypes add {RotationPreset}";
 
-        public const string Sprint = "/pvpac sprint";
-        public const string ClearEnemySignOnSelf = "/enemysign clear <me>";
+        public const string ClearEnemySignOnSelf = "/mk clear <me>";
 
         // Default emotes only; reward emotes the account may not own fail silently.
         public static readonly string[] GreetEmotes = ["/wave", "/cheer", "/salute", "/thumbsup", "/joy", "/stretch"];
