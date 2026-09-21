@@ -372,7 +372,22 @@
       "builtIn": "Embutida",
       "builtInHelp": "Este plugin aperta sozinho as habilidades de JcJ do seu trabalho, Guard, Purify, Recuperate e Elixir. Nada mais para instalar. O padrão.",
       "manual": "Manual",
-      "manualHelp": "Você aperta suas próprias habilidades. O bot continua entrando na fila, se movendo, disparando o Limit Break e voltando para a fila."
+      "manualHelp": "Você aperta suas próprias habilidades. O bot continua entrando na fila, se movendo, disparando o Limit Break e voltando para a fila.",
+      "group": "Rotação",
+      "guardHp": "Guard abaixo de",
+      "guardHpHelp": "Usa Guard quando sua vida cai abaixo disto. Guard bloqueia 90% do dano por alguns segundos, mas termina assim que você se move ou age; por isso o bot fica parado enquanto dura.",
+      "guardOnBurst": "Guard ao sofrer burst",
+      "guardOnBurstHelp": "Usa Guard mais cedo também, quando sua vida cai rápido e pelo menos dois inimigos estão em cima de você.",
+      "guardOnBurstHp": "Guard de burst abaixo de",
+      "guardOnBurstHpHelp": "A vida que o Guard de burst espera.",
+      "recuperate": "Recuperate ao faltar",
+      "recuperateHelp": "Recuperate cura 15.000 fixos por 2.500 MP; o bot aperta quando falta pelo menos isso.",
+      "elixir": "Elixir abaixo de",
+      "elixirHelp": "O Standard-issue Elixir recarrega vida e MP por completo, mas leva 4,5 segundos parado. Usado quando vida ou MP estão abaixo disto e nenhum inimigo está a menos de 25 metros.",
+      "allySupport": "Ajudar aliados abaixo de",
+      "allySupportHelp": "Curas, escudos e outras habilidades amigas vão para o aliado com menos vida abaixo disto; senão para você, quando estiver abaixo.",
+      "purify": "Purify",
+      "purifyHelp": "Remove Stun, Heavy, Bind, Silence, Deep Freeze e Miracle of Nature assim que acertam."
     },
     "strategy": {
       "rush": "Correr para o cristal",
@@ -470,7 +485,8 @@
       "percent": "%d%%",
       "count": "%d",
       "percentOfMatches": "%d%% das partidas",
-      "percentPerSecond": "%d%%/s"
+      "percentPerSecond": "%d%%/s",
+      "hp": "%d HP"
     }
   },
   "brain": {

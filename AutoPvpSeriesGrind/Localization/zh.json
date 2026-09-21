@@ -372,7 +372,22 @@
       "builtIn": "内置",
       "builtInHelp": "本插件自行按下你职业的 PvP 技能、Guard、Purify、Recuperate 和 Elixir。无需额外安装。默认选项。",
       "manual": "手动",
-      "manualHelp": "技能由你自己按。机器人仍会负责排队、移动、释放极限技并重新排队。"
+      "manualHelp": "技能由你自己按。机器人仍会负责排队、移动、释放极限技并重新排队。",
+      "group": "循环",
+      "guardHp": "低于此血量时 Guard",
+      "guardHpHelp": "血量跌到此值以下时按下 Guard。Guard 在数秒内减免 90% 伤害，但一旦移动或行动就会结束，因此期间机器人会保持不动。",
+      "guardOnBurst": "被爆发时 Guard",
+      "guardOnBurstHelp": "当血量快速下降且至少两名敌人盯着你时，也会提前使用 Guard。",
+      "guardOnBurstHp": "爆发 Guard 的血量",
+      "guardOnBurstHpHelp": "爆发 Guard 等待的血量值。",
+      "recuperate": "缺失血量达到时 Recuperate",
+      "recuperateHelp": "Recuperate 消耗 2,500 MP 固定治疗 15,000；缺失血量达到此值时机器人会按下。",
+      "elixir": "低于此值时 Elixir",
+      "elixirHelp": "标准型以太药可完全回复血量和 MP，但需要原地站立 4.5 秒。当血量或 MP 低于此值且 25 米内没有敌人时使用。",
+      "allySupport": "帮助低于此血量的队友",
+      "allySupportHelp": "治疗、护盾和其他友方技能会用在低于此值且血量最低的队友身上；若没有，则在你自己低于此值时用于自己。",
+      "purify": "Purify",
+      "purifyHelp": "一旦受到眩晕、加重、止步、沉默、冰冻或 Miracle of Nature，立即解除。"
     },
     "strategy": {
       "rush": "直冲水晶",
@@ -470,7 +485,8 @@
       "percent": "%d%%",
       "count": "%d",
       "percentOfMatches": "%d%% 的比赛",
-      "percentPerSecond": "%d%%/秒"
+      "percentPerSecond": "%d%%/秒",
+      "hp": "%d HP"
     }
   },
   "brain": {

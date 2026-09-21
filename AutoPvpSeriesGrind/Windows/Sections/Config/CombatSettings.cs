@@ -9,6 +9,10 @@ internal static class CombatSettings
     public static void Draw(Configuration cfg)
     {
         DrawCombatGroup(cfg);
+        if (cfg.RotationProvider == RotationProvider.Internal)
+        {
+            DrawRotationGroup(cfg);
+        }
         SettingsGroup.Footnote(Loc.T(L.Settings.CombatIntroMovement) +
             Loc.T(L.Settings.CombatIntroRotation));
 
@@ -32,6 +36,56 @@ internal static class CombatSettings
 
         DrawHumanizeRow(cfg);
         DrawRecorderRow(cfg);
+    }
+
+    private static void DrawRotationGroup(Configuration cfg)
+    {
+        using var group = SettingsGroup.Begin(Loc.T(L.Settings.GroupRotation));
+
+        SettingsRow.Draw(Loc.T(L.Settings.RotationGuardHp),
+            Loc.T(L.Settings.RotationGuardHpHelp),
+            SettingsControls.RowSliderWidth,
+            () => SettingsControls.DrawIntSlider(cfg, "##rot_guard",
+                () => cfg.RotationGuardHpPercent, value => cfg.RotationGuardHpPercent = value, 5, 50, Loc.T(L.Settings.FormatPercent)));
+
+        SettingsRow.Draw(Loc.T(L.Settings.RotationGuardOnBurst),
+            Loc.T(L.Settings.RotationGuardOnBurstHelp),
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.RotationGuardOnBurst, value => cfg.RotationGuardOnBurst = value, "##rot_guardburst"),
+            SettingsRow.ToggleHeight);
+
+        if (cfg.RotationGuardOnBurst)
+        {
+            SettingsRow.Draw(Loc.T(L.Settings.RotationGuardOnBurstHp),
+                Loc.T(L.Settings.RotationGuardOnBurstHpHelp),
+                SettingsControls.RowSliderWidth,
+                () => SettingsControls.DrawIntSlider(cfg, "##rot_guardbursthp",
+                    () => cfg.RotationGuardOnBurstHpPercent, value => cfg.RotationGuardOnBurstHpPercent = value, 20, 80, Loc.T(L.Settings.FormatPercent)));
+        }
+
+        SettingsRow.Draw(Loc.T(L.Settings.RotationRecuperate),
+            Loc.T(L.Settings.RotationRecuperateHelp),
+            SettingsControls.RowSliderWidth,
+            () => SettingsControls.DrawIntSlider(cfg, "##rot_recuperate",
+                () => cfg.RotationRecuperateMissingHp, value => cfg.RotationRecuperateMissingHp = value, 5000, 30000, Loc.T(L.Settings.FormatHp)));
+
+        SettingsRow.Draw(Loc.T(L.Settings.RotationElixir),
+            Loc.T(L.Settings.RotationElixirHelp),
+            SettingsControls.RowSliderWidth,
+            () => SettingsControls.DrawIntSlider(cfg, "##rot_elixir",
+                () => cfg.RotationElixirPercent, value => cfg.RotationElixirPercent = value, 10, 60, Loc.T(L.Settings.FormatPercent)));
+
+        SettingsRow.Draw(Loc.T(L.Settings.RotationAllySupport),
+            Loc.T(L.Settings.RotationAllySupportHelp),
+            SettingsControls.RowSliderWidth,
+            () => SettingsControls.DrawIntSlider(cfg, "##rot_ally",
+                () => cfg.RotationAllySupportHpPercent, value => cfg.RotationAllySupportHpPercent = value, 20, 90, Loc.T(L.Settings.FormatPercent)));
+
+        SettingsRow.Draw(Loc.T(L.Settings.RotationPurify),
+            Loc.T(L.Settings.RotationPurifyHelp),
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.RotationPurify, value => cfg.RotationPurify = value, "##rot_purify"),
+            SettingsRow.ToggleHeight);
     }
 
     private static void DrawRotationProviderRow(Configuration cfg)

@@ -1,6 +1,7 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Rotation;
 using AutoPvpSeriesGrind.Core.Stats;
 using ECommons.Automation;
 using System.Threading.Tasks;
@@ -74,7 +75,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         settings = RunSettings.From(cfg);
         brain.SetStrategy(cfg.Strategy, cfg.CustomStrategy);
         brain.OwnsTargeting = settings.BrainTargets;
-        rotation.Configure(cfg.RotationProvider == RotationProvider.Internal);
+        rotation.Configure(cfg.RotationProvider == RotationProvider.Internal, RotationSettings.From(cfg));
 
         ApsgLog.Chat($"Starting PvP Series grind ({cfg.ActiveMode.DisplayName}).");
 

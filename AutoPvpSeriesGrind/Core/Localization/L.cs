@@ -350,6 +350,21 @@ internal static class L
         public static readonly LocString RotationBuiltInHelp = new("settings.rotation.builtInHelp", "This plugin presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself. Nothing extra to install. The default.");
         public static readonly LocString RotationManual = new("settings.rotation.manual", "Manual");
         public static readonly LocString RotationManualHelp = new("settings.rotation.manualHelp", "You press your own skills. The bot still queues, moves, fires the Limit Break and re-queues.");
+        public static readonly LocString GroupRotation = new("settings.rotation.group", "Rotation");
+        public static readonly LocString RotationGuardHp = new("settings.rotation.guardHp", "Guard below");
+        public static readonly LocString RotationGuardHpHelp = new("settings.rotation.guardHpHelp", "Press Guard when your HP falls under this. Guard blocks 90% of damage for a few seconds but ends the moment you move or act, so the bot holds still while it lasts.");
+        public static readonly LocString RotationGuardOnBurst = new("settings.rotation.guardOnBurst", "Guard when bursted");
+        public static readonly LocString RotationGuardOnBurstHelp = new("settings.rotation.guardOnBurstHelp", "Also Guard earlier, while your HP is dropping fast and at least two enemies are on you.");
+        public static readonly LocString RotationGuardOnBurstHp = new("settings.rotation.guardOnBurstHp", "Bursted Guard below");
+        public static readonly LocString RotationGuardOnBurstHpHelp = new("settings.rotation.guardOnBurstHpHelp", "The HP the burst Guard waits for.");
+        public static readonly LocString RotationRecuperate = new("settings.rotation.recuperate", "Recuperate when missing");
+        public static readonly LocString RotationRecuperateHelp = new("settings.rotation.recuperateHelp", "Recuperate heals a flat 15,000 for 2,500 MP; the bot presses it once you are missing at least this much.");
+        public static readonly LocString RotationElixir = new("settings.rotation.elixir", "Elixir below");
+        public static readonly LocString RotationElixirHelp = new("settings.rotation.elixirHelp", "Standard-issue Elixir refills HP and MP fully but takes 4.5 seconds standing still. Used when HP or MP is under this and no enemy is within 25 yards.");
+        public static readonly LocString RotationAllySupport = new("settings.rotation.allySupport", "Help allies below");
+        public static readonly LocString RotationAllySupportHelp = new("settings.rotation.allySupportHelp", "Heals, shields and other friendly skills go to the lowest ally under this HP; otherwise to you when you are under it.");
+        public static readonly LocString RotationPurify = new("settings.rotation.purify", "Purify");
+        public static readonly LocString RotationPurifyHelp = new("settings.rotation.purifyHelp", "Clear Stun, Heavy, Bind, Silence, Deep Freeze and Miracle of Nature as soon as they land.");
 
         public static readonly LocString StrategyRush = new("settings.strategy.rush", "Rush the crystal");
         public static readonly LocString StrategyRushHelp = new("settings.strategy.rushHelp", "No tactics: runs to the objective and stands on it. Never retreats; will feed when outnumbered.");
@@ -445,6 +460,7 @@ internal static class L
         public static readonly LocString FormatAttackers = new("settings.format.attackers", "%d attackers");
         public static readonly LocString FormatPercent = new("settings.format.percent", "%d%%");
         public static readonly LocString FormatCount = new("settings.format.count", "%d");
+        public static readonly LocString FormatHp = new("settings.format.hp", "%d HP");
         public static readonly LocString FormatPercentOfMatches = new("settings.format.percentOfMatches", "%d%% of matches");
         public static readonly LocString FormatPercentPerSecond = new("settings.format.percentPerSecond", "%d%%/s");
     }

@@ -372,7 +372,22 @@
       "builtIn": "Built-in",
       "builtInHelp": "This plugin presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself. Nothing extra to install. The default.",
       "manual": "Manual",
-      "manualHelp": "You press your own skills. The bot still queues, moves, fires the Limit Break and re-queues."
+      "manualHelp": "You press your own skills. The bot still queues, moves, fires the Limit Break and re-queues.",
+      "group": "Rotation",
+      "guardHp": "Guard below",
+      "guardHpHelp": "Press Guard when your HP falls under this. Guard blocks 90% of damage for a few seconds but ends the moment you move or act, so the bot holds still while it lasts.",
+      "guardOnBurst": "Guard when bursted",
+      "guardOnBurstHelp": "Also Guard earlier, while your HP is dropping fast and at least two enemies are on you.",
+      "guardOnBurstHp": "Bursted Guard below",
+      "guardOnBurstHpHelp": "The HP the burst Guard waits for.",
+      "recuperate": "Recuperate when missing",
+      "recuperateHelp": "Recuperate heals a flat 15,000 for 2,500 MP; the bot presses it once you are missing at least this much.",
+      "elixir": "Elixir below",
+      "elixirHelp": "Standard-issue Elixir refills HP and MP fully but takes 4.5 seconds standing still. Used when HP or MP is under this and no enemy is within 25 yards.",
+      "allySupport": "Help allies below",
+      "allySupportHelp": "Heals, shields and other friendly skills go to the lowest ally under this HP; otherwise to you when you are under it.",
+      "purify": "Purify",
+      "purifyHelp": "Clear Stun, Heavy, Bind, Silence, Deep Freeze and Miracle of Nature as soon as they land."
     },
     "strategy": {
       "rush": "Rush the crystal",
@@ -470,7 +485,8 @@
       "percent": "%d%%",
       "count": "%d",
       "percentOfMatches": "%d%% of matches",
-      "percentPerSecond": "%d%%/s"
+      "percentPerSecond": "%d%%/s",
+      "hp": "%d HP"
     }
   },
   "brain": {

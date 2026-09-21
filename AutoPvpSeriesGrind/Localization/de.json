@@ -372,7 +372,22 @@
       "builtIn": "Eingebaut",
       "builtInHelp": "Dieses Plugin drückt die PvP-Fähigkeiten deines Jobs, Guard, Purify, Recuperate und Elixir selbst. Nichts weiter zu installieren. Die Voreinstellung.",
       "manual": "Manuell",
-      "manualHelp": "Du drückst deine Fähigkeiten selbst. Der Bot stellt sich weiter in die Warteschlange, bewegt sich, zündet den Limitrausch und stellt sich erneut an."
+      "manualHelp": "Du drückst deine Fähigkeiten selbst. Der Bot stellt sich weiter in die Warteschlange, bewegt sich, zündet den Limitrausch und stellt sich erneut an.",
+      "group": "Rotation",
+      "guardHp": "Guard unter",
+      "guardHpHelp": "Drückt Guard, wenn deine HP darunter fallen. Guard blockt einige Sekunden 90 % des Schadens, endet aber, sobald du dich bewegst oder handelst; der Bot bleibt deshalb solange stehen.",
+      "guardOnBurst": "Guard bei Burst",
+      "guardOnBurstHelp": "Guard auch früher, wenn deine HP schnell fallen und mindestens zwei Gegner auf dir sind.",
+      "guardOnBurstHp": "Burst-Guard unter",
+      "guardOnBurstHpHelp": "Die HP, auf die der Burst-Guard wartet.",
+      "recuperate": "Recuperate ab fehlenden",
+      "recuperateHelp": "Recuperate heilt pauschal 15.000 für 2.500 MP; der Bot drückt es, sobald dir mindestens so viel fehlt.",
+      "elixir": "Elixir unter",
+      "elixirHelp": "Das Standard-Elixir füllt HP und MP ganz auf, braucht aber 4,5 Sekunden Stillstand. Genutzt, wenn HP oder MP darunter liegen und kein Gegner in 25 Metern ist.",
+      "allySupport": "Verbündeten helfen unter",
+      "allySupportHelp": "Heilungen, Schilde und andere freundliche Fähigkeiten gehen an den Verbündeten mit den wenigsten HP unter diesem Wert; sonst an dich, wenn du darunter bist.",
+      "purify": "Purify",
+      "purifyHelp": "Entfernt Stun, Heavy, Bind, Silence, Deep Freeze und Miracle of Nature, sobald sie treffen."
     },
     "strategy": {
       "rush": "Auf den Kristall stürmen",
@@ -470,7 +485,8 @@
       "percent": "%d%%",
       "count": "%d",
       "percentOfMatches": "%d%% der Matches",
-      "percentPerSecond": "%d%%/s"
+      "percentPerSecond": "%d%%/s",
+      "hp": "%d HP"
     }
   },
   "brain": {

@@ -372,7 +372,22 @@
       "builtIn": "Integrada",
       "builtInHelp": "Este plugin pulsa por sí mismo las habilidades JcJ de tu trabajo, Guardia, Purificar, Recuperar y Elixir. Nada más que instalar. La opción predeterminada.",
       "manual": "Manual",
-      "manualHelp": "Tú pulsas tus propias habilidades. El bot sigue haciendo cola, moviéndose, lanzando el Límite y volviendo a la cola."
+      "manualHelp": "Tú pulsas tus propias habilidades. El bot sigue haciendo cola, moviéndose, lanzando el Límite y volviendo a la cola.",
+      "group": "Rotación",
+      "guardHp": "Guardia por debajo de",
+      "guardHpHelp": "Usa Guardia cuando tu vida baje de este valor. Guardia bloquea el 90 % del daño unos segundos pero termina en cuanto te mueves o actúas, así que el bot se queda quieto mientras dura.",
+      "guardOnBurst": "Guardia al recibir burst",
+      "guardOnBurstHelp": "Usa Guardia antes también, cuando tu vida cae rápido y al menos dos enemigos te atacan.",
+      "guardOnBurstHp": "Guardia de burst por debajo de",
+      "guardOnBurstHpHelp": "La vida que espera la Guardia de burst.",
+      "recuperate": "Recuperar al faltar",
+      "recuperateHelp": "Recuperar cura 15.000 fijos por 2.500 PM; el bot lo pulsa cuando te falta al menos esto.",
+      "elixir": "Elixir por debajo de",
+      "elixirHelp": "El elixir estándar rellena vida y PM por completo pero tarda 4,5 segundos sin moverte. Se usa cuando la vida o los PM bajan de esto y no hay enemigos a menos de 25 metros.",
+      "allySupport": "Ayudar a aliados por debajo de",
+      "allySupportHelp": "Curas, escudos y otras habilidades amistosas van al aliado con menos vida bajo este valor; si no, a ti cuando estés por debajo.",
+      "purify": "Purificar",
+      "purifyHelp": "Elimina Aturdimiento, Pesadez, Inmovilización, Silencio, Congelación y Milagro de la naturaleza en cuanto aparecen."
     },
     "strategy": {
       "rush": "Ir a por el cristal",
@@ -470,7 +485,8 @@
       "percent": "%d%%",
       "count": "%d",
       "percentOfMatches": "%d%% de las partidas",
-      "percentPerSecond": "%d%%/s"
+      "percentPerSecond": "%d%%/s",
+      "hp": "%d PV"
     }
   },
   "brain": {

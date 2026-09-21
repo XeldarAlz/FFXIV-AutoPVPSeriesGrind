@@ -22,7 +22,11 @@ internal sealed class RotationController(PvpBrain brain)
         clearedSignThisLife = false;
     }
 
-    public void Configure(bool enabled) => Enabled = enabled;
+    public void Configure(bool enabled, in RotationSettings rotationSettings)
+    {
+        Enabled = enabled;
+        driver.Configure(in rotationSettings);
+    }
 
     public void OnMatchStart() => driver.OnAlive();
 

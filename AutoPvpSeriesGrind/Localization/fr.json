@@ -372,7 +372,22 @@
       "builtIn": "Intégrée",
       "builtInHelp": "Ce plugin appuie lui-même sur les compétences JcJ de votre job, Garde, Purification, Récupération et Élixir. Rien d'autre à installer. Le choix par défaut.",
       "manual": "Manuel",
-      "manualHelp": "Vous appuyez vous-même sur vos compétences. Le bot continue de faire la file, de se déplacer, de déclencher la Transcendance et de se réinscrire."
+      "manualHelp": "Vous appuyez vous-même sur vos compétences. Le bot continue de faire la file, de se déplacer, de déclencher la Transcendance et de se réinscrire.",
+      "group": "Rotation",
+      "guardHp": "Garde sous",
+      "guardHpHelp": "Utilise Garde quand vos PV passent sous ce seuil. Garde bloque 90 % des dégâts quelques secondes mais cesse dès que vous bougez ou agissez ; le bot reste donc immobile tant qu'elle dure.",
+      "guardOnBurst": "Garde en cas de burst",
+      "guardOnBurstHelp": "Garde aussi plus tôt, quand vos PV chutent vite et qu'au moins deux ennemis vous ciblent.",
+      "guardOnBurstHp": "Garde de burst sous",
+      "guardOnBurstHpHelp": "Les PV que la Garde de burst attend.",
+      "recuperate": "Récupération à partir de",
+      "recuperateHelp": "Récupération soigne 15 000 PV fixes pour 2 500 PM ; le bot l'utilise dès qu'il vous manque au moins autant.",
+      "elixir": "Élixir sous",
+      "elixirHelp": "L'élixir standard restaure PV et PM entièrement mais demande 4,5 secondes sans bouger. Utilisé quand les PV ou les PM sont sous ce seuil et qu'aucun ennemi n'est à moins de 25 mètres.",
+      "allySupport": "Aider les alliés sous",
+      "allySupportHelp": "Soins, boucliers et autres compétences amicales vont à l'allié le plus bas sous ce seuil ; sinon à vous quand vous êtes en dessous.",
+      "purify": "Purification",
+      "purifyHelp": "Dissipe Étourdissement, Pesanteur, Entrave, Silence, Gel et Miracle de la nature dès qu'ils tombent."
     },
     "strategy": {
       "rush": "Foncer sur le cristal",
@@ -470,7 +485,8 @@
       "percent": "%d%%",
       "count": "%d",
       "percentOfMatches": "%d%% des matchs",
-      "percentPerSecond": "%d%%/s"
+      "percentPerSecond": "%d%%/s",
+      "hp": "%d PV"
     }
   },
   "brain": {

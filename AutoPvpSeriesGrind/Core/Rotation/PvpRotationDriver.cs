@@ -11,15 +11,10 @@ namespace AutoPvpSeriesGrind.Core.Rotation;
 
 internal sealed class PvpRotationDriver
 {
-    private const float GuardHpFraction = 0.15f;
-    private const float GuardUnderBurstHpFraction = 0.45f;
     private const int GuardUnderBurstFocusCount = 2;
-    private const uint RecuperateMissingHp = 15000;
-    private const float ElixirResourceFraction = 1f / 3f;
     private const float ElixirSafeDistanceYalms = 25f;
     private const long MinTimeAliveMs = 5000;
     private const float WeaveMinGcdRemainingSec = 0.7f;
-    private const float AllySupportHpFraction = 0.6f;
 
     private static readonly RuleCondition[] NoConditions = [];
 
@@ -28,12 +23,16 @@ internal sealed class PvpRotationDriver
         IBattleChara? Enemy,
         PvpSnapshot Snapshot,
         bool MayStandStill,
+        float AllySupportHp,
         Action HoldStill);
 
+    private RotationSettings settings;
     private PvpJobKit? kit;
     private RotationTable? table;
     private long aliveSinceMs;
     private uint lastUsedActionId;
+
+    public void Configure(in RotationSettings rotationSettings) => settings = rotationSettings;
 
     public void OnAlive()
     {
@@ -56,7 +55,7 @@ internal sealed class PvpRotationDriver
         var currentKit = KitFor(self);
         var aliveMs = Environment.TickCount64 - aliveSinceMs;
 
-        if (TryPurify(self))
+        if (settings.Purify && TryPurify(self))
         {
             return RotationOutcome.Instant;
         }
@@ -81,7 +80,7 @@ internal sealed class PvpRotationDriver
             return RotationOutcome.None;
         }
 
-        var context = new RuleContext(self, ResolveEnemy(preferredTargetId, snapshot), snapshot, mayStandStill, holdStill);
+        var context = new RuleContext(self, ResolveEnemy(preferredTargetId, snapshot), snapshot, mayStandStill, settings.AllySupportHp, holdStill);
         return table is not null
             ? RunTable(table, in context, gcdReady)
             : RunGeneric(currentKit, in context, gcdReady);
@@ -284,12 +283,12 @@ internal sealed class PvpRotationDriver
         }
         if (info.TargetsAlly)
         {
-            var allyId = LowestAllyId(context.Snapshot, AllySupportHpFraction);
+            var allyId = LowestAllyId(context.Snapshot, context.AllySupportHp);
             if (allyId != 0)
             {
                 return Svc.Objects.SearchById(allyId);
             }
-            return info.TargetsSelf && context.Snapshot.SelfHp <= AllySupportHpFraction ? context.Self : null;
+            return info.TargetsSelf && context.Snapshot.SelfHp <= context.AllySupportHp ? context.Self : null;
         }
         if (info.TargetsSelf)
         {
@@ -312,8 +311,8 @@ internal sealed class PvpRotationDriver
             return false;
         }
 
-        var critical = snapshot.SelfHp <= GuardHpFraction;
-        var burstFocused = underBurst && snapshot.SelfHp <= GuardUnderBurstHpFraction && snapshot.FocusCount >= GuardUnderBurstFocusCount;
+        var critical = snapshot.SelfHp <= settings.GuardHp;
+        var burstFocused = settings.GuardOnBurst && underBurst && snapshot.SelfHp <= settings.GuardOnBurstHp && snapshot.FocusCount >= GuardUnderBurstFocusCount;
         if (!critical && !burstFocused)
         {
             return false;
@@ -324,7 +323,7 @@ internal sealed class PvpRotationDriver
 
     private bool TryRecuperate(IPlayerCharacter self, long aliveMs)
     {
-        if (aliveMs < MinTimeAliveMs || self.MaxHp - self.CurrentHp < RecuperateMissingHp)
+        if (aliveMs < MinTimeAliveMs || self.MaxHp - self.CurrentHp < settings.RecuperateMissingHp)
         {
             return false;
         }
@@ -343,8 +342,8 @@ internal sealed class PvpRotationDriver
             return false;
         }
 
-        var lowMp = self.CurrentMp <= self.MaxMp * ElixirResourceFraction;
-        var lowHp = self.CurrentHp <= self.MaxHp * ElixirResourceFraction;
+        var lowMp = self.CurrentMp <= self.MaxMp * settings.ElixirResourceFraction;
+        var lowHp = self.CurrentHp <= self.MaxHp * settings.ElixirResourceFraction;
         if (!lowMp && !lowHp)
         {
             return false;

@@ -28,7 +28,7 @@ Grinds the **PvP Series Malmstones** by looping Casual Match. Press **Start** an
 ## Features
 
 - **Hands-off match loop**: queue → fight on the pvp match → leave → requeue.
-- **Built-in PvP rotation**: presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself; no rotation plugin needed.
+- **Built-in PvP rotation**: presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself; the defensive thresholds are adjustable under Settings, Combat.
 - **Match limit**: stop after N completed matches, or run until you stop it.
 - **Spawn-aware movement**: leaves the spawn pen toward the right side and contests the objective, holding the point when it's contested instead of re-pathing.
 - **Auto Limit Break**: fires the correct PvP LB for your job on a throttle.

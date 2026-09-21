@@ -372,7 +372,22 @@
       "builtIn": "Yerleşik",
       "builtInHelp": "Bu eklenti işinin PvP yeteneklerini, Guard, Purify, Recuperate ve Elixir'i kendisi basar. Ek kurulum gerekmez. Varsayılan seçenek.",
       "manual": "Manuel",
-      "manualHelp": "Yetenekleri kendin basarsın. Bot yine kuyruğa girer, hareket eder, Limit Break'i kullanır ve tekrar kuyruğa girer."
+      "manualHelp": "Yetenekleri kendin basarsın. Bot yine kuyruğa girer, hareket eder, Limit Break'i kullanır ve tekrar kuyruğa girer.",
+      "group": "Rotasyon",
+      "guardHp": "Guard, can şunun altındayken",
+      "guardHpHelp": "Canın bunun altına düşünce Guard'a basar. Guard birkaç saniye hasarın %90'ını keser ama hareket ettiğin ya da bir şey yaptığın anda biter; bu yüzden bot süresi boyunca yerinde durur.",
+      "guardOnBurst": "Burst yerken Guard",
+      "guardOnBurstHelp": "Canın hızla düşüyorsa ve en az iki düşman üzerindeyse Guard'ı daha erken de kullan.",
+      "guardOnBurstHp": "Burst Guard'ı şunun altında",
+      "guardOnBurstHpHelp": "Burst Guard'ının beklediği can.",
+      "recuperate": "Recuperate, eksik can şu kadarken",
+      "recuperateHelp": "Recuperate 2.500 MP'ye sabit 15.000 iyileştirir; bot en az bu kadar eksiğin olunca basar.",
+      "elixir": "Elixir şunun altında",
+      "elixirHelp": "Standard-issue Elixir canı ve MP'yi tamamen doldurur ama 4,5 saniye hareketsiz kalmayı gerektirir. Can ya da MP bunun altındayken ve 25 metrede düşman yokken kullanılır.",
+      "allySupport": "Müttefiklere yardım, can şunun altındayken",
+      "allySupportHelp": "İyileştirmeler, kalkanlar ve diğer dost yetenekler bu değerin altındaki en düşük canlı müttefike gider; yoksa sen altındaysan sana.",
+      "purify": "Purify",
+      "purifyHelp": "Stun, Heavy, Bind, Silence, Deep Freeze ve Miracle of Nature'ı gelir gelmez temizler."
     },
     "strategy": {
       "rush": "Kristale koş",
@@ -470,7 +485,8 @@
       "percent": "%d%%",
       "count": "%d",
       "percentOfMatches": "maçların %%%d'i",
-      "percentPerSecond": "%%%d/sn"
+      "percentPerSecond": "%%%d/sn",
+      "hp": "%d HP"
     }
   },
   "brain": {

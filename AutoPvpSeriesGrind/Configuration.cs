@@ -33,6 +33,13 @@ public sealed class Configuration : IPluginConfiguration
     public bool RandomEmotes { get; set; } = false;
 
     public RotationProvider RotationProvider { get; set; } = RotationProvider.Internal;
+    public int RotationGuardHpPercent { get; set; } = 15;
+    public bool RotationGuardOnBurst { get; set; } = true;
+    public int RotationGuardOnBurstHpPercent { get; set; } = 45;
+    public int RotationRecuperateMissingHp { get; set; } = 15000;
+    public int RotationElixirPercent { get; set; } = 33;
+    public int RotationAllySupportHpPercent { get; set; } = 60;
+    public bool RotationPurify { get; set; } = true;
     public bool EnableCombatBrain { get; set; } = true;
     public bool BrainPicksTargets { get; set; } = false;
     public PvpStrategy Strategy { get; set; } = PvpStrategy.Moderate;
