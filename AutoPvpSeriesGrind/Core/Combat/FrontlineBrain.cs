@@ -62,8 +62,9 @@ internal sealed class FrontlineBrain
 
         var distanceToCrowd = Vector3.Distance(snapshot.Self, crowd);
         var enemiesNear = snapshot.NearestEnemyDistance <= profile.EnemyAwareRadius;
-        WantsMount = distanceToCrowd > profile.MountDistance && !enemiesNear;
-        WantsDismount = enemiesNear || distanceToCrowd <= profile.RegroupDistance;
+        var crowdRiding = snapshot.AllyCluster is { IsRiding: true };
+        WantsMount = !enemiesNear && (crowdRiding || distanceToCrowd > profile.MountDistance);
+        WantsDismount = enemiesNear || (!crowdRiding && distanceToCrowd <= profile.RegroupDistance);
 
         if (distanceToCrowd > profile.RegroupDistance)
         {

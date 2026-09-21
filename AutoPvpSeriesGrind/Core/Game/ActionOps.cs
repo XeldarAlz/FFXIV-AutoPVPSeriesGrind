@@ -23,6 +23,9 @@ internal static unsafe class ActionOps
     public static bool IsReadyIgnoringRecast(uint actionId)
         => ActionManager.Instance()->GetActionStatus(ActionType.Action, actionId, checkRecastActive: false, checkCastingActive: false) == ReadyStatus;
 
+    public static bool IsGeneralActionReady(uint generalActionId)
+        => ActionManager.Instance()->GetActionStatus(ActionType.GeneralAction, generalActionId) == ReadyStatus;
+
     public static bool HasQueuedAction => ActionManager.Instance()->QueuedActionId != 0;
 
     public static void CancelCast() => UIState.Instance()->Hotbar.CancelCast();

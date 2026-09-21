@@ -2,6 +2,8 @@ using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Ipc;
 using AutoPvpSeriesGrind.Core.Rotation;
+using Dalamud.Game.ClientState.Conditions;
+using ECommons.DalamudServices;
 using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
@@ -56,7 +58,7 @@ internal sealed class MovementExecutor
 
     public static void EnsureSprinting()
     {
-        if (MatchState.HasStatus(PvpStatuses.Sprint))
+        if (Svc.Condition[ConditionFlag.Mounted] || MatchState.HasStatus(PvpStatuses.Sprint))
         {
             return;
         }

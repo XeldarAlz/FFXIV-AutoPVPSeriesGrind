@@ -2,7 +2,10 @@ using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Core.Combat;
 
-internal readonly record struct AllyCluster(Vector3 Centroid, int Size);
+internal readonly record struct AllyCluster(Vector3 Centroid, int Size, int MountedCount)
+{
+    public bool IsRiding => MountedCount * 2 > Size;
+}
 
 internal sealed class PvpSnapshot
 {
@@ -120,10 +123,15 @@ internal sealed class PvpSnapshot
 
         var sums = new Vector3[allies.Count];
         var counts = new int[allies.Count];
+        var mountedCounts = new int[allies.Count];
         for (var allyIndex = 0; allyIndex < allies.Count; allyIndex++)
         {
             sums[groupIds[allyIndex]] += allies[allyIndex].Position;
             counts[groupIds[allyIndex]]++;
+            if (allies[allyIndex].IsMounted)
+            {
+                mountedCounts[groupIds[allyIndex]]++;
+            }
         }
 
         AllyCluster? best = null;
@@ -140,7 +148,7 @@ internal sealed class PvpSnapshot
                 || counts[label] > current.Size
                 || (counts[label] == current.Size && distance < bestDistance))
             {
-                best = new AllyCluster(centroid, counts[label]);
+                best = new AllyCluster(centroid, counts[label], mountedCounts[label]);
                 bestDistance = distance;
             }
         }

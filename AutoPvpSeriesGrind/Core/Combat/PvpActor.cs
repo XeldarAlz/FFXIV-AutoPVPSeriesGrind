@@ -9,6 +9,7 @@ internal readonly record struct PvpActor(
     PvpRole Role,
     bool HasGuard,
     bool IsCasting,
+    bool IsMounted,
     ulong TargetId,
     float DistanceToSelf)
 {

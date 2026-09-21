@@ -225,6 +225,7 @@ internal static class MatchState
             Role: RoleFromByte(roleByte),
             HasGuard: HasStatus(playerCharacter, PvpStatuses.Guard),
             IsCasting: playerCharacter.IsCasting,
+            IsMounted: playerCharacter.CurrentMount is not null,
             TargetId: playerCharacter.TargetObjectId,
             DistanceToSelf: Vector3.Distance(self, playerCharacter.Position));
     }

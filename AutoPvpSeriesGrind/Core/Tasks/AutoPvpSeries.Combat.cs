@@ -105,10 +105,12 @@ internal sealed partial class AutoPvpSeries
     private bool HandleMount()
     {
         var mounted = Svc.Condition[ConditionFlag.Mounted];
-        if (!mounted && frontline.WantsMount && !Svc.Condition[ConditionFlag.InCombat])
+        if (!mounted && frontline.WantsMount && !Svc.Condition[ConditionFlag.InCombat]
+            && ActionOps.IsGeneralActionReady(GeneralActions.MountRoulette))
         {
+            movement.Stop();
             ActionOps.UseGeneralAction(GeneralActions.MountRoulette);
-            LogDiagnostic("far from the team -> mounting up");
+            LogDiagnostic("team is riding or far away -> mounting up");
             return true;
         }
         if (mounted && frontline.WantsDismount)
