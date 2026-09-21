@@ -239,6 +239,14 @@ internal sealed partial class AutoPvpSeries
             }
         }
 
+        if (HazardAvoidance.TryDodge(snapshot, crystalPosition, out var exit, out var hazard))
+        {
+            BrainTelemetry.RecordStatus(snapshot, MoveKind.Retreat, $"dodge {hazard.Source} (legacy)", Posture.Reposition);
+            MovementExecutor.EnsureSprinting();
+            movement.IssueMove(exit, exit, LegacyCrystalStopRange);
+            return;
+        }
+
         var hold = Vector3.Distance(snapshot.Self, crystalPosition) < CrystalEngageRadiusYalms && enemyOnPoint;
         if (HoldsStillForRotation(snapshot, snapshot.CurrentTarget?.Id ?? 0, hold ? Posture.Hold : Posture.Push, crystalPosition))
         {

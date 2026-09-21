@@ -153,6 +153,7 @@ internal static class MatchState
     {
         var enemies = new List<PvpActor>();
         var allies = new List<PvpActor>();
+        var hazards = new List<Hazard>();
         var enemySum = Vector3.Zero;
         var focusCount = 0;
         PvpActor? currentTarget = null;
@@ -172,6 +173,7 @@ internal static class MatchState
             if (IsEnemyPlayer(playerCharacter))
             {
                 enemies.Add(actor);
+                Telegraphs.CollectCast(playerCharacter, hazards);
                 enemySum += playerCharacter.Position;
                 if (actor.TargetId == selfId)
                 {
@@ -188,7 +190,8 @@ internal static class MatchState
             }
         }
 
-        return new ClassifiedPlayers(enemies, allies, enemySum, focusCount, currentTarget);
+        Telegraphs.CollectPlacedZones(hazards);
+        return new ClassifiedPlayers(enemies, allies, hazards, enemySum, focusCount, currentTarget);
     }
 
     private static PvpSnapshot AssembleSnapshot(Vector3 self, float selfRotation, ulong selfId, Vector3? objective, ClassifiedPlayers players)
@@ -206,6 +209,7 @@ internal static class MatchState
             Allies = players.Allies,
             EnemyCentroid = players.Enemies.Count > 0 ? players.EnemySum / players.Enemies.Count : null,
             FocusCount = players.FocusCount,
+            Hazards = players.Hazards,
         };
     }
 
@@ -238,6 +242,7 @@ internal static class MatchState
     private readonly record struct ClassifiedPlayers(
         List<PvpActor> Enemies,
         List<PvpActor> Allies,
+        List<Hazard> Hazards,
         Vector3 EnemySum,
         int FocusCount,
         PvpActor? CurrentTarget);

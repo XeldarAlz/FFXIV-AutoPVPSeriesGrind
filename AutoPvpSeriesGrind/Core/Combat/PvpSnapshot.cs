@@ -19,6 +19,7 @@ internal sealed class PvpSnapshot
     public required IReadOnlyList<PvpActor> Allies { get; init; }
     public required Vector3? EnemyCentroid { get; init; }
     public required int FocusCount { get; init; }
+    public required IReadOnlyList<Hazard> Hazards { get; init; }
 
     private AllyCluster? allyCluster;
     private bool allyClusterComputed;
@@ -37,6 +38,20 @@ internal sealed class PvpSnapshot
             }
             return allyCluster;
         }
+    }
+
+    public bool InHazard(Vector3 point, float margin, out Hazard hazard)
+    {
+        for (var hazardIndex = 0; hazardIndex < Hazards.Count; hazardIndex++)
+        {
+            if (Hazards[hazardIndex].Contains(point, margin))
+            {
+                hazard = Hazards[hazardIndex];
+                return true;
+            }
+        }
+        hazard = default;
+        return false;
     }
 
     public float NearestEnemyDistance => MinDistanceToSelf(Enemies);
