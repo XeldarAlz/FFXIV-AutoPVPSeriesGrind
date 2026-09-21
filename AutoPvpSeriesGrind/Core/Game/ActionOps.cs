@@ -31,6 +31,8 @@ internal static unsafe class ActionOps
         return MathF.Max(0f, detail->Total - detail->Elapsed);
     }
 
+    public static uint CurrentCharges(uint actionId) => ActionManager.Instance()->GetCurrentCharges(actionId);
+
     public static void UseAction(uint actionId)
         => ActionManager.Instance()->UseAction(ActionType.Action, actionId);
 

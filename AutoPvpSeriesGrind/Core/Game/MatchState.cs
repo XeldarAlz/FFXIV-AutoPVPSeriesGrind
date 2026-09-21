@@ -32,9 +32,9 @@ internal static class MatchState
     public static bool HasStatus(uint statusId)
         => Svc.Objects.LocalPlayer is { } localPlayer && HasStatus(localPlayer, statusId);
 
-    public static bool HasStatus(IPlayerCharacter playerCharacter, uint statusId)
+    public static bool HasStatus(IBattleChara chara, uint statusId)
     {
-        foreach (var status in playerCharacter.StatusList)
+        foreach (var status in chara.StatusList)
         {
             if (status is not null && status.StatusId == statusId)
             {
@@ -44,9 +44,9 @@ internal static class MatchState
         return false;
     }
 
-    public static bool HasAnyStatus(IPlayerCharacter playerCharacter, uint[] statusIds)
+    public static bool HasAnyStatus(IBattleChara chara, uint[] statusIds)
     {
-        foreach (var status in playerCharacter.StatusList)
+        foreach (var status in chara.StatusList)
         {
             if (status is not null && Array.IndexOf(statusIds, status.StatusId) >= 0)
             {
@@ -54,6 +54,30 @@ internal static class MatchState
             }
         }
         return false;
+    }
+
+    public static float StatusRemainingSeconds(IBattleChara chara, uint statusId)
+    {
+        foreach (var status in chara.StatusList)
+        {
+            if (status is not null && status.StatusId == statusId)
+            {
+                return status.RemainingTime;
+            }
+        }
+        return 0f;
+    }
+
+    public static int StatusStacks(IBattleChara chara, uint statusId)
+    {
+        foreach (var status in chara.StatusList)
+        {
+            if (status is not null && status.StatusId == statusId)
+            {
+                return status.Param;
+            }
+        }
+        return 0;
     }
 
     public static void SetTarget(ulong gameObjectId)

@@ -2,8 +2,8 @@ namespace AutoPvpSeriesGrind.Core.Rotation;
 
 internal enum PvpActionSlot : byte
 {
-    Ability,
     CooldownGcd,
+    Ability,
     FillerGcd,
 }
 
@@ -16,7 +16,8 @@ internal readonly record struct PvpActionInfo(
     bool TargetsSelf,
     bool TargetArea,
     bool HasCastTime,
+    sbyte Range,
     byte CooldownGroup)
 {
-    public bool IsAllySupport => TargetsAlly && !TargetsHostile;
+    public bool IsGcd => Slot != PvpActionSlot.Ability;
 }

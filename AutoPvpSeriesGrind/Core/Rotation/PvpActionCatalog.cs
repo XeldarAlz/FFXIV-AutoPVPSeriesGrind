@@ -1,5 +1,6 @@
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
+using Lumina.Excel.Sheets;
 using System.Text;
 using GameAction = Lumina.Excel.Sheets.Action;
 
@@ -11,11 +12,34 @@ internal static class PvpActionCatalog
     private const uint WeaponskillCategory = 3;
     private const uint AbilityCategory = 4;
     private const uint AllJobsCategory = 1;
+    private const uint DisciplesOfWarOrMagicCategory = 85;
     private const ushort GcdRecast100ms = 25;
-    private const int MinHotbarSizedKit = 4;
     private const byte DefaultGcdCooldownGroup = 58;
 
+    private readonly record struct IndexedAction(PvpActionInfo Info, uint JobCategoryRow, bool Placeable);
+
+    private static readonly (uint JobId, uint Starter)[] ComboStarters =
+    [
+        (19, 29058), (20, 29475), (21, 29074), (22, 29486), (30, 29500), (32, 29085),
+        (34, 29523), (37, 29098), (38, 29416), (39, 29538), (41, 39157),
+    ];
+
+    private static readonly Dictionary<uint, IndexedAction> Index = [];
     private static readonly Dictionary<uint, PvpJobKit> Kits = [];
+    private static bool indexBuilt;
+
+    public static bool TryGetInfo(uint actionId, out PvpActionInfo info)
+    {
+        EnsureIndex();
+        if (Index.TryGetValue(actionId, out var entry))
+        {
+            info = entry.Info;
+            return true;
+        }
+
+        info = default;
+        return false;
+    }
 
     public static PvpJobKit For(Job job)
     {
@@ -31,93 +55,91 @@ internal static class PvpActionCatalog
         return kit;
     }
 
-    private static PvpJobKit Build(Job job)
+    private static void EnsureIndex()
     {
-        var candidates = new List<GameAction>();
-        foreach (var action in Svc.Data.GetExcelSheet<GameAction>())
+        if (indexBuilt)
         {
-            if (IsJobPvpAction(action, job))
-            {
-                candidates.Add(action);
-            }
+            return;
         }
 
-        var hotbar = KeepHotbarActions(candidates);
-        var abilities = new List<PvpActionInfo>();
-        var cooldownGcds = new List<PvpActionInfo>();
-        var fillerGcds = new List<PvpActionInfo>();
-        for (var actionIndex = 0; actionIndex < hotbar.Count; actionIndex++)
+        foreach (var action in Svc.Data.GetExcelSheet<GameAction>())
         {
-            var info = ToInfo(hotbar[actionIndex]);
-            switch (info.Slot)
+            if (!action.IsPvP)
             {
-                case PvpActionSlot.Ability:
-                    abilities.Add(info);
-                    break;
-                case PvpActionSlot.CooldownGcd:
-                    cooldownGcds.Add(info);
-                    break;
-                default:
-                    fillerGcds.Add(info);
-                    break;
+                continue;
             }
+            var category = action.ActionCategory.RowId;
+            if (category is not (SpellCategory or WeaponskillCategory or AbilityCategory))
+            {
+                continue;
+            }
+            Index[action.RowId] = new IndexedAction(ToInfo(action), action.ClassJobCategory.RowId, action.IsPlayerAction);
         }
+
+        indexBuilt = true;
+    }
+
+    private static PvpJobKit Build(Job job)
+    {
+        EnsureIndex();
+        var jobCategories = Svc.Data.GetExcelSheet<ClassJobCategory>();
+        var buttons = new List<PvpActionInfo>();
+        foreach (var (actionId, entry) in Index)
+        {
+            if (!entry.Placeable || Array.IndexOf(PvpActions.Shared, actionId) >= 0)
+            {
+                continue;
+            }
+            if (entry.JobCategoryRow is AllJobsCategory or DisciplesOfWarOrMagicCategory)
+            {
+                continue;
+            }
+            if (!jobCategories.TryGetRow(entry.JobCategoryRow, out var jobCategory) || !jobCategory.IsJobInCategory(job))
+            {
+                continue;
+            }
+            buttons.Add(entry.Info);
+        }
+
+        AddComboStarter(job, buttons);
+        var ordered = buttons.ToArray();
+        Array.Sort(ordered, static (left, right) => left.Slot != right.Slot ? left.Slot.CompareTo(right.Slot) : left.Id.CompareTo(right.Id));
 
         return new PvpJobKit
         {
             JobId = (uint)job,
-            Abilities = abilities.ToArray(),
-            CooldownGcds = cooldownGcds.ToArray(),
-            FillerGcds = fillerGcds.ToArray(),
-            GcdCooldownGroup = fillerGcds.Count > 0 ? fillerGcds[0].CooldownGroup : DefaultGcdCooldownGroup,
+            Buttons = ordered,
+            GcdCooldownGroup = FillerCooldownGroup(ordered),
         };
     }
 
-    private static bool IsJobPvpAction(in GameAction action, Job job)
+    private static void AddComboStarter(Job job, List<PvpActionInfo> buttons)
     {
-        if (!action.IsPvP)
+        for (var starterIndex = 0; starterIndex < ComboStarters.Length; starterIndex++)
         {
-            return false;
+            var (jobId, starter) = ComboStarters[starterIndex];
+            if (jobId != (uint)job)
+            {
+                continue;
+            }
+            if (Index.TryGetValue(starter, out var entry))
+            {
+                buttons.Add(entry.Info);
+            }
+            return;
         }
-
-        var category = action.ActionCategory.RowId;
-        if (category is not (SpellCategory or WeaponskillCategory or AbilityCategory))
-        {
-            return false;
-        }
-
-        if (Array.IndexOf(PvpActions.Shared, action.RowId) >= 0)
-        {
-            return false;
-        }
-
-        var jobCategory = action.ClassJobCategory;
-        if (!jobCategory.IsValid || jobCategory.RowId == AllJobsCategory)
-        {
-            return false;
-        }
-
-        return jobCategory.Value.IsJobInCategory(job);
     }
 
-    private static List<GameAction> KeepHotbarActions(List<GameAction> candidates)
+    private static byte FillerCooldownGroup(PvpActionInfo[] buttons)
     {
-        var placeable = new List<GameAction>();
-        var comboRoots = new List<GameAction>();
-        for (var candidateIndex = 0; candidateIndex < candidates.Count; candidateIndex++)
+        for (var buttonIndex = 0; buttonIndex < buttons.Length; buttonIndex++)
         {
-            var action = candidates[candidateIndex];
-            if (action.IsPlayerAction)
+            if (buttons[buttonIndex].Slot == PvpActionSlot.FillerGcd)
             {
-                placeable.Add(action);
-            }
-            if (action.ActionCombo.RowId == 0)
-            {
-                comboRoots.Add(action);
+                return buttons[buttonIndex].CooldownGroup;
             }
         }
-
-        return placeable.Count >= MinHotbarSizedKit ? placeable : comboRoots;
+        return DefaultGcdCooldownGroup;
     }
 
     private static PvpActionInfo ToInfo(in GameAction action)
@@ -130,6 +152,7 @@ internal static class PvpActionCatalog
             TargetsSelf: action.CanTargetSelf,
             TargetArea: action.TargetArea,
             HasCastTime: action.Cast100ms > 0,
+            Range: action.Range,
             CooldownGroup: action.CooldownGroup);
 
     private static PvpActionSlot SlotOf(in GameAction action)
@@ -146,23 +169,15 @@ internal static class PvpActionCatalog
     private static void LogKit(Job job, PvpJobKit kit)
     {
         var names = new StringBuilder();
-        AppendNames(names, "abilities", kit.Abilities);
-        AppendNames(names, "cooldown GCDs", kit.CooldownGcds);
-        AppendNames(names, "fillers", kit.FillerGcds);
-        ApsgLog.Info($"built-in rotation kit for {job}: {names}");
-    }
-
-    private static void AppendNames(StringBuilder builder, string label, PvpActionInfo[] actions)
-    {
-        builder.Append(label).Append(" [");
-        for (var actionIndex = 0; actionIndex < actions.Length; actionIndex++)
+        for (var buttonIndex = 0; buttonIndex < kit.Buttons.Length; buttonIndex++)
         {
-            if (actionIndex > 0)
+            if (buttonIndex > 0)
             {
-                builder.Append(", ");
+                names.Append(", ");
             }
-            builder.Append(actions[actionIndex].Name);
+            names.Append(kit.Buttons[buttonIndex].Name);
         }
-        builder.Append("] ");
+        var tableState = JobRotationTables.TryGet((uint)job, out _) ? "with a job table" : "generic order";
+        ApsgLog.Info($"built-in rotation kit for {job} ({tableState}): {names}");
     }
 }

@@ -1,9 +1,11 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
+using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
+using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Core.Rotation;
 
@@ -19,7 +21,17 @@ internal sealed class PvpRotationDriver
     private const float WeaveMinGcdRemainingSec = 0.7f;
     private const float AllySupportHpFraction = 0.6f;
 
+    private static readonly RuleCondition[] NoConditions = [];
+
+    private readonly record struct RuleContext(
+        IPlayerCharacter Self,
+        IBattleChara? Enemy,
+        PvpSnapshot Snapshot,
+        bool MayStandStill,
+        Action HoldStill);
+
     private PvpJobKit? kit;
+    private RotationTable? table;
     private long aliveSinceMs;
     private uint lastUsedActionId;
 
@@ -61,24 +73,18 @@ internal sealed class PvpRotationDriver
             return RotationOutcome.Cast;
         }
 
-        var enemy = ResolveEnemy(preferredTargetId, snapshot);
         var gcdRemaining = ActionOps.RecastRemainingSeconds(currentKit.GcdCooldownGroup);
-        if (gcdRemaining <= 0f)
-        {
-            if (TryUseAny(currentKit.CooldownGcds, self, enemy, snapshot, mayStandStill, holdStill, out var gcdOutcome)
-                || TryUseAny(currentKit.FillerGcds, self, enemy, snapshot, mayStandStill, holdStill, out gcdOutcome))
-            {
-                return gcdOutcome;
-            }
-        }
-        else if (gcdRemaining < WeaveMinGcdRemainingSec)
+        var gcdReady = gcdRemaining <= 0f;
+        var canWeave = gcdRemaining >= WeaveMinGcdRemainingSec;
+        if (!gcdReady && !canWeave)
         {
             return RotationOutcome.None;
         }
 
-        return TryUseAny(currentKit.Abilities, self, enemy, snapshot, mayStandStill, holdStill, out var abilityOutcome)
-            ? abilityOutcome
-            : RotationOutcome.None;
+        var context = new RuleContext(self, ResolveEnemy(preferredTargetId, snapshot), snapshot, mayStandStill, holdStill);
+        return table is not null
+            ? RunTable(table, in context, gcdReady)
+            : RunGeneric(currentKit, in context, gcdReady);
     }
 
     private PvpJobKit KitFor(IPlayerCharacter self)
@@ -87,8 +93,213 @@ internal sealed class PvpRotationDriver
         if (kit is null || kit.JobId != jobId)
         {
             kit = PvpActionCatalog.For((Job)jobId);
+            table = JobRotationTables.TryGet(jobId, out var jobTable) ? jobTable : null;
         }
         return kit;
+    }
+
+    private RotationOutcome RunTable(RotationTable rotationTable, in RuleContext context, bool gcdReady)
+    {
+        if (rotationTable.PauseWhileSelfHas != 0 && MatchState.HasStatus(context.Self, rotationTable.PauseWhileSelfHas))
+        {
+            return RotationOutcome.None;
+        }
+
+        if (gcdReady && TryRules(rotationTable.Rules, in context, wantGcd: true, out var outcome))
+        {
+            return outcome;
+        }
+        return TryRules(rotationTable.Rules, in context, wantGcd: false, out outcome) ? outcome : RotationOutcome.None;
+    }
+
+    private RotationOutcome RunGeneric(PvpJobKit currentKit, in RuleContext context, bool gcdReady)
+    {
+        if (gcdReady && TryButtons(currentKit.Buttons, in context, wantGcd: true, out var outcome))
+        {
+            return outcome;
+        }
+        return TryButtons(currentKit.Buttons, in context, wantGcd: false, out outcome) ? outcome : RotationOutcome.None;
+    }
+
+    private bool TryRules(RotationRule[] rules, in RuleContext context, bool wantGcd, out RotationOutcome outcome)
+    {
+        for (var ruleIndex = 0; ruleIndex < rules.Length; ruleIndex++)
+        {
+            ref readonly var rule = ref rules[ruleIndex];
+            if (TryButton(rule.Button, rule.Adjusted, rule.Target, rule.Conditions, in context, wantGcd, out outcome))
+            {
+                return true;
+            }
+        }
+
+        outcome = RotationOutcome.None;
+        return false;
+    }
+
+    private bool TryButtons(PvpActionInfo[] buttons, in RuleContext context, bool wantGcd, out RotationOutcome outcome)
+    {
+        for (var buttonIndex = 0; buttonIndex < buttons.Length; buttonIndex++)
+        {
+            if (TryButton(buttons[buttonIndex].Id, 0, RuleTarget.Auto, NoConditions, in context, wantGcd, out outcome))
+            {
+                return true;
+            }
+        }
+
+        outcome = RotationOutcome.None;
+        return false;
+    }
+
+    private bool TryButton(uint button, uint requiredAdjusted, RuleTarget targetRule, RuleCondition[] conditions,
+        in RuleContext context, bool wantGcd, out RotationOutcome outcome)
+    {
+        outcome = RotationOutcome.None;
+        var adjustedId = ActionOps.Adjusted(button);
+        if (requiredAdjusted != 0 && adjustedId != requiredAdjusted)
+        {
+            return false;
+        }
+        if (!PvpActionCatalog.TryGetInfo(adjustedId, out var info) && !PvpActionCatalog.TryGetInfo(button, out info))
+        {
+            return false;
+        }
+        if (info.IsGcd != wantGcd || (info.HasCastTime && !context.MayStandStill))
+        {
+            return false;
+        }
+        if (!ConditionsHold(conditions, in context, adjustedId))
+        {
+            return false;
+        }
+
+        var target = PickTarget(in info, targetRule, in context);
+        if (target is null)
+        {
+            return false;
+        }
+        var targetsSelf = target.GameObjectId == context.Self.GameObjectId;
+        if (!targetsSelf && !ActionOps.InRangeAndSight(adjustedId, target))
+        {
+            return false;
+        }
+        if (!ActionOps.IsReady(adjustedId, target.GameObjectId))
+        {
+            return false;
+        }
+
+        if (info.HasCastTime)
+        {
+            context.HoldStill();
+        }
+
+        var used = info.TargetArea
+            ? ActionOps.UseActionAt(adjustedId, target.GameObjectId, target.Position)
+            : ActionOps.UseAction(adjustedId, target.GameObjectId);
+        if (!used)
+        {
+            return false;
+        }
+
+        lastUsedActionId = adjustedId;
+        ApsgLog.Debug($"rotation: {info.Name} -> {target.Name}");
+        outcome = info.HasCastTime ? RotationOutcome.Cast : RotationOutcome.Instant;
+        return true;
+    }
+
+    private bool ConditionsHold(RuleCondition[] conditions, in RuleContext context, uint adjustedId)
+    {
+        for (var conditionIndex = 0; conditionIndex < conditions.Length; conditionIndex++)
+        {
+            if (!Holds(in conditions[conditionIndex], in context, adjustedId))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private bool Holds(in RuleCondition condition, in RuleContext context, uint adjustedId)
+    {
+        var self = context.Self;
+        var enemy = context.Enemy;
+        var snapshot = context.Snapshot;
+        switch (condition.Kind)
+        {
+            case RuleWhen.SelfHasStatus:
+                return MatchState.HasStatus(self, condition.Status);
+            case RuleWhen.SelfLacksStatus:
+                return !MatchState.HasStatus(self, condition.Status);
+            case RuleWhen.SelfHasAnyStatus:
+                return MatchState.HasAnyStatus(self, condition.Statuses!);
+            case RuleWhen.TargetHasStatus:
+                return enemy is not null && MatchState.HasStatus(enemy, condition.Status);
+            case RuleWhen.TargetLacksStatus:
+                return enemy is not null && !MatchState.HasStatus(enemy, condition.Status);
+            case RuleWhen.SelfHpBelow:
+                return snapshot.SelfHp < condition.Value;
+            case RuleWhen.SelfHpAbove:
+                return snapshot.SelfHp > condition.Value;
+            case RuleWhen.TargetHpBelow:
+                return enemy is not null && HpFraction(enemy) <= condition.Value;
+            case RuleWhen.EnemiesWithin:
+                return snapshot.EnemiesWithin(condition.Value) > 0;
+            case RuleWhen.InCombat:
+                return Svc.Condition[ConditionFlag.InCombat];
+            case RuleWhen.SelfStatusEndingWithin:
+                var remaining = MatchState.StatusRemainingSeconds(self, condition.Status);
+                return remaining > 0f && remaining <= condition.Value;
+            case RuleWhen.SelfStatusStacksAtLeast:
+                return MatchState.StatusStacks(self, condition.Status) >= (int)condition.Value;
+            case RuleWhen.SelfStatusStacksAtMost:
+                var stacks = MatchState.StatusStacks(self, condition.Status);
+                return stacks > 0 && stacks <= (int)condition.Value;
+            case RuleWhen.ChargesAtLeast:
+                return ActionOps.CurrentCharges(adjustedId) >= (uint)condition.Value;
+            case RuleWhen.NotLastUsed:
+                return lastUsedActionId != adjustedId;
+            case RuleWhen.TargetWithin:
+                return enemy is not null && Vector3.Distance(self.Position, enemy.Position) <= condition.Value;
+            case RuleWhen.TargetBeyond:
+                return enemy is not null && Vector3.Distance(self.Position, enemy.Position) > condition.Value;
+            case RuleWhen.AllyBelow:
+                return LowestAllyId(snapshot, condition.Value) != 0;
+            default:
+                return true;
+        }
+    }
+
+    private static IGameObject? PickTarget(in PvpActionInfo info, RuleTarget targetRule, in RuleContext context)
+    {
+        switch (targetRule)
+        {
+            case RuleTarget.Self:
+                return context.Self;
+            case RuleTarget.NearestAlly:
+                return NearestAlly(context.Snapshot);
+        }
+
+        if (info.TargetsHostile)
+        {
+            return context.Enemy;
+        }
+        if (info.TargetsAlly)
+        {
+            var allyId = LowestAllyId(context.Snapshot, AllySupportHpFraction);
+            if (allyId != 0)
+            {
+                return Svc.Objects.SearchById(allyId);
+            }
+            return info.TargetsSelf && context.Snapshot.SelfHp <= AllySupportHpFraction ? context.Self : null;
+        }
+        if (info.TargetsSelf)
+        {
+            return context.Self;
+        }
+        if (info.TargetArea)
+        {
+            return info.Range == 0 ? context.Self : context.Enemy;
+        }
+        return null;
     }
 
     private bool TryPurify(IPlayerCharacter self)
@@ -159,66 +370,10 @@ internal sealed class PvpRotationDriver
         return true;
     }
 
-    private bool TryUseAny(PvpActionInfo[] actions, IPlayerCharacter self, IGameObject? enemy, PvpSnapshot snapshot,
-        bool mayStandStill, Action holdStill, out RotationOutcome outcome)
-    {
-        for (var actionIndex = 0; actionIndex < actions.Length; actionIndex++)
-        {
-            var action = actions[actionIndex];
-            if (action.HasCastTime && !mayStandStill)
-            {
-                continue;
-            }
+    private static float HpFraction(IBattleChara chara)
+        => chara.MaxHp > 0 ? (float)chara.CurrentHp / chara.MaxHp : 1f;
 
-            var target = PickTarget(action, self, enemy, snapshot);
-            if (target is null)
-            {
-                continue;
-            }
-
-            var adjustedId = ActionOps.Adjusted(action.Id);
-            if (!ActionOps.InRangeAndSight(adjustedId, target) || !ActionOps.IsReady(adjustedId, target.GameObjectId))
-            {
-                continue;
-            }
-
-            if (action.HasCastTime)
-            {
-                holdStill();
-            }
-
-            var used = action.TargetArea
-                ? ActionOps.UseActionAt(adjustedId, target.GameObjectId, target.Position)
-                : ActionOps.UseAction(adjustedId, target.GameObjectId);
-            if (!used)
-            {
-                continue;
-            }
-
-            lastUsedActionId = action.Id;
-            ApsgLog.Debug($"rotation: {action.Name} -> {target.Name}");
-            outcome = action.HasCastTime ? RotationOutcome.Cast : RotationOutcome.Instant;
-            return true;
-        }
-
-        outcome = RotationOutcome.None;
-        return false;
-    }
-
-    private static IGameObject? PickTarget(in PvpActionInfo action, IPlayerCharacter self, IGameObject? enemy, PvpSnapshot snapshot)
-    {
-        if (action.TargetsHostile)
-        {
-            return enemy;
-        }
-        if (action.IsAllySupport)
-        {
-            return LowestAllyBelow(snapshot, AllySupportHpFraction) ?? (snapshot.SelfHp <= AllySupportHpFraction && action.TargetsSelf ? self : null);
-        }
-        return self;
-    }
-
-    private static IGameObject? LowestAllyBelow(PvpSnapshot snapshot, float hpFraction)
+    private static ulong LowestAllyId(PvpSnapshot snapshot, float hpFraction)
     {
         var lowestId = 0UL;
         var lowestHp = hpFraction;
@@ -231,13 +386,29 @@ internal sealed class PvpRotationDriver
                 lowestId = ally.Id;
             }
         }
-        return lowestId == 0 ? null : Svc.Objects.SearchById(lowestId);
+        return lowestId;
     }
 
-    private static IGameObject? ResolveEnemy(ulong preferredTargetId, PvpSnapshot snapshot)
+    private static IGameObject? NearestAlly(PvpSnapshot snapshot)
+    {
+        var nearestId = 0UL;
+        var nearestDistance = float.MaxValue;
+        for (var allyIndex = 0; allyIndex < snapshot.Allies.Count; allyIndex++)
+        {
+            var ally = snapshot.Allies[allyIndex];
+            if (ally.DistanceToSelf < nearestDistance)
+            {
+                nearestDistance = ally.DistanceToSelf;
+                nearestId = ally.Id;
+            }
+        }
+        return nearestId == 0 ? null : Svc.Objects.SearchById(nearestId);
+    }
+
+    private static IBattleChara? ResolveEnemy(ulong preferredTargetId, PvpSnapshot snapshot)
     {
         var targetId = preferredTargetId != 0 ? preferredTargetId : NearestEnemyId(snapshot);
-        return targetId == 0 ? null : Svc.Objects.SearchById(targetId);
+        return targetId == 0 ? null : Svc.Objects.SearchById(targetId) as IBattleChara;
     }
 
     private static ulong NearestEnemyId(PvpSnapshot snapshot)
