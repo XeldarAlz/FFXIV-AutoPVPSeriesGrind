@@ -225,7 +225,7 @@ internal sealed partial class AutoPvpSeries
         if (settings.Humanize != HumanizeLevel.Off && planChanged)
         {
             var (reactionMinMs, reactionMaxMs) = HumanTiming.ReactionBand(settings.Humanize);
-            await NextFrame(HumanTiming.Reaction(reactionMinMs, reactionMaxMs));
+            await DelayMs(HumanTiming.Reaction(reactionMinMs, reactionMaxMs));
         }
 
         ApplyBrainTarget(plan.TargetId);

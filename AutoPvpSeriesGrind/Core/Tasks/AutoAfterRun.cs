@@ -36,7 +36,7 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
             case AfterRunAction.CloseGame:
                 Status = "Closing the game";
                 LogDiagnostic("After-run: closing the game (/xlkill).");
-                await NextFrame(PreCommandSettleMs);
+                await DelayMs(PreCommandSettleMs);
                 Chat.ExecuteCommand(ApsgConstants.GameCommands.CloseGame);
                 break;
         }
@@ -61,7 +61,7 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
 
     private async Task<bool> IssueLogoutAndAcceptYesno(string waitScope)
     {
-        await NextFrame(PreCommandSettleMs);
+        await DelayMs(PreCommandSettleMs);
         Chat.ExecuteCommand(ApsgConstants.GameCommands.Logout);
         if (!await WaitUntilTimed(SelectYesnoOpen, YesnoWaitMs, waitScope))
         {
@@ -84,7 +84,7 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
 
         LogDiagnostic("After-run: returning to the inn via Lifestream.");
         ApsgLog.Chat("Run complete. Retiring to the inn.");
-        await NextFrame(PreCommandSettleMs);
+        await DelayMs(PreCommandSettleMs);
         LifestreamIpc.Instance.ExecuteCommand(ApsgConstants.LifestreamCommands.ReturnToInn);
 
         var started = await WaitUntilTimed(() =>

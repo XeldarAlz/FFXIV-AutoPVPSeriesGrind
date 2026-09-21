@@ -16,7 +16,7 @@ internal sealed partial class AutoPvpSeries
 
     private async Task Startup()
     {
-        await NextFrame(StartupSettleMs);
+        await DelayMs(StartupSettleMs);
 
         PvpAutoLbIpc.Instance.PushPresetsIfNeeded();
 
@@ -44,7 +44,7 @@ internal sealed partial class AutoPvpSeries
             if (waitMs > 0)
             {
                 Status = onBreak ? $"On a break, {FormatRemaining(waitMs)} left" : $"Next match in {FormatRemaining(waitMs)}";
-                await NextFrame(MainLoopIdleMs);
+                await DelayMs(MainLoopIdleMs);
                 return false;
             }
 
@@ -58,7 +58,7 @@ internal sealed partial class AutoPvpSeries
                 }
 
                 Status = $"Queue penalty, {penaltyMinutes}m left";
-                await NextFrame(MainLoopIdleMs);
+                await DelayMs(MainLoopIdleMs);
                 return false;
             }
 
@@ -67,7 +67,7 @@ internal sealed partial class AutoPvpSeries
             DutyOps.QueueMatch(matchType);
         }
 
-        await NextFrame(MainLoopIdleMs);
+        await DelayMs(MainLoopIdleMs);
         return false;
     }
 

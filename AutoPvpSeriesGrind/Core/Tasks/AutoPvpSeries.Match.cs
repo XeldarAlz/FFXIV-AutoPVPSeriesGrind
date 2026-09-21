@@ -51,9 +51,9 @@ internal sealed partial class AutoPvpSeries
         {
             if (goodbyeAtMs <= lingerMs)
             {
-                if (goodbyeAtMs > 0) await NextFrame(goodbyeAtMs);
+                if (goodbyeAtMs > 0) await DelayMs(goodbyeAtMs);
                 ExecuteGameCommand(GameText.QuickChatGoodMatch());
-                await NextFrame(PostQuickChatMs);
+                await DelayMs(PostQuickChatMs);
                 waitedMs = goodbyeAtMs + PostQuickChatMs;
             }
             else
@@ -63,7 +63,7 @@ internal sealed partial class AutoPvpSeries
         }
 
         if (waitedMs < lingerMs)
-            await NextFrame(lingerMs - waitedMs);
+            await DelayMs(lingerMs - waitedMs);
 
         LogDiagnostic("match ended (results screen visible) -> leaving duty");
         ExecuteGameCommand(GameCommands.NavStop);
@@ -123,7 +123,7 @@ internal sealed partial class AutoPvpSeries
                     break;
                 }
 
-                await NextFrame(PollMs);
+                await DelayMs(PollMs);
             }
         }
     }
@@ -165,7 +165,7 @@ internal sealed partial class AutoPvpSeries
 
         greeting.TickIntro(timeLeftSeconds, settings);
 
-        await NextFrame(PortraitPhasePollMs);
+        await DelayMs(PortraitPhasePollMs);
     }
 
     private async Task<bool> TryStartLiveMatch(int timeLeftSeconds)

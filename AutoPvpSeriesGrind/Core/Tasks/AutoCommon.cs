@@ -31,7 +31,7 @@ internal abstract class AutoCommon : TaskBase
                 ok = false;
             }
             if (ok) return true;
-            await NextFrame(checkMs);
+            await DelayMs(checkMs);
         }
         LogDiagnostic($"WAIT TIMEOUT: '{scope}' not satisfied within {timeoutMs / 1000}s");
         return false;

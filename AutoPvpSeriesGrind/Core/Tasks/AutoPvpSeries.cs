@@ -113,7 +113,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
                 await TickLiveMatch();
             }
 
-            await NextFrame(matchFlow.InMatchLive ? LiveTickMs : MainLoopIdleMs);
+            await DelayMs(matchFlow.InMatchLive ? LiveTickMs : MainLoopIdleMs);
         }
     }
 
@@ -122,7 +122,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         if (TryCommenceDuty())
         {
             LogDiagnostic("duty ready popup -> commenced");
-            await NextFrame(DutyCommencedSettleMs);
+            await DelayMs(DutyCommencedSettleMs);
             return false;
         }
 
