@@ -77,28 +77,64 @@ internal static class HazardAvoidance
 {
     private const float MarginYalms = 1.5f;
     private const float ClearanceYalms = 3f;
+    private const int RingCandidates = 16;
+    private const float PreferenceWeight = 0.5f;
+    private static readonly float[] RingDistances = [6f, 10f, 15f, 22f];
 
     public static bool TryDodge(PvpSnapshot snapshot, Vector3 preferTowards, out Vector3 exit, out Hazard hazard)
     {
-        if (snapshot.InHazard(snapshot.Self, MarginYalms, out hazard))
+        if (!snapshot.InHazard(snapshot.Self, MarginYalms, out hazard))
         {
-            exit = hazard.ExitPoint(snapshot.Self, preferTowards, ClearanceYalms);
-            return true;
+            exit = default;
+            return false;
         }
 
-        exit = default;
-        return false;
+        exit = SafestPointAround(snapshot, snapshot.Self, preferTowards) ?? hazard.ExitPoint(snapshot.Self, preferTowards, ClearanceYalms);
+        return true;
     }
 
     public static Vector3 KeepClear(PvpSnapshot snapshot, Vector3 destination, out Hazard? skirted)
     {
-        if (snapshot.InHazard(destination, MarginYalms, out var hazard))
+        if (!snapshot.InHazard(destination, MarginYalms, out var hazard))
         {
-            skirted = hazard;
-            return hazard.ExitPoint(destination, snapshot.Self, ClearanceYalms);
+            skirted = null;
+            return destination;
         }
 
-        skirted = null;
-        return destination;
+        skirted = hazard;
+        return SafestPointAround(snapshot, destination, snapshot.Self) ?? hazard.ExitPoint(destination, snapshot.Self, ClearanceYalms);
+    }
+
+    private static Vector3? SafestPointAround(PvpSnapshot snapshot, Vector3 center, Vector3 preferTowards)
+    {
+        for (var ringIndex = 0; ringIndex < RingDistances.Length; ringIndex++)
+        {
+            var distance = RingDistances[ringIndex];
+            Vector3? best = null;
+            var bestScore = float.MaxValue;
+            for (var candidateIndex = 0; candidateIndex < RingCandidates; candidateIndex++)
+            {
+                var angle = candidateIndex * (MathF.Tau / RingCandidates);
+                var candidate = center + new Vector3(MathF.Cos(angle), 0f, MathF.Sin(angle)) * distance;
+                if (snapshot.InHazard(candidate, MarginYalms, out _))
+                {
+                    continue;
+                }
+
+                var score = distance + Vector3.Distance(candidate, preferTowards) * PreferenceWeight;
+                if (score < bestScore)
+                {
+                    bestScore = score;
+                    best = candidate;
+                }
+            }
+
+            if (best is not null)
+            {
+                return best;
+            }
+        }
+
+        return null;
     }
 }
