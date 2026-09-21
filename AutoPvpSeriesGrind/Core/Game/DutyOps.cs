@@ -15,6 +15,9 @@ internal static unsafe class DutyOps
 
     private const int NoCommandArgument = 0;
 
+    private const byte DutyFinderPenaltyIndex = 0;
+    private const byte InactivityPenaltyIndex = 1;
+
     public static bool QueueMatch(MatchType matchType) => Safe.Try("QueueMatch failed", () =>
     {
         var contentsFinder = ContentsFinder.Instance();
@@ -55,6 +58,14 @@ internal static unsafe class DutyOps
         return queueInfo->QueueState is ContentsFinderQueueState.Pending
             or ContentsFinderQueueState.Queued or ContentsFinderQueueState.Ready;
     }, fallback: false);
+
+    public static int QueuePenaltyMinutes() => Safe.TrySilent(() =>
+    {
+        var uiState = UIState.Instance();
+        var dutyFinderMinutes = uiState->InstanceContent.GetPenaltyRemainingInMinutes(DutyFinderPenaltyIndex);
+        var inactivityMinutes = uiState->InstanceContent.GetPenaltyRemainingInMinutes(InactivityPenaltyIndex);
+        return (int)Math.Max(dutyFinderMinutes, inactivityMinutes);
+    }, fallback: 0);
 
     public static void LeaveCurrentContent() => Safe.Try("LeaveCurrentContent failed", () =>
     {

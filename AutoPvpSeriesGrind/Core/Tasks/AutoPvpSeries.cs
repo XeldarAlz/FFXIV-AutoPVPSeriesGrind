@@ -32,6 +32,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
     private long nextQueueAllowedAtMs;
     private int matchesSinceBreak;
     private bool onBreak;
+    private bool queuePenaltyAnnounced;
 
     private MatchFlowState matchFlow;
 

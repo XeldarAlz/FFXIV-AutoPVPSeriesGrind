@@ -21,7 +21,6 @@ internal sealed partial class AutoPvpSeries
         PvpAutoLbIpc.Instance.PushPresetsIfNeeded();
 
         SetPhase(AutoPhase.Queueing);
-        DutyOps.QueueMatch(matchType);
     }
 
     private async Task<bool> TickOutOfDuty()
@@ -49,6 +48,21 @@ internal sealed partial class AutoPvpSeries
                 return false;
             }
 
+            var penaltyMinutes = DutyOps.QueuePenaltyMinutes();
+            if (penaltyMinutes > 0)
+            {
+                if (!queuePenaltyAnnounced)
+                {
+                    queuePenaltyAnnounced = true;
+                    LogDiagnostic($"queue penalty active (~{penaltyMinutes} min) -> waiting it out");
+                }
+
+                Status = $"Queue penalty, {penaltyMinutes}m left";
+                await NextFrame(MainLoopIdleMs);
+                return false;
+            }
+
+            queuePenaltyAnnounced = false;
             LogDiagnostic($"not queued -> queueing {matchType} roulette");
             DutyOps.QueueMatch(matchType);
         }
