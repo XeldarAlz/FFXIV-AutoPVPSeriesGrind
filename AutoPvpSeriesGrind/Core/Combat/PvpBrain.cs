@@ -69,6 +69,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
     public bool OwnsTargeting { get; set; }
 
+    public bool UnderBurst { get; private set; }
+
     public Func<Vector3, Vector3, bool> CanSee { get; set; } = static (_, _) => true;
 
     public void SetStrategy(PvpStrategy s, CustomStrategyProfile? custom = null)
@@ -101,6 +103,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         committedStance = Stance.Engage;
         committedAtMs = 0;
         lastTargetId = 0;
+        UnderBurst = false;
     }
 
     public MovePlan Decide(PvpSnapshot snapshot, Vector3 safeAnchor, Vector3? enemyBasePosition = null)
@@ -108,6 +111,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         enemyBase = enemyBasePosition;
         ApplyRole(snapshot.SelfRole);
         var bursting = HpDropPerSec(snapshot.SelfHp) >= profile.BurstDropPerSec;
+        UnderBurst = bursting;
 
         var focal = FocalPoint(snapshot);
 

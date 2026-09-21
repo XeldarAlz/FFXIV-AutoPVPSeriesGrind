@@ -19,7 +19,6 @@
     "install": "Installieren",
     "purpose": {
       "vnavmesh": "Wegfindung und Bewegung zum Ziel während eines Matches.",
-      "rotation": "Steuert den Kampf während des Matches (/rotation auto LowHP).",
       "lifestream": "Optional: führt deinen eingestellten Reisebefehl vor der ersten Anmeldung aus.",
       "autoLb": "Zündet deinen PvP-Limitrausch. Dieses Plugin überträgt dafür automatisch bewährte Einstellungen pro Klasse."
     }
@@ -354,16 +353,15 @@
     },
     "combat": {
       "introMovement": "Das Verhalten steuert nur die Bewegung: wo gestanden und wann zurückgewichen wird. ",
-      "introRotation": "Dein Rotations-Plugin drückt die Fähigkeiten; das benötigte Auto PVP LB Plugin zündet den Limitrausch, automatisch auf deine Klasse eingestellt.",
+      "introRotation": "Die eingebaute Rotation drückt deine Fähigkeiten, Guard, Purify, Recuperate und Elixir; das benötigte Auto PVP LB Plugin zündet den Limitrausch, automatisch auf deine Klasse eingestellt.",
       "group": "Kampf",
-      "rotationPlugin": "Rotations-Plugin",
-      "rotationPluginHelp": "Welches Plugin während der Matches deine Kampffähigkeiten drückt.",
+      "rotationPlugin": "Rotation",
+      "rotationPluginHelp": "Was während der Matches deine Kampffähigkeiten drückt.",
       "behavior": "Verhalten",
       "behaviorHelp": "Wie der Bot sich positioniert und seine Kämpfe wählt.",
       "smartTargeting": "Intelligentes Zielen",
       "smartTargetingHelpOn": "An: Dieses Plugin entscheidet, wen es angreift. Es übernimmt das Fokusziel des Teams, bevorzugt Gegner mit wenig HP und wenig Rüstung (Heiler zuerst) und überspringt jeden mit aktivem Guard. ",
-      "smartTargetingHelpManual": "RotationSolver läuft im manuellen Modus und setzt Fähigkeiten auf dieses Ziel; ein anderes Rotations-Plugin muss dein aktuelles Ziel angreifen. ",
-      "smartTargetingHelpOff": "Aus: Das Rotations-Plugin wählt seine Ziele selbst (RotationSolver nimmt das Ziel mit den wenigsten HP in Reichweite).",
+      "smartTargetingHelpOff": "Aus: Greift dein aktuelles Ziel an, wenn du eines hast, und wählt sonst selbst eines. Ein separates Rotations-Plugin muss dein aktuelles Ziel angreifen.",
       "reactionTime": "Reaktionszeit",
       "reactionTimeHelp": "Fügt eine menschliche Reaktionsverzögerung hinzu, bevor der Bot sein Verhalten ändert.",
       "recordMatches": "Matches aufzeichnen",
@@ -371,10 +369,10 @@
       "recordMatchesHelpSize": "zum Nachvollziehen und Feintunen des Spielverlaufs. Etwa 1 MB pro Match; nur die letzten 30 Matches bleiben erhalten."
     },
     "rotation": {
-      "rsr": "RotationSolver Reborn",
-      "rsrHelp": "Wird automatisch installiert und von diesem Plugin gesteuert; Fähigkeiten, Guard und Purify werden für dich übernommen. Die empfohlene Voreinstellung.",
+      "builtIn": "Eingebaut",
+      "builtInHelp": "Dieses Plugin drückt die PvP-Fähigkeiten deines Jobs, Guard, Purify, Recuperate und Elixir selbst. Nichts weiter zu installieren. Die Voreinstellung.",
       "manual": "Anderes / manuell",
-      "manualHelp": "Bring dein eigenes Rotations-Plugin mit (z. B. Wrath Combo). Es muss Fähigkeiten, Guard und Purify selbst drücken; RotationSolver wird dann nicht mehr benötigt."
+      "manualHelp": "Bring dein eigenes Rotations-Plugin mit (z. B. Wrath Combo). Es muss Fähigkeiten, Guard und Purify selbst drücken."
     },
     "strategy": {
       "rush": "Auf den Kristall stürmen",

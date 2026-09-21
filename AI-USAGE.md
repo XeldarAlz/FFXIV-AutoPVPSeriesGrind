@@ -39,7 +39,7 @@ The human gates, in order, none of them skippable:
 
 Nothing in this doc lowers a standard. Code produced with AI assistance is held to exactly the bar every other change meets: the CONTRIBUTING.md checklist, the .editorconfig style, one concern per pull request, and `[APSG]` log lines that make every step of the match loop auditable. A reviewer cannot tell which lines came from where, and that is the point.
 
-The one thing AI use does change is where the verification effort goes. AI gets Dalamud and FFXIVClientStructs APIs wrong often enough that any call into either is suspect until it has run in game. The IPC calls into vnavmesh, RotationSolver, Lifestream and the other helpers listed in `/apsg deps` deserve the same suspicion: a call that compiles says nothing about whether the other plugin still answers it the same way.
+The one thing AI use does change is where the verification effort goes. AI gets Dalamud and FFXIVClientStructs APIs wrong often enough that any call into either is suspect until it has run in game. The IPC calls into vnavmesh, Lifestream, Auto PVP LB and the other helpers listed in `/apsg deps` deserve the same suspicion: a call that compiles says nothing about whether the other plugin still answers it the same way.
 
 ## If you contribute
 

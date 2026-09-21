@@ -19,7 +19,6 @@
     "install": "導入",
     "purpose": {
       "vnavmesh": "試合中の目標地点へのパス探索と移動。",
-      "rotation": "試合中の戦闘を担当します（/rotation auto LowHP）。",
       "lifestream": "任意：最初の申請前に、設定した移動コマンドを実行します。",
       "autoLb": "PvPのリミットブレイクを発動します。このプラグインがクラスごとの実績ある設定を自動で送ります。"
     }
@@ -354,16 +353,15 @@
     },
     "combat": {
       "introMovement": "挙動が制御するのは移動だけです：どこに立ち、いつ引くか。 ",
-      "introRotation": "スキルはあなたのローテーションプラグインが押します。必須のAuto PVP LBプラグインが、クラスに合わせて自動設定されたリミットブレイクを発動します。",
+      "introRotation": "内蔵ローテーションがスキル、ガード、リカバリー、快気、エリクサーを押します。必須のAuto PVP LBプラグインが、クラスに合わせて自動設定されたリミットブレイクを発動します。",
       "group": "バトル",
-      "rotationPlugin": "ローテーションプラグイン",
-      "rotationPluginHelp": "試合中に戦闘スキルを押すプラグイン。",
+      "rotationPlugin": "ローテーション",
+      "rotationPluginHelp": "試合中に戦闘スキルを押す仕組み。",
       "behavior": "動作",
       "behaviorHelp": "ボットの立ち位置と、戦うかどうかの判断。",
       "smartTargeting": "スマートターゲット",
       "smartTargetingHelpOn": "オン：攻撃相手をこのプラグインが決めます。味方のフォーカスターゲットに合わせ、HPが低く打たれ弱い敵（まずヒーラー）を優先し、ガード中の相手は避けます。 ",
-      "smartTargetingHelpManual": "RotationSolverは手動モードで動き、そのターゲットにスキルを使います。他のローテーションプラグインを使う場合は、現在のターゲットを攻撃する設定にしてください。 ",
-      "smartTargetingHelpOff": "オフ：ローテーションプラグインが自分でターゲットを選びます（RotationSolverは射程内で最もHPの低い相手を狙います）。",
+      "smartTargetingHelpOff": "オフ：ターゲットがあればその相手を攻撃し、なければ自分で選びます。別のローテーションプラグインを使う場合は、現在のターゲットを攻撃する設定にしてください。",
       "reactionTime": "反応時間",
       "reactionTimeHelp": "ボットが行動を切り替える前に、人間らしい反応の遅れを加えます。",
       "recordMatches": "試合を記録",
@@ -371,10 +369,10 @@
       "recordMatchesHelpSize": "動きの振り返りや調整に使えます。1試合あたり約1 MBで、直近30試合のみ保持されます。"
     },
     "rotation": {
-      "rsr": "RotationSolver Reborn",
-      "rsrHelp": "自動でインストールされ、このプラグインが制御します。スキル、ガード、リカバリーはお任せです。推奨の既定値です。",
+      "builtIn": "内蔵",
+      "builtInHelp": "このプラグインがジョブのPvPスキル、ガード、リカバリー、快気、エリクサーを自分で押します。追加のインストールは不要です。既定の設定です。",
       "manual": "その他 / 手動",
-      "manualHelp": "好きなローテーションプラグインを使えます（例：Wrath Combo）。スキル、ガード、リカバリーはそちらが行う必要があり、RotationSolverは不要になります。"
+      "manualHelp": "好きなローテーションプラグインを使えます（例：Wrath Combo）。スキル、ガード、リカバリーはそちらが行う必要があります。"
     },
     "strategy": {
       "rush": "クリスタルへ突撃",

@@ -19,7 +19,6 @@
     "install": "Installer",
     "purpose": {
       "vnavmesh": "Recherche de chemin et déplacement vers l'objectif pendant un match.",
-      "rotation": "Pilote le combat pendant le match (/rotation auto LowHP).",
       "lifestream": "Optionnel : exécute votre commande de voyage configurée avant la première inscription.",
       "autoLb": "Déclenche votre Transcendance JcJ. Ce plugin lui transmet automatiquement des réglages éprouvés par classe."
     }
@@ -354,16 +353,15 @@
     },
     "combat": {
       "introMovement": "Le comportement ne contrôle que les déplacements : où se placer et quand reculer. ",
-      "introRotation": "Votre plugin de rotation appuie sur les compétences ; le plugin requis Auto PVP LB déclenche la Transcendance, configurée automatiquement pour votre classe.",
+      "introRotation": "La rotation intégrée appuie sur vos compétences, Garde, Purification, Récupération et Élixir ; le plugin requis Auto PVP LB déclenche la Transcendance, configurée automatiquement pour votre classe.",
       "group": "Combat",
-      "rotationPlugin": "Plugin de rotation",
-      "rotationPluginHelp": "Quel plugin appuie sur vos compétences de combat pendant les matchs.",
+      "rotationPlugin": "Rotation",
+      "rotationPluginHelp": "Ce qui appuie sur vos compétences de combat pendant les matchs.",
       "behavior": "Comportement",
       "behaviorHelp": "Comment le bot se positionne et choisit ses combats.",
       "smartTargeting": "Ciblage intelligent",
       "smartTargetingHelpOn": "Activé : ce plugin décide qui attaquer. Il rejoint la cible focalisée de l'équipe, préfère les ennemis à faibles PV et peu résistants (soigneurs d'abord), et ignore quiconque a Garde actif. ",
-      "smartTargetingHelpManual": "RotationSolver tourne en mode manuel et lance ses compétences sur cette cible ; un autre plugin de rotation doit attaquer votre cible actuelle. ",
-      "smartTargetingHelpOff": "Désactivé : le plugin de rotation choisit ses cibles lui-même (RotationSolver prend les PV les plus bas à portée).",
+      "smartTargetingHelpOff": "Désactivé : attaque votre cible actuelle quand vous en avez une et en choisit une lui-même sinon. Un plugin de rotation séparé doit attaquer votre cible actuelle.",
       "reactionTime": "Temps de réaction",
       "reactionTimeHelp": "Ajoute un délai de réaction humain avant que le bot ne change ce qu'il fait.",
       "recordMatches": "Enregistrer les matchs",
@@ -371,10 +369,10 @@
       "recordMatchesHelpSize": "pour revoir et affiner sa façon de jouer. Environ 1 Mo par match ; seuls les 30 derniers matchs sont conservés."
     },
     "rotation": {
-      "rsr": "RotationSolver Reborn",
-      "rsrHelp": "Installé automatiquement et piloté par ce plugin ; compétences, Garde et Purification sont gérés pour vous. Le choix recommandé par défaut.",
+      "builtIn": "Intégrée",
+      "builtInHelp": "Ce plugin appuie lui-même sur les compétences JcJ de votre job, Garde, Purification, Récupération et Élixir. Rien d'autre à installer. Le choix par défaut.",
       "manual": "Autre / manuel",
-      "manualHelp": "Utilisez votre propre plugin de rotation (par ex. Wrath Combo). Il doit gérer lui-même les compétences, Garde et Purification ; RotationSolver n'est alors plus requis."
+      "manualHelp": "Utilisez votre propre plugin de rotation (par ex. Wrath Combo). Il doit gérer lui-même les compétences, Garde et Purification."
     },
     "strategy": {
       "rush": "Foncer sur le cristal",

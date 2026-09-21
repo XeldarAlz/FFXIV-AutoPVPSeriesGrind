@@ -16,11 +16,13 @@ internal sealed partial class AutoPvpSeries : AutoCommon
     private readonly MovementExecutor movement = new();
     private readonly RotationController rotation;
     private readonly GreetingDirector greeting = new();
+    private readonly Action holdStill;
 
     public AutoPvpSeries(SessionStats session)
     {
         this.session = session;
         rotation = new RotationController(brain);
+        holdStill = movement.Stop;
         brain.CanSee = LineOfSight.IsVisible;
     }
 
@@ -72,7 +74,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         settings = RunSettings.From(cfg);
         brain.SetStrategy(cfg.Strategy, cfg.CustomStrategy);
         brain.OwnsTargeting = settings.BrainTargets;
-        rotation.Configure(cfg.RotationProvider == RotationProvider.RotationSolver, settings.BrainTargets);
+        rotation.Configure(cfg.RotationProvider == RotationProvider.Internal);
 
         ApsgLog.Chat($"Starting PvP Series grind ({cfg.ActiveMode.DisplayName}).");
 

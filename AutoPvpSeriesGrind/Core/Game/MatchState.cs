@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Combat;
+using AutoPvpSeriesGrind.Core.Rotation;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
@@ -25,8 +26,8 @@ internal static class MatchState
     public static Vector3? PlayerPosition()
         => Svc.Objects.LocalPlayer?.Position;
 
-    public static bool LocalIsCasting(uint actionId)
-        => Svc.Objects.LocalPlayer is { } me && me.IsCasting(actionId);
+    public static bool LocalIsCasting()
+        => Svc.Objects.LocalPlayer is { } me && me.IsCasting;
 
     public static bool HasStatus(uint statusId)
         => Svc.Objects.LocalPlayer is { } localPlayer && HasStatus(localPlayer, statusId);
@@ -192,7 +193,7 @@ internal static class MatchState
             Position: playerCharacter.Position,
             Hp: HpFraction(playerCharacter.CurrentHp, playerCharacter.MaxHp),
             Role: RoleFromByte(roleByte),
-            HasGuard: HasStatus(playerCharacter, ApsgConstants.StatusGuard),
+            HasGuard: HasStatus(playerCharacter, PvpStatuses.Guard),
             IsCasting: playerCharacter.IsCasting,
             TargetId: playerCharacter.TargetObjectId,
             DistanceToSelf: Vector3.Distance(self, playerCharacter.Position));

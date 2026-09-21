@@ -19,7 +19,6 @@
     "install": "Instalar",
     "purpose": {
       "vnavmesh": "Busca de caminho e movimento até o objetivo durante uma partida.",
-      "rotation": "Comanda o combate durante a partida (/rotation auto LowHP).",
       "lifestream": "Opcional: executa o comando de viagem configurado antes da primeira fila.",
       "autoLb": "Dispara seu Limit Break de JcJ. Este plugin envia automaticamente ajustes testados para cada classe."
     }
@@ -354,16 +353,15 @@
     },
     "combat": {
       "introMovement": "O comportamento controla apenas o movimento: onde ficar e quando recuar. ",
-      "introRotation": "Seu plugin de rotação aperta as habilidades; o plugin obrigatório Auto PVP LB dispara o Limit Break, configurado automaticamente para sua classe.",
+      "introRotation": "A rotação embutida aperta suas habilidades, Guard, Purify, Recuperate e Elixir; o plugin obrigatório Auto PVP LB dispara o Limit Break, configurado automaticamente para sua classe.",
       "group": "Combate",
-      "rotationPlugin": "Plugin de rotação",
-      "rotationPluginHelp": "Qual plugin aperta suas habilidades de combate durante as partidas.",
+      "rotationPlugin": "Rotação",
+      "rotationPluginHelp": "O que aperta suas habilidades de combate durante as partidas.",
       "behavior": "Comportamento",
       "behaviorHelp": "Como o bot se posiciona e escolhe suas brigas.",
       "smartTargeting": "Alvo inteligente",
       "smartTargetingHelpOn": "Ligado: este plugin decide quem atacar. Ele acompanha o alvo focado do time, prefere inimigos com pouca vida e pouca resistência (curandeiros primeiro) e pula quem estiver com Guard ativo. ",
-      "smartTargetingHelpManual": "O RotationSolver roda em modo manual e usa as habilidades nesse alvo; outro plugin de rotação precisa atacar seu alvo atual. ",
-      "smartTargetingHelpOff": "Desligado: o plugin de rotação escolhe os alvos sozinho (o RotationSolver usa o de menor vida no alcance).",
+      "smartTargetingHelpOff": "Desligado: ataca seu alvo atual quando você tem um e escolhe um sozinho quando não tem. Um plugin de rotação separado precisa atacar seu alvo atual.",
       "reactionTime": "Tempo de reação",
       "reactionTimeHelp": "Adiciona um atraso de reação humano antes de o bot mudar o que está fazendo.",
       "recordMatches": "Gravar partidas",
@@ -371,10 +369,10 @@
       "recordMatchesHelpSize": "para revisar e ajustar como ele jogou. Cerca de 1 MB por partida; só as últimas 30 partidas são mantidas."
     },
     "rotation": {
-      "rsr": "RotationSolver Reborn",
-      "rsrHelp": "Instalado automaticamente e comandado por este plugin; habilidades, Guard e Purify são cuidados para você. O padrão recomendado.",
+      "builtIn": "Embutida",
+      "builtInHelp": "Este plugin aperta sozinho as habilidades de JcJ do seu trabalho, Guard, Purify, Recuperate e Elixir. Nada mais para instalar. O padrão.",
       "manual": "Outro / manual",
-      "manualHelp": "Use seu próprio plugin de rotação (ex.: Wrath Combo). Ele precisa apertar habilidades, Guard e Purify sozinho; o RotationSolver deixa de ser necessário."
+      "manualHelp": "Use seu próprio plugin de rotação (ex.: Wrath Combo). Ele precisa apertar habilidades, Guard e Purify sozinho."
     },
     "strategy": {
       "rush": "Correr para o cristal",

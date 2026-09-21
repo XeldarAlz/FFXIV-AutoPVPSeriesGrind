@@ -2,6 +2,6 @@ namespace AutoPvpSeriesGrind;
 
 public enum RotationProvider
 {
-    RotationSolver,
+    Internal,
     External,
 }

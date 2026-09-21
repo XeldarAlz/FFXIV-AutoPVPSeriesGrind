@@ -66,7 +66,6 @@ internal static class CombatSettings
     {
         SettingsRow.Draw(Loc.T(L.Settings.SmartTargeting),
             Loc.T(L.Settings.SmartTargetingHelpOn) +
-            Loc.T(L.Settings.SmartTargetingHelpManual) +
             Loc.T(L.Settings.SmartTargetingHelpOff),
             SettingsControls.ToggleWidth,
             () => SettingsControls.DrawToggle(cfg, () => cfg.BrainPicksTargets, value => cfg.BrainPicksTargets = value, "##cmb_targeting"),
@@ -104,9 +103,9 @@ internal static class CombatSettings
 
         public static readonly Entry[] All =
         [
-            new(L.Settings.RotationRsr,
-                L.Settings.RotationRsrHelp,
-                RotationProvider.RotationSolver),
+            new(L.Settings.RotationBuiltIn,
+                L.Settings.RotationBuiltInHelp,
+                RotationProvider.Internal),
             new(L.Settings.RotationManual,
                 L.Settings.RotationManualHelp,
                 RotationProvider.External),

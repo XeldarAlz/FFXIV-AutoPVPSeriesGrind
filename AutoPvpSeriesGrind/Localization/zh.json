@@ -19,7 +19,6 @@
     "install": "安装",
     "purpose": {
       "vnavmesh": "比赛中的寻路与移动到目标点。",
-      "rotation": "比赛中负责战斗（/rotation auto LowHP）。",
       "lifestream": "可选：在第一次排队前执行你配置的传送指令。",
       "autoLb": "释放你的 PvP 极限技。本插件会自动把各职业的成熟配置推送给它。"
     }
@@ -354,16 +353,15 @@
     },
     "combat": {
       "introMovement": "行为只控制移动：站在哪里，什么时候后撤。 ",
-      "introRotation": "技能由你的循环插件按下；必需的 Auto PVP LB 插件负责释放极限技，并按你的职业自动配置。",
+      "introRotation": "内置循环负责按下你的技能、Guard、Purify、Recuperate 和 Elixir；必需的 Auto PVP LB 插件负责释放极限技，并按你的职业自动配置。",
       "group": "战斗",
-      "rotationPlugin": "循环插件",
-      "rotationPluginHelp": "比赛中由哪个插件按下你的战斗技能。",
+      "rotationPlugin": "循环",
+      "rotationPluginHelp": "比赛中由什么来按下你的战斗技能。",
       "behavior": "行为",
       "behaviorHelp": "机器人如何走位、如何挑选战斗。",
       "smartTargeting": "智能选敌",
       "smartTargetingHelpOn": "开启：由本插件决定攻击谁。它会跟随队伍的集火目标，优先选血量低、脆皮的敌人（先打治疗），并跳过开了 Guard 的人。 ",
-      "smartTargetingHelpManual": "RotationSolver 以手动模式运行，对该目标释放技能；换用其他循环插件时，它必须攻击你的当前目标。 ",
-      "smartTargetingHelpOff": "关闭：由循环插件自行选目标（RotationSolver 会选射程内血量最低的）。",
+      "smartTargetingHelpOff": "关闭：有当前目标时攻击当前目标，没有时自行选择。若使用独立的循环插件，它必须攻击你的当前目标。",
       "reactionTime": "反应时间",
       "reactionTimeHelp": "在机器人改变动作之前，加入接近真人的反应延迟。",
       "recordMatches": "记录比赛",
@@ -371,10 +369,10 @@
       "recordMatchesHelpSize": "便于回看和调整它的打法。每场约 1 MB；只保留最近 30 场。"
     },
     "rotation": {
-      "rsr": "RotationSolver Reborn",
-      "rsrHelp": "由本插件自动安装并驱动；技能、Guard 和 Purify 都替你处理好。推荐的默认选项。",
+      "builtIn": "内置",
+      "builtInHelp": "本插件自行按下你职业的 PvP 技能、Guard、Purify、Recuperate 和 Elixir。无需额外安装。默认选项。",
       "manual": "其他 / 手动",
-      "manualHelp": "使用你自己的循环插件（例如 Wrath Combo）。它必须自己按技能、Guard 和 Purify；此时不再需要 RotationSolver。"
+      "manualHelp": "使用你自己的循环插件（例如 Wrath Combo）。它必须自己按技能、Guard 和 Purify。"
     },
     "strategy": {
       "rush": "直冲水晶",

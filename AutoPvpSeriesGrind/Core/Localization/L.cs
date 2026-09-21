@@ -217,7 +217,6 @@ internal static class L
         public static readonly LocString Install = new("plugins.install", "Install");
 
         public static readonly LocString PurposeVnavmesh = new("plugins.purpose.vnavmesh", "Pathfinding and movement to the objective during a match.");
-        public static readonly LocString PurposeRotation = new("plugins.purpose.rotation", "Drives combat during the match (/rotation auto LowHP).");
         public static readonly LocString PurposeLifestream = new("plugins.purpose.lifestream", "Optional: runs your configured travel command before the first queue.");
         public static readonly LocString PurposeAutoLb = new("plugins.purpose.autoLb", "Fires your PvP Limit Break. This plugin pushes proven per-class settings to it automatically.");
     }
@@ -332,26 +331,25 @@ internal static class L
         public static readonly LocString BreakLengthHelp = new("settings.session.breakLengthHelp", "Roughly how long each break lasts, varied by ±20% each time.");
 
         public static readonly LocString CombatIntroMovement = new("settings.combat.introMovement", "Behavior controls movement only: where to stand and when to back off. ");
-        public static readonly LocString CombatIntroRotation = new("settings.combat.introRotation", "Your rotation plugin presses the skills; the required Auto PVP LB plugin fires the Limit Break, auto-configured for your class.");
+        public static readonly LocString CombatIntroRotation = new("settings.combat.introRotation", "The built-in rotation presses your skills, Guard, Purify, Recuperate and Elixir; the required Auto PVP LB plugin fires the Limit Break, auto-configured for your class.");
         public static readonly LocString GroupCombat = new("settings.combat.group", "Combat");
-        public static readonly LocString RotationPlugin = new("settings.combat.rotationPlugin", "Rotation plugin");
-        public static readonly LocString RotationPluginHelp = new("settings.combat.rotationPluginHelp", "Which plugin presses your combat skills during matches.");
+        public static readonly LocString RotationPlugin = new("settings.combat.rotationPlugin", "Rotation");
+        public static readonly LocString RotationPluginHelp = new("settings.combat.rotationPluginHelp", "What presses your combat skills during matches.");
         public static readonly LocString Behavior = new("settings.combat.behavior", "Behavior");
         public static readonly LocString BehaviorHelp = new("settings.combat.behaviorHelp", "How the bot positions itself and picks its fights.");
         public static readonly LocString SmartTargeting = new("settings.combat.smartTargeting", "Smart targeting");
         public static readonly LocString SmartTargetingHelpOn = new("settings.combat.smartTargetingHelpOn", "On: this plugin decides who to attack. It joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. ");
-        public static readonly LocString SmartTargetingHelpManual = new("settings.combat.smartTargetingHelpManual", "RotationSolver runs in manual mode and presses skills on that target; another rotation plugin must attack your current target. ");
-        public static readonly LocString SmartTargetingHelpOff = new("settings.combat.smartTargetingHelpOff", "Off: the rotation plugin picks targets itself (RotationSolver uses lowest HP in range).");
+        public static readonly LocString SmartTargetingHelpOff = new("settings.combat.smartTargetingHelpOff", "Off: attacks your current target when you have one and picks one itself when you don't. A separate rotation plugin must attack your current target.");
         public static readonly LocString ReactionTime = new("settings.combat.reactionTime", "Reaction time");
         public static readonly LocString ReactionTimeHelp = new("settings.combat.reactionTimeHelp", "Adds a human reaction delay before the bot changes what it's doing.");
         public static readonly LocString RecordMatches = new("settings.combat.recordMatches", "Record matches");
         public static readonly LocString RecordMatchesHelp = new("settings.combat.recordMatchesHelp", "Writes every brain decision (positions, HP, posture, reason) to a per-match log file in the plugin folder, ");
         public static readonly LocString RecordMatchesHelpSize = new("settings.combat.recordMatchesHelpSize", "for reviewing and tuning how it played. Roughly 1 MB per match; only the last 30 matches are kept.");
 
-        public static readonly LocString RotationRsr = new("settings.rotation.rsr", "RotationSolver Reborn");
-        public static readonly LocString RotationRsrHelp = new("settings.rotation.rsrHelp", "Auto-installed and driven by this plugin; skills, Guard, and Purify are handled for you. The recommended default.");
+        public static readonly LocString RotationBuiltIn = new("settings.rotation.builtIn", "Built-in");
+        public static readonly LocString RotationBuiltInHelp = new("settings.rotation.builtInHelp", "This plugin presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself. Nothing extra to install. The default.");
         public static readonly LocString RotationManual = new("settings.rotation.manual", "Other / manual");
-        public static readonly LocString RotationManualHelp = new("settings.rotation.manualHelp", "Bring your own rotation plugin (e.g. Wrath Combo). It must press skills, Guard, and Purify itself; RotationSolver is no longer required.");
+        public static readonly LocString RotationManualHelp = new("settings.rotation.manualHelp", "Bring your own rotation plugin (e.g. Wrath Combo). It must press skills, Guard, and Purify itself.");
 
         public static readonly LocString StrategyRush = new("settings.strategy.rush", "Rush the crystal");
         public static readonly LocString StrategyRushHelp = new("settings.strategy.rushHelp", "No tactics: runs to the objective and stands on it. Never retreats; will feed when outnumbered.");

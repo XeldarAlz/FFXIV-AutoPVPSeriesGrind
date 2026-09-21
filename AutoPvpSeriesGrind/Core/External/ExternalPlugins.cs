@@ -14,13 +14,6 @@ internal static class ExternalPlugins
             RepoUrl: "https://puni.sh/api/repository/veyn",
             Purpose: L.Plugins.PurposeVnavmesh,
             Required: true),
-        [ExternalPlugin.RotationSolver] = new(
-            InternalName: "RotationSolver",
-            DisplayName: "RotationSolver Reborn",
-            RepoUrl: "https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json",
-            Purpose: L.Plugins.PurposeRotation,
-            Required: true,
-            Aliases: ["RotationSolverReborn"]),
         [ExternalPlugin.Lifestream] = new(
             InternalName: "Lifestream",
             DisplayName: "Lifestream",
@@ -51,18 +44,7 @@ internal static class ExternalPlugins
         return snapshot;
     }
 
-    public static bool IsRequired(ExternalPlugin plugin)
-    {
-        if (!Catalog[plugin].Required)
-        {
-            return false;
-        }
-        if (plugin == ExternalPlugin.RotationSolver)
-        {
-            return Plugin.Cfg.RotationProvider == RotationProvider.RotationSolver;
-        }
-        return true;
-    }
+    public static bool IsRequired(ExternalPlugin plugin) => Catalog[plugin].Required;
 
     public static bool IsInstalled(ExternalPlugin plugin)
     {
@@ -73,8 +55,7 @@ internal static class ExternalPlugins
             {
                 continue;
             }
-            if (installedPlugin.InternalName == info.InternalName
-                || (info.Aliases is not null && Array.IndexOf(info.Aliases, installedPlugin.InternalName) >= 0))
+            if (installedPlugin.InternalName == info.InternalName)
             {
                 return true;
             }

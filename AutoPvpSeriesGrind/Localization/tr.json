@@ -19,7 +19,6 @@
     "install": "Kur",
     "purpose": {
       "vnavmesh": "Maç sırasında hedefe yol bulma ve hareket.",
-      "rotation": "Maç sırasında savaşı yönetir (/rotation auto LowHP).",
       "lifestream": "İsteğe bağlı: ilk sıraya girmeden önce ayarladığın seyahat komutunu çalıştırır.",
       "autoLb": "PvP Limit Break'ini kullanır. Bu eklenti ona sınıfına göre denenmiş ayarları otomatik gönderir."
     }
@@ -354,16 +353,15 @@
     },
     "combat": {
       "introMovement": "Davranış yalnızca hareketi yönetir: nerede duracağı ve ne zaman geri çekileceği. ",
-      "introRotation": "Yetenekleri senin rotasyon eklentin basar; gerekli Auto PVP LB eklentisi ise sınıfına göre otomatik ayarlanmış Limit Break'i kullanır.",
+      "introRotation": "Yerleşik rotasyon yeteneklerini, Guard, Purify, Recuperate ve Elixir'i basar; gerekli Auto PVP LB eklentisi ise sınıfına göre otomatik ayarlanmış Limit Break'i kullanır.",
       "group": "Savaş",
-      "rotationPlugin": "Rotasyon eklentisi",
-      "rotationPluginHelp": "Maçlarda savaş yeteneklerini hangi eklentinin basacağı.",
+      "rotationPlugin": "Rotasyon",
+      "rotationPluginHelp": "Maçlarda savaş yeteneklerini neyin basacağı.",
       "behavior": "Davranış",
       "behaviorHelp": "Botun nasıl konumlandığı ve hangi kavgaları seçtiği.",
       "smartTargeting": "Akıllı hedefleme",
       "smartTargetingHelpOn": "Açık: kime saldırılacağına bu eklenti karar verir. Takımın odak hedefine katılır, canı az ve dayanıksız düşmanları tercih eder (önce healer'lar) ve Guard'ı açık olanları atlar. ",
-      "smartTargetingHelpManual": "RotationSolver manuel modda çalışır ve yetenekleri o hedefe basar; başka bir rotasyon eklentisi mevcut hedefine saldırmalıdır. ",
-      "smartTargetingHelpOff": "Kapalı: hedefleri rotasyon eklentisi kendi seçer (RotationSolver menzildeki en düşük canlıyı kullanır).",
+      "smartTargetingHelpOff": "Kapalı: hedefin varsa ona saldırır, yoksa kendi seçer. Ayrı bir rotasyon eklentisi kullanıyorsan mevcut hedefine saldırmalıdır.",
       "reactionTime": "Tepki süresi",
       "reactionTimeHelp": "Bot yaptığı şeyi değiştirmeden önce insana benzer bir tepki gecikmesi ekler.",
       "recordMatches": "Maçları kaydet",
@@ -371,10 +369,10 @@
       "recordMatchesHelpSize": "nasıl oynadığını inceleyip ince ayar yapmak için. Maç başına yaklaşık 1 MB; yalnızca son 30 maç saklanır."
     },
     "rotation": {
-      "rsr": "RotationSolver Reborn",
-      "rsrHelp": "Otomatik kurulur ve bu eklenti tarafından yönetilir; yetenekler, Guard ve Purify senin için halledilir. Önerilen varsayılan.",
+      "builtIn": "Yerleşik",
+      "builtInHelp": "Bu eklenti işinin PvP yeteneklerini, Guard, Purify, Recuperate ve Elixir'i kendisi basar. Ek kurulum gerekmez. Varsayılan seçenek.",
       "manual": "Diğer / manuel",
-      "manualHelp": "Kendi rotasyon eklentini kullan (ör. Wrath Combo). Yetenekleri, Guard'ı ve Purify'ı kendisi basmalı; RotationSolver artık gerekmez."
+      "manualHelp": "Kendi rotasyon eklentini kullan (ör. Wrath Combo). Yetenekleri, Guard'ı ve Purify'ı kendisi basmalı."
     },
     "strategy": {
       "rush": "Kristale koş",

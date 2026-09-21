@@ -172,7 +172,7 @@ internal sealed partial class AutoPvpSeries
         {
             MatchRecorder.Begin(Svc.ClientState.TerritoryType);
         }
-        await EnableRotationAtMatchStart();
+        rotation.OnMatchStart();
         return true;
     }
 
@@ -185,23 +185,5 @@ internal sealed partial class AutoPvpSeries
         }
 
         Warn($"navmesh not ready at gate open (build progress {nav.BuildProgress():F2}) -> movement stalls until vnavmesh finishes this zone");
-    }
-
-    private async Task EnableRotationAtMatchStart()
-    {
-        if (!rotation.Managed)
-        {
-            rotation.MarkRotationEnabled();
-            return;
-        }
-
-        if (rotation.UsesLowHpPreset)
-        {
-            ExecuteGameCommand(GameCommands.AddLowHpTargeting);
-            await NextFrame(PollMs);
-        }
-        ExecuteGameCommand(rotation.EnableCommand);
-        rotation.MarkRotationEnabled();
-        LogDiagnostic("rotation enabled (match start)");
     }
 }

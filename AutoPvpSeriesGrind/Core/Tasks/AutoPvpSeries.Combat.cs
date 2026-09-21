@@ -1,5 +1,6 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Rotation;
 using AutoPvpSeriesGrind.Core.Util;
 using ECommons.DalamudServices;
 using System.Numerics;
@@ -22,7 +23,6 @@ internal sealed partial class AutoPvpSeries
         rotation.TickDeathAndRespawn();
         if (IsDead())
         {
-            rotation.OnDeadDuringLive();
             movement.Stop();
             matchFlow.LeftSpawn = false;
             matchFlow.LeaveSpawnStartedAtMs = 0;
@@ -31,21 +31,20 @@ internal sealed partial class AutoPvpSeries
         }
 
         rotation.EnsureSignCleared();
-        rotation.EnsureRotationEnabled();
 
         var territory = Svc.ClientState.TerritoryType;
 
-        if (MatchState.HasStatus(StatusSpawnProtection))
+        if (MatchState.HasStatus(PvpStatuses.SpawnProtection))
         {
             MovementExecutor.EnsureSprinting();
             matchFlow.RanSafetyMoveThisDuty = true;
             CaptureBasesAtSpawn(territory);
         }
 
-        if (MatchState.LocalIsCasting(ActionStandardIssueElixir))
+        if (MatchState.LocalIsCasting())
         {
             movement.Stop();
-            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, "wait: elixir cast (hp/mp refill)", Posture.Hold);
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, "wait: casting", Posture.Hold);
             return;
         }
 
@@ -140,6 +139,10 @@ internal sealed partial class AutoPvpSeries
         if (!snapshot.HasObjective)
         {
             WarnMissingObjectiveOnce();
+            if (HoldsStillForRotation(snapshot, 0, mayStandStill: false))
+            {
+                return;
+            }
             AdvanceWithoutObjective(snapshot);
             return;
         }
@@ -149,6 +152,11 @@ internal sealed partial class AutoPvpSeries
         var anchor = matchFlow.Bases?.Own ?? MatchState.NearestSafeAnchor(territory, snapshot.Self) ?? snapshot.Self;
         var plan = brain.Decide(snapshot, anchor, matchFlow.Bases?.Enemy);
         BrainTelemetry.Record(snapshot, plan);
+
+        if (HoldsStillForRotation(snapshot, plan.TargetId, plan.Posture is Posture.Hold or Posture.Push or Posture.Stage))
+        {
+            return;
+        }
 
         var planChanged = movement.UpdatePosture(plan.Posture);
         if (settings.Humanize != HumanizeLevel.Off && planChanged)
@@ -188,6 +196,20 @@ internal sealed partial class AutoPvpSeries
         Warn($"objective not found among {Svc.Objects.Length} loaded objects (Tactical Crystal, BNpcName {TacticalCrystalNameId})");
     }
 
+    private bool HoldsStillForRotation(PvpSnapshot snapshot, ulong targetId, bool mayStandStill)
+    {
+        var outcome = rotation.Drive(snapshot, targetId, mayStandStill, holdStill);
+        if (outcome is not (RotationOutcome.Cast or RotationOutcome.Guarding))
+        {
+            return false;
+        }
+
+        movement.Stop();
+        var reason = outcome == RotationOutcome.Guarding ? "guarding, holding still" : "casting, holding still";
+        BrainTelemetry.RecordStatus(snapshot, MoveKind.Hold, reason, Posture.Hold);
+        return true;
+    }
+
     private void ApplyBrainTarget(ulong targetId)
     {
         if (settings.BrainTargets && targetId != 0)
@@ -218,6 +240,10 @@ internal sealed partial class AutoPvpSeries
         }
 
         var hold = Vector3.Distance(snapshot.Self, crystalPosition) < CrystalEngageRadiusYalms && enemyOnPoint;
+        if (HoldsStillForRotation(snapshot, snapshot.CurrentTarget?.Id ?? 0, hold))
+        {
+            return;
+        }
         BrainTelemetry.RecordStatus(snapshot, hold ? MoveKind.Hold : MoveKind.Engage, hold ? "hold (legacy)" : "to crystal (legacy)");
         if (!hold)
             movement.IssueMove(crystalPosition, crystalPosition, LegacyCrystalStopRange);

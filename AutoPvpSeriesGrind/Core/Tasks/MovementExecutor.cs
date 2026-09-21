@@ -1,8 +1,8 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Ipc;
+using AutoPvpSeriesGrind.Core.Rotation;
 using System.Numerics;
-using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
@@ -56,12 +56,12 @@ internal sealed class MovementExecutor
 
     public static void EnsureSprinting()
     {
-        if (MatchState.HasStatus(StatusSprint))
+        if (MatchState.HasStatus(PvpStatuses.Sprint))
         {
             return;
         }
 
-        ActionOps.UseAction(ActionPvpSprint);
+        ActionOps.UseAction(PvpActions.Sprint);
     }
 
     public void HaltPathing()

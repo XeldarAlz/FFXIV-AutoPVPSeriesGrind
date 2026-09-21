@@ -7,5 +7,4 @@ internal sealed record ExternalPluginInfo(
     string DisplayName,
     string RepoUrl,
     LocString Purpose,
-    bool Required,
-    string[]? Aliases = null);
+    bool Required);

@@ -16,16 +16,6 @@ internal static class ApsgConstants
     // client language, so comparing against the English text finds nothing on a non-English client.
     public const uint TacticalCrystalNameId = 11350;
 
-    public const uint StatusSpawnProtection = 895; // active in the spawn pen before the gate opens
-    public const uint StatusSprint = 1342;         // PvP sprint
-    public const uint StatusGuard = 3054;          // PvP Guard (90% mitigation); poor target while up
-
-    public const uint ActionPvpSprint = 29057;
-
-    // Standard-issue Elixir (PvP): 4.5s cast that refills HP and MP to full. Any movement cancels it,
-    // so the brain must hold still whenever the rotation solver is casting it.
-    public const uint ActionStandardIssueElixir = 29055;
-
     public const int SaveThrottleMs = 500;
 
     internal static class CrystallineConflict
@@ -61,11 +51,6 @@ internal static class ApsgConstants
 
     internal static class GameCommands
     {
-        public const string RotationPreset = "LowHP";
-        public const string EnableRotation = $"/rotation auto {RotationPreset}";
-        public const string EnableRotationManual = "/rotation manual";
-        public const string AddLowHpTargeting = $"/rotation Settings TargetingTypes add {RotationPreset}";
-
         public const string ClearEnemySignOnSelf = "/mk clear <me>";
 
         // Default emotes only; reward emotes the account may not own fail silently.

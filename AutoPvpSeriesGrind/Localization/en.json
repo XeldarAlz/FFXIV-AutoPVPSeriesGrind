@@ -19,7 +19,6 @@
     "install": "Install",
     "purpose": {
       "vnavmesh": "Pathfinding and movement to the objective during a match.",
-      "rotation": "Drives combat during the match (/rotation auto LowHP).",
       "lifestream": "Optional: runs your configured travel command before the first queue.",
       "autoLb": "Fires your PvP Limit Break. This plugin pushes proven per-class settings to it automatically."
     }
@@ -354,16 +353,15 @@
     },
     "combat": {
       "introMovement": "Behavior controls movement only: where to stand and when to back off. ",
-      "introRotation": "Your rotation plugin presses the skills; the required Auto PVP LB plugin fires the Limit Break, auto-configured for your class.",
+      "introRotation": "The built-in rotation presses your skills, Guard, Purify, Recuperate and Elixir; the required Auto PVP LB plugin fires the Limit Break, auto-configured for your class.",
       "group": "Combat",
-      "rotationPlugin": "Rotation plugin",
-      "rotationPluginHelp": "Which plugin presses your combat skills during matches.",
+      "rotationPlugin": "Rotation",
+      "rotationPluginHelp": "What presses your combat skills during matches.",
       "behavior": "Behavior",
       "behaviorHelp": "How the bot positions itself and picks its fights.",
       "smartTargeting": "Smart targeting",
       "smartTargetingHelpOn": "On: this plugin decides who to attack. It joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. ",
-      "smartTargetingHelpManual": "RotationSolver runs in manual mode and presses skills on that target; another rotation plugin must attack your current target. ",
-      "smartTargetingHelpOff": "Off: the rotation plugin picks targets itself (RotationSolver uses lowest HP in range).",
+      "smartTargetingHelpOff": "Off: attacks your current target when you have one and picks one itself when you don't. A separate rotation plugin must attack your current target.",
       "reactionTime": "Reaction time",
       "reactionTimeHelp": "Adds a human reaction delay before the bot changes what it's doing.",
       "recordMatches": "Record matches",
@@ -371,10 +369,10 @@
       "recordMatchesHelpSize": "for reviewing and tuning how it played. Roughly 1 MB per match; only the last 30 matches are kept."
     },
     "rotation": {
-      "rsr": "RotationSolver Reborn",
-      "rsrHelp": "Auto-installed and driven by this plugin; skills, Guard, and Purify are handled for you. The recommended default.",
+      "builtIn": "Built-in",
+      "builtInHelp": "This plugin presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself. Nothing extra to install. The default.",
       "manual": "Other / manual",
-      "manualHelp": "Bring your own rotation plugin (e.g. Wrath Combo). It must press skills, Guard, and Purify itself; RotationSolver is no longer required."
+      "manualHelp": "Bring your own rotation plugin (e.g. Wrath Combo). It must press skills, Guard, and Purify itself."
     },
     "strategy": {
       "rush": "Rush the crystal",
