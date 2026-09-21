@@ -1,5 +1,7 @@
 using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.External;
+using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Modes;
 using AutoPvpSeriesGrind.Core.Stats;
 using clib.Services;
 using System.Text;
@@ -51,6 +53,7 @@ internal sealed class AutoPvpSeriesController
         }
 
         ClearLastResult();
+        LiftRankTargetAboveCurrentRank();
         var stats = new SessionStats();
         stats.CaptureJob();
         stats.CaptureSeriesBaseline();
@@ -59,6 +62,25 @@ internal sealed class AutoPvpSeriesController
         LogDiagnostic($"Run starting: mode {Plugin.Cfg.ActiveMode.DisplayName}.");
 
         Svc.Automation.Start(new AutoPvpSeries(stats), OnCompleted: () => EndRun(stats));
+    }
+
+    private static void LiftRankTargetAboveCurrentRank()
+    {
+        var cfg = Plugin.Cfg;
+        if (cfg.ActiveMode.Id != SeriesRankMode.ModeId)
+        {
+            return;
+        }
+
+        var lowestOpenRank = SeriesRankMode.LowestOpenTarget(PvpProfileReader.SeriesCurrentRank());
+        if (cfg.TargetSeriesRank >= lowestOpenRank)
+        {
+            return;
+        }
+
+        LogDiagnostic($"Rank target {cfg.TargetSeriesRank} is already reached -> raised to {lowestOpenRank}.");
+        cfg.TargetSeriesRank = lowestOpenRank;
+        cfg.SaveDebounced();
     }
 
     private static string MissingRequiredPluginNames()

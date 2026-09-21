@@ -25,9 +25,20 @@ internal sealed partial class AutoPvpSeries
 
     private async Task<bool> TickOutOfDuty()
     {
+        if (matchFlow.InMatchLive)
+        {
+            CompleteMatch("duty ended without a results screen");
+        }
+
         if (matchFlow.InMatchLive || matchFlow.AnnouncedEntered || matchFlow.RanSafetyMoveThisDuty || matchFlow.BaselineCaptured)
         {
             ResetDutyState("out of duty");
+        }
+
+        var queued = Svc.Condition[ConditionFlag.InDutyQueue] || DutyOps.IsQueued();
+        if (!queued)
+        {
+            EvaluateStopCondition();
         }
 
         if (stopAfterCurrentMatch)
@@ -38,7 +49,7 @@ internal sealed partial class AutoPvpSeries
 
         SetPhase(AutoPhase.Queueing);
 
-        if (!Svc.Condition[ConditionFlag.InDutyQueue] && !DutyOps.IsQueued())
+        if (!queued)
         {
             var waitMs = nextQueueAllowedAtMs - Environment.TickCount64;
             if (waitMs > 0)

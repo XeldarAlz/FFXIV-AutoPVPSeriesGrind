@@ -358,11 +358,12 @@ internal static class PlanCard
         }
 
         var currentRank = PvpProfileReader.SeriesCurrentRank();
+        var lowestOpenRank = SeriesRankMode.LowestOpenTarget(currentRank);
         var (label, unit, step, min, max, value, note) = cfg.ActiveMode.Id switch
         {
             MatchCountMode.ModeId => (Loc.T(L.Plan.StopAfter), Loc.T(L.Plan.UnitMatches), 5, 1, 999, cfg.TargetMatchCount,
                 Loc.T(L.Plan.StopAfterMatchesHelp)),
-            SeriesRankMode.ModeId => (Loc.T(L.Plan.ReachRank), Loc.T(L.Plan.UnitRank), 1, Math.Clamp(currentRank + 1, 1, 30), 30, Math.Max(cfg.TargetSeriesRank, Math.Clamp(currentRank + 1, 1, 30)),
+            SeriesRankMode.ModeId => (Loc.T(L.Plan.ReachRank), Loc.T(L.Plan.UnitRank), 1, lowestOpenRank, SeriesRankMode.MaxRank, Math.Max(cfg.TargetSeriesRank, lowestOpenRank),
                 Loc.T(L.Plan.ReachRankHelp, currentRank)),
             _                     => (Loc.T(L.Plan.StopAfter), Loc.T(L.Plan.UnitMinutes), 5, 1, 1440, cfg.TargetMinutes,
                 Loc.T(L.Plan.StopAfterTimeHelp)),
@@ -392,7 +393,7 @@ internal static class PlanCard
         switch (cfg.ActiveMode.Id)
         {
             case MatchCountMode.ModeId: cfg.TargetMatchCount = Math.Clamp(value, 1, 999); break;
-            case SeriesRankMode.ModeId: cfg.TargetSeriesRank = Math.Clamp(value, 1, 30); break;
+            case SeriesRankMode.ModeId: cfg.TargetSeriesRank = Math.Clamp(value, 1, SeriesRankMode.MaxRank); break;
             default:                    cfg.TargetMinutes = Math.Clamp(value, 1, 1440); break;
         }
 

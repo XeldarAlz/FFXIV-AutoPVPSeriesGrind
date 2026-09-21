@@ -91,13 +91,18 @@ internal sealed partial class AutoPvpSeries : AutoCommon
 
         while (!CancelToken.IsCancellationRequested)
         {
-            if (InDuty())
+            if (await TryHandleMatchEnd())
             {
-                if (await TryHandleMatchEnd()) continue;
+                continue;
             }
-            else
+
+            if (!InDuty())
             {
-                if (await HandleOutOfDuty()) return;
+                if (await HandleOutOfDuty())
+                {
+                    return;
+                }
+
                 continue;
             }
 

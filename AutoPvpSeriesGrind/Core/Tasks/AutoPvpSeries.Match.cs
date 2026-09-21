@@ -21,23 +21,40 @@ internal sealed partial class AutoPvpSeries
 
     private async Task<bool> TryHandleMatchEnd()
     {
-        if (!ResultsScreenVisible()) return false;
-
-        session.MatchesCompleted++;
-        LogDiagnostic($"completed match {session.MatchesCompleted}");
-
-        if (Plugin.Cfg.ActiveMode.IsComplete(session.ToModeContext()))
+        if (!ResultsScreenVisible())
         {
-            stopAfterCurrentMatch = true;
-            session.CompletedByGoal = true;
-            LogDiagnostic($"stop condition met ({Plugin.Cfg.ActiveMode.DisplayName}) -> stopping after this match");
+            return false;
         }
 
-        ScheduleNextQueue();
+        if (matchFlow.BaselineCaptured)
+        {
+            CompleteMatch("results screen visible");
+        }
 
         await LingerThenLeave();
         ResetDutyState("left duty (post-match)");
         return true;
+    }
+
+    private void CompleteMatch(string signal)
+    {
+        session.MatchesCompleted++;
+        LogDiagnostic($"completed match {session.MatchesCompleted} ({signal})");
+
+        EvaluateStopCondition();
+        ScheduleNextQueue();
+    }
+
+    private void EvaluateStopCondition()
+    {
+        if (stopAfterCurrentMatch || !Plugin.Cfg.ActiveMode.IsComplete(session.ToModeContext()))
+        {
+            return;
+        }
+
+        stopAfterCurrentMatch = true;
+        session.CompletedByGoal = true;
+        LogDiagnostic($"stop condition met ({Plugin.Cfg.ActiveMode.DisplayName}) -> ending the run once out of duty");
     }
 
     // The leave delay is how long we sit on the results screen before bailing. "Good Match" is sent only if
@@ -68,7 +85,7 @@ internal sealed partial class AutoPvpSeries
         LogDiagnostic("match ended (results screen visible) -> leaving duty");
         ExecuteGameCommand(GameCommands.NavStop);
         DutyOps.LeaveCurrentContent();
-        await WaitUntilTimed(() => !InDuty(), LeaveDutyTimeoutMs, "left-duty", checkMs: PollMs);
+        await WaitUntilTimed(() => !InDuty() && !ResultsScreenVisible(), LeaveDutyTimeoutMs, "left-duty", checkMs: PollMs);
     }
 
     private async Task CaptureBaseline()
@@ -99,7 +116,7 @@ internal sealed partial class AutoPvpSeries
             return;
         }
 
-        while (InDuty() && !matchFlow.InMatchLive && !CancelToken.IsCancellationRequested)
+        while (InDuty() && !matchFlow.InMatchLive && !ResultsScreenVisible() && !CancelToken.IsCancellationRequested)
         {
             rotation.TickDeathAndRespawn();
 

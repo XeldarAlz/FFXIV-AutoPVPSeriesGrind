@@ -12,10 +12,13 @@ public sealed class MatchCountMode : ISeriesGrindMode
 public sealed class SeriesRankMode : ISeriesGrindMode
 {
     public const string ModeId = "seriesrank";
+    public const int MaxRank = 30;
     public string Id => ModeId;
     public string DisplayName => "Reach Series rank";
     public string Description => "Stops once your PvP Series (Malmstones) rank reaches the target.";
     public bool IsComplete(ModeContext ctx) => ctx.SeriesRank >= Plugin.Cfg.TargetSeriesRank;
+
+    public static int LowestOpenTarget(int currentRank) => Math.Clamp(currentRank + 1, 1, MaxRank);
 }
 
 public sealed class TimeBoxedMode : ISeriesGrindMode
