@@ -45,6 +45,9 @@ internal static unsafe class ActionOps
     public static void UseAction(uint actionId)
         => ActionManager.Instance()->UseAction(ActionType.Action, actionId);
 
+    public static void UseGeneralAction(uint generalActionId)
+        => ActionManager.Instance()->UseAction(ActionType.GeneralAction, generalActionId);
+
     public static bool UseAction(uint actionId, ulong targetId)
         => ActionManager.Instance()->UseAction(ActionType.Action, actionId, targetId);
 
