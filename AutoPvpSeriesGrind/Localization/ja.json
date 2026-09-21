@@ -498,6 +498,43 @@
       "lowestHpHelp": "25m以内でHPが最も低い敵。他に候補がいる間はガード中の相手を避けます。",
       "current": "現在のターゲット",
       "currentHelp": "あなたがターゲットしている相手を攻撃し、ターゲットがないときだけ自分で選びます。"
+    },
+    "frontline": {
+      "behavior": "フロントラインの行動",
+      "behaviorHelp": "フロントラインでボットがチームとどう動くか。",
+      "defensive": "守備的",
+      "defensiveHelp": "集団の後方に留まり、HP約55%未満で下がり、敵の前線から十分距離を取ります。",
+      "moderate": "標準",
+      "moderateHelp": "集団内の通常の位置を保ち、HP約45%未満か敵2人に狙われたら下がります。おすすめの既定値です。",
+      "aggressive": "攻撃的",
+      "aggressiveHelp": "集団の最前列に立ち、狙われても長く耐え、HP約30%未満でのみ下がります。",
+      "custom": "カスタム",
+      "customHelp": "手動調整。以下のフロントラインの距離としきい値をすべて自分で設定します。標準を基準に始まります。"
+    },
+    "frontlineCustom": {
+      "position": "集団内での立ち位置",
+      "frontOffset": "近接：前に出る距離",
+      "frontOffsetHelp": "近接またはタンクのとき、集団の中心から敵側へどれだけ前に立つか。",
+      "backOffset": "遠隔：後ろに下がる距離",
+      "backOffsetHelp": "遠隔またはヒーラーのとき、集団の中心からどれだけ後ろに立つか。",
+      "retreatOffset": "後退時に下がる距離",
+      "retreatOffsetHelp": "負傷または狙われたとき、集団の中心からどれだけ後ろへ下がるか。",
+      "cohesion": "集団から離れない",
+      "regroupDistance": "合流する距離",
+      "regroupDistanceHelp": "集団からこれ以上離れたら、戻るまで他の行動は待ちます。",
+      "engageRange": "交戦する敵の距離",
+      "engageRangeHelp": "この距離内の敵だけをターゲットにします。集団の外まで追いません。",
+      "hurtBelow": "後退するHP",
+      "hurtBelowHelp": "このHP未満では、回復するまで集団の後ろへ下がります。",
+      "focusedHurtBelow": "狙われた時に後退するHP",
+      "focusedHurtBelowHelp": "十分な数の敵に狙われているとき（「危険とみなす人数」参照）、このHPで早めに下がります。",
+      "recoverAbove": "復帰するHP",
+      "recoverAboveHelp": "このHPを超えて回復したら、集団内の持ち場に戻ります。",
+      "riding": "騎乗で戻る",
+      "mountDistance": "騎乗する距離",
+      "mountDistanceHelp": "リスポーン後や分断後、集団がこの距離以上離れていれば騎乗して戻ります。",
+      "enemyAware": "敵が近いとみなす距離",
+      "enemyAwareHelp": "この距離に敵がいれば騎乗せず、すぐに降ります。"
     }
   },
   "brain": {

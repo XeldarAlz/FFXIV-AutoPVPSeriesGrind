@@ -46,6 +46,8 @@ public sealed class Configuration : IPluginConfiguration
     public TargetingMode Targeting { get; set; } = TargetingMode.Smart;
     public PvpStrategy Strategy { get; set; } = PvpStrategy.Moderate;
     public CustomStrategyProfile CustomStrategy { get; set; } = new();
+    public PvpStrategy FrontlineStrategy { get; set; } = PvpStrategy.Moderate;
+    public CustomFrontlineProfile CustomFrontline { get; set; } = new();
 
     public HumanizeLevel Humanize { get; set; } = HumanizeLevel.Realistic;
 

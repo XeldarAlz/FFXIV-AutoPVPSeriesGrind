@@ -498,6 +498,43 @@
       "lowestHpHelp": "O inimigo com menos vida em 25 metros; quem estiver com Guard ativo é pulado enquanto houver outro disponível.",
       "current": "Seu alvo atual",
       "currentHelp": "Ataca o que você tem selecionado e só escolhe sozinho quando você não tem alvo."
+    },
+    "frontline": {
+      "behavior": "Comportamento em Frontline",
+      "behaviorHelp": "Como o bot se move com o time em Frontline.",
+      "defensive": "Defensivo",
+      "defensiveHelp": "Fica no fundo do grupo, recua abaixo de ~55% de vida e mantém distância da linha inimiga.",
+      "moderate": "Moderado",
+      "moderateHelp": "Ocupa um lugar normal no grupo e recua abaixo de ~45% de vida ou quando dois inimigos focam você. Um bom padrão.",
+      "aggressive": "Agressivo",
+      "aggressiveHelp": "Fica bem na frente do grupo, aguenta mais foco e só recua abaixo de ~30% de vida.",
+      "custom": "Personalizado",
+      "customHelp": "Ajustado à mão: cada distância e limite de Frontline abaixo é seu. Parte da base Moderado."
+    },
+    "frontlineCustom": {
+      "position": "Onde ficar no grupo",
+      "frontOffset": "Corpo a corpo: à frente por",
+      "frontOffsetHelp": "Como corpo a corpo ou tanque, a que distância à frente do centro do grupo, rumo ao inimigo, ficar.",
+      "backOffset": "À distância: atrás por",
+      "backOffsetHelp": "Como à distância ou curandeiro, a que distância atrás do centro do grupo ficar.",
+      "retreatOffset": "Recuar para trás do grupo por",
+      "retreatOffsetHelp": "Ferido ou focado, a que distância atrás do centro do grupo recuar.",
+      "cohesion": "Ficar juntos",
+      "regroupDistance": "Voltar ao grupo a mais de",
+      "regroupDistanceHelp": "Se você se afastar do grupo mais que isto, todo o resto espera até você voltar.",
+      "engageRange": "Combater inimigos a até",
+      "engageRangeHelp": "Só inimigos assim perto contam como alvos; ninguém é perseguido além do grupo.",
+      "hurtBelow": "Recuar abaixo de",
+      "hurtBelowHelp": "Abaixo desta vida você vai para trás do grupo até se recuperar.",
+      "focusedHurtBelow": "Recuar se focado abaixo de",
+      "focusedHurtBelowHelp": "Quando inimigos suficientes miram em você (veja Em perigo com), recua já com esta vida.",
+      "recoverAbove": "Voltar acima de",
+      "recoverAboveHelp": "Curado acima disto, você retoma seu lugar no grupo.",
+      "riding": "Voltar montado",
+      "mountDistance": "Montar a mais de",
+      "mountDistanceHelp": "Depois de renascer ou se separar, monta para a volta quando o grupo estiver pelo menos a esta distância.",
+      "enemyAware": "Inimigo perto a até",
+      "enemyAwareHelp": "Um inimigo assim perto: nada de montar, e desmontar na hora."
     }
   },
   "brain": {

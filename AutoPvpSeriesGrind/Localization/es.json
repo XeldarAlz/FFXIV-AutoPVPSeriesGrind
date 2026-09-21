@@ -498,6 +498,43 @@
       "lowestHpHelp": "El enemigo con menos vida a 25 metros; se salta a quien tenga Guardia activa mientras haya otro disponible.",
       "current": "Tu objetivo actual",
       "currentHelp": "Ataca lo que tengas seleccionado y solo elige por su cuenta cuando no tienes objetivo."
+    },
+    "frontline": {
+      "behavior": "Comportamiento en Frontline",
+      "behaviorHelp": "Cómo se mueve el bot con su equipo en Frontline.",
+      "defensive": "Defensivo",
+      "defensiveHelp": "Se queda al fondo del grupo, retrocede por debajo de ~55 % de vida y se mantiene lejos de la línea enemiga.",
+      "moderate": "Moderado",
+      "moderateHelp": "Ocupa un puesto normal en el grupo y retrocede por debajo de ~45 % de vida o cuando dos enemigos te enfocan. Un buen valor por defecto.",
+      "aggressive": "Agresivo",
+      "aggressiveHelp": "Se pone al frente del grupo, aguanta más el enfoque y solo retrocede por debajo de ~30 % de vida.",
+      "custom": "Personalizado",
+      "customHelp": "Ajustado a mano: cada distancia y umbral de Frontline de abajo es tuyo. Parte de la base Moderado."
+    },
+    "frontlineCustom": {
+      "position": "Dónde colocarse en el grupo",
+      "frontOffset": "Cuerpo a cuerpo: por delante",
+      "frontOffsetHelp": "Como cuerpo a cuerpo o tanque, cuánto por delante del centro del grupo, hacia el enemigo, colocarse.",
+      "backOffset": "A distancia: por detrás",
+      "backOffsetHelp": "Como a distancia o sanador, cuánto por detrás del centro del grupo colocarse.",
+      "retreatOffset": "Retroceder detrás del grupo",
+      "retreatOffsetHelp": "Herido o enfocado, cuánto por detrás del centro del grupo retroceder.",
+      "cohesion": "Mantenerse juntos",
+      "regroupDistance": "Volver al grupo a más de",
+      "regroupDistanceHelp": "Si te alejas del grupo más de esto, todo lo demás espera hasta que vuelvas con él.",
+      "engageRange": "Combatir enemigos a menos de",
+      "engageRangeHelp": "Solo los enemigos así de cerca cuentan como objetivos; a nadie se le persigue más allá del grupo.",
+      "hurtBelow": "Retroceder por debajo de",
+      "hurtBelowHelp": "Por debajo de esta vida pasas detrás del grupo hasta recuperarte.",
+      "focusedHurtBelow": "Retroceder si enfocado por debajo de",
+      "focusedHurtBelowHelp": "Cuando te apuntan suficientes enemigos (ver En peligro con), retrocedes ya con esta vida.",
+      "recoverAbove": "Volver por encima de",
+      "recoverAboveHelp": "Una vez curado por encima de esto, retomas tu puesto en el grupo.",
+      "riding": "Volver montado",
+      "mountDistance": "Montar a más de",
+      "mountDistanceHelp": "Tras reaparecer o separarte, montas para el regreso cuando el grupo está al menos a esta distancia.",
+      "enemyAware": "Enemigo cerca a menos de",
+      "enemyAwareHelp": "Un enemigo así de cerca: nada de montar, y desmontar de inmediato."
     }
   },
   "brain": {

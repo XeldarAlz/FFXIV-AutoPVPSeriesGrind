@@ -498,6 +498,43 @@
       "lowestHpHelp": "25 metre içindeki en az canlı düşman; başka biri varken Guard'ı açık olanlar atlanır.",
       "current": "Mevcut hedefin",
       "currentHelp": "Hedeflediğin şeye saldırır; yalnızca hedefin yokken kendi seçer."
+    },
+    "frontline": {
+      "behavior": "Frontline davranışı",
+      "behaviorHelp": "Bot Frontline'da takımıyla nasıl hareket eder.",
+      "defensive": "Savunmacı",
+      "defensiveHelp": "Grubun arkasında kalır, ~%55 canın altında geri çekilir ve düşman hattından uzak durur.",
+      "moderate": "Dengeli",
+      "moderateHelp": "Grupta normal bir yer tutar; ~%45 canın altında ya da iki düşman üzerindeyken geri çekilir. İyi bir varsayılan.",
+      "aggressive": "Saldırgan",
+      "aggressiveHelp": "Grubun en önünde durur, odağa daha uzun dayanır ve yalnızca ~%30 canın altında geri çekilir.",
+      "custom": "Özel",
+      "customHelp": "Elle ayar: aşağıdaki her Frontline mesafesi ve eşiği sana ait. Dengeli tabandan başlar."
+    },
+    "frontlineCustom": {
+      "position": "Grupta nerede durulacağı",
+      "frontOffset": "Yakın dövüş: önde şu kadar",
+      "frontOffsetHelp": "Yakın dövüşçü ya da tank olarak grup merkezinin ne kadar önünde, düşmana doğru, durulacağı.",
+      "backOffset": "Menzilli: arkada şu kadar",
+      "backOffsetHelp": "Menzilli ya da healer olarak grup merkezinin ne kadar arkasında durulacağı.",
+      "retreatOffset": "Grubun arkasına şu kadar çekil",
+      "retreatOffsetHelp": "Yaralı ya da odaktayken grup merkezinin ne kadar arkasına çekilineceği.",
+      "cohesion": "Birlikte kalmak",
+      "regroupDistance": "Şundan uzaksa gruba dön",
+      "regroupDistanceHelp": "Gruptan bundan fazla uzaklaşırsan, geri dönene kadar diğer her şey bekler.",
+      "engageRange": "Şu mesafedeki düşmanlarla savaş",
+      "engageRangeHelp": "Yalnızca bu kadar yakın düşmanlar hedef sayılır; kimse grubun ötesine kovalanmaz.",
+      "hurtBelow": "Şunun altında geri çekil",
+      "hurtBelowHelp": "Bu canın altında iyileşene kadar grubun arkasına geçersin.",
+      "focusedHurtBelow": "Odaktayken şunun altında geri çekil",
+      "focusedHurtBelowHelp": "Yeterince düşman seni hedef alıyorsa (bkz. Tehlike eşiği), bu canda çekilmeye başlarsın.",
+      "recoverAbove": "Şunun üstünde geri dön",
+      "recoverAboveHelp": "Bunun üstüne iyileşince gruptaki yerini yeniden alırsın.",
+      "riding": "Binekle dönüş",
+      "mountDistance": "Şundan uzaksa bineğe bin",
+      "mountDistanceHelp": "Yeniden doğduktan ya da ayrı düştükten sonra grup en az bu kadar uzaksa dönüş için bineğe bin.",
+      "enemyAware": "Yakındaki düşman şu mesafede",
+      "enemyAwareHelp": "Bu kadar yakın bir düşman: bineğe binme, hemen in."
     }
   },
   "brain": {

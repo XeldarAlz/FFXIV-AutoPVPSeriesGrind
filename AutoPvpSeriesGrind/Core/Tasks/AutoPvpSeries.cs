@@ -78,6 +78,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         settings = RunSettings.From(cfg);
         matchType = cfg.MatchType;
         brain.SetStrategy(cfg.Strategy, cfg.CustomStrategy);
+        frontline.SetStrategy(cfg.FrontlineStrategy, cfg.CustomFrontline);
         brain.OwnsTargeting = settings.BrainTargets;
         brain.Targeting = cfg.Targeting;
         rotation.Configure(cfg.RotationProvider == RotationProvider.Internal, RotationSettings.From(cfg));

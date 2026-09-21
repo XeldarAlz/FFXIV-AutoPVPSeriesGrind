@@ -498,6 +498,43 @@
       "lowestHpHelp": "Der Gegner mit den wenigsten HP in 25 Metern; wer Guard aktiv hat, wird übersprungen, solange jemand anderes verfügbar ist.",
       "current": "Dein aktuelles Ziel",
       "currentHelp": "Greift an, was du gerade anvisierst, und wählt nur selbst, wenn du kein Ziel hast."
+    },
+    "frontline": {
+      "behavior": "Frontline-Verhalten",
+      "behaviorHelp": "Wie sich der Bot in Frontline mit seinem Team bewegt.",
+      "defensive": "Defensiv",
+      "defensiveHelp": "Bleibt hinten in der Gruppe, weicht unter ~55 % HP zurück und hält großen Abstand zur Feindlinie.",
+      "moderate": "Moderat",
+      "moderateHelp": "Hält eine normale Position in der Gruppe und weicht unter ~45 % HP oder bei zwei Gegnern auf dir zurück. Eine gute Voreinstellung.",
+      "aggressive": "Aggressiv",
+      "aggressiveHelp": "Steht ganz vorne in der Gruppe, hält Fokus länger aus und weicht erst unter ~30 % HP zurück.",
+      "custom": "Benutzerdefiniert",
+      "customHelp": "Handabgestimmt: jede Frontline-Distanz und -Schwelle unten legst du selbst fest. Startet von der moderaten Basis."
+    },
+    "frontlineCustom": {
+      "position": "Position in der Gruppe",
+      "frontOffset": "Nahkampf: vorne um",
+      "frontOffsetHelp": "Als Nahkämpfer oder Tank, wie weit vor der Gruppenmitte Richtung Feind du stehst.",
+      "backOffset": "Fernkampf: hinten um",
+      "backOffsetHelp": "Als Fernkämpfer oder Heiler, wie weit hinter der Gruppenmitte du stehst.",
+      "retreatOffset": "Rückzug hinter die Gruppe um",
+      "retreatOffsetHelp": "Verletzt oder im Fokus, wie weit hinter die Gruppenmitte du dich zurückziehst.",
+      "cohesion": "Zusammenbleiben",
+      "regroupDistance": "Zurück zur Gruppe ab",
+      "regroupDistanceHelp": "Entfernst du dich weiter als das von der Gruppe, wartet alles andere, bis du wieder bei ihr bist.",
+      "engageRange": "Gegner bekämpfen bis",
+      "engageRangeHelp": "Nur so nahe Gegner gelten als Ziele; niemand wird über die Gruppe hinaus verfolgt.",
+      "hurtBelow": "Zurückweichen unter",
+      "hurtBelowHelp": "Unter diesen HP gehst du hinter die Gruppe, bis du dich erholt hast.",
+      "focusedHurtBelow": "Im Fokus zurückweichen unter",
+      "focusedHurtBelowHelp": "Zielen genug Gegner auf dich (siehe In Gefahr ab), weichst du schon bei diesen HP zurück.",
+      "recoverAbove": "Zurückkehren über",
+      "recoverAboveHelp": "Bist du über diesen Wert geheilt, nimmst du deinen Platz in der Gruppe wieder ein.",
+      "riding": "Zurückreiten",
+      "mountDistance": "Aufsitzen ab",
+      "mountDistanceHelp": "Nach einem Respawn oder einer Trennung sitzt du für den Rückweg auf, wenn die Gruppe mindestens so weit weg ist.",
+      "enemyAware": "Gegner in der Nähe bis",
+      "enemyAwareHelp": "Ein so naher Gegner heißt: nicht aufsitzen, und sofort absitzen."
     }
   },
   "brain": {

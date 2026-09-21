@@ -498,6 +498,43 @@
       "lowestHpHelp": "L'ennemi avec le moins de PV à moins de 25 mètres ; quiconque a Garde actif est ignoré tant qu'un autre est disponible.",
       "current": "Votre cible actuelle",
       "currentHelp": "Attaque ce que vous ciblez et ne choisit lui-même que quand vous n'avez aucune cible."
+    },
+    "frontline": {
+      "behavior": "Comportement Frontline",
+      "behaviorHelp": "Comment le bot se déplace avec son équipe en Frontline.",
+      "defensive": "Défensif",
+      "defensiveHelp": "Reste à l'arrière du groupe, recule sous ~55 % de PV et garde ses distances avec la ligne ennemie.",
+      "moderate": "Modéré",
+      "moderateHelp": "Tient une place normale dans le groupe et recule sous ~45 % de PV ou quand deux ennemis vous ciblent. Un bon choix par défaut.",
+      "aggressive": "Agressif",
+      "aggressiveHelp": "Se tient tout devant le groupe, encaisse le focus plus longtemps et ne recule que sous ~30 % de PV.",
+      "custom": "Personnalisé",
+      "customHelp": "Réglé à la main : chaque distance et seuil Frontline ci-dessous vous appartient. Part de la base Modéré."
+    },
+    "frontlineCustom": {
+      "position": "Où se placer dans le groupe",
+      "frontOffset": "Mêlée : en avant de",
+      "frontOffsetHelp": "En mêlée ou tank, à quelle distance devant le centre du groupe, vers l'ennemi, se placer.",
+      "backOffset": "Distance : en retrait de",
+      "backOffsetHelp": "En distance ou soigneur, à quelle distance derrière le centre du groupe se placer.",
+      "retreatOffset": "Repli derrière le groupe de",
+      "retreatOffsetHelp": "Blessé ou ciblé, à quelle distance derrière le centre du groupe se replier.",
+      "cohesion": "Rester ensemble",
+      "regroupDistance": "Rejoindre au-delà de",
+      "regroupDistanceHelp": "Si vous vous éloignez du groupe au-delà de cette distance, tout le reste attend votre retour.",
+      "engageRange": "Combattre les ennemis à moins de",
+      "engageRangeHelp": "Seuls les ennemis aussi proches comptent comme cibles ; personne n'est poursuivi au-delà du groupe.",
+      "hurtBelow": "Se replier sous",
+      "hurtBelowHelp": "Sous ces PV, vous passez derrière le groupe jusqu'à récupération.",
+      "focusedHurtBelow": "Se replier si ciblé sous",
+      "focusedHurtBelowHelp": "Quand assez d'ennemis vous visent (voir En danger à), repli dès ces PV.",
+      "recoverAbove": "Revenir au-dessus de",
+      "recoverAboveHelp": "Une fois soigné au-dessus de ce seuil, vous reprenez votre place dans le groupe.",
+      "riding": "Retour à cheval",
+      "mountDistance": "Monter au-delà de",
+      "mountDistanceHelp": "Après une mort ou une séparation, monter pour le retour quand le groupe est au moins à cette distance.",
+      "enemyAware": "Ennemi proche à moins de",
+      "enemyAwareHelp": "Un ennemi aussi proche : pas de monture, et descendre aussitôt."
     }
   },
   "brain": {

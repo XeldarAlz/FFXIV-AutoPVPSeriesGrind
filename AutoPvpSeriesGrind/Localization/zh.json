@@ -498,6 +498,43 @@
       "lowestHpHelp": "25 米内血量最低的敌人；只要还有其他人可选，就跳过开了 Guard 的敌人。",
       "current": "你的当前目标",
       "currentHelp": "攻击你当前选中的目标，仅在没有目标时才自行选择。"
+    },
+    "frontline": {
+      "behavior": "纷争前线行为",
+      "behaviorHelp": "机器人在纷争前线中如何随队伍行动。",
+      "defensive": "保守",
+      "defensiveHelp": "待在队伍后方，血量低于约 55% 时后撤，并与敌方战线保持充分距离。",
+      "moderate": "均衡",
+      "moderateHelp": "在队伍中保持正常位置，血量低于约 45% 或被两名敌人集火时后撤。推荐的默认选项。",
+      "aggressive": "激进",
+      "aggressiveHelp": "站在队伍最前方，能承受更久的集火，仅在血量低于约 30% 时后撤。",
+      "custom": "自定义",
+      "customHelp": "手动调节：下面每一项纷争前线的距离与阈值都由你设定。以均衡为基准。"
+    },
+    "frontlineCustom": {
+      "position": "在队伍中的站位",
+      "frontOffset": "近战：前出距离",
+      "frontOffsetHelp": "近战或坦克时，站在队伍中心朝敌方前出多远。",
+      "backOffset": "远程：后置距离",
+      "backOffsetHelp": "远程或治疗时，站在队伍中心后方多远。",
+      "retreatOffset": "后撤距离",
+      "retreatOffsetHelp": "受伤或被集火时，撤到队伍中心后方多远。",
+      "cohesion": "保持集结",
+      "regroupDistance": "超过此距离时归队",
+      "regroupDistanceHelp": "离队伍超过此距离时，其他一切行动都会等待你归队。",
+      "engageRange": "交战范围",
+      "engageRangeHelp": "只有这么近的敌人才算目标；绝不追出队伍之外。",
+      "hurtBelow": "低于此血量后撤",
+      "hurtBelowHelp": "血量低于此值时退到队伍后方，直到恢复。",
+      "focusedHurtBelow": "被集火时低于此血量后撤",
+      "focusedHurtBelowHelp": "当足够多的敌人瞄准你时（见“视为危险的人数”），在此血量就提前后撤。",
+      "recoverAbove": "高于此血量归位",
+      "recoverAboveHelp": "恢复到此血量以上后，回到队伍中的位置。",
+      "riding": "骑乘返回",
+      "mountDistance": "超过此距离时上坐骑",
+      "mountDistanceHelp": "复活或走散后，若队伍至少在此距离外，则上坐骑返回。",
+      "enemyAware": "敌人接近判定距离",
+      "enemyAwareHelp": "有敌人在此距离内时不上坐骑，并立即下坐骑。"
     }
   },
   "brain": {

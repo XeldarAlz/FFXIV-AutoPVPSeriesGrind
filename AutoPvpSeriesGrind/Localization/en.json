@@ -498,6 +498,43 @@
       "lowestHpHelp": "The enemy with the least HP within 25 yards, skipping anyone with Guard up while someone else is available.",
       "current": "Your current target",
       "currentHelp": "Attacks whatever you have targeted and only picks for itself when you have nothing targeted."
+    },
+    "frontline": {
+      "behavior": "Frontline behavior",
+      "behaviorHelp": "How the bot moves with its team in Frontline.",
+      "defensive": "Defensive",
+      "defensiveHelp": "Sticks to the back of the group, falls back below ~55% HP and keeps well clear of the enemy line.",
+      "moderate": "Moderate",
+      "moderateHelp": "Holds a normal spot in the group and falls back below ~45% HP or when two enemies focus you. A good default.",
+      "aggressive": "Aggressive",
+      "aggressiveHelp": "Stands at the very front of the group, shrugs off focus longer and falls back only below ~30% HP.",
+      "custom": "Custom",
+      "customHelp": "Hand-tuned: every Frontline distance and threshold below is yours to set. Starts from the Moderate baseline."
+    },
+    "frontlineCustom": {
+      "position": "Where to stand in the group",
+      "frontOffset": "Melee: stand ahead by",
+      "frontOffsetHelp": "As melee or tank, how far ahead of the group's centre toward the enemy to stand.",
+      "backOffset": "Ranged: stand behind by",
+      "backOffsetHelp": "As ranged or healer, how far behind the group's centre to stand.",
+      "retreatOffset": "Fall back behind by",
+      "retreatOffsetHelp": "When hurt or focused, how far behind the group's centre to retreat.",
+      "cohesion": "Staying together",
+      "regroupDistance": "Rejoin when farther than",
+      "regroupDistanceHelp": "If you drift farther than this from the group, everything else waits until you are back with it.",
+      "engageRange": "Fight enemies within",
+      "engageRangeHelp": "Only enemies this close count as targets; nobody is chased beyond the group.",
+      "hurtBelow": "Fall back below",
+      "hurtBelowHelp": "Under this HP you move behind the group until you recover.",
+      "focusedHurtBelow": "Fall back when focused below",
+      "focusedHurtBelowHelp": "When enough enemies aim at you (see In danger at), fall back already at this HP.",
+      "recoverAbove": "Return above",
+      "recoverAboveHelp": "Once healed above this, take your spot in the group again.",
+      "riding": "Riding back",
+      "mountDistance": "Mount when farther than",
+      "mountDistanceHelp": "After a respawn or a split, mount up for the ride back when the group is at least this far away.",
+      "enemyAware": "Enemy nearby within",
+      "enemyAwareHelp": "An enemy this close means no mounting, and dismount at once."
     }
   },
   "brain": {

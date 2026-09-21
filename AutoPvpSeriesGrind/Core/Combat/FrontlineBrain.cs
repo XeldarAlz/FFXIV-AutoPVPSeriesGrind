@@ -4,23 +4,11 @@ namespace AutoPvpSeriesGrind.Core.Combat;
 
 internal sealed class FrontlineBrain
 {
-    private const float FrontOffsetYalms = 6f;
-    private const float BackOffsetYalms = 6f;
-    private const float RetreatOffsetYalms = 12f;
-    private const float RegroupDistanceYalms = 25f;
-    private const float MountDistanceYalms = 60f;
-    private const float EnemyAwareYalms = 30f;
-    private const float EngageRangeYalms = 25f;
     private const float EnemyFrontSampleYalms = 40f;
-    private const float HurtHp = 0.45f;
-    private const float FocusedHurtHp = 0.6f;
-    private const float RecoveredHp = 0.7f;
-    private const int FocusHurtCount = 2;
     private const float HoldStopRange = 2f;
     private const float TravelStopRange = 6f;
     private const float MinVectorSq = 0.01f;
     private const long BurstWindowMs = 1000;
-    private const float BurstDropPerSec = 0.3f;
     private const float KillPotentialWeight = 3f;
     private const float FocusFireVoteWeight = 1.5f;
     private const float TargetDistanceWeight = 1.5f;
@@ -30,6 +18,7 @@ internal sealed class FrontlineBrain
     private const float RangedPriorityBonus = 1f;
 
     private readonly Queue<(long Tick, float Hp)> hpSamples = new();
+    private FrontlineProfile profile = FrontlineProfile.For(PvpStrategy.Moderate);
     private Vector3? lastKnownCrowd;
     private bool hurt;
     private ulong lastTargetId;
@@ -37,6 +26,9 @@ internal sealed class FrontlineBrain
     public bool UnderBurst { get; private set; }
     public bool WantsMount { get; private set; }
     public bool WantsDismount { get; private set; }
+
+    public void SetStrategy(PvpStrategy strategy, CustomFrontlineProfile? custom = null)
+        => profile = FrontlineProfile.For(strategy, custom);
 
     public void Reset()
     {
@@ -51,7 +43,7 @@ internal sealed class FrontlineBrain
 
     public MovePlan Decide(PvpSnapshot snapshot)
     {
-        UnderBurst = HpDropPerSec(snapshot.SelfHp) >= BurstDropPerSec;
+        UnderBurst = HpDropPerSec(snapshot.SelfHp) >= profile.BurstDropPerSec;
         UpdateHurt(snapshot);
         var target = ChooseTarget(snapshot);
         var targetId = target?.Id ?? 0;
@@ -69,11 +61,11 @@ internal sealed class FrontlineBrain
         }
 
         var distanceToCrowd = Vector3.Distance(snapshot.Self, crowd);
-        var enemiesNear = snapshot.NearestEnemyDistance <= EnemyAwareYalms;
-        WantsMount = distanceToCrowd > MountDistanceYalms && !enemiesNear;
-        WantsDismount = enemiesNear || distanceToCrowd <= RegroupDistanceYalms;
+        var enemiesNear = snapshot.NearestEnemyDistance <= profile.EnemyAwareRadius;
+        WantsMount = distanceToCrowd > profile.MountDistance && !enemiesNear;
+        WantsDismount = enemiesNear || distanceToCrowd <= profile.RegroupDistance;
 
-        if (distanceToCrowd > RegroupDistanceYalms)
+        if (distanceToCrowd > profile.RegroupDistance)
         {
             return new MovePlan(MoveKind.Engage, crowd, crowd, TravelStopRange, Sprint: true, $"rejoin the team, {distanceToCrowd:F0}y away",
                 Pursue: false, Posture.Regroup, targetId);
@@ -82,13 +74,13 @@ internal sealed class FrontlineBrain
         var front = FrontDirection(snapshot, crowd);
         if (hurt)
         {
-            var safe = crowd - front * RetreatOffsetYalms;
+            var safe = crowd - front * profile.RetreatOffset;
             return new MovePlan(MoveKind.Retreat, safe, crowd, HoldStopRange, Sprint: true, $"hurt hp={snapshot.SelfHp:P0}, behind the team",
                 Pursue: false, Posture.Retreat, targetId);
         }
 
-        var station = crowd + front * (snapshot.PrefersBackline ? -BackOffsetYalms : FrontOffsetYalms);
-        var fighting = target is { } chosen && snapshot.EnemiesWithin(EngageRangeYalms) > 0;
+        var station = crowd + front * (snapshot.PrefersBackline ? -profile.BackOffset : profile.FrontOffset);
+        var fighting = target is { } chosen && snapshot.EnemiesWithin(profile.EngageRange) > 0;
         var reason = fighting
             ? $"with the team → {(int)(target!.Value.Hp * 100)}%@{target.Value.DistanceToSelf:F0}y"
             : "with the team";
@@ -99,10 +91,10 @@ internal sealed class FrontlineBrain
     {
         if (!hurt)
         {
-            hurt = snapshot.SelfHp <= HurtHp || (snapshot.FocusCount >= FocusHurtCount && snapshot.SelfHp <= FocusedHurtHp);
+            hurt = snapshot.SelfHp <= profile.HurtHp || (snapshot.FocusCount >= profile.FocusHurtCount && snapshot.SelfHp <= profile.FocusedHurtHp);
             return;
         }
-        if (snapshot.SelfHp >= RecoveredHp && snapshot.FocusCount < FocusHurtCount)
+        if (snapshot.SelfHp >= profile.RecoveredHp && snapshot.FocusCount < profile.FocusHurtCount)
         {
             hurt = false;
         }
@@ -138,7 +130,7 @@ internal sealed class FrontlineBrain
         for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
         {
             var enemy = snapshot.Enemies[enemyIndex];
-            if (enemy.DistanceToSelf > EngageRangeYalms)
+            if (enemy.DistanceToSelf > profile.EngageRange)
             {
                 continue;
             }
@@ -163,7 +155,7 @@ internal sealed class FrontlineBrain
             PvpRole.Ranged => RangedPriorityBonus,
             _ => 0f,
         };
-        score -= enemy.DistanceToSelf / EngageRangeYalms * TargetDistanceWeight;
+        score -= enemy.DistanceToSelf / profile.EngageRange * TargetDistanceWeight;
         if (enemy.HasGuard)
         {
             score -= GuardPenalty;
