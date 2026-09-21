@@ -2,6 +2,7 @@ using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Rotation;
 using ECommons.Automation;
+using System.Numerics;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
@@ -66,8 +67,8 @@ internal sealed class RotationController(PvpBrain brain)
         ApsgLog.Info("respawn detected");
     }
 
-    public RotationOutcome Drive(PvpSnapshot snapshot, ulong targetId, bool mayStandStill, Action holdStill)
-        => Enabled ? driver.Tick(snapshot, targetId, brain.UnderBurst, mayStandStill, holdStill) : RotationOutcome.None;
+    public RotationOutcome Drive(PvpSnapshot snapshot, ulong targetId, Posture posture, Vector3 moveDestination, Action holdStill)
+        => Enabled ? driver.Tick(snapshot, targetId, brain.UnderBurst, posture, moveDestination, holdStill) : RotationOutcome.None;
 
     public void EnsureSignCleared()
     {

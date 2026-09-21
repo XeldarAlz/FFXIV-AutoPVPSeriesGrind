@@ -2,6 +2,7 @@ using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Core.Game;
@@ -18,6 +19,13 @@ internal static unsafe class ActionOps
 
     public static bool IsReady(uint actionId)
         => ActionManager.Instance()->GetActionStatus(ActionType.Action, actionId) == ReadyStatus;
+
+    public static bool IsReadyIgnoringRecast(uint actionId)
+        => ActionManager.Instance()->GetActionStatus(ActionType.Action, actionId, checkRecastActive: false, checkCastingActive: false) == ReadyStatus;
+
+    public static bool HasQueuedAction => ActionManager.Instance()->QueuedActionId != 0;
+
+    public static void CancelCast() => UIState.Instance()->Hotbar.CancelCast();
 
     public static bool InRangeAndSight(uint actionId, IGameObject target)
         => ActionManager.GetActionInRangeOrLoS(actionId, Player.GameObject, (GameObject*)target.Address) is InRangeAndInSight or InRangeButNotFacing;

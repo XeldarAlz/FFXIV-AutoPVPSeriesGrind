@@ -139,7 +139,7 @@ internal sealed partial class AutoPvpSeries
         if (!snapshot.HasObjective)
         {
             WarnMissingObjectiveOnce();
-            if (HoldsStillForRotation(snapshot, 0, mayStandStill: false))
+            if (HoldsStillForRotation(snapshot, 0, Posture.Reposition, snapshot.Self))
             {
                 return;
             }
@@ -153,7 +153,7 @@ internal sealed partial class AutoPvpSeries
         var plan = brain.Decide(snapshot, anchor, matchFlow.Bases?.Enemy);
         BrainTelemetry.Record(snapshot, plan);
 
-        if (HoldsStillForRotation(snapshot, plan.TargetId, plan.Posture is Posture.Hold or Posture.Push or Posture.Stage))
+        if (HoldsStillForRotation(snapshot, plan.TargetId, plan.Posture, plan.Destination))
         {
             return;
         }
@@ -196,9 +196,9 @@ internal sealed partial class AutoPvpSeries
         Warn($"objective not found among {Svc.Objects.Length} loaded objects (Tactical Crystal, BNpcName {TacticalCrystalNameId})");
     }
 
-    private bool HoldsStillForRotation(PvpSnapshot snapshot, ulong targetId, bool mayStandStill)
+    private bool HoldsStillForRotation(PvpSnapshot snapshot, ulong targetId, Posture posture, Vector3 moveDestination)
     {
-        var outcome = rotation.Drive(snapshot, targetId, mayStandStill, holdStill);
+        var outcome = rotation.Drive(snapshot, targetId, posture, moveDestination, holdStill);
         if (outcome is not (RotationOutcome.Cast or RotationOutcome.Guarding))
         {
             return false;
@@ -240,7 +240,7 @@ internal sealed partial class AutoPvpSeries
         }
 
         var hold = Vector3.Distance(snapshot.Self, crystalPosition) < CrystalEngageRadiusYalms && enemyOnPoint;
-        if (HoldsStillForRotation(snapshot, snapshot.CurrentTarget?.Id ?? 0, hold))
+        if (HoldsStillForRotation(snapshot, snapshot.CurrentTarget?.Id ?? 0, hold ? Posture.Hold : Posture.Push, crystalPosition))
         {
             return;
         }

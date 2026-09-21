@@ -15,6 +15,12 @@ internal sealed class PvpRotationDriver
     private const float ElixirSafeDistanceYalms = 25f;
     private const long MinTimeAliveMs = 5000;
     private const float WeaveMinGcdRemainingSec = 0.7f;
+    private const float GcdQueueWindowSec = 0.4f;
+    private const float GapCloseMinYalms = 8f;
+    private const float GapCloseMaxYalms = 20f;
+    private const float EscapeTriggerYalms = 8f;
+    private const float AllyDashMinYalms = 8f;
+    private const float AllyDashMaxYalms = 25f;
 
     private static readonly RuleCondition[] NoConditions = [];
 
@@ -24,11 +30,14 @@ internal sealed class PvpRotationDriver
         PvpSnapshot Snapshot,
         bool MayStandStill,
         float AllySupportHp,
+        float GcdRemaining,
+        byte GcdCooldownGroup,
         Action HoldStill);
 
     private RotationSettings settings;
     private PvpJobKit? kit;
     private RotationTable? table;
+    private MovementKit movement;
     private long aliveSinceMs;
     private uint lastUsedActionId;
 
@@ -40,10 +49,15 @@ internal sealed class PvpRotationDriver
         lastUsedActionId = 0;
     }
 
-    public RotationOutcome Tick(PvpSnapshot snapshot, ulong preferredTargetId, bool underBurst, bool mayStandStill, Action holdStill)
+    public RotationOutcome Tick(PvpSnapshot snapshot, ulong preferredTargetId, bool underBurst, Posture posture, Vector3 moveDestination, Action holdStill)
     {
-        if (Svc.Objects.LocalPlayer is not { } self || self.IsCasting || ActionOps.AnimationLocked)
+        if (Svc.Objects.LocalPlayer is not { } self || ActionOps.AnimationLocked)
         {
+            return RotationOutcome.None;
+        }
+        if (self.IsCasting)
+        {
+            CancelWastedCast(self);
             return RotationOutcome.None;
         }
 
@@ -73,17 +87,146 @@ internal sealed class PvpRotationDriver
         }
 
         var gcdRemaining = ActionOps.RecastRemainingSeconds(currentKit.GcdCooldownGroup);
-        var gcdReady = gcdRemaining <= 0f;
+        var gcdReady = gcdRemaining <= GcdQueueWindowSec && !ActionOps.HasQueuedAction;
         var canWeave = gcdRemaining >= WeaveMinGcdRemainingSec;
+        var mayStandStill = posture is Posture.Hold or Posture.Push or Posture.Stage;
+        var context = new RuleContext(self, ResolveEnemy(preferredTargetId, snapshot), snapshot, mayStandStill, settings.AllySupportHp,
+            gcdRemaining, currentKit.GcdCooldownGroup, holdStill);
+
+        if (TryEscape(in context, posture, moveDestination))
+        {
+            return RotationOutcome.Instant;
+        }
         if (!gcdReady && !canWeave)
         {
             return RotationOutcome.None;
         }
+        if (canWeave && TryGapClose(in context, posture))
+        {
+            return RotationOutcome.Instant;
+        }
 
-        var context = new RuleContext(self, ResolveEnemy(preferredTargetId, snapshot), snapshot, mayStandStill, settings.AllySupportHp, holdStill);
         return table is not null
             ? RunTable(table, in context, gcdReady)
             : RunGeneric(currentKit, in context, gcdReady);
+    }
+
+    private static void CancelWastedCast(IPlayerCharacter self)
+    {
+        if (Svc.Objects.SearchById(self.CastTargetObjectId) is not IBattleChara castTarget
+            || castTarget.GameObjectId == self.GameObjectId
+            || !MatchState.IsEnemyPlayer(castTarget))
+        {
+            return;
+        }
+
+        var dead = castTarget.CurrentHp == 0;
+        var immune = MatchState.HasAnyStatus(castTarget, PvpStatuses.DamageImmunities)
+                     && Array.IndexOf(PvpActions.WorthUsingIntoGuard, self.CastActionId) < 0;
+        if (!dead && !immune)
+        {
+            return;
+        }
+
+        ActionOps.CancelCast();
+        ApsgLog.Debug(dead ? "rotation: cast cancelled, target died" : "rotation: cast cancelled, target became immune");
+    }
+
+    private bool TryEscape(in RuleContext context, Posture posture, Vector3 moveDestination)
+    {
+        if (posture is not (Posture.Retreat or Posture.Regroup or Posture.Reposition))
+        {
+            return false;
+        }
+        if (context.Snapshot.NearestEnemyDistance > EscapeTriggerYalms)
+        {
+            return false;
+        }
+
+        if (NearestAlly(context.Snapshot) is { } ally)
+        {
+            var allyDistance = Vector3.Distance(context.Self.Position, ally.Position);
+            if (allyDistance >= AllyDashMinYalms && allyDistance <= AllyDashMaxYalms && TryDashToward(movement.AllyDashes, ally, in context))
+            {
+                return true;
+            }
+        }
+
+        return TryDashForward(movement.ForwardDashes, moveDestination, in context);
+    }
+
+    private bool TryGapClose(in RuleContext context, Posture posture)
+    {
+        if (posture != Posture.Push || context.Enemy is not { } enemy)
+        {
+            return false;
+        }
+
+        var distance = Vector3.Distance(context.Self.Position, enemy.Position);
+        if (distance < GapCloseMinYalms || distance > GapCloseMaxYalms || MatchState.HasAnyStatus(enemy, PvpStatuses.DamageImmunities))
+        {
+            return false;
+        }
+
+        return TryDashToward(movement.GapClosers, enemy, in context) || TryDashForward(movement.ForwardDashes, enemy.Position, in context);
+    }
+
+    private bool TryDashToward(uint[] dashes, IGameObject target, in RuleContext context)
+    {
+        for (var dashIndex = 0; dashIndex < dashes.Length; dashIndex++)
+        {
+            var actionId = dashes[dashIndex];
+            if (!PvpActionCatalog.TryGetInfo(actionId, out var info) || !ActionOps.IsReady(actionId))
+            {
+                continue;
+            }
+            if (!InRange(in info, actionId, target, context.Self))
+            {
+                continue;
+            }
+
+            var used = info.TargetArea
+                ? ActionOps.UseActionAt(actionId, context.Self.GameObjectId, target.Position)
+                : ActionOps.UseAction(actionId, target.GameObjectId);
+            if (used)
+            {
+                lastUsedActionId = actionId;
+                ApsgLog.Debug($"rotation: dash {info.Name} -> {target.Name}");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool TryDashForward(uint[] dashes, Vector3 toward, in RuleContext context)
+    {
+        var self = context.Self;
+        var direction = toward - self.Position;
+        var distance = direction.Length();
+        if (distance < GapCloseMinYalms)
+        {
+            return false;
+        }
+
+        for (var dashIndex = 0; dashIndex < dashes.Length; dashIndex++)
+        {
+            var actionId = dashes[dashIndex];
+            if (!PvpActionCatalog.TryGetInfo(actionId, out var info) || !ActionOps.IsReady(actionId))
+            {
+                continue;
+            }
+
+            var used = info.TargetArea
+                ? ActionOps.UseActionAt(actionId, self.GameObjectId, self.Position + direction / distance * MathF.Min(info.Range, distance))
+                : ActionOps.UseAction(actionId, self.GameObjectId);
+            if (used)
+            {
+                lastUsedActionId = actionId;
+                ApsgLog.Debug($"rotation: dash {info.Name}");
+                return true;
+            }
+        }
+        return false;
     }
 
     private PvpJobKit KitFor(IPlayerCharacter self)
@@ -93,6 +236,7 @@ internal sealed class PvpRotationDriver
         {
             kit = PvpActionCatalog.For((Job)jobId);
             table = JobRotationTables.TryGet(jobId, out var jobTable) ? jobTable : null;
+            movement = MovementAssist.TryGet(jobId, out var movementKit) ? movementKit : new MovementKit([], [], []);
         }
         return kit;
     }
@@ -176,7 +320,7 @@ internal sealed class PvpRotationDriver
         {
             return false;
         }
-        if (!InRange(in info, adjustedId, target, context.Self) || !ActionOps.IsReady(adjustedId))
+        if (!InRange(in info, adjustedId, target, context.Self) || !IsReadyOrQueueable(in info, adjustedId, in context))
         {
             return false;
         }
@@ -198,6 +342,20 @@ internal sealed class PvpRotationDriver
         ApsgLog.Debug($"rotation: {info.Name} -> {target.Name}");
         outcome = info.HasCastTime ? RotationOutcome.Cast : RotationOutcome.Instant;
         return true;
+    }
+
+    private static bool IsReadyOrQueueable(in PvpActionInfo info, uint adjustedId, in RuleContext context)
+    {
+        if (ActionOps.IsReady(adjustedId))
+        {
+            return true;
+        }
+
+        var plainGcdInWindow = info.IsGcd
+                               && info.CooldownGroup == context.GcdCooldownGroup
+                               && context.GcdRemaining > 0f
+                               && context.GcdRemaining <= GcdQueueWindowSec;
+        return plainGcdInWindow && ActionOps.IsReadyIgnoringRecast(adjustedId);
     }
 
     private static bool WastedOnImmunity(in PvpActionInfo info, uint adjustedId, IGameObject target, in RuleContext context)
