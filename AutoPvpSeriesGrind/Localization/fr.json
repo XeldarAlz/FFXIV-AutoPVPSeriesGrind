@@ -361,7 +361,7 @@
       "behaviorHelp": "Comment le bot se positionne et choisit ses combats.",
       "smartTargeting": "Ciblage intelligent",
       "smartTargetingHelpOn": "Activé : ce plugin décide qui attaquer. Il rejoint la cible focalisée de l'équipe, préfère les ennemis à faibles PV et peu résistants (soigneurs d'abord), et ignore quiconque a Garde actif. ",
-      "smartTargetingHelpOff": "Désactivé : attaque votre cible actuelle quand vous en avez une et en choisit une lui-même sinon. Un plugin de rotation séparé doit attaquer votre cible actuelle.",
+      "smartTargetingHelpOff": "Désactivé : attaque votre cible actuelle quand vous en avez une et en choisit une lui-même sinon.",
       "reactionTime": "Temps de réaction",
       "reactionTimeHelp": "Ajoute un délai de réaction humain avant que le bot ne change ce qu'il fait.",
       "recordMatches": "Enregistrer les matchs",
@@ -371,8 +371,8 @@
     "rotation": {
       "builtIn": "Intégrée",
       "builtInHelp": "Ce plugin appuie lui-même sur les compétences JcJ de votre job, Garde, Purification, Récupération et Élixir. Rien d'autre à installer. Le choix par défaut.",
-      "manual": "Autre / manuel",
-      "manualHelp": "Utilisez votre propre plugin de rotation (par ex. Wrath Combo). Il doit gérer lui-même les compétences, Garde et Purification."
+      "manual": "Manuel",
+      "manualHelp": "Vous appuyez vous-même sur vos compétences. Le bot continue de faire la file, de se déplacer, de déclencher la Transcendance et de se réinscrire."
     },
     "strategy": {
       "rush": "Foncer sur le cristal",

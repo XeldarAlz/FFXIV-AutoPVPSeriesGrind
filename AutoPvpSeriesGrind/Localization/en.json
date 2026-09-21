@@ -361,7 +361,7 @@
       "behaviorHelp": "How the bot positions itself and picks its fights.",
       "smartTargeting": "Smart targeting",
       "smartTargetingHelpOn": "On: this plugin decides who to attack. It joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. ",
-      "smartTargetingHelpOff": "Off: attacks your current target when you have one and picks one itself when you don't. A separate rotation plugin must attack your current target.",
+      "smartTargetingHelpOff": "Off: attacks your current target when you have one and picks one itself when you don't.",
       "reactionTime": "Reaction time",
       "reactionTimeHelp": "Adds a human reaction delay before the bot changes what it's doing.",
       "recordMatches": "Record matches",
@@ -371,8 +371,8 @@
     "rotation": {
       "builtIn": "Built-in",
       "builtInHelp": "This plugin presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself. Nothing extra to install. The default.",
-      "manual": "Other / manual",
-      "manualHelp": "Bring your own rotation plugin (e.g. Wrath Combo). It must press skills, Guard, and Purify itself."
+      "manual": "Manual",
+      "manualHelp": "You press your own skills. The bot still queues, moves, fires the Limit Break and re-queues."
     },
     "strategy": {
       "rush": "Rush the crystal",

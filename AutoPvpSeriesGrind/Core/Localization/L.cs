@@ -339,7 +339,7 @@ internal static class L
         public static readonly LocString BehaviorHelp = new("settings.combat.behaviorHelp", "How the bot positions itself and picks its fights.");
         public static readonly LocString SmartTargeting = new("settings.combat.smartTargeting", "Smart targeting");
         public static readonly LocString SmartTargetingHelpOn = new("settings.combat.smartTargetingHelpOn", "On: this plugin decides who to attack. It joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. ");
-        public static readonly LocString SmartTargetingHelpOff = new("settings.combat.smartTargetingHelpOff", "Off: attacks your current target when you have one and picks one itself when you don't. A separate rotation plugin must attack your current target.");
+        public static readonly LocString SmartTargetingHelpOff = new("settings.combat.smartTargetingHelpOff", "Off: attacks your current target when you have one and picks one itself when you don't.");
         public static readonly LocString ReactionTime = new("settings.combat.reactionTime", "Reaction time");
         public static readonly LocString ReactionTimeHelp = new("settings.combat.reactionTimeHelp", "Adds a human reaction delay before the bot changes what it's doing.");
         public static readonly LocString RecordMatches = new("settings.combat.recordMatches", "Record matches");
@@ -348,8 +348,8 @@ internal static class L
 
         public static readonly LocString RotationBuiltIn = new("settings.rotation.builtIn", "Built-in");
         public static readonly LocString RotationBuiltInHelp = new("settings.rotation.builtInHelp", "This plugin presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself. Nothing extra to install. The default.");
-        public static readonly LocString RotationManual = new("settings.rotation.manual", "Other / manual");
-        public static readonly LocString RotationManualHelp = new("settings.rotation.manualHelp", "Bring your own rotation plugin (e.g. Wrath Combo). It must press skills, Guard, and Purify itself.");
+        public static readonly LocString RotationManual = new("settings.rotation.manual", "Manual");
+        public static readonly LocString RotationManualHelp = new("settings.rotation.manualHelp", "You press your own skills. The bot still queues, moves, fires the Limit Break and re-queues.");
 
         public static readonly LocString StrategyRush = new("settings.strategy.rush", "Rush the crystal");
         public static readonly LocString StrategyRushHelp = new("settings.strategy.rushHelp", "No tactics: runs to the objective and stands on it. Never retreats; will feed when outnumbered.");

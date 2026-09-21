@@ -361,7 +361,7 @@
       "behaviorHelp": "Cómo se posiciona el bot y elige sus peleas.",
       "smartTargeting": "Objetivo inteligente",
       "smartTargetingHelpOn": "Activado: este plugin decide a quién atacar. Se suma al objetivo focalizado del equipo, prefiere enemigos con poca vida y poca resistencia (sanadores primero) y evita a quien tenga Guardia activa. ",
-      "smartTargetingHelpOff": "Desactivado: ataca a tu objetivo actual cuando tienes uno y elige uno por su cuenta cuando no. Otro plugin de rotación debe atacar a tu objetivo actual.",
+      "smartTargetingHelpOff": "Desactivado: ataca a tu objetivo actual cuando tienes uno y elige uno por su cuenta cuando no.",
       "reactionTime": "Tiempo de reacción",
       "reactionTimeHelp": "Añade un retardo de reacción humano antes de que el bot cambie lo que está haciendo.",
       "recordMatches": "Grabar partidas",
@@ -371,8 +371,8 @@
     "rotation": {
       "builtIn": "Integrada",
       "builtInHelp": "Este plugin pulsa por sí mismo las habilidades JcJ de tu trabajo, Guardia, Purificar, Recuperar y Elixir. Nada más que instalar. La opción predeterminada.",
-      "manual": "Otro / manual",
-      "manualHelp": "Usa tu propio plugin de rotación (p. ej. Wrath Combo). Debe pulsar habilidades, Guardia y Purificar por sí mismo."
+      "manual": "Manual",
+      "manualHelp": "Tú pulsas tus propias habilidades. El bot sigue haciendo cola, moviéndose, lanzando el Límite y volviendo a la cola."
     },
     "strategy": {
       "rush": "Ir a por el cristal",

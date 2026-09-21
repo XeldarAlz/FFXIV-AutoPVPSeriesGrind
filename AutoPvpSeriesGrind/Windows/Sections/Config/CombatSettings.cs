@@ -108,7 +108,7 @@ internal static class CombatSettings
                 RotationProvider.Internal),
             new(L.Settings.RotationManual,
                 L.Settings.RotationManualHelp,
-                RotationProvider.External),
+                RotationProvider.Manual),
         ];
 
         public static readonly SettingsControls.Choices.Choice[] Options =

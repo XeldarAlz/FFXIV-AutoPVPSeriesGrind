@@ -361,7 +361,7 @@
       "behaviorHelp": "机器人如何走位、如何挑选战斗。",
       "smartTargeting": "智能选敌",
       "smartTargetingHelpOn": "开启：由本插件决定攻击谁。它会跟随队伍的集火目标，优先选血量低、脆皮的敌人（先打治疗），并跳过开了 Guard 的人。 ",
-      "smartTargetingHelpOff": "关闭：有当前目标时攻击当前目标，没有时自行选择。若使用独立的循环插件，它必须攻击你的当前目标。",
+      "smartTargetingHelpOff": "关闭：有当前目标时攻击当前目标，没有时自行选择。",
       "reactionTime": "反应时间",
       "reactionTimeHelp": "在机器人改变动作之前，加入接近真人的反应延迟。",
       "recordMatches": "记录比赛",
@@ -371,8 +371,8 @@
     "rotation": {
       "builtIn": "内置",
       "builtInHelp": "本插件自行按下你职业的 PvP 技能、Guard、Purify、Recuperate 和 Elixir。无需额外安装。默认选项。",
-      "manual": "其他 / 手动",
-      "manualHelp": "使用你自己的循环插件（例如 Wrath Combo）。它必须自己按技能、Guard 和 Purify。"
+      "manual": "手动",
+      "manualHelp": "技能由你自己按。机器人仍会负责排队、移动、释放极限技并重新排队。"
     },
     "strategy": {
       "rush": "直冲水晶",

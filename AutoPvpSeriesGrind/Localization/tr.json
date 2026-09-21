@@ -361,7 +361,7 @@
       "behaviorHelp": "Botun nasıl konumlandığı ve hangi kavgaları seçtiği.",
       "smartTargeting": "Akıllı hedefleme",
       "smartTargetingHelpOn": "Açık: kime saldırılacağına bu eklenti karar verir. Takımın odak hedefine katılır, canı az ve dayanıksız düşmanları tercih eder (önce healer'lar) ve Guard'ı açık olanları atlar. ",
-      "smartTargetingHelpOff": "Kapalı: hedefin varsa ona saldırır, yoksa kendi seçer. Ayrı bir rotasyon eklentisi kullanıyorsan mevcut hedefine saldırmalıdır.",
+      "smartTargetingHelpOff": "Kapalı: hedefin varsa ona saldırır, yoksa kendi seçer.",
       "reactionTime": "Tepki süresi",
       "reactionTimeHelp": "Bot yaptığı şeyi değiştirmeden önce insana benzer bir tepki gecikmesi ekler.",
       "recordMatches": "Maçları kaydet",
@@ -371,8 +371,8 @@
     "rotation": {
       "builtIn": "Yerleşik",
       "builtInHelp": "Bu eklenti işinin PvP yeteneklerini, Guard, Purify, Recuperate ve Elixir'i kendisi basar. Ek kurulum gerekmez. Varsayılan seçenek.",
-      "manual": "Diğer / manuel",
-      "manualHelp": "Kendi rotasyon eklentini kullan (ör. Wrath Combo). Yetenekleri, Guard'ı ve Purify'ı kendisi basmalı."
+      "manual": "Manuel",
+      "manualHelp": "Yetenekleri kendin basarsın. Bot yine kuyruğa girer, hareket eder, Limit Break'i kullanır ve tekrar kuyruğa girer."
     },
     "strategy": {
       "rush": "Kristale koş",

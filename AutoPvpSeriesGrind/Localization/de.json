@@ -361,7 +361,7 @@
       "behaviorHelp": "Wie der Bot sich positioniert und seine Kämpfe wählt.",
       "smartTargeting": "Intelligentes Zielen",
       "smartTargetingHelpOn": "An: Dieses Plugin entscheidet, wen es angreift. Es übernimmt das Fokusziel des Teams, bevorzugt Gegner mit wenig HP und wenig Rüstung (Heiler zuerst) und überspringt jeden mit aktivem Guard. ",
-      "smartTargetingHelpOff": "Aus: Greift dein aktuelles Ziel an, wenn du eines hast, und wählt sonst selbst eines. Ein separates Rotations-Plugin muss dein aktuelles Ziel angreifen.",
+      "smartTargetingHelpOff": "Aus: Greift dein aktuelles Ziel an, wenn du eines hast, und wählt sonst selbst eines.",
       "reactionTime": "Reaktionszeit",
       "reactionTimeHelp": "Fügt eine menschliche Reaktionsverzögerung hinzu, bevor der Bot sein Verhalten ändert.",
       "recordMatches": "Matches aufzeichnen",
@@ -371,8 +371,8 @@
     "rotation": {
       "builtIn": "Eingebaut",
       "builtInHelp": "Dieses Plugin drückt die PvP-Fähigkeiten deines Jobs, Guard, Purify, Recuperate und Elixir selbst. Nichts weiter zu installieren. Die Voreinstellung.",
-      "manual": "Anderes / manuell",
-      "manualHelp": "Bring dein eigenes Rotations-Plugin mit (z. B. Wrath Combo). Es muss Fähigkeiten, Guard und Purify selbst drücken."
+      "manual": "Manuell",
+      "manualHelp": "Du drückst deine Fähigkeiten selbst. Der Bot stellt sich weiter in die Warteschlange, bewegt sich, zündet den Limitrausch und stellt sich erneut an."
     },
     "strategy": {
       "rush": "Auf den Kristall stürmen",
