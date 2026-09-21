@@ -31,11 +31,23 @@ internal static class MatchState
     public static bool HasStatus(uint statusId)
         => Svc.Objects.LocalPlayer is { } localPlayer && HasStatus(localPlayer, statusId);
 
-    private static bool HasStatus(IPlayerCharacter playerCharacter, uint statusId)
+    public static bool HasStatus(IPlayerCharacter playerCharacter, uint statusId)
     {
         foreach (var status in playerCharacter.StatusList)
         {
             if (status is not null && status.StatusId == statusId)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static bool HasAnyStatus(IPlayerCharacter playerCharacter, uint[] statusIds)
+    {
+        foreach (var status in playerCharacter.StatusList)
+        {
+            if (status is not null && Array.IndexOf(statusIds, status.StatusId) >= 0)
             {
                 return true;
             }
