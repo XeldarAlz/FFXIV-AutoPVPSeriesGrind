@@ -369,7 +369,6 @@ internal static class JobRotationTables
         private const uint FullMetalField = 41469;
         private const uint Overheated = 3149;
         private const uint AnalysisStatus = 3158;
-        private static readonly uint[] PrimedStatuses = [3150, 3151, 3152, 3153];
 
         public static readonly RotationTable Table = new(0,
         [
@@ -378,7 +377,7 @@ internal static class JobRotationTables
             Use(Drill),
             Use(Scattergun, SelfLacks(Overheated)),
             Use(BlastCharge),
-            UseOnSelf(Analysis, SelfLacks(AnalysisStatus), SelfHasAny(PrimedStatuses)),
+            UseOnSelf(Analysis, SelfLacks(AnalysisStatus), CanFollowWith(Drill)),
             Use(Wildfire, SelfHas(Overheated)),
             Use(BishopAutoturret),
         ]);

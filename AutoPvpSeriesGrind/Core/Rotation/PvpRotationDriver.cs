@@ -447,9 +447,20 @@ internal sealed class PvpRotationDriver
                 return enemy is not null && Vector3.Distance(self.Position, enemy.Position) > condition.Value;
             case RuleWhen.AllyBelow:
                 return LowestAllyIdWithin(snapshot, condition.Value, condition.Range) != 0;
+            case RuleWhen.CanFollowWith:
+                return enemy is not null && CanFollowWith(condition.Button, enemy, self);
             default:
                 return true;
         }
+    }
+
+    private static bool CanFollowWith(uint button, IBattleChara enemy, IPlayerCharacter self)
+    {
+        var followUpId = ActionOps.Adjusted(button);
+        return PvpActionCatalog.TryGetInfo(followUpId, out var info)
+               && ActionOps.CurrentCharges(followUpId) >= 1
+               && !MatchState.HasAnyStatus(enemy, PvpStatuses.DamageImmunities)
+               && InRange(in info, followUpId, enemy, self);
     }
 
     private static IGameObject? PickTarget(in PvpActionInfo info, RuleTarget targetRule, in RuleContext context)
