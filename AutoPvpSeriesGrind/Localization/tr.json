@@ -45,8 +45,8 @@
     },
     "minimize": "Başlık çubuğuna küçült",
     "restore": "Geri yükle",
-    "modeSummary": "Crystalline Conflict, {0}",
-    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "modeSummary": "{0}, {1}",
+    "modeSummaryDot": "{0}  ·  {1}",
     "statusLine": "{0}  ·  {1}",
     "sessionSummary": "{0} maç  ·  {1}",
     "installRequired": "Gerekli eklentileri kur",
@@ -94,7 +94,8 @@
       "portraits": "Maç birazdan başlıyor.",
       "fighting": "Kristal için savaşıyor.",
       "done": "Koşunun son adımları tamamlanıyor.",
-      "inMatch": "Maç oynanıyor."
+      "inMatch": "Maç oynanıyor.",
+      "inQueueFrontline": "Frontline maçı bekleniyor."
     },
     "status": {
       "running": "Çalışıyor",
@@ -173,14 +174,16 @@
     },
     "whatToQueue": "Neye sıraya girilecek",
     "queue": {
-      "casualHelp": "Casual maçlar, Seri çubuğunu ilerletmenin en hızlı yolu."
+      "casualHelp": "Casual maçlar, Seri çubuğunu ilerletmenin en hızlı yolu.",
+      "frontlineHelp": "Günlük Frontline ruleti: 72 oyunculu savaşlar, maç başına en yüksek Seri EXP'si. Bot takımının yanında kalır, asla tek başına gitmez."
     },
     "endlessHelp": "Sen Durdur'a basana kadar maç üstüne maç sıraya girer.",
     "stopAfter": "Şundan sonra dur",
     "stopAfterMatchesHelp": "Sonuç ekranına ulaşan maçları sayar, yani terk ettiğin maç sayılmaz.",
     "reachRank": "Şu rütbeye ulaş",
     "reachRankHelp": "Şu an {0}. rütbedesin. Koşu, durmadan önce içinde bulunduğu maçı bitirir.",
-    "stopAfterTimeHelp": "Sayaç yeni maçlara sıraya girmeyi durdurur; devam eden maç sonuna kadar oynanır."
+    "stopAfterTimeHelp": "Sayaç yeni maçlara sıraya girmeyi durdurur; devam eden maç sonuna kadar oynanır.",
+    "modeFrontline": "Frontline"
   },
   "run": {
     "running": "Çalışıyor",
@@ -209,7 +212,8 @@
       "seriesExp": "Seri EXP",
       "matchesPerHour": "Maç/sa",
       "elapsed": "Geçen"
-    }
+    },
+    "modeFrontline": "Frontline"
   },
   "history": {
     "title": "Geçmiş",

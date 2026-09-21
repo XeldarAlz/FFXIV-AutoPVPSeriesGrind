@@ -15,7 +15,7 @@ internal static unsafe class DutyOps
 
     private const int NoCommandArgument = 0;
 
-    public static bool QueueCasualMatch() => Safe.Try("QueueCasualMatch failed", () =>
+    public static bool QueueMatch(MatchType matchType) => Safe.Try("QueueMatch failed", () =>
     {
         var contentsFinder = ContentsFinder.Instance();
         if (contentsFinder == null)
@@ -33,9 +33,12 @@ internal static unsafe class DutyOps
             queueInfo->CancelQueue();
         }
         (*contentsFinder).ResetFlags();
-        queueInfo->QueueRoulette(ApsgConstants.CasualMatchRouletteId, QueueRouletteUnknownArgument);
+        queueInfo->QueueRoulette(RouletteFor(matchType), QueueRouletteUnknownArgument);
         return true;
     }, fallback: false);
+
+    private static byte RouletteFor(MatchType matchType)
+        => matchType == MatchType.Frontline ? ApsgConstants.FrontlineRouletteId : ApsgConstants.CasualMatchRouletteId;
 
     public static bool IsQueued() => Safe.TrySilent(() =>
     {

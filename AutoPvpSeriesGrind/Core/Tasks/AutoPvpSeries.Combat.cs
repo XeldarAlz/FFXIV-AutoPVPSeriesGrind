@@ -2,6 +2,7 @@ using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Rotation;
 using AutoPvpSeriesGrind.Core.Util;
+using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -20,6 +21,12 @@ internal sealed partial class AutoPvpSeries
 
     private async Task TickLiveMatch()
     {
+        if (matchType == MatchType.Frontline)
+        {
+            TickFrontlineLive();
+            return;
+        }
+
         rotation.TickDeathAndRespawn();
         if (IsDead())
         {
@@ -55,6 +62,59 @@ internal sealed partial class AutoPvpSeries
             await RunBrainTick(territory);
         else
             LegacyCrystalMove();
+    }
+
+    private void TickFrontlineLive()
+    {
+        rotation.TickDeathAndRespawn();
+        if (IsDead())
+        {
+            movement.Stop();
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead, waiting to respawn", Posture.Retreat);
+            return;
+        }
+        if (MatchState.LocalIsCasting())
+        {
+            movement.Stop();
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, "wait: casting", Posture.Hold);
+            return;
+        }
+
+        var snapshot = MatchState.Capture();
+        var plan = frontline.Decide(snapshot);
+        BrainTelemetry.Record(snapshot, plan);
+
+        if (HandleMount())
+        {
+            return;
+        }
+        if (!Svc.Condition[ConditionFlag.Mounted]
+            && HoldsStillForRotation(snapshot, plan.TargetId, plan.Posture, plan.Destination, frontline.UnderBurst))
+        {
+            return;
+        }
+
+        movement.UpdatePosture(plan.Posture);
+        ApplyBrainTarget(plan.TargetId);
+        movement.Execute(plan);
+    }
+
+    private bool HandleMount()
+    {
+        var mounted = Svc.Condition[ConditionFlag.Mounted];
+        if (!mounted && frontline.WantsMount && !Svc.Condition[ConditionFlag.InCombat])
+        {
+            ActionOps.UseGeneralAction(GeneralActions.MountRoulette);
+            LogDiagnostic("far from the team -> mounting up");
+            return true;
+        }
+        if (mounted && frontline.WantsDismount)
+        {
+            ActionOps.UseGeneralAction(GeneralActions.Dismount);
+            LogDiagnostic("back with the team -> dismounting");
+            return true;
+        }
+        return false;
     }
 
     private void CaptureBasesAtSpawn(uint territory)
@@ -139,7 +199,7 @@ internal sealed partial class AutoPvpSeries
         if (!snapshot.HasObjective)
         {
             WarnMissingObjectiveOnce();
-            if (HoldsStillForRotation(snapshot, 0, Posture.Reposition, snapshot.Self))
+            if (HoldsStillForRotation(snapshot, 0, Posture.Reposition, snapshot.Self, brain.UnderBurst))
             {
                 return;
             }
@@ -153,7 +213,7 @@ internal sealed partial class AutoPvpSeries
         var plan = brain.Decide(snapshot, anchor, matchFlow.Bases?.Enemy);
         BrainTelemetry.Record(snapshot, plan);
 
-        if (HoldsStillForRotation(snapshot, plan.TargetId, plan.Posture, plan.Destination))
+        if (HoldsStillForRotation(snapshot, plan.TargetId, plan.Posture, plan.Destination, brain.UnderBurst))
         {
             return;
         }
@@ -196,9 +256,9 @@ internal sealed partial class AutoPvpSeries
         Warn($"objective not found among {Svc.Objects.Length} loaded objects (Tactical Crystal, BNpcName {TacticalCrystalNameId})");
     }
 
-    private bool HoldsStillForRotation(PvpSnapshot snapshot, ulong targetId, Posture posture, Vector3 moveDestination)
+    private bool HoldsStillForRotation(PvpSnapshot snapshot, ulong targetId, Posture posture, Vector3 moveDestination, bool underBurst)
     {
-        var outcome = rotation.Drive(snapshot, targetId, posture, moveDestination, holdStill);
+        var outcome = rotation.Drive(snapshot, targetId, posture, moveDestination, underBurst, holdStill);
         if (outcome is not (RotationOutcome.Cast or RotationOutcome.Guarding))
         {
             return false;
@@ -248,7 +308,7 @@ internal sealed partial class AutoPvpSeries
         }
 
         var hold = Vector3.Distance(snapshot.Self, crystalPosition) < CrystalEngageRadiusYalms && enemyOnPoint;
-        if (HoldsStillForRotation(snapshot, snapshot.CurrentTarget?.Id ?? 0, hold ? Posture.Hold : Posture.Push, crystalPosition))
+        if (HoldsStillForRotation(snapshot, snapshot.CurrentTarget?.Id ?? 0, hold ? Posture.Hold : Posture.Push, crystalPosition, brain.UnderBurst))
         {
             return;
         }

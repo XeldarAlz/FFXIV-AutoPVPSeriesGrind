@@ -7,6 +7,7 @@ internal static class PvpActions
     public const uint Purify = 29056;
     public const uint Sprint = 29057;
     public const uint Recuperate = 29711;
+    public const uint RoleAction = 43259;
 
     public static readonly uint[] Shared = [Guard, StandardIssueElixir, Purify, Sprint, Recuperate];
 

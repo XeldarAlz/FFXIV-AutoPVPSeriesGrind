@@ -98,7 +98,7 @@ internal static class PlanCard
         ImGui.SetCursorScreenPos(origin);
         ImGui.Dummy(new Vector2(width, end.Y - origin.Y));
 
-        DrawActivityPopover();
+        DrawActivityPopover(cfg);
         DrawGoalPopover(cfg);
         DrawAfterPopover(cfg);
     }
@@ -112,7 +112,7 @@ internal static class PlanCard
 
         var count = 0;
         pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.Queue));
-        pieces[count++] = new Piece(PieceKind.Activity, Loc.T(L.Plan.Mode));
+        pieces[count++] = new Piece(PieceKind.Activity, Loc.T(ReadyState.ModeName(cfg)));
         pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.SentenceUntil));
         pieces[count++] = new Piece(PieceKind.Goal, GoalLabel(cfg));
         if (!endless)
@@ -298,7 +298,7 @@ internal static class PlanCard
         }
     }
 
-    private static void DrawActivityPopover()
+    private static void DrawActivityPopover(Configuration cfg)
     {
         if (!ImGui.IsPopupOpen(ActivityPopup)) return;
 
@@ -308,10 +308,21 @@ internal static class PlanCard
         if (!popover.Open) return;
 
         Heading(Loc.T(L.Plan.WhatToQueue), width);
-        if (DrawChoiceRow(0, Loc.T(L.Plan.Mode), Loc.T(L.Plan.QueueCasualHelp), true, width))
+        if (DrawChoiceRow(0, Loc.T(L.Plan.Mode), Loc.T(L.Plan.QueueCasualHelp), cfg.MatchType == MatchType.CrystallineConflict, width))
         {
-            ImGui.CloseCurrentPopup();
+            SelectMatchType(cfg, MatchType.CrystallineConflict);
         }
+        if (DrawChoiceRow(1, Loc.T(L.Plan.ModeFrontline), Loc.T(L.Plan.QueueFrontlineHelp), cfg.MatchType == MatchType.Frontline, width))
+        {
+            SelectMatchType(cfg, MatchType.Frontline);
+        }
+    }
+
+    private static void SelectMatchType(Configuration cfg, MatchType matchType)
+    {
+        cfg.MatchType = matchType;
+        cfg.SaveDebounced();
+        ImGui.CloseCurrentPopup();
     }
 
     private static void DrawGoalPopover(Configuration cfg)

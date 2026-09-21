@@ -134,7 +134,7 @@ internal static class HeaderBar
 
         if (!ctrl.Running)
         {
-            var plan = Loc.T(L.Shell.ModeSummary, ReadyState.StopSummary(cfg));
+            var plan = Loc.T(L.Shell.ModeSummary, Loc.T(ReadyState.ModeName(cfg)), ReadyState.StopSummary(cfg));
             using (Fonts.PushCaption())
             {
                 var planSize = TextDraw.Measure(plan);

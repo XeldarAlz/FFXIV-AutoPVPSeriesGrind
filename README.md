@@ -23,11 +23,12 @@
 
 ## What it does
 
-Grinds the **PvP Series Malmstones** by looping Casual Match. Press **Start** and the plugin queues the Crystalline Conflict casual roulette, rides out each match, fires your job's PvP Limit Break, sends a quick greeting, leaves on the results screen, and requeues — until it hits your match limit.
+Grinds the **PvP Series Malmstones** by looping Casual Match or the daily Frontline roulette. Press **Start** and the plugin queues, rides out each match, fires your job's PvP Limit Break, sends a quick greeting, leaves on the results screen, and requeues — until it hits your match limit.
 
 ## Features
 
 - **Hands-off match loop**: queue → fight on the pvp match → leave → requeue.
+- **Frontline mode**: queues the daily Frontline roulette on every arena and sticks with the team, holding a role-appropriate spot in the group, falling back when hurt and mounting up to rejoin after a respawn.
 - **Built-in PvP rotation**: presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself; the defensive thresholds are adjustable under Settings, Combat.
 - **Match limit**: stop after N completed matches, or run until you stop it.
 - **Spawn-aware movement**: leaves the spawn pen toward the right side and contests the objective, holding the point when it's contested instead of re-pathing.

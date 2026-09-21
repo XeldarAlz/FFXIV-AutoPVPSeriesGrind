@@ -47,7 +47,7 @@ internal static class ReadyState
 
             var stage = ResolveStage(ctrl);
             var (accent, accentSoft, _) = StagePalette(stage);
-            return new Info(Kind.Running, accent, accentSoft, FontAwesomeIcon.Bolt, Loc.T(L.Grind.TitleGrinding), StageDetail(stage));
+            return new Info(Kind.Running, accent, accentSoft, FontAwesomeIcon.Bolt, Loc.T(L.Grind.TitleGrinding), StageDetail(stage, cfg));
         }
 
         if (!ExternalPlugins.AllRequiredInstalled())
@@ -102,10 +102,13 @@ internal static class ReadyState
         _               => (Styling.AccentBlue,   Styling.AccentBlueSoft,   Loc.T(L.Grind.StageInMatch)),
     };
 
-    private static string StageDetail(Stage stage) => stage switch
+    public static LocString ModeName(Configuration cfg)
+        => cfg.MatchType == MatchType.Frontline ? L.Plan.ModeFrontline : L.Plan.Mode;
+
+    private static string StageDetail(Stage stage, Configuration cfg) => stage switch
     {
         Stage.Preparing => Loc.T(L.Grind.StageDetailStarting),
-        Stage.Queueing  => Loc.T(L.Grind.StageDetailInQueue),
+        Stage.Queueing  => Loc.T(cfg.MatchType == MatchType.Frontline ? L.Grind.StageDetailInQueueFrontline : L.Grind.StageDetailInQueue),
         Stage.Portraits => Loc.T(L.Grind.StageDetailPortraits),
         Stage.Fighting  => Loc.T(L.Grind.StageDetailFighting),
         Stage.Finishing => Loc.T(L.Grind.StageDetailDone),

@@ -45,8 +45,8 @@
     },
     "minimize": "Minimizar para a barra de título",
     "restore": "Restaurar",
-    "modeSummary": "Crystalline Conflict, {0}",
-    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "modeSummary": "{0}, {1}",
+    "modeSummaryDot": "{0}  ·  {1}",
     "statusLine": "{0}  ·  {1}",
     "sessionSummary": "{0} partidas  ·  {1}",
     "installRequired": "Instale os plugins obrigatórios",
@@ -94,7 +94,8 @@
       "portraits": "A partida está prestes a começar.",
       "fighting": "Lutando pelo cristal.",
       "done": "Concluindo os últimos passos da sessão.",
-      "inMatch": "Jogando a partida."
+      "inMatch": "Jogando a partida.",
+      "inQueueFrontline": "Aguardando uma partida de Frontline."
     },
     "status": {
       "running": "Rodando",
@@ -173,14 +174,16 @@
     },
     "whatToQueue": "O que entrar na fila",
     "queue": {
-      "casualHelp": "Partidas casuais, o jeito mais rápido de subir a barra de série."
+      "casualHelp": "Partidas casuais, o jeito mais rápido de subir a barra de série.",
+      "frontlineHelp": "A roleta diária de Frontline: batalhas de 72 jogadores com a maior EXP de série por partida. O bot fica com o time e nunca sai sozinho."
     },
     "endlessHelp": "Entra em partida após partida até você apertar Parar.",
     "stopAfter": "Parar após",
     "stopAfterMatchesHelp": "Conta as partidas que chegam à tela de resultados, então uma partida abandonada não conta.",
     "reachRank": "Chegar ao rank",
     "reachRankHelp": "Você está no rank {0} agora. A sessão termina a partida em andamento antes de parar.",
-    "stopAfterTimeHelp": "O cronômetro para de entrar em novas partidas; a que está em andamento é jogada até o fim."
+    "stopAfterTimeHelp": "O cronômetro para de entrar em novas partidas; a que está em andamento é jogada até o fim.",
+    "modeFrontline": "Frontline"
   },
   "run": {
     "running": "Rodando",
@@ -209,7 +212,8 @@
       "seriesExp": "EXP de série",
       "matchesPerHour": "Partidas/h",
       "elapsed": "Decorrido"
-    }
+    },
+    "modeFrontline": "Frontline"
   },
   "history": {
     "title": "Histórico",

@@ -25,8 +25,8 @@ internal static class L
         public static readonly LocString NavAbout = new("shell.nav.about", "About");
         public static readonly LocString Minimize = new("shell.minimize", "Minimize to the header bar");
         public static readonly LocString Restore = new("shell.restore", "Restore");
-        public static readonly LocString ModeSummary = new("shell.modeSummary", "Crystalline Conflict, {0}");
-        public static readonly LocString ModeSummaryDot = new("shell.modeSummaryDot", "Crystalline Conflict  ·  {0}");
+        public static readonly LocString ModeSummary = new("shell.modeSummary", "{0}, {1}");
+        public static readonly LocString ModeSummaryDot = new("shell.modeSummaryDot", "{0}  ·  {1}");
         public static readonly LocString StatusLine = new("shell.statusLine", "{0}  ·  {1}");
         public static readonly LocString SessionSummary = new("shell.sessionSummary", "{0} matches  ·  {1}");
         public static readonly LocString InstallRequired = new("shell.installRequired", "Install the required plugins");
@@ -65,6 +65,7 @@ internal static class L
 
         public static readonly LocString StageDetailStarting = new("grind.stageDetail.starting", "Getting ready to queue.");
         public static readonly LocString StageDetailInQueue = new("grind.stageDetail.inQueue", "Waiting for a Casual Match.");
+        public static readonly LocString StageDetailInQueueFrontline = new("grind.stageDetail.inQueueFrontline", "Waiting for a Frontline match.");
         public static readonly LocString StageDetailPortraits = new("grind.stageDetail.portraits", "The match is about to start.");
         public static readonly LocString StageDetailFighting = new("grind.stageDetail.fighting", "Fighting for the crystal.");
         public static readonly LocString StageDetailDone = new("grind.stageDetail.done", "Finishing the last steps of the run.");
@@ -91,6 +92,7 @@ internal static class L
     {
         public static readonly LocString Title = new("plan.title", "Plan");
         public static readonly LocString Mode = new("plan.mode", "Crystalline Conflict");
+        public static readonly LocString ModeFrontline = new("plan.modeFrontline", "Frontline");
         public static readonly LocString Queue = new("plan.sentence.queue", "Queue");
         public static readonly LocString SentenceUntil = new("plan.sentence.until", "until");
         public static readonly LocString SentenceThen = new("plan.sentence.then", "then");
@@ -132,6 +134,7 @@ internal static class L
 
         public static readonly LocString WhatToQueue = new("plan.whatToQueue", "What to queue");
         public static readonly LocString QueueCasualHelp = new("plan.queue.casualHelp", "Casual matches, the fastest way to move the Series bar.");
+        public static readonly LocString QueueFrontlineHelp = new("plan.queue.frontlineHelp", "The daily Frontline roulette: 72-player battles with the biggest Series EXP per match. The bot stays with its team and never runs off alone.");
 
         public static readonly LocString EndlessHelp = new("plan.endlessHelp", "Queues match after match until you press Stop.");
         public static readonly LocString StopAfter = new("plan.stopAfter", "Stop after");
@@ -145,6 +148,7 @@ internal static class L
     {
         public static readonly LocString Running = new("run.running", "Running");
         public static readonly LocString ModeCasual = new("run.modeCasual", "Crystalline Conflict, casual");
+        public static readonly LocString ModeFrontline = new("run.modeFrontline", "Frontline");
         public static readonly LocString TimeLeft = new("run.timeLeft", "{0} left");
         public static readonly LocString JobPrefix = new("run.jobPrefix", "{0}  ·  ");
 

@@ -45,8 +45,8 @@
     },
     "minimize": "タイトルバーに最小化",
     "restore": "元に戻す",
-    "modeSummary": "Crystalline Conflict、{0}",
-    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "modeSummary": "{0}、{1}",
+    "modeSummaryDot": "{0}  ·  {1}",
     "statusLine": "{0}  ·  {1}",
     "sessionSummary": "{0}試合  ·  {1}",
     "installRequired": "必須プラグインをインストール",
@@ -94,7 +94,8 @@
       "portraits": "まもなく試合が始まります。",
       "fighting": "クリスタルを巡って戦闘中です。",
       "done": "周回の最後の手順を実行しています。",
-      "inMatch": "試合を進行中です。"
+      "inMatch": "試合を進行中です。",
+      "inQueueFrontline": "フロントラインの試合を待っています。"
     },
     "status": {
       "running": "実行中",
@@ -173,14 +174,16 @@
     },
     "whatToQueue": "申請するコンテンツ",
     "queue": {
-      "casualHelp": "カジュアルマッチ。シリーズゲージを最速で伸ばせます。"
+      "casualHelp": "カジュアルマッチ。シリーズゲージを最速で伸ばせます。",
+      "frontlineHelp": "毎日のフロントラインルーレット。72人の大規模戦で、1試合あたりのシリーズEXPが最も多く手に入ります。ボットは常にチームと行動し、単独で突っ込みません。"
     },
     "endlessHelp": "停止を押すまで、試合を次々と申請し続けます。",
     "stopAfter": "経過したら停止",
     "stopAfterMatchesHelp": "リザルト画面まで到達した試合を数えるので、途中離脱した試合はカウントされません。",
     "reachRank": "到達ランク",
     "reachRankHelp": "現在ランク{0}です。周回は進行中の試合を終えてから停止します。",
-    "stopAfterTimeHelp": "タイマーは新しい申請を止めるだけで、進行中の試合は最後まで行われます。"
+    "stopAfterTimeHelp": "タイマーは新しい申請を止めるだけで、進行中の試合は最後まで行われます。",
+    "modeFrontline": "フロントライン"
   },
   "run": {
     "running": "実行中",
@@ -209,7 +212,8 @@
       "seriesExp": "シリーズEXP",
       "matchesPerHour": "試合/時",
       "elapsed": "経過"
-    }
+    },
+    "modeFrontline": "フロントライン"
   },
   "history": {
     "title": "履歴",

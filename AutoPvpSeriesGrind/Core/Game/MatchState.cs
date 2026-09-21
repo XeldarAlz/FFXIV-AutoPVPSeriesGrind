@@ -13,6 +13,7 @@ internal static class MatchState
 {
     public static bool InPvpArea()
         => CrystallineConflictMaps.Contains(Svc.ClientState.TerritoryType)
+        || FrontlineMaps.Contains(Svc.ClientState.TerritoryType)
         || Svc.Condition[ConditionFlag.PvPDisplayActive];
 
     public static bool InDuty() => Svc.Condition[ConditionFlag.BoundByDuty];

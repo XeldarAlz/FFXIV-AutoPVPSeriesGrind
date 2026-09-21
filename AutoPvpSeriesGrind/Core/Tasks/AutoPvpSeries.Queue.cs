@@ -21,7 +21,7 @@ internal sealed partial class AutoPvpSeries
         PvpAutoLbIpc.Instance.PushPresetsIfNeeded();
 
         SetPhase(AutoPhase.Queueing);
-        DutyOps.QueueCasualMatch();
+        DutyOps.QueueMatch(matchType);
     }
 
     private async Task<bool> TickOutOfDuty()
@@ -49,8 +49,8 @@ internal sealed partial class AutoPvpSeries
                 return false;
             }
 
-            LogDiagnostic("not queued -> queueing casual match roulette");
-            DutyOps.QueueCasualMatch();
+            LogDiagnostic($"not queued -> queueing {matchType} roulette");
+            DutyOps.QueueMatch(matchType);
         }
 
         await NextFrame(MainLoopIdleMs);

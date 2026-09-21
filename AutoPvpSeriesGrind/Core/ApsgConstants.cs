@@ -11,6 +11,7 @@ internal static class ApsgConstants
 
     // ContentRoulette row id for Crystalline Conflict (Casual Match), the roulette the source script queues.
     public const byte CasualMatchRouletteId = 40;
+    public const byte FrontlineRouletteId = 7;
 
     // Crystalline Conflict objective, matched by BNpcName row id: the row carries a separate name per
     // client language, so comparing against the English text finds nothing on a non-English client.
@@ -36,6 +37,7 @@ internal static class ApsgConstants
     internal static class AddonNames
     {
         public const string MatchResults = "MKSRecord"; // PvP results screen
+        public const string FrontlineResults = "FrontlineRecord";
         public const string SelectYesno = "SelectYesno"; // generic yes/no confirm (e.g. logout)
         public const string DutyReady = "ContentsFinderConfirm"; // "Duty Ready" popup with the Commence button
     }
@@ -47,6 +49,12 @@ internal static class ApsgConstants
         public const int MeleeDps = 2;
         public const int RangedDps = 3; // physical + caster ranged
         public const int Healer = 4;
+    }
+
+    internal static class GeneralActions
+    {
+        public const uint MountRoulette = 9;
+        public const uint Dismount = 23;
     }
 
     internal static class GameCommands

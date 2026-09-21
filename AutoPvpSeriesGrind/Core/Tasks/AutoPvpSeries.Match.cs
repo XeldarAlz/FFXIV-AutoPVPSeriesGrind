@@ -88,6 +88,17 @@ internal sealed partial class AutoPvpSeries
 
     private async Task RunWaitingPhase()
     {
+        if (matchType == MatchType.Frontline)
+        {
+            if (!matchFlow.InMatchLive && InDuty())
+            {
+                AnnounceMatchEntryOnce();
+                LogDiagnostic("Frontline: staying with the team from the first moment");
+                BeginLiveMatch();
+            }
+            return;
+        }
+
         while (InDuty() && !matchFlow.InMatchLive && !CancelToken.IsCancellationRequested)
         {
             rotation.TickDeathAndRespawn();
@@ -166,6 +177,12 @@ internal sealed partial class AutoPvpSeries
         }
 
         LogDiagnostic($"gate open detected by ContentTimeLeft -> {timeLeftSeconds}");
+        BeginLiveMatch();
+        return true;
+    }
+
+    private void BeginLiveMatch()
+    {
         WarnIfNavmeshNotReady();
         matchFlow.InMatchLive = true;
         if (settings.RecordMatches)
@@ -173,7 +190,6 @@ internal sealed partial class AutoPvpSeries
             MatchRecorder.Begin(Svc.ClientState.TerritoryType);
         }
         rotation.OnMatchStart();
-        return true;
     }
 
     private void WarnIfNavmeshNotReady()

@@ -49,7 +49,7 @@ internal static class ActionDock
         var ctrl = plugin.Controller;
         var depsOk = ExternalPlugins.AllRequiredInstalled();
         var reason = depsOk ? null : Loc.T(L.Shell.InstallRequired);
-        var sub = Loc.T(L.Shell.ModeSummaryDot, ReadyState.StopSummary(cfg));
+        var sub = Loc.T(L.Shell.ModeSummaryDot, Loc.T(ReadyState.ModeName(cfg)), ReadyState.StopSummary(cfg));
 
         if (StartButton.Draw(sub, depsOk, reason, innerWidth)) ctrl.Start();
     }

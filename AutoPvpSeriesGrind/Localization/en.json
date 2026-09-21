@@ -45,8 +45,8 @@
     },
     "minimize": "Minimize to the header bar",
     "restore": "Restore",
-    "modeSummary": "Crystalline Conflict, {0}",
-    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "modeSummary": "{0}, {1}",
+    "modeSummaryDot": "{0}  ·  {1}",
     "statusLine": "{0}  ·  {1}",
     "sessionSummary": "{0} matches  ·  {1}",
     "installRequired": "Install the required plugins",
@@ -94,7 +94,8 @@
       "portraits": "The match is about to start.",
       "fighting": "Fighting for the crystal.",
       "done": "Finishing the last steps of the run.",
-      "inMatch": "Playing out the match."
+      "inMatch": "Playing out the match.",
+      "inQueueFrontline": "Waiting for a Frontline match."
     },
     "status": {
       "running": "Running",
@@ -173,14 +174,16 @@
     },
     "whatToQueue": "What to queue",
     "queue": {
-      "casualHelp": "Casual matches, the fastest way to move the Series bar."
+      "casualHelp": "Casual matches, the fastest way to move the Series bar.",
+      "frontlineHelp": "The daily Frontline roulette: 72-player battles with the biggest Series EXP per match. The bot stays with its team and never runs off alone."
     },
     "endlessHelp": "Queues match after match until you press Stop.",
     "stopAfter": "Stop after",
     "stopAfterMatchesHelp": "Counts matches that reach the results screen, so a match you abandon does not count.",
     "reachRank": "Reach rank",
     "reachRankHelp": "You are rank {0} now. The run finishes the match it is in before stopping.",
-    "stopAfterTimeHelp": "The timer stops queueing new matches; the one in progress still plays out."
+    "stopAfterTimeHelp": "The timer stops queueing new matches; the one in progress still plays out.",
+    "modeFrontline": "Frontline"
   },
   "run": {
     "running": "Running",
@@ -209,7 +212,8 @@
       "seriesExp": "Series EXP",
       "matchesPerHour": "Matches/h",
       "elapsed": "Elapsed"
-    }
+    },
+    "modeFrontline": "Frontline"
   },
   "history": {
     "title": "History",

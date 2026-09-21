@@ -45,8 +45,8 @@
     },
     "minimize": "Auf die Titelleiste verkleinern",
     "restore": "Wiederherstellen",
-    "modeSummary": "Crystalline Conflict, {0}",
-    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "modeSummary": "{0}, {1}",
+    "modeSummaryDot": "{0}  ·  {1}",
     "statusLine": "{0}  ·  {1}",
     "sessionSummary": "{0} Matches  ·  {1}",
     "installRequired": "Benötigte Plugins installieren",
@@ -94,7 +94,8 @@
       "portraits": "Das Match beginnt gleich.",
       "fighting": "Kämpft um den Kristall.",
       "done": "Die letzten Schritte des Laufs werden erledigt.",
-      "inMatch": "Spielt das Match zu Ende."
+      "inMatch": "Spielt das Match zu Ende.",
+      "inQueueFrontline": "Wartet auf ein Frontline-Match."
     },
     "status": {
       "running": "Läuft",
@@ -173,14 +174,16 @@
     },
     "whatToQueue": "Was anmelden",
     "queue": {
-      "casualHelp": "Casual Matches, der schnellste Weg, die Serienleiste zu füllen."
+      "casualHelp": "Casual Matches, der schnellste Weg, die Serienleiste zu füllen.",
+      "frontlineHelp": "Die tägliche Frontline-Roulette: Schlachten mit 72 Spielern und den meisten Serien-EXP pro Match. Der Bot bleibt bei seinem Team und läuft nie allein los."
     },
     "endlessHelp": "Meldet Match für Match an, bis du Stopp drückst.",
     "stopAfter": "Stoppen nach",
     "stopAfterMatchesHelp": "Zählt Matches, die den Ergebnisbildschirm erreichen; ein abgebrochenes Match zählt also nicht.",
     "reachRank": "Rang erreichen",
     "reachRankHelp": "Du bist jetzt Rang {0}. Der Lauf beendet erst das laufende Match, bevor er stoppt.",
-    "stopAfterTimeHelp": "Der Timer stoppt neue Anmeldungen; das laufende Match wird noch zu Ende gespielt."
+    "stopAfterTimeHelp": "Der Timer stoppt neue Anmeldungen; das laufende Match wird noch zu Ende gespielt.",
+    "modeFrontline": "Frontline"
   },
   "run": {
     "running": "Läuft",
@@ -209,7 +212,8 @@
       "seriesExp": "Serien-EXP",
       "matchesPerHour": "Matches/h",
       "elapsed": "Verstrichen"
-    }
+    },
+    "modeFrontline": "Frontline"
   },
   "history": {
     "title": "Verlauf",

@@ -25,7 +25,7 @@ internal static class RunningPanel
         var stage = ReadyState.ResolveStage(ctrl);
         var (accent, accentSoft, label) = ReadyState.StagePalette(stage);
 
-        DrawHeaderStrip(accent, accentSoft, stage);
+        DrawHeaderStrip(cfg, accent, accentSoft, stage);
         Styling.VSpace(6f);
         DrawHeroCard(cfg, ctrl, stage, accent, accentSoft, label);
         Styling.VSpace(10f);
@@ -34,7 +34,7 @@ internal static class RunningPanel
         DrawStatTiles(cfg, ctrl);
     }
 
-    private static void DrawHeaderStrip(Vector4 accent, Vector4 accentSoft, ReadyState.Stage stage)
+    private static void DrawHeaderStrip(Configuration cfg, Vector4 accent, Vector4 accentSoft, ReadyState.Stage stage)
     {
         var scale = ImGuiHelpers.GlobalScale;
         var dl = ImGui.GetWindowDrawList();
@@ -52,7 +52,7 @@ internal static class RunningPanel
         TextDraw.SmallCaps(status, new Vector2(origin.X + radius * 2f + 12f * scale, midY - statusSize.Y * 0.5f), Styling.TextSecondary);
 
         var footer = stage is ReadyState.Stage.Preparing or ReadyState.Stage.Queueing
-            ? Loc.T(L.Run.ModeCasual)
+            ? Loc.T(cfg.MatchType == MatchType.Frontline ? L.Run.ModeFrontline : L.Run.ModeCasual)
             : MiniPlayer.CurrentMapName();
         using (Fonts.PushCaption())
         {

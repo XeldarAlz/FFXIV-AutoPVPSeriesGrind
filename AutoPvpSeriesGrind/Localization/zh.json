@@ -45,8 +45,8 @@
     },
     "minimize": "最小化到标题栏",
     "restore": "还原",
-    "modeSummary": "Crystalline Conflict，{0}",
-    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "modeSummary": "{0}，{1}",
+    "modeSummaryDot": "{0}  ·  {1}",
     "statusLine": "{0}  ·  {1}",
     "sessionSummary": "{0} 场  ·  {1}",
     "installRequired": "请安装必需插件",
@@ -94,7 +94,8 @@
       "portraits": "比赛即将开始。",
       "fighting": "正在争夺水晶。",
       "done": "正在完成本次刷取的最后步骤。",
-      "inMatch": "比赛进行中。"
+      "inMatch": "比赛进行中。",
+      "inQueueFrontline": "正在等待纷争前线比赛。"
     },
     "status": {
       "running": "运行中",
@@ -173,14 +174,16 @@
     },
     "whatToQueue": "排什么",
     "queue": {
-      "casualHelp": "休闲比赛，提升系列进度最快的方式。"
+      "casualHelp": "休闲比赛，提升系列进度最快的方式。",
+      "frontlineHelp": "每日纷争前线随机任务：72 人大战，单场系列经验最多。机器人始终跟随队伍，绝不单独行动。"
     },
     "endlessHelp": "一场接一场地排队，直到你按下停止。",
     "stopAfter": "之后停止",
     "stopAfterMatchesHelp": "只统计进入结算画面的比赛，中途退出的不算。",
     "reachRank": "达到等级",
     "reachRankHelp": "你现在是 {0} 级。刷取会先打完当前这场再停止。",
-    "stopAfterTimeHelp": "计时结束只是不再排新的比赛；正在进行的那场会打完。"
+    "stopAfterTimeHelp": "计时结束只是不再排新的比赛；正在进行的那场会打完。",
+    "modeFrontline": "纷争前线"
   },
   "run": {
     "running": "运行中",
@@ -209,7 +212,8 @@
       "seriesExp": "系列经验",
       "matchesPerHour": "场次/时",
       "elapsed": "已用时"
-    }
+    },
+    "modeFrontline": "纷争前线"
   },
   "history": {
     "title": "历史",

@@ -45,8 +45,8 @@
     },
     "minimize": "Réduire à la barre de titre",
     "restore": "Restaurer",
-    "modeSummary": "Crystalline Conflict, {0}",
-    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "modeSummary": "{0}, {1}",
+    "modeSummaryDot": "{0}  ·  {1}",
     "statusLine": "{0}  ·  {1}",
     "sessionSummary": "{0} matchs  ·  {1}",
     "installRequired": "Installer les plugins requis",
@@ -94,7 +94,8 @@
       "portraits": "Le match va commencer.",
       "fighting": "Combat pour le cristal.",
       "done": "Dernières étapes de la session en cours.",
-      "inMatch": "Le match se joue."
+      "inMatch": "Le match se joue.",
+      "inQueueFrontline": "En attente d'un match Frontline."
     },
     "status": {
       "running": "En cours",
@@ -173,14 +174,16 @@
     },
     "whatToQueue": "Quoi lancer",
     "queue": {
-      "casualHelp": "Matchs décontractés, le moyen le plus rapide de faire monter la barre de série."
+      "casualHelp": "Matchs décontractés, le moyen le plus rapide de faire monter la barre de série.",
+      "frontlineHelp": "La roulette Frontline quotidienne : des batailles à 72 joueurs et le plus d'EXP de série par match. Le bot reste avec son équipe et ne part jamais seul."
     },
     "endlessHelp": "Enchaîne les matchs jusqu'à ce que vous appuyiez sur Stop.",
     "stopAfter": "Arrêter après",
     "stopAfterMatchesHelp": "Compte les matchs qui atteignent l'écran de résultats ; un match abandonné ne compte donc pas.",
     "reachRank": "Atteindre le rang",
     "reachRankHelp": "Vous êtes au rang {0}. La session termine le match en cours avant de s'arrêter.",
-    "stopAfterTimeHelp": "Le minuteur arrête les nouvelles inscriptions ; le match en cours se joue jusqu'au bout."
+    "stopAfterTimeHelp": "Le minuteur arrête les nouvelles inscriptions ; le match en cours se joue jusqu'au bout.",
+    "modeFrontline": "Frontline"
   },
   "run": {
     "running": "En cours",
@@ -209,7 +212,8 @@
       "seriesExp": "EXP de série",
       "matchesPerHour": "Matchs/h",
       "elapsed": "Écoulé"
-    }
+    },
+    "modeFrontline": "Frontline"
   },
   "history": {
     "title": "Historique",

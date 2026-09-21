@@ -45,8 +45,8 @@
     },
     "minimize": "Minimizar a la barra de título",
     "restore": "Restaurar",
-    "modeSummary": "Crystalline Conflict, {0}",
-    "modeSummaryDot": "Crystalline Conflict  ·  {0}",
+    "modeSummary": "{0}, {1}",
+    "modeSummaryDot": "{0}  ·  {1}",
     "statusLine": "{0}  ·  {1}",
     "sessionSummary": "{0} partidas  ·  {1}",
     "installRequired": "Instala los plugins necesarios",
@@ -94,7 +94,8 @@
       "portraits": "La partida está a punto de empezar.",
       "fighting": "Luchando por el cristal.",
       "done": "Terminando los últimos pasos de la sesión.",
-      "inMatch": "Jugando la partida."
+      "inMatch": "Jugando la partida.",
+      "inQueueFrontline": "Esperando una partida de Frontline."
     },
     "status": {
       "running": "En marcha",
@@ -173,14 +174,16 @@
     },
     "whatToQueue": "Qué encolar",
     "queue": {
-      "casualHelp": "Partidas casuales, la forma más rápida de subir la barra de serie."
+      "casualHelp": "Partidas casuales, la forma más rápida de subir la barra de serie.",
+      "frontlineHelp": "La ruleta diaria de Frontline: batallas de 72 jugadores con la mayor EXP de serie por partida. El bot se queda con su equipo y nunca se va solo."
     },
     "endlessHelp": "Encola partida tras partida hasta que pulses Detener.",
     "stopAfter": "Detener tras",
     "stopAfterMatchesHelp": "Cuenta las partidas que llegan a la pantalla de resultados, así que una partida abandonada no cuenta.",
     "reachRank": "Alcanzar rango",
     "reachRankHelp": "Ahora estás en el rango {0}. La sesión termina la partida en curso antes de parar.",
-    "stopAfterTimeHelp": "El temporizador deja de encolar partidas nuevas; la que está en curso se juega hasta el final."
+    "stopAfterTimeHelp": "El temporizador deja de encolar partidas nuevas; la que está en curso se juega hasta el final.",
+    "modeFrontline": "Frontline"
   },
   "run": {
     "running": "En marcha",
@@ -209,7 +212,8 @@
       "seriesExp": "EXP de serie",
       "matchesPerHour": "Partidas/h",
       "elapsed": "Transcurrido"
-    }
+    },
+    "modeFrontline": "Frontline"
   },
   "history": {
     "title": "Historial",

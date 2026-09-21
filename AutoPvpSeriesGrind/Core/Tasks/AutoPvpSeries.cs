@@ -14,6 +14,8 @@ internal sealed partial class AutoPvpSeries : AutoCommon
 
     private RunSettings settings;
     private readonly PvpBrain brain = new(PvpStrategy.Moderate);
+    private readonly FrontlineBrain frontline = new();
+    private MatchType matchType;
     private readonly MovementExecutor movement = new();
     private readonly RotationController rotation;
     private readonly GreetingDirector greeting = new();
@@ -65,7 +67,8 @@ internal sealed partial class AutoPvpSeries : AutoCommon
 
     private static void ExecuteGameCommand(string command) => Chat.ExecuteCommand(command);
 
-    private static bool ResultsScreenVisible() => AddonProbe.IsReady(ApsgConstants.AddonNames.MatchResults);
+    private static bool ResultsScreenVisible()
+        => AddonProbe.IsReady(ApsgConstants.AddonNames.MatchResults) || AddonProbe.IsReady(ApsgConstants.AddonNames.FrontlineResults);
 
     private void SetPhase(AutoPhase phase) => Plugin.Instance.Controller.Phase = phase;
 
@@ -73,12 +76,13 @@ internal sealed partial class AutoPvpSeries : AutoCommon
     {
         var cfg = Plugin.Cfg;
         settings = RunSettings.From(cfg);
+        matchType = cfg.MatchType;
         brain.SetStrategy(cfg.Strategy, cfg.CustomStrategy);
         brain.OwnsTargeting = settings.BrainTargets;
         brain.Targeting = cfg.Targeting;
         rotation.Configure(cfg.RotationProvider == RotationProvider.Internal, RotationSettings.From(cfg));
 
-        ApsgLog.Chat($"Starting PvP Series grind ({cfg.ActiveMode.DisplayName}).");
+        ApsgLog.Chat($"Starting PvP Series grind ({matchType}, {cfg.ActiveMode.DisplayName}).");
 
         await Startup();
 
@@ -129,6 +133,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         rotation.Reset();
         greeting.Reset();
         brain.Reset();
+        frontline.Reset();
         BrainTelemetry.Clear();
         MatchRecorder.End();
         LogDiagnostic($"reset: {reason}");

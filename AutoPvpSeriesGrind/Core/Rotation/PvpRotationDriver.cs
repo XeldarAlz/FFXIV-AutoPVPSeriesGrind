@@ -106,9 +106,15 @@ internal sealed class PvpRotationDriver
             return RotationOutcome.Instant;
         }
 
-        return table is not null
+        var outcome = table is not null
             ? RunTable(table, in context, gcdReady)
             : RunGeneric(currentKit, in context, gcdReady);
+        if (outcome == RotationOutcome.None && Svc.Condition[ConditionFlag.InCombat]
+            && TryButton(PvpActions.RoleAction, 0, RuleTarget.Auto, NoConditions, in context, wantGcd: false, out var roleOutcome))
+        {
+            return roleOutcome;
+        }
+        return outcome;
     }
 
     private static void CancelWastedCast(IPlayerCharacter self)
