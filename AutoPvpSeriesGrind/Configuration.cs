@@ -42,6 +42,7 @@ public sealed class Configuration : IPluginConfiguration
     public bool RotationPurify { get; set; } = true;
     public bool EnableCombatBrain { get; set; } = true;
     public bool BrainPicksTargets { get; set; } = false;
+    public TargetingMode Targeting { get; set; } = TargetingMode.Smart;
     public PvpStrategy Strategy { get; set; } = PvpStrategy.Moderate;
     public CustomStrategyProfile CustomStrategy { get; set; } = new();
 

@@ -359,14 +359,13 @@
       "rotationPluginHelp": "O que aperta suas habilidades de combate durante as partidas.",
       "behavior": "Comportamento",
       "behaviorHelp": "Como o bot se posiciona e escolhe suas brigas.",
-      "smartTargeting": "Alvo inteligente",
-      "smartTargetingHelpOn": "Ligado: este plugin decide quem atacar. Ele acompanha o alvo focado do time, prefere inimigos com pouca vida e pouca resistência (curandeiros primeiro) e pula quem estiver com Guard ativo. ",
-      "smartTargetingHelpOff": "Desligado: ataca seu alvo atual quando você tem um e escolhe um sozinho quando não tem.",
       "reactionTime": "Tempo de reação",
       "reactionTimeHelp": "Adiciona um atraso de reação humano antes de o bot mudar o que está fazendo.",
       "recordMatches": "Gravar partidas",
       "recordMatchesHelp": "Escreve cada decisão do cérebro (posições, vida, postura, motivo) em um arquivo de log por partida na pasta do plugin, ",
-      "recordMatchesHelpSize": "para revisar e ajustar como ele jogou. Cerca de 1 MB por partida; só as últimas 30 partidas são mantidas."
+      "recordMatchesHelpSize": "para revisar e ajustar como ele jogou. Cerca de 1 MB por partida; só as últimas 30 partidas são mantidas.",
+      "targeting": "Alvo",
+      "targetingHelp": "Quem o bot ataca durante uma luta."
     },
     "rotation": {
       "builtIn": "Embutida",
@@ -487,6 +486,14 @@
       "percentOfMatches": "%d%% das partidas",
       "percentPerSecond": "%d%%/s",
       "hp": "%d HP"
+    },
+    "targeting": {
+      "smart": "Inteligente",
+      "smartHelp": "Pesa vida baixa, o alvo focado do time, funções frágeis (curandeiros primeiro), distância e Guard, e define a escolha como seu alvo.",
+      "lowestHp": "Menor vida",
+      "lowestHpHelp": "O inimigo com menos vida em 25 metros; quem estiver com Guard ativo é pulado enquanto houver outro disponível.",
+      "current": "Seu alvo atual",
+      "currentHelp": "Ataca o que você tem selecionado e só escolhe sozinho quando você não tem alvo."
     }
   },
   "brain": {

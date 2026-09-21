@@ -337,9 +337,14 @@ internal static class L
         public static readonly LocString RotationPluginHelp = new("settings.combat.rotationPluginHelp", "What presses your combat skills during matches.");
         public static readonly LocString Behavior = new("settings.combat.behavior", "Behavior");
         public static readonly LocString BehaviorHelp = new("settings.combat.behaviorHelp", "How the bot positions itself and picks its fights.");
-        public static readonly LocString SmartTargeting = new("settings.combat.smartTargeting", "Smart targeting");
-        public static readonly LocString SmartTargetingHelpOn = new("settings.combat.smartTargetingHelpOn", "On: this plugin decides who to attack. It joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. ");
-        public static readonly LocString SmartTargetingHelpOff = new("settings.combat.smartTargetingHelpOff", "Off: attacks your current target when you have one and picks one itself when you don't.");
+        public static readonly LocString Targeting = new("settings.combat.targeting", "Targeting");
+        public static readonly LocString TargetingHelp = new("settings.combat.targetingHelp", "Who the bot attacks during a fight.");
+        public static readonly LocString TargetingSmart = new("settings.targeting.smart", "Smart");
+        public static readonly LocString TargetingSmartHelp = new("settings.targeting.smartHelp", "Weighs low HP, the team's focus target, squishy roles (healers first), distance and Guard, and sets the pick as your target.");
+        public static readonly LocString TargetingLowestHp = new("settings.targeting.lowestHp", "Lowest HP");
+        public static readonly LocString TargetingLowestHpHelp = new("settings.targeting.lowestHpHelp", "The enemy with the least HP within 25 yards, skipping anyone with Guard up while someone else is available.");
+        public static readonly LocString TargetingCurrent = new("settings.targeting.current", "Your current target");
+        public static readonly LocString TargetingCurrentHelp = new("settings.targeting.currentHelp", "Attacks whatever you have targeted and only picks for itself when you have nothing targeted.");
         public static readonly LocString ReactionTime = new("settings.combat.reactionTime", "Reaction time");
         public static readonly LocString ReactionTimeHelp = new("settings.combat.reactionTimeHelp", "Adds a human reaction delay before the bot changes what it's doing.");
         public static readonly LocString RecordMatches = new("settings.combat.recordMatches", "Record matches");

@@ -359,14 +359,13 @@
       "rotationPluginHelp": "Ce qui appuie sur vos compétences de combat pendant les matchs.",
       "behavior": "Comportement",
       "behaviorHelp": "Comment le bot se positionne et choisit ses combats.",
-      "smartTargeting": "Ciblage intelligent",
-      "smartTargetingHelpOn": "Activé : ce plugin décide qui attaquer. Il rejoint la cible focalisée de l'équipe, préfère les ennemis à faibles PV et peu résistants (soigneurs d'abord), et ignore quiconque a Garde actif. ",
-      "smartTargetingHelpOff": "Désactivé : attaque votre cible actuelle quand vous en avez une et en choisit une lui-même sinon.",
       "reactionTime": "Temps de réaction",
       "reactionTimeHelp": "Ajoute un délai de réaction humain avant que le bot ne change ce qu'il fait.",
       "recordMatches": "Enregistrer les matchs",
       "recordMatchesHelp": "Écrit chaque décision du cerveau (positions, PV, posture, raison) dans un fichier journal par match dans le dossier du plugin, ",
-      "recordMatchesHelpSize": "pour revoir et affiner sa façon de jouer. Environ 1 Mo par match ; seuls les 30 derniers matchs sont conservés."
+      "recordMatchesHelpSize": "pour revoir et affiner sa façon de jouer. Environ 1 Mo par match ; seuls les 30 derniers matchs sont conservés.",
+      "targeting": "Ciblage",
+      "targetingHelp": "Qui le bot attaque pendant un combat."
     },
     "rotation": {
       "builtIn": "Intégrée",
@@ -487,6 +486,14 @@
       "percentOfMatches": "%d%% des matchs",
       "percentPerSecond": "%d%%/s",
       "hp": "%d PV"
+    },
+    "targeting": {
+      "smart": "Intelligent",
+      "smartHelp": "Pondère les PV bas, la cible focalisée de l'équipe, les rôles fragiles (soigneurs d'abord), la distance et Garde, puis définit ce choix comme votre cible.",
+      "lowestHp": "PV les plus bas",
+      "lowestHpHelp": "L'ennemi avec le moins de PV à moins de 25 mètres ; quiconque a Garde actif est ignoré tant qu'un autre est disponible.",
+      "current": "Votre cible actuelle",
+      "currentHelp": "Attaque ce que vous ciblez et ne choisit lui-même que quand vous n'avez aucune cible."
     }
   },
   "brain": {

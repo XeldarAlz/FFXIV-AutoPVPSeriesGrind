@@ -359,14 +359,13 @@
       "rotationPluginHelp": "What presses your combat skills during matches.",
       "behavior": "Behavior",
       "behaviorHelp": "How the bot positions itself and picks its fights.",
-      "smartTargeting": "Smart targeting",
-      "smartTargetingHelpOn": "On: this plugin decides who to attack. It joins the team's focus target, prefers low-HP and squishy enemies (healers first), and skips anyone with Guard up. ",
-      "smartTargetingHelpOff": "Off: attacks your current target when you have one and picks one itself when you don't.",
       "reactionTime": "Reaction time",
       "reactionTimeHelp": "Adds a human reaction delay before the bot changes what it's doing.",
       "recordMatches": "Record matches",
       "recordMatchesHelp": "Writes every brain decision (positions, HP, posture, reason) to a per-match log file in the plugin folder, ",
-      "recordMatchesHelpSize": "for reviewing and tuning how it played. Roughly 1 MB per match; only the last 30 matches are kept."
+      "recordMatchesHelpSize": "for reviewing and tuning how it played. Roughly 1 MB per match; only the last 30 matches are kept.",
+      "targeting": "Targeting",
+      "targetingHelp": "Who the bot attacks during a fight."
     },
     "rotation": {
       "builtIn": "Built-in",
@@ -487,6 +486,14 @@
       "percentOfMatches": "%d%% of matches",
       "percentPerSecond": "%d%%/s",
       "hp": "%d HP"
+    },
+    "targeting": {
+      "smart": "Smart",
+      "smartHelp": "Weighs low HP, the team's focus target, squishy roles (healers first), distance and Guard, and sets the pick as your target.",
+      "lowestHp": "Lowest HP",
+      "lowestHpHelp": "The enemy with the least HP within 25 yards, skipping anyone with Guard up while someone else is available.",
+      "current": "Your current target",
+      "currentHelp": "Attacks whatever you have targeted and only picks for itself when you have nothing targeted."
     }
   },
   "brain": {

@@ -359,14 +359,13 @@
       "rotationPluginHelp": "試合中に戦闘スキルを押す仕組み。",
       "behavior": "動作",
       "behaviorHelp": "ボットの立ち位置と、戦うかどうかの判断。",
-      "smartTargeting": "スマートターゲット",
-      "smartTargetingHelpOn": "オン：攻撃相手をこのプラグインが決めます。味方のフォーカスターゲットに合わせ、HPが低く打たれ弱い敵（まずヒーラー）を優先し、ガード中の相手は避けます。 ",
-      "smartTargetingHelpOff": "オフ：ターゲットがあればその相手を攻撃し、なければ自分で選びます。",
       "reactionTime": "反応時間",
       "reactionTimeHelp": "ボットが行動を切り替える前に、人間らしい反応の遅れを加えます。",
       "recordMatches": "試合を記録",
       "recordMatchesHelp": "ブレインの判断（位置、HP、姿勢、理由）を試合ごとのログファイルとしてプラグインフォルダーに書き出します。 ",
-      "recordMatchesHelpSize": "動きの振り返りや調整に使えます。1試合あたり約1 MBで、直近30試合のみ保持されます。"
+      "recordMatchesHelpSize": "動きの振り返りや調整に使えます。1試合あたり約1 MBで、直近30試合のみ保持されます。",
+      "targeting": "ターゲット選択",
+      "targetingHelp": "戦闘中にボットが誰を攻撃するか。"
     },
     "rotation": {
       "builtIn": "内蔵",
@@ -487,6 +486,14 @@
       "percentOfMatches": "試合の%d%%",
       "percentPerSecond": "%d%%/秒",
       "hp": "%d HP"
+    },
+    "targeting": {
+      "smart": "スマート",
+      "smartHelp": "低いHP、味方のフォーカスターゲット、打たれ弱いロール（まずヒーラー）、距離、ガードを総合して選び、それをあなたのターゲットに設定します。",
+      "lowestHp": "最低HP",
+      "lowestHpHelp": "25m以内でHPが最も低い敵。他に候補がいる間はガード中の相手を避けます。",
+      "current": "現在のターゲット",
+      "currentHelp": "あなたがターゲットしている相手を攻撃し、ターゲットがないときだけ自分で選びます。"
     }
   },
   "brain": {

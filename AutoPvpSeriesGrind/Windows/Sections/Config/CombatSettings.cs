@@ -118,12 +118,17 @@ internal static class CombatSettings
 
     private static void DrawTargetingRow(Configuration cfg)
     {
-        SettingsRow.Draw(Loc.T(L.Settings.SmartTargeting),
-            Loc.T(L.Settings.SmartTargetingHelpOn) +
-            Loc.T(L.Settings.SmartTargetingHelpOff),
-            SettingsControls.ToggleWidth,
-            () => SettingsControls.DrawToggle(cfg, () => cfg.BrainPicksTargets, value => cfg.BrainPicksTargets = value, "##cmb_targeting"),
-            SettingsRow.ToggleHeight);
+        var selected = TargetingChoices.IndexFor(cfg);
+        SettingsRow.Draw(Loc.T(L.Settings.Targeting),
+            Loc.T(L.Settings.TargetingHelp),
+            SettingsControls.RowComboWidth,
+            () => SettingsControls.Choices.DrawCombo("##targeting", TargetingChoices.Options, selected, choiceIndex =>
+            {
+                TargetingChoices.Apply(cfg, TargetingChoices.All[choiceIndex]);
+                cfg.SaveDebounced();
+            }));
+
+        SettingsRow.Caption(Loc.T(TargetingChoices.All[selected].Detail));
     }
 
     private static void DrawHumanizeRow(Configuration cfg)
@@ -170,6 +175,36 @@ internal static class CombatSettings
 
         public static int IndexFor(RotationProvider provider)
             => Math.Max(0, Array.FindIndex(All, entry => entry.Provider == provider));
+    }
+
+    private static class TargetingChoices
+    {
+        public readonly record struct Entry(LocString Name, LocString Detail, bool BrainPicks, TargetingMode Mode);
+
+        public static readonly Entry[] All =
+        [
+            new(L.Settings.TargetingSmart, L.Settings.TargetingSmartHelp, BrainPicks: true, TargetingMode.Smart),
+            new(L.Settings.TargetingLowestHp, L.Settings.TargetingLowestHpHelp, BrainPicks: true, TargetingMode.LowestHp),
+            new(L.Settings.TargetingCurrent, L.Settings.TargetingCurrentHelp, BrainPicks: false, TargetingMode.Smart),
+        ];
+
+        public static readonly SettingsControls.Choices.Choice[] Options =
+            All.Select(entry => new SettingsControls.Choices.Choice(entry.Name, entry.Detail)).ToArray();
+
+        public static int IndexFor(Configuration cfg)
+        {
+            if (!cfg.BrainPicksTargets)
+            {
+                return 2;
+            }
+            return cfg.Targeting == TargetingMode.LowestHp ? 1 : 0;
+        }
+
+        public static void Apply(Configuration cfg, Entry entry)
+        {
+            cfg.BrainPicksTargets = entry.BrainPicks;
+            cfg.Targeting = entry.Mode;
+        }
     }
 
     private static class BehaviorChoices

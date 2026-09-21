@@ -359,14 +359,13 @@
       "rotationPluginHelp": "Qué pulsa tus habilidades de combate durante las partidas.",
       "behavior": "Comportamiento",
       "behaviorHelp": "Cómo se posiciona el bot y elige sus peleas.",
-      "smartTargeting": "Objetivo inteligente",
-      "smartTargetingHelpOn": "Activado: este plugin decide a quién atacar. Se suma al objetivo focalizado del equipo, prefiere enemigos con poca vida y poca resistencia (sanadores primero) y evita a quien tenga Guardia activa. ",
-      "smartTargetingHelpOff": "Desactivado: ataca a tu objetivo actual cuando tienes uno y elige uno por su cuenta cuando no.",
       "reactionTime": "Tiempo de reacción",
       "reactionTimeHelp": "Añade un retardo de reacción humano antes de que el bot cambie lo que está haciendo.",
       "recordMatches": "Grabar partidas",
       "recordMatchesHelp": "Escribe cada decisión del cerebro (posiciones, vida, postura, motivo) en un archivo de registro por partida en la carpeta del plugin, ",
-      "recordMatchesHelpSize": "para revisar y afinar cómo jugó. Alrededor de 1 MB por partida; solo se guardan las últimas 30."
+      "recordMatchesHelpSize": "para revisar y afinar cómo jugó. Alrededor de 1 MB por partida; solo se guardan las últimas 30.",
+      "targeting": "Selección de objetivo",
+      "targetingHelp": "A quién ataca el bot durante una pelea."
     },
     "rotation": {
       "builtIn": "Integrada",
@@ -487,6 +486,14 @@
       "percentOfMatches": "%d%% de las partidas",
       "percentPerSecond": "%d%%/s",
       "hp": "%d PV"
+    },
+    "targeting": {
+      "smart": "Inteligente",
+      "smartHelp": "Pondera la vida baja, el objetivo focalizado del equipo, los roles frágiles (sanadores primero), la distancia y Guardia, y fija esa elección como tu objetivo.",
+      "lowestHp": "Menos vida",
+      "lowestHpHelp": "El enemigo con menos vida a 25 metros; se salta a quien tenga Guardia activa mientras haya otro disponible.",
+      "current": "Tu objetivo actual",
+      "currentHelp": "Ataca lo que tengas seleccionado y solo elige por su cuenta cuando no tienes objetivo."
     }
   },
   "brain": {

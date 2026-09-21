@@ -359,14 +359,13 @@
       "rotationPluginHelp": "比赛中由什么来按下你的战斗技能。",
       "behavior": "行为",
       "behaviorHelp": "机器人如何走位、如何挑选战斗。",
-      "smartTargeting": "智能选敌",
-      "smartTargetingHelpOn": "开启：由本插件决定攻击谁。它会跟随队伍的集火目标，优先选血量低、脆皮的敌人（先打治疗），并跳过开了 Guard 的人。 ",
-      "smartTargetingHelpOff": "关闭：有当前目标时攻击当前目标，没有时自行选择。",
       "reactionTime": "反应时间",
       "reactionTimeHelp": "在机器人改变动作之前，加入接近真人的反应延迟。",
       "recordMatches": "记录比赛",
       "recordMatchesHelp": "把大脑的每次判断（位置、血量、姿态、原因）写入插件目录下每场一个的日志文件， ",
-      "recordMatchesHelpSize": "便于回看和调整它的打法。每场约 1 MB；只保留最近 30 场。"
+      "recordMatchesHelpSize": "便于回看和调整它的打法。每场约 1 MB；只保留最近 30 场。",
+      "targeting": "目标选择",
+      "targetingHelp": "战斗中机器人攻击谁。"
     },
     "rotation": {
       "builtIn": "内置",
@@ -487,6 +486,14 @@
       "percentOfMatches": "%d%% 的比赛",
       "percentPerSecond": "%d%%/秒",
       "hp": "%d HP"
+    },
+    "targeting": {
+      "smart": "智能",
+      "smartHelp": "综合考虑低血量、队伍集火目标、脆皮职能（先打治疗）、距离和 Guard，并把选中的敌人设为你的目标。",
+      "lowestHp": "最低血量",
+      "lowestHpHelp": "25 米内血量最低的敌人；只要还有其他人可选，就跳过开了 Guard 的敌人。",
+      "current": "你的当前目标",
+      "currentHelp": "攻击你当前选中的目标，仅在没有目标时才自行选择。"
     }
   },
   "brain": {

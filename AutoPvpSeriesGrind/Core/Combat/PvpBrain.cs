@@ -40,6 +40,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float ThreatMeleeBump = 0.5f;
     private const float TeamAdvantageForceWeight = 0.5f; // each net dead enemy counts as half a fighter on our side
     private const float DegToRad = MathF.PI / 180f;
+    private const float LowestHpRangeYalms = 25f;
 
     private static readonly float[] FanAngleDegrees = [30f, -30f, 60f, -60f, 90f, -90f, 120f, -120f];
 
@@ -68,6 +69,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private ulong lastTargetId;
 
     public bool OwnsTargeting { get; set; }
+
+    public TargetingMode Targeting { get; set; } = TargetingMode.Smart;
 
     public bool UnderBurst { get; private set; }
 
@@ -515,6 +518,11 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
     private PvpActor? ChooseTarget(PvpSnapshot snapshot, Vector3 focal)
     {
+        if (Targeting == TargetingMode.LowestHp)
+        {
+            return LowestHpInRange(snapshot);
+        }
+
         var pool = TargetPool(snapshot, focal);
         if (pool.Count == 0)
         {
@@ -536,6 +544,35 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         }
         lastTargetId = best.Id;
         return best;
+    }
+
+    private PvpActor? LowestHpInRange(PvpSnapshot snapshot)
+    {
+        PvpActor? lowestOpen = null;
+        PvpActor? lowestGuarded = null;
+        for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
+        {
+            var enemy = snapshot.Enemies[enemyIndex];
+            if (enemy.DistanceToSelf > LowestHpRangeYalms)
+            {
+                continue;
+            }
+            if (enemy.HasGuard)
+            {
+                if (lowestGuarded is null || enemy.Hp < lowestGuarded.Value.Hp)
+                {
+                    lowestGuarded = enemy;
+                }
+            }
+            else if (lowestOpen is null || enemy.Hp < lowestOpen.Value.Hp)
+            {
+                lowestOpen = enemy;
+            }
+        }
+
+        var chosen = lowestOpen ?? lowestGuarded ?? (snapshot.Enemies.Count > 0 ? NearestEnemy(snapshot) : null);
+        lastTargetId = chosen?.Id ?? 0;
+        return chosen;
     }
 
     private List<PvpActor> TargetPool(PvpSnapshot snapshot, Vector3 focal)

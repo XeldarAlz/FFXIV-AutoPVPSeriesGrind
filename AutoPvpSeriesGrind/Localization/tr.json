@@ -359,14 +359,13 @@
       "rotationPluginHelp": "Maçlarda savaş yeteneklerini neyin basacağı.",
       "behavior": "Davranış",
       "behaviorHelp": "Botun nasıl konumlandığı ve hangi kavgaları seçtiği.",
-      "smartTargeting": "Akıllı hedefleme",
-      "smartTargetingHelpOn": "Açık: kime saldırılacağına bu eklenti karar verir. Takımın odak hedefine katılır, canı az ve dayanıksız düşmanları tercih eder (önce healer'lar) ve Guard'ı açık olanları atlar. ",
-      "smartTargetingHelpOff": "Kapalı: hedefin varsa ona saldırır, yoksa kendi seçer.",
       "reactionTime": "Tepki süresi",
       "reactionTimeHelp": "Bot yaptığı şeyi değiştirmeden önce insana benzer bir tepki gecikmesi ekler.",
       "recordMatches": "Maçları kaydet",
       "recordMatchesHelp": "Her beyin kararını (konum, can, duruş, gerekçe) eklenti klasöründe maç başına bir günlük dosyasına yazar, ",
-      "recordMatchesHelpSize": "nasıl oynadığını inceleyip ince ayar yapmak için. Maç başına yaklaşık 1 MB; yalnızca son 30 maç saklanır."
+      "recordMatchesHelpSize": "nasıl oynadığını inceleyip ince ayar yapmak için. Maç başına yaklaşık 1 MB; yalnızca son 30 maç saklanır.",
+      "targeting": "Hedefleme",
+      "targetingHelp": "Bot savaşta kime saldırır."
     },
     "rotation": {
       "builtIn": "Yerleşik",
@@ -487,6 +486,14 @@
       "percentOfMatches": "maçların %%%d'i",
       "percentPerSecond": "%%%d/sn",
       "hp": "%d HP"
+    },
+    "targeting": {
+      "smart": "Akıllı",
+      "smartHelp": "Düşük canı, takımın odak hedefini, kırılgan rolleri (önce healer'lar), mesafeyi ve Guard'ı tartar ve seçimi hedefin yapar.",
+      "lowestHp": "En düşük can",
+      "lowestHpHelp": "25 metre içindeki en az canlı düşman; başka biri varken Guard'ı açık olanlar atlanır.",
+      "current": "Mevcut hedefin",
+      "currentHelp": "Hedeflediğin şeye saldırır; yalnızca hedefin yokken kendi seçer."
     }
   },
   "brain": {

@@ -359,14 +359,13 @@
       "rotationPluginHelp": "Was während der Matches deine Kampffähigkeiten drückt.",
       "behavior": "Verhalten",
       "behaviorHelp": "Wie der Bot sich positioniert und seine Kämpfe wählt.",
-      "smartTargeting": "Intelligentes Zielen",
-      "smartTargetingHelpOn": "An: Dieses Plugin entscheidet, wen es angreift. Es übernimmt das Fokusziel des Teams, bevorzugt Gegner mit wenig HP und wenig Rüstung (Heiler zuerst) und überspringt jeden mit aktivem Guard. ",
-      "smartTargetingHelpOff": "Aus: Greift dein aktuelles Ziel an, wenn du eines hast, und wählt sonst selbst eines.",
       "reactionTime": "Reaktionszeit",
       "reactionTimeHelp": "Fügt eine menschliche Reaktionsverzögerung hinzu, bevor der Bot sein Verhalten ändert.",
       "recordMatches": "Matches aufzeichnen",
       "recordMatchesHelp": "Schreibt jede Brain-Entscheidung (Positionen, HP, Haltung, Grund) in eine Logdatei pro Match im Plugin-Ordner, ",
-      "recordMatchesHelpSize": "zum Nachvollziehen und Feintunen des Spielverlaufs. Etwa 1 MB pro Match; nur die letzten 30 Matches bleiben erhalten."
+      "recordMatchesHelpSize": "zum Nachvollziehen und Feintunen des Spielverlaufs. Etwa 1 MB pro Match; nur die letzten 30 Matches bleiben erhalten.",
+      "targeting": "Zielwahl",
+      "targetingHelp": "Wen der Bot im Kampf angreift."
     },
     "rotation": {
       "builtIn": "Eingebaut",
@@ -487,6 +486,14 @@
       "percentOfMatches": "%d%% der Matches",
       "percentPerSecond": "%d%%/s",
       "hp": "%d HP"
+    },
+    "targeting": {
+      "smart": "Klug",
+      "smartHelp": "Gewichtet wenig HP, das Fokusziel des Teams, verwundbare Rollen (Heiler zuerst), Entfernung und Guard und setzt die Wahl als dein Ziel.",
+      "lowestHp": "Wenigste HP",
+      "lowestHpHelp": "Der Gegner mit den wenigsten HP in 25 Metern; wer Guard aktiv hat, wird übersprungen, solange jemand anderes verfügbar ist.",
+      "current": "Dein aktuelles Ziel",
+      "currentHelp": "Greift an, was du gerade anvisierst, und wählt nur selbst, wenn du kein Ziel hast."
     }
   },
   "brain": {
