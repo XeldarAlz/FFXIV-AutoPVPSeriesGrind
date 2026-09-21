@@ -59,7 +59,7 @@ internal static class ApsgConstants
 
     internal static class GameCommands
     {
-        public const string ClearEnemySignOnSelf = "/mk clear <me>";
+        public const string ClearSignOnSelf = "/mk clear <me>";
 
         // Default emotes only; reward emotes the account may not own fail silently.
         public static readonly string[] GreetEmotes = ["/wave", "/cheer", "/salute", "/thumbsup", "/joy", "/stretch"];

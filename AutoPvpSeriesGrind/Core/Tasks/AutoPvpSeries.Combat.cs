@@ -37,7 +37,7 @@ internal sealed partial class AutoPvpSeries
             return;
         }
 
-        rotation.EnsureSignCleared();
+        signClearer.Tick();
 
         var territory = Svc.ClientState.TerritoryType;
 
@@ -73,6 +73,9 @@ internal sealed partial class AutoPvpSeries
             BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead, waiting to respawn", Posture.Retreat);
             return;
         }
+
+        signClearer.Tick();
+
         if (MatchState.LocalIsCasting())
         {
             movement.Stop();

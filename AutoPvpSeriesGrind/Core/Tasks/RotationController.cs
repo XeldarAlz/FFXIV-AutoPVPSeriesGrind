@@ -1,9 +1,7 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Rotation;
-using ECommons.Automation;
 using System.Numerics;
-using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
@@ -15,13 +13,8 @@ internal sealed class RotationController(PvpBrain brain)
     public bool Enabled { get; private set; } = true;
 
     private bool wasDead;
-    private bool clearedSignThisLife;
 
-    public void Reset()
-    {
-        wasDead = false;
-        clearedSignThisLife = false;
-    }
+    public void Reset() => wasDead = false;
 
     public void Configure(bool enabled, in RotationSettings rotationSettings)
     {
@@ -50,7 +43,6 @@ internal sealed class RotationController(PvpBrain brain)
         }
 
         wasDead = true;
-        clearedSignThisLife = false;
         brain.Reset();
         ApsgLog.Info("death detected -> waiting for respawn");
     }
@@ -69,11 +61,4 @@ internal sealed class RotationController(PvpBrain brain)
 
     public RotationOutcome Drive(PvpSnapshot snapshot, ulong targetId, Posture posture, Vector3 moveDestination, bool underBurst, Action holdStill)
         => Enabled ? driver.Tick(snapshot, targetId, underBurst, posture, moveDestination, holdStill) : RotationOutcome.None;
-
-    public void EnsureSignCleared()
-    {
-        if (clearedSignThisLife) return;
-        Chat.ExecuteCommand(GameCommands.ClearEnemySignOnSelf);
-        clearedSignThisLife = true;
-    }
 }

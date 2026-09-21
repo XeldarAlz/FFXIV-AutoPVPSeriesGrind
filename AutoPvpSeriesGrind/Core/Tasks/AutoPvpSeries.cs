@@ -19,6 +19,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
     private readonly MovementExecutor movement = new();
     private readonly RotationController rotation;
     private readonly GreetingDirector greeting = new();
+    private SelfSignClearer signClearer;
     private readonly Action holdStill;
 
     public AutoPvpSeries(SessionStats session)
@@ -134,6 +135,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         movement.Reset();
         rotation.Reset();
         greeting.Reset();
+        signClearer.Reset();
         brain.Reset();
         frontline.Reset();
         BrainTelemetry.Clear();
