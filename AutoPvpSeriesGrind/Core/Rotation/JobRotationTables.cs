@@ -285,12 +285,12 @@ internal static class JobRotationTables
         public static readonly RotationTable Table = new(0,
         [
             UseAs(DeathWarrant, FateSealed, SelfStatusEnding(DeathWarrantStatus, EndingSoonSec)),
-            UseAs(PlentifulHarvest, Communio, SelfStacksAtMost(Enshrouded, 1)),
-            UseAs(PlentifulHarvest, Communio, SelfStatusEnding(Enshrouded, EndingSoonSec)),
-            UseAs(PlentifulHarvest, Perfectio, TargetHpBelow(0.25f)),
+            Use(Communio, SelfStacksAtMost(Enshrouded, 1)),
+            Use(Communio, SelfStatusEnding(Enshrouded, EndingSoonSec)),
+            Use(Perfectio, TargetHpBelow(0.25f)),
             UseAs(Combo, CrossReaping),
             UseAs(Combo, VoidReaping),
-            UseAs(PlentifulHarvest, PlentifulHarvest, SelfStacksAtLeast(ImmortalSacrifice, 4)),
+            Use(PlentifulHarvest, SelfStacksAtLeast(ImmortalSacrifice, 4)),
             Use(HarvestMoon),
             UseAs(Combo, ExecutionersGuillotine),
             Use(Combo),
@@ -512,10 +512,12 @@ internal static class JobRotationTables
         private const uint LivingMuse = 39209;
         private const uint TemperaCoat = 39211;
         private const uint SubtractivePalette = 39213;
+        private const uint StarPrism = 39216;
         private const uint MogOfTheAges = 39782;
 
         public static readonly RotationTable Table = new(0,
         [
+            Use(StarPrism),
             Use(MogOfTheAges),
             UseAs(HolyInWhite, CometInBlack),
             UseOnSelf(CreatureMotif),
@@ -560,13 +562,13 @@ internal static class JobRotationTables
         private const uint Accession = 41501;
         private const uint BiolysisStatus = 3089;
         private const uint Recitation = 3094;
+        private const uint Seraphism = 4327;
 
         public static readonly RotationTable Table = new(0,
         [
             Use(ChainStratagem, TargetHas(PvpStatuses.Guard)),
             Use(Biolysis, SelfHas(Recitation)),
-            UseAsOnSelf(Adloquium, Accession, AllyBelow(0.6f)),
-            UseAsOnSelf(Expedient, Accession, AllyBelow(0.6f)),
+            UseOnSelf(Accession, SelfHas(Seraphism)),
             Use(Adloquium),
             Use(BroilIV),
             Use(DeploymentTactics, TargetHas(BiolysisStatus), NotLastUsed),
@@ -592,6 +594,7 @@ internal static class JobRotationTables
         private const uint Oracle = 41508;
         private const uint MacrocosmosStatus = 3104;
         private const uint LadyOfCrownsStatus = 4328;
+        private const uint Divining = 4332;
 
         public static readonly RotationTable Table = new(0,
         [
@@ -600,8 +603,7 @@ internal static class JobRotationTables
             UseAs(DoubleCast, DoubleBenefic),
             UseAsOnSelf(MinorArcana, LadyOfCrowns, SelfHpBelow(0.6f)),
             UseAsOnSelf(Macrocosmos, Microcosmos, SelfHpBelow(0.6f)),
-            UseAs(MinorArcana, Oracle),
-            UseAs(Macrocosmos, Oracle),
+            Use(Oracle, SelfHas(Divining)),
             UseAsOnSelf(MinorArcana, MinorArcana),
             UseAsOnSelf(MinorArcana, LordOfCrowns),
             UseAs(DoubleCast, DoubleGravity),

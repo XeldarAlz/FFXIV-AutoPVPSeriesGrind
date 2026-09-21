@@ -176,12 +176,7 @@ internal sealed class PvpRotationDriver
         {
             return false;
         }
-        var targetsSelf = target.GameObjectId == context.Self.GameObjectId;
-        if (!targetsSelf && !ActionOps.InRangeAndSight(adjustedId, target))
-        {
-            return false;
-        }
-        if (!ActionOps.IsReady(adjustedId, target.GameObjectId))
+        if (!InRange(in info, adjustedId, target, context.Self) || !ActionOps.IsReady(adjustedId))
         {
             return false;
         }
@@ -192,7 +187,7 @@ internal sealed class PvpRotationDriver
         }
 
         var used = info.TargetArea
-            ? ActionOps.UseActionAt(adjustedId, target.GameObjectId, target.Position)
+            ? ActionOps.UseActionAt(adjustedId, context.Self.GameObjectId, target.Position)
             : ActionOps.UseAction(adjustedId, target.GameObjectId);
         if (!used)
         {
@@ -203,6 +198,19 @@ internal sealed class PvpRotationDriver
         ApsgLog.Debug($"rotation: {info.Name} -> {target.Name}");
         outcome = info.HasCastTime ? RotationOutcome.Cast : RotationOutcome.Instant;
         return true;
+    }
+
+    private static bool InRange(in PvpActionInfo info, uint adjustedId, IGameObject target, IPlayerCharacter self)
+    {
+        if (target.GameObjectId == self.GameObjectId || info.Range <= 0)
+        {
+            return true;
+        }
+        if (info.TargetArea)
+        {
+            return Vector3.Distance(self.Position, target.Position) <= info.Range;
+        }
+        return ActionOps.InRangeAndSight(adjustedId, target);
     }
 
     private bool ConditionsHold(RuleCondition[] conditions, in RuleContext context, uint adjustedId)
@@ -348,7 +356,7 @@ internal sealed class PvpRotationDriver
         {
             return false;
         }
-        if (!ActionOps.IsReady(PvpActions.StandardIssueElixir, self.GameObjectId))
+        if (!ActionOps.IsReady(PvpActions.StandardIssueElixir))
         {
             return false;
         }
@@ -359,7 +367,7 @@ internal sealed class PvpRotationDriver
 
     private bool UseOnSelf(IPlayerCharacter self, uint actionId, string label)
     {
-        if (!ActionOps.IsReady(actionId, self.GameObjectId) || !ActionOps.UseAction(actionId, self.GameObjectId))
+        if (!ActionOps.IsReady(actionId) || !ActionOps.UseAction(actionId, self.GameObjectId))
         {
             return false;
         }

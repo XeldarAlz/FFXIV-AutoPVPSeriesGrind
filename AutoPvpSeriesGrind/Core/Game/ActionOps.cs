@@ -10,16 +10,17 @@ internal static unsafe class ActionOps
 {
     private const uint ReadyStatus = 0;
     private const uint InRangeAndInSight = 0;
+    private const uint InRangeButNotFacing = 565;
 
     public static bool AnimationLocked => ActionManager.Instance()->AnimationLock > 0f;
 
     public static uint Adjusted(uint actionId) => ActionManager.Instance()->GetAdjustedActionId(actionId);
 
-    public static bool IsReady(uint actionId, ulong targetId)
-        => ActionManager.Instance()->GetActionStatus(ActionType.Action, actionId, targetId) == ReadyStatus;
+    public static bool IsReady(uint actionId)
+        => ActionManager.Instance()->GetActionStatus(ActionType.Action, actionId) == ReadyStatus;
 
     public static bool InRangeAndSight(uint actionId, IGameObject target)
-        => ActionManager.GetActionInRangeOrLoS(actionId, Player.GameObject, (GameObject*)target.Address) == InRangeAndInSight;
+        => ActionManager.GetActionInRangeOrLoS(actionId, Player.GameObject, (GameObject*)target.Address) is InRangeAndInSight or InRangeButNotFacing;
 
     public static float RecastRemainingSeconds(byte cooldownGroup)
     {
@@ -39,6 +40,6 @@ internal static unsafe class ActionOps
     public static bool UseAction(uint actionId, ulong targetId)
         => ActionManager.Instance()->UseAction(ActionType.Action, actionId, targetId);
 
-    public static bool UseActionAt(uint actionId, ulong targetId, Vector3 location)
-        => ActionManager.Instance()->UseActionLocation(ActionType.Action, actionId, targetId, &location);
+    public static bool UseActionAt(uint actionId, ulong selfId, Vector3 location)
+        => ActionManager.Instance()->UseActionLocation(ActionType.Action, actionId, selfId, &location);
 }
