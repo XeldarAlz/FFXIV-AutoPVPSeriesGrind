@@ -17,6 +17,7 @@ internal readonly record struct PvpActionInfo(
     bool TargetArea,
     bool HasCastTime,
     sbyte Range,
+    byte EffectRange,
     byte CooldownGroup)
 {
     public bool IsGcd => Slot != PvpActionSlot.Ability;

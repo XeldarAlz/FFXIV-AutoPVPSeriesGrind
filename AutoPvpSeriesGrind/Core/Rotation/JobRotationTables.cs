@@ -54,7 +54,6 @@ internal static class JobRotationTables
         private const uint HolySheltron = 29067;
         private const uint ShieldSmite = 41430;
         private const uint Imperator = 41431;
-        private const uint HallowedGround = 1302;
 
         public static readonly RotationTable Table = new(0,
         [
@@ -63,7 +62,7 @@ internal static class JobRotationTables
             Use(HolySpirit, ChargesAtLeast(2)),
             Use(Combo),
             Use(HolySpirit),
-            Use(Guardian, SelfHas(HallowedGround)),
+            Use(Guardian, SelfHas(PvpStatuses.HallowedGround)),
             UseOnSelf(HolySheltron, SelfHpBelow(0.5f)),
             Use(Intervene, TargetBeyond(6f)),
         ]);
@@ -354,7 +353,7 @@ internal static class JobRotationTables
             UseAs(ApexArrow, BlastArrow),
             Use(ApexArrow),
             Use(PowerfulShot),
-            Use(SilentNocturne, SelfLacks(Repertoire)),
+            Use(SilentNocturne, SelfLacks(Repertoire), TargetLacks(PvpStatuses.Silence)),
         ]);
     }
 
@@ -407,7 +406,7 @@ internal static class JobRotationTables
             Use(Combo),
             Use(FanDance),
             UseOnSelf(CuringWaltz, SelfHpBelow(0.7f)),
-            UseOnSelf(CuringWaltz, AllyBelow(0.6f)),
+            UseOnSelf(CuringWaltz, AllyBelow(0.6f, 5f)),
         ]);
     }
 
@@ -444,7 +443,7 @@ internal static class JobRotationTables
             UseAs(Blizzard, HighBlizzardII),
             Use(Blizzard),
             Use(Fire),
-            Use(Lethargy),
+            Use(Lethargy, TargetLacks(PvpStatuses.Lethargy), TargetLacks(PvpStatuses.Heavy)),
             UseAs(ElementalWeave, WreathOfFireDetonate),
             UseAsOnSelf(ElementalWeave, WreathOfFire, InCombat),
             UseAsOnSelf(ElementalWeave, WreathOfIce, SelfHpBelow(0.5f)),
@@ -467,8 +466,8 @@ internal static class JobRotationTables
 
         public static readonly RotationTable Table = new(0,
         [
-            Use(Slipstream),
-            Use(MountainBuster),
+            Use(Slipstream, TargetLacks(PvpStatuses.Slipping)),
+            Use(MountainBuster, TargetLacks(PvpStatuses.Stun)),
             UseAs(CrimsonCyclone, CrimsonStrike),
             Use(RuinIII),
             UseAs(Necrotize, Deathflare),
@@ -493,7 +492,7 @@ internal static class JobRotationTables
         public static readonly RotationTable Table = new(0,
         [
             UseAs(Resolution, Prefulgence),
-            Use(Resolution),
+            UseAs(Resolution, Resolution, TargetLacks(PvpStatuses.Silence)),
             Use(EnchantedRiposte),
             UseAs(JoltIII, GrandImpact),
             Use(JoltIII),
@@ -514,11 +513,13 @@ internal static class JobRotationTables
         private const uint SubtractivePalette = 39213;
         private const uint StarPrism = 39216;
         private const uint MogOfTheAges = 39782;
+        private const uint RetributionOfTheMadeen = 39783;
 
         public static readonly RotationTable Table = new(0,
         [
             Use(StarPrism),
-            Use(MogOfTheAges),
+            UseAs(MogOfTheAges, RetributionOfTheMadeen),
+            UseAs(MogOfTheAges, MogOfTheAges, TargetLacks(PvpStatuses.Silence)),
             UseAs(HolyInWhite, CometInBlack),
             UseOnSelf(CreatureMotif),
             Use(FireInRed),
@@ -573,7 +574,7 @@ internal static class JobRotationTables
             Use(BroilIV),
             Use(DeploymentTactics, TargetHas(BiolysisStatus), NotLastUsed),
             UseOnSelf(Expedient, InCombat),
-            UseOnSelf(SummonSeraph, AllyBelow(0.6f)),
+            UseOnSelf(SummonSeraph, AllyBelow(0.6f, 15f)),
         ]);
     }
 
@@ -612,8 +613,8 @@ internal static class JobRotationTables
             Use(GravityII),
             Use(AspectedBenefic),
             Use(FallMalefic),
-            UseAsOnSelf(MinorArcana, LadyOfCrowns, AllyBelow(0.6f)),
-            UseAsOnSelf(Macrocosmos, Microcosmos, AllyBelow(0.6f)),
+            UseAsOnSelf(MinorArcana, LadyOfCrowns, AllyBelow(0.6f, 20f)),
+            UseAsOnSelf(Macrocosmos, Microcosmos, AllyBelow(0.6f, 20f)),
         ]);
     }
 

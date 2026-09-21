@@ -22,7 +22,7 @@ internal enum RuleWhen : byte
     AllyBelow,
 }
 
-internal readonly record struct RuleCondition(RuleWhen Kind, uint Status = 0, float Value = 0f, uint[]? Statuses = null);
+internal readonly record struct RuleCondition(RuleWhen Kind, uint Status = 0, float Value = 0f, uint[]? Statuses = null, float Range = 0f);
 
 internal enum RuleTarget : byte
 {
@@ -72,5 +72,5 @@ internal static class When
     public static RuleCondition ChargesAtLeast(int charges) => new(RuleWhen.ChargesAtLeast, Value: charges);
     public static RuleCondition TargetWithin(float yalms) => new(RuleWhen.TargetWithin, Value: yalms);
     public static RuleCondition TargetBeyond(float yalms) => new(RuleWhen.TargetBeyond, Value: yalms);
-    public static RuleCondition AllyBelow(float fraction) => new(RuleWhen.AllyBelow, Value: fraction);
+    public static RuleCondition AllyBelow(float fraction, float withinYalms) => new(RuleWhen.AllyBelow, Value: fraction, Range: withinYalms);
 }

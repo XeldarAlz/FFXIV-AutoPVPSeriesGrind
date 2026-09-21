@@ -153,6 +153,7 @@ internal static class PvpActionCatalog
             TargetArea: action.TargetArea,
             HasCastTime: action.Cast100ms > 0,
             Range: action.Range,
+            EffectRange: action.EffectRange,
             CooldownGroup: action.CooldownGroup);
 
     private static PvpActionSlot SlotOf(in GameAction action)

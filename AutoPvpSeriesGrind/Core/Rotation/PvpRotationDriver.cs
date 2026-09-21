@@ -172,7 +172,7 @@ internal sealed class PvpRotationDriver
         }
 
         var target = PickTarget(in info, targetRule, in context);
-        if (target is null)
+        if (target is null || WastedOnImmunity(in info, adjustedId, target, in context))
         {
             return false;
         }
@@ -198,6 +198,19 @@ internal sealed class PvpRotationDriver
         ApsgLog.Debug($"rotation: {info.Name} -> {target.Name}");
         outcome = info.HasCastTime ? RotationOutcome.Cast : RotationOutcome.Instant;
         return true;
+    }
+
+    private static bool WastedOnImmunity(in PvpActionInfo info, uint adjustedId, IGameObject target, in RuleContext context)
+    {
+        if (!info.TargetsHostile || context.Enemy is not { } enemy || target.GameObjectId != enemy.GameObjectId)
+        {
+            return false;
+        }
+        if (Array.IndexOf(PvpActions.WorthUsingIntoGuard, adjustedId) >= 0)
+        {
+            return false;
+        }
+        return MatchState.HasAnyStatus(enemy, PvpStatuses.DamageImmunities);
     }
 
     private static bool InRange(in PvpActionInfo info, uint adjustedId, IGameObject target, IPlayerCharacter self)
@@ -269,7 +282,7 @@ internal sealed class PvpRotationDriver
             case RuleWhen.TargetBeyond:
                 return enemy is not null && Vector3.Distance(self.Position, enemy.Position) > condition.Value;
             case RuleWhen.AllyBelow:
-                return LowestAllyId(snapshot, condition.Value) != 0;
+                return LowestAllyIdWithin(snapshot, condition.Value, condition.Range) != 0;
             default:
                 return true;
         }
@@ -291,7 +304,8 @@ internal sealed class PvpRotationDriver
         }
         if (info.TargetsAlly)
         {
-            var allyId = LowestAllyId(context.Snapshot, context.AllySupportHp);
+            var reach = info.Range > 0 ? info.Range : float.MaxValue;
+            var allyId = LowestAllyIdWithin(context.Snapshot, context.AllySupportHp, reach);
             if (allyId != 0)
             {
                 return Svc.Objects.SearchById(allyId);
@@ -380,14 +394,14 @@ internal sealed class PvpRotationDriver
     private static float HpFraction(IBattleChara chara)
         => chara.MaxHp > 0 ? (float)chara.CurrentHp / chara.MaxHp : 1f;
 
-    private static ulong LowestAllyId(PvpSnapshot snapshot, float hpFraction)
+    private static ulong LowestAllyIdWithin(PvpSnapshot snapshot, float hpFraction, float withinYalms)
     {
         var lowestId = 0UL;
         var lowestHp = hpFraction;
         for (var allyIndex = 0; allyIndex < snapshot.Allies.Count; allyIndex++)
         {
             var ally = snapshot.Allies[allyIndex];
-            if (ally.Hp < lowestHp)
+            if (ally.Hp < lowestHp && ally.DistanceToSelf <= withinYalms)
             {
                 lowestHp = ally.Hp;
                 lowestId = ally.Id;
