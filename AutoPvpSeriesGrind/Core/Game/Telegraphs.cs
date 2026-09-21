@@ -59,21 +59,29 @@ internal static class Telegraphs
         }
     }
 
+    public static void CollectNonPlayerCast(IGameObject gameObject, List<Hazard> hazards)
+    {
+        if (gameObject is not IBattleChara caster || gameObject is IPlayerCharacter || !caster.IsCasting || OwnedByFriend(gameObject))
+        {
+            return;
+        }
+        CollectCast(caster, hazards);
+    }
+
     public static void CollectPlacedZones(List<Hazard> hazards)
     {
         foreach (var gameObject in Svc.Objects)
         {
-            if (gameObject.ObjectKind != ObjectKind.AreaObject)
-            {
-                continue;
-            }
-            if (Svc.Objects.SearchById(gameObject.OwnerId) is not IPlayerCharacter owner || !MatchState.IsEnemyPlayer(owner))
+            if (gameObject.ObjectKind != ObjectKind.AreaObject || OwnedByFriend(gameObject))
             {
                 continue;
             }
             hazards.Add(new Hazard(HazardShape.Circle, gameObject.Position, Vector3.UnitX, PlacedZoneRadiusYalms, 0f, gameObject.Name.TextValue));
         }
     }
+
+    private static bool OwnedByFriend(IGameObject gameObject)
+        => Svc.Objects.SearchById(gameObject.OwnerId) is IPlayerCharacter owner && !MatchState.IsEnemyPlayer(owner);
 
     private static Vector3 FacingOf(IBattleChara caster, IGameObject? target)
     {

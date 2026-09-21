@@ -162,6 +162,7 @@ internal static class MatchState
         {
             if (gameObject is not IPlayerCharacter playerCharacter || playerCharacter.CurrentHp == 0)
             {
+                Telegraphs.CollectNonPlayerCast(gameObject, hazards);
                 continue;
             }
             if (localPlayer is not null && playerCharacter.Address == localPlayer.Address)
