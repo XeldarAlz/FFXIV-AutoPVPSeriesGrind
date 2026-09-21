@@ -1,6 +1,5 @@
 using AutoPvpSeriesGrind.Core;
 using AutoPvpSeriesGrind.Core.Debug;
-using AutoPvpSeriesGrind.Core.External;
 using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Stats;
 using AutoPvpSeriesGrind.Core.Tasks;
@@ -130,14 +129,6 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
-
-        Svc.Framework.Update += AutoInstallRequiredOnce;
-    }
-
-    private void AutoInstallRequiredOnce(IFramework framework)
-    {
-        Svc.Framework.Update -= AutoInstallRequiredOnce;
-        ExternalPlugins.AutoInstallMissingRequired();
     }
 
     private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
@@ -153,8 +144,6 @@ public sealed class Plugin : IDalamudPlugin
     public void Dispose()
     {
         TaskScheduler.UnobservedTaskException -= unobservedTaskHandler;
-
-        Svc.Framework.Update -= AutoInstallRequiredOnce;
 
         PluginInterface.UiBuilder.Draw -= WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUi;

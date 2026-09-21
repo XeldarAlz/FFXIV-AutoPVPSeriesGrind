@@ -94,14 +94,4 @@ internal static class ExternalPlugins
         }
         return true;
     }
-
-    public static void AutoInstallMissingRequired()
-    {
-        foreach (var plugin in All)
-        {
-            if (!IsRequired(plugin) || IsInstalled(plugin)) continue;
-            if (PluginInstaller.IsInstalling(plugin) || PluginInstaller.DidFail(plugin)) continue;
-            _ = PluginInstaller.Install(plugin);
-        }
-    }
 }
