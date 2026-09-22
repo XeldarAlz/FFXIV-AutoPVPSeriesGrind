@@ -23,7 +23,7 @@ internal static class ExternalPlugins
         [ExternalPlugin.PvpAutoLb] = new(
             InternalName: "PvpAutoLb",
             DisplayName: "Auto PVP LB",
-            RepoUrl: "https://raw.githubusercontent.com/XeldarAlz/FFXIV-AutoPVPLimitBreak/master/repo.json",
+            RepoUrl: "https://raw.githubusercontent.com/XeldarAlz/DalamudPlugins/main/repo.json",
             Purpose: L.Plugins.PurposeAutoLb,
             Required: true),
     };
