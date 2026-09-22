@@ -29,6 +29,7 @@
     "start": "Iniciar",
     "stop": "Parar",
     "stopRun": "Parar a sessão",
+    "finishThenStop": "Terminar e depois parar",
     "done": "Pronto",
     "working": "Trabalhando",
     "search": "Buscar",
@@ -51,7 +52,14 @@
     "sessionSummary": "{0} partidas  ·  {1}",
     "installRequired": "Instale os plugins obrigatórios",
     "matchTimeLeft": "{0} restante  ·  {1}",
-    "theArena": "a arena"
+    "theArena": "a arena",
+    "finish": {
+      "inMatch": "esta partida é jogada até o fim primeiro",
+      "queued": "a partida na fila é jogada até o fim primeiro",
+      "idle": "nada em andamento, termina na hora",
+      "armed": "Parando após esta partida",
+      "keepGoing": "clique para continuar"
+    }
   },
   "grind": {
     "greeting": {
@@ -205,7 +213,8 @@
       "toGo": "faltam {0}",
       "minutesToGo": "faltam {0} min",
       "ranksToGo": "faltam {0} ranks",
-      "endless": "roda até você parar"
+      "endless": "roda até você parar",
+      "stopping": "termina após esta partida"
     },
     "tile": {
       "matches": "Partidas",

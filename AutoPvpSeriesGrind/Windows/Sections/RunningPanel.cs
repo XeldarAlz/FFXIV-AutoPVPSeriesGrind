@@ -125,7 +125,10 @@ internal static class RunningPanel
                 ? Loc.T(L.Run.TimeLeft, Formatting.Time(timeLeft))
                 : TextDraw.Truncate(ctrl.Status, columnWidth * 0.6f);
             TextDraw.At(left, new Vector2(columnX, y), Styling.TextDim);
-            TextDraw.Right(goal.Remaining, columnRight, y, Styling.WithAlpha(accentSoft, 0.9f));
+            var (next, nextColor) = ctrl.StopAfterMatchRequested
+                ? (Loc.T(L.Run.GoalStopping), Styling.AccentMintSoft)
+                : (goal.Remaining, accentSoft);
+            TextDraw.Right(next, columnRight, y, Styling.WithAlpha(nextColor, 0.9f));
         }
 
         ImGui.Dummy(size);

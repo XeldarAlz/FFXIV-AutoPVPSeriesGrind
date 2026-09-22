@@ -38,6 +38,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
     private MatchFlowState matchFlow;
 
     private bool stopAfterCurrentMatch;
+    private bool stopRequested;
 
     private const int PollMs = 100;
     private const int MainLoopIdleMs = 500;
@@ -73,6 +74,21 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         => AddonProbe.IsReady(ApsgConstants.AddonNames.MatchResults) || AddonProbe.IsReady(ApsgConstants.AddonNames.FrontlineResults);
 
     private void SetPhase(AutoPhase phase) => Plugin.Instance.Controller.Phase = phase;
+
+    public bool StopRequested => stopRequested;
+
+    public void SetStopRequested(bool value)
+    {
+        if (stopRequested == value)
+        {
+            return;
+        }
+
+        stopRequested = value;
+        LogDiagnostic(value
+            ? "stop requested -> nothing new is queued; the run ends once out of duty and out of the queue"
+            : "stop request withdrawn -> queueing continues");
+    }
 
     protected override async Task Execute()
     {

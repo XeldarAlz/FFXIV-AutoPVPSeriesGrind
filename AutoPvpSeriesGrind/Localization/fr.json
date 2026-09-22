@@ -29,6 +29,7 @@
     "start": "Démarrer",
     "stop": "Arrêter",
     "stopRun": "Arrêter la session",
+    "finishThenStop": "Finir, puis arrêter",
     "done": "Terminé",
     "working": "En cours",
     "search": "Rechercher",
@@ -51,7 +52,14 @@
     "sessionSummary": "{0} matchs  ·  {1}",
     "installRequired": "Installer les plugins requis",
     "matchTimeLeft": "{0} restant  ·  {1}",
-    "theArena": "l'arène"
+    "theArena": "l'arène",
+    "finish": {
+      "inMatch": "ce match se joue d'abord jusqu'au bout",
+      "queued": "le match en file se joue d'abord jusqu'au bout",
+      "idle": "rien en cours, s'arrête tout de suite",
+      "armed": "Arrêt après ce match",
+      "keepGoing": "cliquez pour continuer"
+    }
   },
   "grind": {
     "greeting": {
@@ -205,7 +213,8 @@
       "toGo": "encore {0}",
       "minutesToGo": "encore {0} min",
       "ranksToGo": "encore {0} rangs",
-      "endless": "tourne jusqu'à votre arrêt"
+      "endless": "tourne jusqu'à votre arrêt",
+      "stopping": "s'arrête après ce match"
     },
     "tile": {
       "matches": "Matchs",

@@ -31,6 +31,7 @@ Grinds the **PvP Series Malmstones** by looping Crystalline Conflict Casual Matc
 - **Frontline mode**: queues the daily Frontline roulette on every arena and sticks with the team, holding a role-appropriate spot in the group, falling back when hurt and mounting up to rejoin after a respawn.
 - **Built-in PvP rotation**: presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself; the defensive thresholds are adjustable under Settings, Combat. Switch it to Manual there if you would rather press your own skills.
 - **Goals**: run N matches, reach a Series rank, run for a set time, or go endless until you press Stop.
+- **Two ways to stop**: **Stop** ends the run at once; **Finish, then stop** lets the match in progress play out first, so nobody gets abandoned.
 - **Spawn-aware movement**: leaves the spawn pen toward the right side and contests the objective, holding the point when it's contested instead of re-pathing.
 - **Auto Limit Break**: fires the correct PvP LB for your job through Auto PVP LB, with per-job presets pushed to it automatically.
 - **Social touches**: optional `Hello` during portraits and `Good Match` on results.

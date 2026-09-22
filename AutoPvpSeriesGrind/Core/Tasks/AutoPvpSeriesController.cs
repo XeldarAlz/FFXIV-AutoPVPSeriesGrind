@@ -19,6 +19,10 @@ internal sealed class AutoPvpSeriesController
     private SessionStats? session;
     public SessionStats? SessionSnapshot => session;
 
+    private AutoPvpSeries? series;
+    public bool StopAfterMatchAvailable => series is not null;
+    public bool StopAfterMatchRequested => series?.StopRequested ?? false;
+
     public int LastMatches { get; private set; }
     public long LastSeriesExp { get; private set; }
     public bool LastByGoal { get; private set; }
@@ -61,7 +65,19 @@ internal sealed class AutoPvpSeriesController
         Phase = AutoPhase.Queueing;
         LogDiagnostic($"Run starting: mode {Plugin.Cfg.ActiveMode.DisplayName}.");
 
-        Svc.Automation.Start(new AutoPvpSeries(stats), OnCompleted: () => EndRun(stats));
+        var task = new AutoPvpSeries(stats);
+        series = task;
+        Svc.Automation.Start(task, OnCompleted: () => EndRun(stats));
+    }
+
+    public void ToggleStopAfterMatch()
+    {
+        if (series is null)
+        {
+            return;
+        }
+
+        series.SetStopRequested(!series.StopRequested);
     }
 
     private static void LiftRankTargetAboveCurrentRank()
@@ -112,12 +128,14 @@ internal sealed class AutoPvpSeriesController
         Svc.Automation.Stop();
         FinalizeRun(ending);
         session = null;
+        series = null;
         Phase = AutoPhase.Idle;
         if (ending is not null) LogDiagnostic("Stop requested; session cleared.");
     }
 
     private void EndRun(SessionStats stats)
     {
+        series = null;
         FinalizeRun(stats);
         Phase = AutoPhase.Idle;
         MaybeRunAfterAction(stats);

@@ -105,6 +105,27 @@ internal static class ReadyState
     public static LocString ModeName(Configuration cfg)
         => cfg.MatchType == MatchType.Frontline ? L.Plan.ModeFrontline : L.Plan.Mode;
 
+    public static LocString FinishDetail(AutoPvpSeriesController ctrl)
+    {
+        if (ctrl.StopAfterMatchRequested)
+        {
+            return L.Shell.FinishKeepGoing;
+        }
+
+        return ResolveStage(ctrl) switch
+        {
+            Stage.Preparing => L.Shell.FinishIdle,
+            Stage.Queueing  => L.Shell.FinishQueued,
+            _               => L.Shell.FinishInMatch,
+        };
+    }
+
+    public static LocString FinishTitle(AutoPvpSeriesController ctrl)
+        => ctrl.StopAfterMatchRequested ? L.Shell.FinishArmed : L.Common.FinishThenStop;
+
+    public static Vector4 FinishAccent(AutoPvpSeriesController ctrl)
+        => ctrl.StopAfterMatchRequested ? Styling.AccentMint : Styling.AccentAmber;
+
     private static string StageDetail(Stage stage, Configuration cfg) => stage switch
     {
         Stage.Preparing => Loc.T(L.Grind.StageDetailStarting),

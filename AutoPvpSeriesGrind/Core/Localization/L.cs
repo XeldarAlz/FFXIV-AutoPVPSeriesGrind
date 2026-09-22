@@ -9,6 +9,7 @@ internal static class L
         public static readonly LocString Start = new("common.start", "Start");
         public static readonly LocString Stop = new("common.stop", "Stop");
         public static readonly LocString StopRun = new("common.stopRun", "Stop the run");
+        public static readonly LocString FinishThenStop = new("common.finishThenStop", "Finish, then stop");
         public static readonly LocString Done = new("common.done", "Done");
         public static readonly LocString Working = new("common.working", "Working");
         public static readonly LocString Search = new("common.search", "Search");
@@ -32,6 +33,11 @@ internal static class L
         public static readonly LocString InstallRequired = new("shell.installRequired", "Install the required plugins");
         public static readonly LocString MatchTimeLeft = new("shell.matchTimeLeft", "{0} left  ·  {1}");
         public static readonly LocString TheArena = new("shell.theArena", "the arena");
+        public static readonly LocString FinishInMatch = new("shell.finish.inMatch", "this match plays out first");
+        public static readonly LocString FinishQueued = new("shell.finish.queued", "the queued match plays out first");
+        public static readonly LocString FinishIdle = new("shell.finish.idle", "nothing in progress, ends right away");
+        public static readonly LocString FinishArmed = new("shell.finish.armed", "Stopping after this match");
+        public static readonly LocString FinishKeepGoing = new("shell.finish.keepGoing", "click to keep going");
     }
 
     internal static class Grind
@@ -166,6 +172,7 @@ internal static class L
         public static readonly LocString GoalMinutesToGo = new("run.goal.minutesToGo", "{0}m to go");
         public static readonly LocString GoalRanksToGo = new("run.goal.ranksToGo", "{0} ranks to go");
         public static readonly LocString GoalEndless = new("run.goal.endless", "runs until you stop it");
+        public static readonly LocString GoalStopping = new("run.goal.stopping", "ends after this match");
 
         public static readonly LocString TileMatches = new("run.tile.matches", "Matches");
         public static readonly LocString TileSeriesExp = new("run.tile.seriesExp", "Series EXP");

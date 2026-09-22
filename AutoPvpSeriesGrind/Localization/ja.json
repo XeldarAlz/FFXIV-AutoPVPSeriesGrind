@@ -29,6 +29,7 @@
     "start": "開始",
     "stop": "停止",
     "stopRun": "周回を停止",
+    "finishThenStop": "終えてから停止",
     "done": "完了",
     "working": "処理中",
     "search": "検索",
@@ -51,7 +52,14 @@
     "sessionSummary": "{0}試合  ·  {1}",
     "installRequired": "必須プラグインをインストール",
     "matchTimeLeft": "残り{0}  ·  {1}",
-    "theArena": "アリーナ"
+    "theArena": "アリーナ",
+    "finish": {
+      "inMatch": "この試合は最後まで行います",
+      "queued": "申請中の試合は最後まで行います",
+      "idle": "進行中のものはなく、すぐに終了します",
+      "armed": "この試合の後に停止",
+      "keepGoing": "クリックで続行"
+    }
   },
   "grind": {
     "greeting": {
@@ -205,7 +213,8 @@
       "toGo": "あと{0}",
       "minutesToGo": "あと{0}分",
       "ranksToGo": "あと{0}ランク",
-      "endless": "止めるまで続行"
+      "endless": "止めるまで続行",
+      "stopping": "この試合の後に終了"
     },
     "tile": {
       "matches": "試合数",

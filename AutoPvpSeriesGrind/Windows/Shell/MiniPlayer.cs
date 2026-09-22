@@ -15,6 +15,7 @@ internal static class MiniPlayer
 {
     private const float PadX = 18f;
     private const float ButtonSize = 34f;
+    private const float ButtonGap = 6f;
     private const float BarWidth = 160f;
     private const float BarHeight = 8f;
 
@@ -35,8 +36,10 @@ internal static class MiniPlayer
 
         var padX = PadX * scale;
         var buttonSize = ButtonSize * scale;
+        var showFinish = ctrl.StopAfterMatchAvailable;
+        var controlsWidth = showFinish ? buttonSize * 2f + ButtonGap * scale : buttonSize;
         ImGui.SetCursorScreenPos(origin);
-        var hit = Hit.Area("##apsg_mini_open", new Vector2(size.X - padX - buttonSize - 8f * scale, size.Y));
+        var hit = Hit.Area("##apsg_mini_open", new Vector2(size.X - padX - controlsWidth - 8f * scale, size.Y));
         var hover = Motion.Hover(Motion.Key("##apsg_mini_open"), hit.Hovered);
         if (hover > 0.01f)
         {
@@ -48,7 +51,7 @@ internal static class MiniPlayer
             Styling.PulseColor(info.Accent, info.AccentSoft, Styling.PulseMedium));
 
         var barWidth = BarWidth * scale;
-        var barRight = end.X - padX - buttonSize - 16f * scale;
+        var barRight = end.X - padX - controlsWidth - 16f * scale;
         var barX = barRight - barWidth;
         var barY = midY - BarHeight * scale * 0.5f;
         if (inMatch)
@@ -76,6 +79,16 @@ internal static class MiniPlayer
         if (IconButton.Draw(FontAwesomeIcon.Stop, "##apsg_mini_stop", buttonSize, Styling.AccentRose, Loc.T(L.Common.StopRun)))
         {
             ctrl.Stop();
+        }
+
+        if (showFinish)
+        {
+            var finishHint = Loc.T(L.Shell.StatusLine, Loc.T(ReadyState.FinishTitle(ctrl)), Loc.T(ReadyState.FinishDetail(ctrl)));
+            ImGui.SetCursorScreenPos(new Vector2(end.X - padX - controlsWidth, midY - buttonSize * 0.5f));
+            if (IconButton.Draw(FontAwesomeIcon.FlagCheckered, "##apsg_mini_finish", buttonSize, ReadyState.FinishAccent(ctrl), finishHint))
+            {
+                ctrl.ToggleStopAfterMatch();
+            }
         }
 
         ImGui.SetCursorScreenPos(origin);

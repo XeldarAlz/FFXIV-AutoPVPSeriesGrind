@@ -47,6 +47,12 @@ internal sealed partial class AutoPvpSeries
             return true;
         }
 
+        if (stopRequested && !queued)
+        {
+            LogDiagnostic("stop requested and nothing in flight -> ending run");
+            return true;
+        }
+
         SetPhase(AutoPhase.Queueing);
 
         if (!queued)
