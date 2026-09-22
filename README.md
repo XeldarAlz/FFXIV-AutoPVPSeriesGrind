@@ -23,18 +23,19 @@
 
 ## What it does
 
-Grinds the **PvP Series Malmstones** by looping Casual Match or the daily Frontline roulette. Press **Start** and the plugin queues, rides out each match, fires your job's PvP Limit Break, sends a quick greeting, leaves on the results screen, and requeues — until it hits your match limit.
+Grinds the **PvP Series Malmstones** by looping Crystalline Conflict Casual Match or the daily Frontline roulette. Press **Start** and the plugin queues, rides out each match, runs your job's PvP rotation, fires the Limit Break, sends a quick greeting, leaves on the results screen, and requeues until it reaches the goal you set: a match count, a Series rank, a time box, or endless.
 
 ## Features
 
-- **Hands-off match loop**: queue → fight on the pvp match → leave → requeue.
+- **Hands-off match loop**: queue → fight → leave → requeue, in Crystalline Conflict or Frontline.
 - **Frontline mode**: queues the daily Frontline roulette on every arena and sticks with the team, holding a role-appropriate spot in the group, falling back when hurt and mounting up to rejoin after a respawn.
-- **Built-in PvP rotation**: presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself; the defensive thresholds are adjustable under Settings, Combat.
-- **Match limit**: stop after N completed matches, or run until you stop it.
+- **Built-in PvP rotation**: presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself; the defensive thresholds are adjustable under Settings, Combat. Switch it to Manual there if you would rather press your own skills.
+- **Goals**: run N matches, reach a Series rank, run for a set time, or go endless until you press Stop.
 - **Spawn-aware movement**: leaves the spawn pen toward the right side and contests the objective, holding the point when it's contested instead of re-pathing.
-- **Auto Limit Break**: fires the correct PvP LB for your job on a throttle.
+- **Auto Limit Break**: fires the correct PvP LB for your job through Auto PVP LB, with per-job presets pushed to it automatically.
 - **Social touches**: optional `Hello` during portraits and `Good Match` on results.
 - **Run history**: matches, deaths, and time tracked per session.
+- **After the run**: stay where you are, return to the inn via Lifestream, log out, or close the game.
 - **Resilient**: cancellable mid-run, settings persist across reloads.
 
 ## Install
@@ -47,7 +48,7 @@ https://raw.githubusercontent.com/XeldarAlz/DalamudPlugins/main/repo.json
 
 Tick **Enabled**, click **+**, then **Save and Close**. Open `/xlplugins` → **All Plugins**, search for **Auto PVP Series Grind**, and install.
 
-The plugin drives a few helpers for movement and combat. Open `/apsg deps` after install to see the list and one-click each missing one.
+Two helper plugins are required: [vnavmesh](https://github.com/awgil/ffxiv_navmesh) for movement and [Auto PVP LB](https://github.com/XeldarAlz/FFXIV-AutoPVPLimitBreak) for the Limit Break. [Lifestream](https://github.com/NightmareXIV/Lifestream) is optional and only used by the return-to-the-inn after-run action. Combat needs nothing extra. Open `/apsg deps` after install to see the list and one-click each missing one.
 
 ## Commands
 
@@ -56,10 +57,11 @@ The plugin drives a few helpers for movement and combat. Open `/apsg deps` after
 | `/apsg` | Toggle the main window |
 | `/pvpseries` | Alias for `/apsg` |
 | `/apsg config` | Open settings |
-| `/apsg deps` | Open dependencies window |
+| `/apsg deps` | Open dependencies window (alias: `dependencies`) |
 | `/apsg about` | Open credits / links |
-| `/apsg stats` | Open run history |
+| `/apsg stats` | Open run history (alias: `history`) |
 | `/apsg target` | Log targeted object's BaseId (debug helper) |
+| `/apsg objects` | Log the objective object IDs on the current map (debug helper) |
 
 ## Languages
 

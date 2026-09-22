@@ -5,7 +5,7 @@
     "InternalName": "AutoPvpSeriesGrind",
     "AssemblyVersion": "2.3.0.0",
     "TestingAssemblyVersion": "2.3.0.0",
-    "Description": "Grinds PvP Series Malmstones for you: queues and plays Casual Matches in a loop until your goal is met.",
+    "Description": "Grinds PvP Series Malmstones for you: queues and plays Crystalline Conflict Casual Matches or the Frontline roulette in a loop until your goal is met.",
     "Punchline": "PvP Series, grinded for you.",
     "RepoUrl": "https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind",
     "ApplicableVersion": "any",
@@ -14,6 +14,7 @@
       "Crystalline Conflict",
       "Series Malmstones",
       "Casual Match",
+      "Frontline",
       "Automation"
     ],
     "CategoryTags": [

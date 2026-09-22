@@ -16,9 +16,16 @@ Load the built plugin via `/xlsettings` -> **Experimental** -> **Dev Plugin Loca
 
 ## Project layout
 
-- `AutoPvpSeriesGrind/Core/`: match-loop state machine, game/duty operations, Limit Break catalog, IPC adapters.
-- `AutoPvpSeriesGrind/Windows/`: ImGui main window, settings, dependencies.
-- `AutoPvpSeriesGrind/`: plugin entry points, config, command wiring.
+- `AutoPvpSeriesGrind/Core/Tasks/`: the match loop (queue, match, combat, after-run) and its controller.
+- `AutoPvpSeriesGrind/Core/Combat/`: the movement brains for Crystalline Conflict and Frontline, strategy profiles, targeting.
+- `AutoPvpSeriesGrind/Core/Rotation/`: the built-in PvP rotation: per-job tables, rule engine, action catalog.
+- `AutoPvpSeriesGrind/Core/Game/`: duty, action and map operations, spawn anchors, telegraph reading.
+- `AutoPvpSeriesGrind/Core/Ipc/`: adapters for vnavmesh, Auto PVP LB and Lifestream.
+- `AutoPvpSeriesGrind/Core/Lb/`: the Limit Break presets pushed to Auto PVP LB.
+- `AutoPvpSeriesGrind/Core/Modes/`: the stop goals (match count, Series rank, time, endless).
+- `AutoPvpSeriesGrind/Core/Localization/`: string catalog and language resolution; the JSON catalogs live in `AutoPvpSeriesGrind/Localization/`.
+- `AutoPvpSeriesGrind/Windows/`: ImGui shell, pages (grind, settings, plugins, history, about), sections and components.
+- `AutoPvpSeriesGrind/`: plugin entry point, configuration, command wiring.
 - `ECommons/`: submodule, shared Dalamud helpers. Don't patch this directly; upstream it.
 
 Keep logic small and direct. This plugin has one job.
@@ -26,7 +33,7 @@ Keep logic small and direct. This plugin has one job.
 ## Before you open a PR
 
 1. `dotnet build -c Release` cleanly.
-2. Test in-game across at least one full match for the area you touched. Crystalline Conflict maps differ (spawn sides, objective layout), so a fix that works on one map may not work on another.
+2. Test in-game across at least one full match of the match type you touched. Crystalline Conflict maps differ (spawn sides, objective layout) and Frontline arenas differ again, so a fix that works on one map may not work on another.
 3. Keep the diff focused. One concern per PR.
 4. Match the existing style. No heavy abstractions "for later."
 5. If your change affects what a user sees or types (commands, window layout, settings), update the README.

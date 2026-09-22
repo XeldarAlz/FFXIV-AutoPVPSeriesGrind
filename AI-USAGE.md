@@ -31,7 +31,7 @@ The human gates, in order, none of them skippable:
 
 1. **The spec comes first.** What to build, and the constraints it has to respect, are written before any agent runs.
 2. **The diff is read.** Output is reviewed before it lands, not after users find the problem.
-3. **It is tested in the game.** On a real client, across at least one full Casual Match (queue, fight, leave, requeue) on the map the change touches. A clean `dotnet build` is not a test.
+3. **It is tested in the game.** On a real client, across at least one full match of the type the change touches (Casual Match or Frontline), on the map it touches. A clean `dotnet build` is not a test.
 4. **Ownership transfers.** Every merged line is the maintainer's to defend, explain, and fix. "The AI did it" is not an answer to why something is written the way it is.
 5. **Feedback is taken on its merits.** AI-assisted work invites sharper review, from users and from any reviewer, and that scrutiny is earned rather than unfair. The answer to a review comment is a fix or a reason, never a defense of the tooling.
 
@@ -39,7 +39,7 @@ The human gates, in order, none of them skippable:
 
 Nothing in this doc lowers a standard. Code produced with AI assistance is held to exactly the bar every other change meets: the CONTRIBUTING.md checklist, the .editorconfig style, one concern per pull request, and `[APSG]` log lines that make every step of the match loop auditable. A reviewer cannot tell which lines came from where, and that is the point.
 
-The one thing AI use does change is where the verification effort goes. AI gets Dalamud and FFXIVClientStructs APIs wrong often enough that any call into either is suspect until it has run in game. The IPC calls into vnavmesh, Lifestream, Auto PVP LB and the other helpers listed in `/apsg deps` deserve the same suspicion: a call that compiles says nothing about whether the other plugin still answers it the same way.
+The one thing AI use does change is where the verification effort goes. AI gets Dalamud and FFXIVClientStructs APIs wrong often enough that any call into either is suspect until it has run in game. The IPC calls into vnavmesh, Auto PVP LB and Lifestream deserve the same suspicion: a call that compiles says nothing about whether the other plugin still answers it the same way. The action and status ids in the built-in rotation are the same kind of claim: every id under `Core/Rotation/` was checked against XIVAPI before it shipped, and a new one has to be too.
 
 ## If you contribute
 
@@ -61,7 +61,7 @@ This is the approach Dalamud's policy asks for, and the gap is coverage rather t
 
 - **Nobody enforces this on the project, which is the whole point.** A custom repository has no review queue and no ban list, so every rule here holds because the project chose it. Standards that only survive enforcement are not standards.
 - **The no-attribution git rule is not concealment.** Commits here carry no co-author trailers or generated-with footers, so a commit message holds substantive content only. Disclosure lives in this doc and in pull request descriptions instead. The history on master carries no trailers at all, which is exactly why this doc has to exist: without it, nothing in the repository would say how the code was written.
-- **A clean build is not a test.** Item 3 of the human gates exists because AI output compiles far more reliably than it works. Crystalline Conflict maps differ in spawn sides and objective layout, so a fix proven on one map says nothing about another.
+- **A clean build is not a test.** Item 3 of the human gates exists because AI output compiles far more reliably than it works. Crystalline Conflict maps differ in spawn sides and objective layout, and Frontline arenas differ again, so a fix proven on one map says nothing about another.
 
 ## Related docs
 

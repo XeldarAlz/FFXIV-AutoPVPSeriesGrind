@@ -18,7 +18,7 @@ body:
     attributes:
       label: What happened?
       description: What did you see? What did you expect to see instead?
-      placeholder: "The match started but the character never moved onto the crystal / never fired the Limit Break..."
+      placeholder: "The match started but the character never left spawn / never fired the Limit Break / lost the team in Frontline..."
     validations:
       required: true
 
@@ -54,26 +54,27 @@ body:
     id: job-affected
     attributes:
       label: Job(s) affected
-      description: Which job(s) were you on? Limit Break handling is per-job.
+      description: Which job(s) were you on? The rotation and the Limit Break presets are per-job.
       placeholder: "WAR, PLD, ..."
 
   - type: input
     id: map-affected
     attributes:
-      label: Crystalline Conflict map(s) affected
-      description: Which map(s) were involved, if the issue is map-specific?
-      placeholder: "Palaistra, Cloud Nine, ..."
+      label: Map(s) affected
+      description: Which Crystalline Conflict map(s) or Frontline arena(s) were involved, if the issue is map-specific?
+      placeholder: "Palaistra, Cloud Nine, Seal Rock, ..."
 
   - type: dropdown
     id: stage
     attributes:
       label: Where in the run did it fail?
-      description: The loop runs queue -> enter match -> portraits/hello -> fight on crystal -> Limit Break -> results -> leave -> requeue.
+      description: The loop runs queue -> enter match -> portraits/hello -> play the objective -> Limit Break -> results -> leave -> requeue.
       options:
         - Queue (didn't queue / wrong content)
         - Match entry (didn't detect the match / portraits)
-        - Movement (vnavmesh issue, stuck, didn't reach the crystal)
-        - Combat (RotationSolver didn't take over)
+        - Movement (vnavmesh issue, stuck, didn't reach the objective or the team)
+        - Combat (built-in rotation didn't press skills, Guard or Purify)
+        - Frontline (mount / dismount, lost the team, respawn handling)
         - Limit Break (didn't fire / wrong action)
         - Results / leave (didn't leave the duty after the match)
         - Requeue (didn't queue the next match)

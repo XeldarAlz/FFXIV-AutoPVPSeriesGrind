@@ -11,7 +11,7 @@ Closes #
 ## How to test
 
 <!--
-Minimum steps a reviewer can run to verify the change. Testing usually means pressing Start with a small match limit and watching it queue, fight on the crystal, and leave at the results screen for at least one match end-to-end. Make sure the dependencies listed in /apsg deps are installed first. For UI-only changes, describe what to click.
+Minimum steps a reviewer can run to verify the change. Testing usually means pressing Start with a small match goal and watching it queue, play the objective, and leave at the results screen for at least one match end-to-end, on the match type you touched (Casual Match or Frontline). Make sure the dependencies listed in /apsg deps are installed first. For UI-only changes, describe what to click.
 -->
 
 ## Checklist
