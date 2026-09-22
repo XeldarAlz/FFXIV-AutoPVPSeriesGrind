@@ -19,7 +19,7 @@
     "install": "Instalar",
     "purpose": {
       "vnavmesh": "Búsqueda de rutas y movimiento hacia el objetivo durante una partida.",
-      "lifestream": "Opcional: ejecuta tu comando de viaje configurado antes de la primera cola.",
+      "lifestream": "Opcional: solo para la acción de volver a la posada al alcanzar el objetivo; viaja a la posada y entra en tu habitación.",
       "autoLb": "Lanza tu Límite JcJ. Este plugin le envía automáticamente ajustes probados para cada clase."
     }
   },

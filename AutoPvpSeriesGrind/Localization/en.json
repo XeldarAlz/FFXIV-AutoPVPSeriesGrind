@@ -19,7 +19,7 @@
     "install": "Install",
     "purpose": {
       "vnavmesh": "Pathfinding and movement to the objective during a match.",
-      "lifestream": "Optional: runs your configured travel command before the first queue.",
+      "lifestream": "Optional: only for the return-to-the-inn action when the goal is reached; travels to the inn and enters your room.",
       "autoLb": "Fires your PvP Limit Break. This plugin pushes proven per-class settings to it automatically."
     }
   },

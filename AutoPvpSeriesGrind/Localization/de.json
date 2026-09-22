@@ -19,7 +19,7 @@
     "install": "Installieren",
     "purpose": {
       "vnavmesh": "Wegfindung und Bewegung zum Ziel während eines Matches.",
-      "lifestream": "Optional: führt deinen eingestellten Reisebefehl vor der ersten Anmeldung aus.",
+      "lifestream": "Optional: nur für die Rückkehr zum Gasthaus nach Erreichen des Ziels; reist zum Gasthaus und betritt dein Zimmer.",
       "autoLb": "Zündet deinen PvP-Limitrausch. Dieses Plugin überträgt dafür automatisch bewährte Einstellungen pro Klasse."
     }
   },

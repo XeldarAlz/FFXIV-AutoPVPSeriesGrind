@@ -19,7 +19,7 @@
     "install": "Installer",
     "purpose": {
       "vnavmesh": "Recherche de chemin et déplacement vers l'objectif pendant un match.",
-      "lifestream": "Optionnel : exécute votre commande de voyage configurée avant la première inscription.",
+      "lifestream": "Optionnel : uniquement pour l'action de retour à l'auberge une fois l'objectif atteint ; voyage jusqu'à l'auberge et entre dans votre chambre.",
       "autoLb": "Déclenche votre Transcendance JcJ. Ce plugin lui transmet automatiquement des réglages éprouvés par classe."
     }
   },

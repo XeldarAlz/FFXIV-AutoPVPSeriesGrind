@@ -19,7 +19,7 @@
     "install": "Kur",
     "purpose": {
       "vnavmesh": "Maç sırasında hedefe yol bulma ve hareket.",
-      "lifestream": "İsteğe bağlı: ilk sıraya girmeden önce ayarladığın seyahat komutunu çalıştırır.",
+      "lifestream": "İsteğe bağlı: sadece hedefe ulaşıldığında hana dönme eylemi için; hana gider ve odana girer.",
       "autoLb": "PvP Limit Break'ini kullanır. Bu eklenti ona sınıfına göre denenmiş ayarları otomatik gönderir."
     }
   },

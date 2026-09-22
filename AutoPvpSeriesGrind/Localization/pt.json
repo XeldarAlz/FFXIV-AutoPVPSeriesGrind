@@ -19,7 +19,7 @@
     "install": "Instalar",
     "purpose": {
       "vnavmesh": "Busca de caminho e movimento até o objetivo durante uma partida.",
-      "lifestream": "Opcional: executa o comando de viagem configurado antes da primeira fila.",
+      "lifestream": "Opcional: apenas para a ação de voltar à estalagem ao atingir a meta; viaja até a estalagem e entra no seu quarto.",
       "autoLb": "Dispara seu Limit Break de JcJ. Este plugin envia automaticamente ajustes testados para cada classe."
     }
   },

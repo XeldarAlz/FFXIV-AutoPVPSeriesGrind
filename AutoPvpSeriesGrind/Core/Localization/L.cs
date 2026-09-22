@@ -221,7 +221,7 @@ internal static class L
         public static readonly LocString Install = new("plugins.install", "Install");
 
         public static readonly LocString PurposeVnavmesh = new("plugins.purpose.vnavmesh", "Pathfinding and movement to the objective during a match.");
-        public static readonly LocString PurposeLifestream = new("plugins.purpose.lifestream", "Optional: runs your configured travel command before the first queue.");
+        public static readonly LocString PurposeLifestream = new("plugins.purpose.lifestream", "Optional: only for the return-to-the-inn action when the goal is reached; travels to the inn and enters your room.");
         public static readonly LocString PurposeAutoLb = new("plugins.purpose.autoLb", "Fires your PvP Limit Break. This plugin pushes proven per-class settings to it automatically.");
     }
 
