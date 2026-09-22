@@ -50,7 +50,11 @@ internal static class ProgressRing
     public static void Fill(Vector2 center, float radius, float thickness, float fraction, Vector4 color)
     {
         fraction = Math.Clamp(fraction, 0f, 1f);
-        if (fraction <= 0.0001f) return;
+        if (fraction <= 0.0001f)
+        {
+            return;
+        }
+
         Arc(center, radius, thickness, Top, Top + fraction * MathF.PI * 2f, Paint.Col(color));
     }
 
@@ -77,36 +81,53 @@ internal static class ProgressRing
     {
         Vector2 bigSize;
         using (Fonts.PushTitle())
+        {
             bigSize = TextDraw.Measure(big);
+        }
 
         var hasSmall = !string.IsNullOrEmpty(small);
         var smallSize = Vector2.Zero;
         if (hasSmall)
         {
             using (Fonts.PushCaption())
+            {
                 smallSize = TextDraw.Measure(small!);
+            }
         }
 
         var gap = hasSmall ? 1f * ImGuiHelpers.GlobalScale : 0f;
         var top = center.Y - (bigSize.Y + gap + smallSize.Y) * 0.5f;
 
         using (Fonts.PushTitle())
+        {
             TextDraw.At(big, new Vector2(center.X - bigSize.X * 0.5f, top), bigColor);
+        }
 
-        if (!hasSmall) return;
+        if (!hasSmall)
+        {
+            return;
+        }
+
         using (Fonts.PushCaption())
+        {
             TextDraw.At(small!, new Vector2(center.X - smallSize.X * 0.5f, top + bigSize.Y + gap), smallColor);
+        }
     }
 
+    // A glyph fitted to a shape is drawn through the draw list at an explicit size, from the icon tier
+    // that already covers the target, so the window font scale is never touched.
     public static void CenterIcon(Vector2 center, FontAwesomeIcon icon, Vector4 color, float targetHeight)
     {
         var glyph = icon.ToIconString();
-        using var font = Fonts.PushIconFor(targetHeight / ImGuiHelpers.GlobalScale);
-        var baseHeight = ImGui.CalcTextSize(glyph).Y;
-        var scale = baseHeight > 0f ? targetHeight / baseHeight : 1f;
-        ImGui.SetWindowFontScale(scale);
-        var size = ImGui.CalcTextSize(glyph);
-        ImGui.GetWindowDrawList().AddText(center - size * 0.5f, Paint.Col(color), glyph);
-        ImGui.SetWindowFontScale(1f);
+        using var font = Fonts.PushIconFor(targetHeight);
+        var naturalSize = ImGui.CalcTextSize(glyph);
+        if (naturalSize.Y <= 0f)
+        {
+            return;
+        }
+
+        var fit = targetHeight / naturalSize.Y;
+        var size = naturalSize * fit;
+        ImGui.GetWindowDrawList().AddText(ImGui.GetFont(), ImGui.GetFontSize() * fit, center - size * 0.5f, Paint.Col(color), glyph, 0f);
     }
 }

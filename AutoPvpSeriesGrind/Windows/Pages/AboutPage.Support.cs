@@ -96,7 +96,7 @@ internal sealed partial class AboutPage
         var startX = origin.X + (size.X - contentWidth) * 0.5f;
         var midY = origin.Y + size.Y * 0.5f;
 
-        TextDraw.Icon(FontAwesomeIcon.HandHoldingHeart, new Vector2(startX, midY - iconSize.Y * 0.5f), Styling.TextStrong);
+        TextDraw.IconCentered(FontAwesomeIcon.HandHoldingHeart, new Vector2(startX + iconSize.X * 0.5f, midY), Styling.TextStrong, 1f + 0.09f * Styling.Pulse(2200.0));
         TextDraw.At(label, new Vector2(startX + iconSize.X + innerGap, midY - labelSize.Y * 0.5f), Styling.TextStrong);
 
         ImGui.SetCursorScreenPos(origin);
