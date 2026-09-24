@@ -20,6 +20,8 @@ internal static class Styling
     public static readonly Vector4 AccentBlue        = new(0.46f, 0.62f, 0.92f, 1.00f);
     public static readonly Vector4 AccentBlueSoft    = new(0.66f, 0.78f, 0.98f, 1.00f);
     public static readonly Vector4 AccentDiscord     = new(0.345f, 0.396f, 0.949f, 1.00f);
+    public static readonly Vector4 AccentPatreon     = new(1.000f, 0.259f, 0.302f, 1.00f);
+    public static readonly Vector4 AccentPatreonSoft = new(1.000f, 0.580f, 0.600f, 1.00f);
 
     public static readonly Vector4 WindowBg = new(0.043f, 0.052f, 0.098f, 0.985f);
     public static readonly Vector4 Surface0 = new(0.068f, 0.082f, 0.142f, 1.00f);

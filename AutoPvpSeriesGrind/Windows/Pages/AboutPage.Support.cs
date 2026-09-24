@@ -9,123 +9,292 @@ namespace AutoPvpSeriesGrind.Windows.Pages;
 
 internal sealed partial class AboutPage
 {
-    private static void DrawSupport()
+    private const string PatreonId = "##apsg_about_patreon";
+    private const float SupportPad = 24f;
+    private const float SupportMedallion = 30f;
+    private const float SupportTextGap = 20f;
+    private const float SupportButtonGap = 20f;
+    private const float SupportButtonHeight = 52f;
+    private const float ButtonGrow = 3f;
+    private const float ButtonContentGap = 10f;
+    private const int FloatingHearts = 9;
+    private const int CometTrail = 26;
+    private const double CometPeriodMs = 5200.0;
+    private const int BurstHearts = 14;
+    private const float BurstMs = 950f;
+    private const float BurstDistance = 90f;
+    private const float GoldenRatio = 0.618034f;
+
+    private long burstTick = long.MinValue / 2;
+
+    private void DrawSupport()
     {
         var scale = ImGuiHelpers.GlobalScale;
         var dl = ImGui.GetWindowDrawList();
-        var pulse = Styling.Pulse(Styling.PulseBreath);
-        var accent = Styling.PulseColor(Styling.AccentMagenta, Styling.AccentArc, 5200.0);
-
-        var slotOrigin = ImGui.GetCursorScreenPos();
-        var fullAvail = ImGui.GetContentRegionAvail().X;
-        var margin = 24f * scale;
-        var origin = new Vector2(slotOrigin.X + margin, slotOrigin.Y);
-        var availX = fullAvail - margin * 2f;
-        var pad = 18f * scale;
-        var medalRadius = 22f * scale;
-        var buttonHeight = 38f * scale;
-        var innerWidth = availX - pad * 2f;
+        var origin = ImGui.GetCursorScreenPos();
+        var pad = SupportPad * scale;
+        var radius = SupportMedallion * scale;
+        var textX = origin.X + pad + radius * 2f + SupportTextGap * scale;
+        var textWidth = MathF.Max(1f, origin.X + columnWidth - pad - textX);
+        var title = Loc.T(L.About.SupportTitle);
+        var body = Loc.T(L.About.SupportBody);
 
         float titleHeight;
         using (Fonts.PushHeadline())
-            titleHeight = ImGui.GetTextLineHeight();
-        var bodyHeight = TextDraw.MeasureWrapped(Loc.T(L.About.SupportBody), innerWidth).Y;
-        var height = pad + medalRadius * 2f + 14f * scale + titleHeight + 8f * scale + bodyHeight + 16f * scale + buttonHeight + pad;
+        {
+            titleHeight = TextDraw.LineHeight();
+        }
 
-        var end = new Vector2(origin.X + availX, origin.Y + height);
-        var centerX = origin.X + availX * 0.5f;
-        var rounding = Styling.PanelRounding * scale;
+        var bodyHeight = TextDraw.MeasureWrapped(body, textWidth).Y;
+        var textHeight = titleHeight + 6f * scale + bodyHeight;
+        var topHeight = MathF.Max(radius * 2f, textHeight);
+        var buttonHeight = SupportButtonHeight * scale;
+        var height = pad + topHeight + SupportButtonGap * scale + buttonHeight + pad;
+        var max = origin + new Vector2(columnWidth, height);
+        var rounding = Styling.CardRounding * 1.6f * scale;
 
-        Paint.Fill(dl, origin, end, Vector4.Lerp(Styling.Surface1, Styling.AccentMagenta, 0.07f) with { W = 0.95f }, rounding);
-        Paint.TopLight(dl, origin, end, rounding);
-        Paint.Stroke(dl, origin, end, Styling.WithAlpha(accent, 0.55f + 0.35f * pulse), rounding, 1.5f);
+        Paint.Shadow(dl, origin, max, rounding, 16f * scale, 0.5f);
+        Paint.Gradient(dl, origin, max, Styling.Tint(Styling.Surface2, Styling.AccentPatreon, 0.16f), Styling.Tint(Styling.Surface0, Styling.AccentPatreon, 0.05f), rounding);
+        dl.PushClipRect(origin, max, true);
+        DrawFloatingHearts(origin, max);
+        dl.PopClipRect();
+        Paint.TopLight(dl, origin, max, rounding, 0.14f);
+        Paint.Stroke(dl, origin, max, Styling.WithAlpha(Styling.AccentPatreon, 0.35f), rounding, 1.2f * scale);
+        DrawComet(dl, origin, max, rounding);
 
-        var beat = Heartbeat(1400.0);
-        var medalCenter = new Vector2(centerX, origin.Y + pad + medalRadius);
-        ProgressRing.Glow(medalCenter, medalRadius, accent, 0.4f + 0.7f * beat);
-        ProgressRing.Disc(medalCenter, medalRadius, Vector4.Lerp(Styling.Surface1, accent, 0.28f));
-        ProgressRing.Track(medalCenter, medalRadius, 1.5f * scale, Styling.WithAlpha(accent, 0.85f));
-        ProgressRing.CenterIcon(medalCenter, FontAwesomeIcon.Heart, Styling.Lighten(accent, 0.25f), medalRadius * (0.80f + 0.22f * beat));
+        var medallionCenter = new Vector2(origin.X + pad + radius, origin.Y + pad + topHeight * 0.5f);
+        var beat = Motion.Reduced ? 0f : Heartbeat(1400.0);
+        ProgressRing.Glow(medallionCenter, radius, Styling.AccentPatreon, 0.45f + 0.7f * beat);
+        dl.AddCircleFilled(medallionCenter, radius, Paint.Col(Vector4.Lerp(Styling.Surface1, Styling.AccentPatreon, 0.30f)), 48);
+        ProgressRing.Track(medallionCenter, radius, 1.5f * scale, Styling.WithAlpha(Styling.AccentPatreonSoft, 0.85f));
+        ProgressRing.CenterIcon(medallionCenter, FontAwesomeIcon.Heart, Styling.AccentPatreonSoft, radius * (0.82f + 0.22f * beat));
 
-        var y = origin.Y + pad + medalRadius * 2f + 14f * scale;
+        var textY = origin.Y + pad + (topHeight - textHeight) * 0.5f;
         using (Fonts.PushHeadline())
         {
-            var titleSize = TextDraw.Measure(Loc.T(L.About.SupportTitle));
-            TextDraw.At(Loc.T(L.About.SupportTitle), new Vector2(centerX - titleSize.X * 0.5f, y), Styling.TextStrong);
-            y += titleSize.Y + 8f * scale;
+            TextDraw.At(title, new Vector2(textX, textY), Styling.TextStrong);
         }
 
-        TextDraw.Wrapped(Loc.T(L.About.SupportBody), new Vector2(origin.X + pad, y), innerWidth, Styling.TextSecondary);
+        TextDraw.Wrapped(body, new Vector2(textX, textY + titleHeight + 6f * scale), textWidth, Styling.TextSecondary);
 
-        var buttonOrigin = new Vector2(origin.X + pad, end.Y - pad - buttonHeight);
-        PatreonButton(buttonOrigin, new Vector2(innerWidth, buttonHeight), accent);
-
-        ImGui.SetCursorScreenPos(slotOrigin);
-        ImGui.Dummy(new Vector2(fullAvail, height));
-    }
-
-    private static void PatreonButton(Vector2 origin, Vector2 size, Vector4 accent)
-    {
-        var scale = ImGuiHelpers.GlobalScale;
-        var dl = ImGui.GetWindowDrawList();
-        var end = origin + size;
-        var hovered = Hit.HoveringRect(origin, end);
-        var rounding = size.Y * 0.5f;
-
-        var fill = (hovered ? Styling.Lighten(accent, 0.16f) : accent) with { W = 1f };
-
-        var glowPulse = 0.5f + 0.5f * Styling.Pulse(Styling.PulseBreath);
-        for (var layer = 3; layer >= 1; layer--)
-        {
-            var grow = layer * 2.6f * scale;
-            var alpha = 0.06f * layer * glowPulse * (hovered ? 1.8f : 1f);
-            dl.AddRectFilled(origin - new Vector2(grow, grow), end + new Vector2(grow, grow),
-                Paint.Col(Styling.WithAlpha(fill, alpha)), rounding + grow);
-        }
-
-        Paint.Fill(dl, origin, end, fill, rounding);
-        Paint.TopLight(dl, origin, end, rounding, 0.22f);
-        Sheen(origin, size, 3000.0);
-        Paint.Stroke(dl, origin, end, Styling.WithAlpha(Styling.White, hovered ? 0.42f : 0.18f), rounding);
-
-        var label = Loc.T(L.About.SupportButton);
-        var iconSize = TextDraw.IconSize(FontAwesomeIcon.HandHoldingHeart);
-        var labelSize = TextDraw.Measure(label);
-        var innerGap = 9f * scale;
-        var contentWidth = iconSize.X + innerGap + labelSize.X;
-        var startX = origin.X + (size.X - contentWidth) * 0.5f;
-        var midY = origin.Y + size.Y * 0.5f;
-
-        TextDraw.IconCentered(FontAwesomeIcon.HandHoldingHeart, new Vector2(startX + iconSize.X * 0.5f, midY), Styling.TextStrong, 1f + 0.09f * Styling.Pulse(2200.0));
-        TextDraw.At(label, new Vector2(startX + iconSize.X + innerGap, midY - labelSize.Y * 0.5f), Styling.TextStrong);
+        var buttonMin = new Vector2(origin.X + pad, max.Y - pad - buttonHeight);
+        DrawPatreonButton(buttonMin, new Vector2(columnWidth - pad * 2f, buttonHeight));
 
         ImGui.SetCursorScreenPos(origin);
-        ImGui.Dummy(size);
-
-        if (!hovered) return;
-        UrlActions.HoveredLinkInteraction(PatreonUrl, Loc.T(L.About.PatreonHint));
+        ImGui.Dummy(new Vector2(columnWidth, height));
     }
 
-    private static void Sheen(Vector2 origin, Vector2 size, double periodMs)
+    private static void DrawFloatingHearts(Vector2 min, Vector2 max)
     {
-        var phase = Styling.Phase(periodMs);
-        if (phase > 0.35f) return;
-        var sweep = phase / 0.35f;
-
-        var dl = ImGui.GetWindowDrawList();
-        dl.PushClipRect(origin, origin + size, true);
-        var slant = size.Y * 0.55f;
-        var travel = size.X + slant + 40f;
-        var centerX = origin.X - 20f + sweep * travel;
-        const int half = 15;
-        for (var step = -half; step <= half; step++)
+        if (Motion.Reduced)
         {
-            var alpha = 0.16f * (1f - MathF.Abs(step) / (float)half);
-            var x = centerX + step;
-            dl.AddLine(new Vector2(x + slant, origin.Y), new Vector2(x, origin.Y + size.Y),
-                Paint.Col(Styling.WithAlpha(Styling.White, alpha)), 1.3f);
+            return;
+        }
+
+        var width = max.X - min.X;
+        var height = max.Y - min.Y;
+        var scale = ImGuiHelpers.GlobalScale;
+        for (var index = 0; index < FloatingHearts; index++)
+        {
+            var seed = index * GoldenRatio % 1f;
+            var progress = (Styling.Phase(6200.0 + index * 870.0) + seed) % 1f;
+            var drift = MathF.Sin(progress * MathF.PI * 2.6f + index) * 10f * scale;
+            var position = new Vector2(min.X + width * (0.06f + 0.88f * seed) + drift, max.Y + 12f * scale - progress * (height + 24f * scale));
+            var alpha = 0.16f * MathF.Sin(progress * MathF.PI);
+            TextDraw.IconCentered(FontAwesomeIcon.Heart, position, Styling.WithAlpha(Styling.AccentPatreonSoft, alpha), 0.55f + 0.45f * (index * 0.37f % 1f));
+        }
+    }
+
+    // A bright head with a fading tail travels the card's border. The path runs inset from the corners so the
+    // trail stays close to the rounded outline without tracing each arc.
+    private static void DrawComet(ImDrawListPtr dl, Vector2 min, Vector2 max, float rounding)
+    {
+        if (Motion.Reduced)
+        {
+            return;
+        }
+
+        var scale = ImGuiHelpers.GlobalScale;
+        var inset = rounding * 0.29f;
+        var innerMin = min + new Vector2(inset, inset);
+        var innerMax = max - new Vector2(inset, inset);
+        var perimeter = 2f * (innerMax.X - innerMin.X + innerMax.Y - innerMin.Y);
+        var head = Styling.Phase(CometPeriodMs) * perimeter;
+        var spacing = 5f * scale;
+        for (var trailIndex = CometTrail - 1; trailIndex >= 0; trailIndex--)
+        {
+            var fade = 1f - trailIndex / (float)CometTrail;
+            var point = PerimeterPoint(innerMin, innerMax, head - trailIndex * spacing, perimeter);
+            dl.AddCircleFilled(point, (1f + 1.6f * fade) * scale, Paint.Col(Styling.WithAlpha(Styling.AccentPatreonSoft, 0.85f * fade * fade)));
+        }
+
+        var headPoint = PerimeterPoint(innerMin, innerMax, head, perimeter);
+        dl.AddCircleFilled(headPoint, 7f * scale, Paint.Col(Styling.WithAlpha(Styling.AccentPatreon, 0.18f)));
+    }
+
+    private static Vector2 PerimeterPoint(Vector2 min, Vector2 max, float distance, float perimeter)
+    {
+        var width = max.X - min.X;
+        var height = max.Y - min.Y;
+        distance %= perimeter;
+        if (distance < 0f)
+        {
+            distance += perimeter;
+        }
+
+        if (distance < width)
+        {
+            return new Vector2(min.X + distance, min.Y);
+        }
+
+        distance -= width;
+        if (distance < height)
+        {
+            return new Vector2(max.X, min.Y + distance);
+        }
+
+        distance -= height;
+        if (distance < width)
+        {
+            return new Vector2(max.X - distance, max.Y);
+        }
+
+        return new Vector2(min.X, max.Y - (distance - width));
+    }
+
+    private void DrawPatreonButton(Vector2 slot, Vector2 size)
+    {
+        var scale = ImGuiHelpers.GlobalScale;
+        ImGui.SetCursorScreenPos(slot);
+        var hit = Hit.Area(PatreonId, size);
+        var hover = Motion.Hover(Motion.Key(PatreonId), hit.Hovered);
+        var press = Motion.Approach(Motion.Key(PatreonId, 1), hit.Held ? 1f : 0f, 30f);
+        if (hit.Hovered)
+        {
+            Tooltip.Show(Loc.T(L.About.PatreonHint));
+            if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+            {
+                ImGui.SetClipboardText(PatreonUrl);
+            }
+        }
+
+        if (hit.Clicked)
+        {
+            UrlActions.OpenOrCopy(PatreonUrl);
+            burstTick = Environment.TickCount64;
+        }
+
+        var grow = (ButtonGrow * hover - 2f * press) * scale;
+        var min = slot - new Vector2(grow, grow);
+        var max = slot + size + new Vector2(grow, grow);
+        var rounding = (max.Y - min.Y) * 0.5f;
+        var dl = ImGui.GetWindowDrawList();
+        var breath = 0.55f + 0.45f * Styling.Pulse(Styling.PulseBreath);
+
+        for (var layer = 4; layer >= 1; layer--)
+        {
+            var spread = layer * 3f * scale;
+            var alpha = 0.05f * layer * breath * (1f + 1.2f * hover);
+            dl.AddRectFilled(min - new Vector2(spread, spread), max + new Vector2(spread, spread),
+                Paint.Col(Styling.WithAlpha(Styling.AccentPatreon, alpha)), rounding + spread);
+        }
+
+        var left = Styling.Darken(Styling.Lighten(Styling.AccentPatreon, 0.14f * hover), 0.12f * press);
+        var right = Styling.Darken(Styling.Lighten(Styling.AccentMagentaSoft, 0.14f * hover), 0.12f * press);
+        Paint.GradientH(dl, min, max, left, right, rounding);
+        Paint.TopLight(dl, min, max, rounding, 0.30f);
+        Sheen(dl, min, max - min, hover);
+        Paint.Stroke(dl, min, max, new Vector4(1f, 1f, 1f, 0.18f + 0.30f * hover), rounding, 1.2f * scale);
+
+        DrawButtonContent(min, max, hover);
+        DrawBurst(dl, (min + max) * 0.5f);
+    }
+
+    private static void DrawButtonContent(Vector2 min, Vector2 max, float hover)
+    {
+        var scale = ImGuiHelpers.GlobalScale;
+        var label = Loc.T(L.About.SupportButton);
+        using var font = Fonts.PushHeadline();
+        var labelSize = TextDraw.Measure(label);
+        var heartSize = TextDraw.IconSize(FontAwesomeIcon.HandHoldingHeart);
+        var arrowSize = TextDraw.IconSize(FontAwesomeIcon.ArrowRight);
+        var gap = ButtonContentGap * scale;
+        var contentWidth = heartSize.X + gap + labelSize.X + gap + arrowSize.X;
+        var x = (min.X + max.X - contentWidth) * 0.5f;
+        var midY = (min.Y + max.Y) * 0.5f;
+        var beat = Motion.Reduced ? 0f : Heartbeat(1400.0);
+
+        TextDraw.IconCentered(FontAwesomeIcon.HandHoldingHeart, new Vector2(x + heartSize.X * 0.5f, midY), Styling.TextStrong, 1f + 0.12f * beat);
+        x += heartSize.X + gap;
+        TextDraw.At(label, new Vector2(x, midY - labelSize.Y * 0.5f), Styling.TextStrong);
+        x += labelSize.X + gap;
+        TextDraw.Icon(FontAwesomeIcon.ArrowRight, new Vector2(x + ArrowSlide * scale * hover, midY - arrowSize.Y * 0.5f),
+            Styling.WithAlpha(Styling.TextStrong, 0.55f + 0.45f * hover));
+    }
+
+    // A slanted band of light crosses the button every few seconds, and keeps crossing while it is hovered.
+    private static void Sheen(ImDrawListPtr dl, Vector2 origin, Vector2 size, float hover)
+    {
+        var period = hover > 0.5f ? 1400.0 : 3200.0;
+        var window = hover > 0.5f ? 0.8f : 0.35f;
+        var phase = Styling.Phase(period);
+        if (Motion.Reduced || phase > window)
+        {
+            return;
+        }
+
+        var scale = ImGuiHelpers.GlobalScale;
+        var sweep = phase / window;
+        var slant = size.Y * 0.6f;
+        var bandHalf = 18f * scale;
+        var centerX = origin.X - bandHalf - slant + sweep * (size.X + slant + bandHalf * 2f);
+        dl.PushClipRect(origin, origin + size, true);
+        const int strokes = 18;
+        for (var stroke = -strokes; stroke <= strokes; stroke++)
+        {
+            var alpha = 0.18f * (1f - MathF.Abs(stroke) / (float)strokes);
+            var x = centerX + stroke * bandHalf / strokes;
+            dl.AddLine(new Vector2(x + slant, origin.Y), new Vector2(x, origin.Y + size.Y), Paint.Col(new Vector4(1f, 1f, 1f, alpha)), 1.4f * scale);
         }
 
         dl.PopClipRect();
+    }
+
+    private void DrawBurst(ImDrawListPtr dl, Vector2 center)
+    {
+        var elapsed = Environment.TickCount64 - burstTick;
+        if (Motion.Reduced || elapsed >= BurstMs)
+        {
+            return;
+        }
+
+        var scale = ImGuiHelpers.GlobalScale;
+        var progress = elapsed / BurstMs;
+        var eased = Motion.EaseOutCubic(progress);
+        for (var index = 0; index < BurstHearts; index++)
+        {
+            var angle = index * MathF.PI * 2f / BurstHearts + index * 0.35f;
+            var distance = BurstDistance * scale * eased * (0.7f + 0.3f * (index * GoldenRatio % 1f));
+            var position = center + new Vector2(MathF.Cos(angle) * 1.6f, MathF.Sin(angle)) * distance;
+            var color = index % 2 == 0 ? Styling.AccentPatreonSoft : Styling.Lighten(Styling.AccentMagentaSoft, 0.3f);
+            TextDraw.IconCentered(FontAwesomeIcon.Heart, position, Styling.WithAlpha(color, 1f - progress), 0.6f + 0.5f * (1f - progress));
+        }
+    }
+
+    private static float Heartbeat(double periodMs)
+    {
+        var phase = Styling.Phase(periodMs);
+        return MathF.Max(Bump(phase, 0.06f, 0.06f), Bump(phase, 0.20f, 0.06f) * 0.6f);
+    }
+
+    private static float Bump(float phase, float center, float width)
+    {
+        var distance = (phase - center) / width;
+        if (distance < -1f || distance > 1f)
+        {
+            return 0f;
+        }
+
+        return 0.5f * (1f + MathF.Cos(distance * MathF.PI));
     }
 }

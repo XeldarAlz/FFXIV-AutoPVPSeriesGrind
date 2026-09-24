@@ -329,28 +329,25 @@
     },
     "r2600": {
       "1": "Eklentinin günlüklerini görüntülemek, filtrelemek ve kopyalamak için Konsol sayfası eklendi",
-      "2": "Bu değişiklik günlüğü eklendi; bir güncelleme yenilik getirdiğinde rozetle bildirir"
+      "2": "Bu değişiklik günlüğü eklendi; bir güncelleme yenilik getirdiğinde rozetle bildirir",
+      "3": "Hakkında sayfası baştan yenilendi, Discord bağlantısı güncellendi"
     }
   },
   "about": {
-    "connect": "Bağlantı",
     "support": {
-      "title": "Özenle yapıldı",
-      "body": "Bu eklentiyi boş zamanlarımda geliştirip sürdürüyorum. Size yardımcı olduysa, bir Patreon üyeliği onu geliştirmeye devam etmemi sağlar. Baskı yok, ve burada olduğunuz için teşekkürler.",
+      "title": "Sevgi ve özenle yapıldı",
+      "body": "Bu eklenti, bu oyunu ve topluluğunu sevdiğim için boş zamanlarımda tek başıma geliştirdiğim bir proje. Onu güncel tutmak o saatlerin çoğunu alıyor. Size yardımcı olduysa, Patreon'da destek olmanız ona bu zamanı ayırmaya devam etmemi sağlar. Burada olduğunuz için teşekkürler.",
       "button": "Patreon'da destekle",
       "hint": "Patreon'u aç, bağlantıyı kopyalamak için sağ tıkla."
     },
     "linkHint": "Açmak için tıkla, bağlantıyı kopyalamak için sağ tıkla.",
     "madeBy": "{0} tarafından yapıldı",
     "version": "v {0}",
-    "link": {
-      "github": "GitHub",
-      "discord": "Discord",
-      "discussions": "Tartışmalar",
-      "bug": "Hata bildir",
-      "more": "Diğer eklentiler",
-      "security": "Güvenlik"
-    },
+    "community": "Topluluk",
+    "discordTitle": "Discord'a katıl",
+    "discordBody": "Yardım alın, hata bildirin, fikirlerinizi paylaşın ve güncellemeleri ilk siz duyun.",
+    "githubTitle": "GitHub'da görüntüle",
+    "githubBody": "Kaynak koduna ve tüm sürümlere göz atın.",
     "reminder": {
       "title": "Küçük bir hatırlatma",
       "1": "Epeydir başındasınız galiba. Omuzlarınızı çevirin, bir kez derin nefes alın.",

@@ -329,28 +329,25 @@
     },
     "r2600": {
       "1": "Konsole hinzugefügt, um die Protokolle des Plugins anzusehen, zu filtern und zu kopieren",
-      "2": "Dieses Änderungsprotokoll hinzugefügt, mit einem Hinweis, sobald ein Update Neues bringt"
+      "2": "Dieses Änderungsprotokoll hinzugefügt, mit einem Hinweis, sobald ein Update Neues bringt",
+      "3": "Die Info-Seite komplett überarbeitet, mit dem neuen Discord-Link"
     }
   },
   "about": {
-    "connect": "Kontakt",
     "support": {
-      "title": "Mit Sorgfalt gemacht",
-      "body": "Ich entwickle und pflege dieses Plugin in meiner Freizeit. Wenn es dir geholfen hat, hilft mir eine Patreon-Mitgliedschaft, es weiter zu verbessern. Kein Druck, und danke, dass du hier bist.",
+      "title": "Mit Liebe und Sorgfalt gemacht",
+      "body": "Dieses Plugin ist ein Ein-Personen-Projekt, entstanden in meiner Freizeit, weil ich dieses Spiel und seine Community liebe. Es aktuell zu halten, kostet viele dieser Stunden. Wenn es dir geholfen hat, sorgt deine Unterstützung auf Patreon dafür, dass ich ihm diese Zeit weiter schenken kann. Danke, dass du hier bist.",
       "button": "Auf Patreon unterstützen",
       "hint": "Patreon öffnen, Rechtsklick kopiert den Link."
     },
     "linkHint": "Klicken zum Öffnen, Rechtsklick kopiert den Link.",
     "madeBy": "Erstellt von {0}",
     "version": "v {0}",
-    "link": {
-      "github": "GitHub",
-      "discord": "Discord",
-      "discussions": "Diskussionen",
-      "bug": "Fehler melden",
-      "more": "Weitere Plugins",
-      "security": "Sicherheit"
-    },
+    "community": "Community",
+    "discordTitle": "Tritt dem Discord bei",
+    "discordBody": "Hol dir Hilfe, melde Fehler, teile Ideen und erfahre als Erstes von Updates.",
+    "githubTitle": "Auf GitHub ansehen",
+    "githubBody": "Stöbere im Quellcode und in allen Versionen.",
     "reminder": {
       "title": "Eine kleine Erinnerung",
       "1": "Schon eine Weile dabei? Kreis mal die Schultern und atme einmal tief durch.",

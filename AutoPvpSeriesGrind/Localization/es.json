@@ -329,28 +329,25 @@
     },
     "r2600": {
       "1": "Añadida la página Consola para ver, filtrar y copiar los registros del plugin",
-      "2": "Añadido este registro de cambios, con un aviso cada vez que una actualización trae novedades"
+      "2": "Añadido este registro de cambios, con un aviso cada vez que una actualización trae novedades",
+      "3": "Renovada por completo la página Acerca de, con el enlace de Discord actualizado"
     }
   },
   "about": {
-    "connect": "Contacto",
     "support": {
-      "title": "Hecho con cariño",
-      "body": "Desarrollo y mantengo este plugin en mi tiempo libre. Si te ha ayudado, una suscripción a Patreon me permite seguir mejorándolo. Sin presión, y gracias por estar aquí.",
+      "title": "Hecho con amor y cariño",
+      "body": "Este plugin es un proyecto de una sola persona, hecho en mi tiempo libre porque me encantan este juego y su comunidad. Mantenerlo al día me lleva muchas de esas horas. Si te ha ayudado, apoyarme en Patreon me permite seguir dedicándole ese tiempo. Gracias por estar aquí.",
       "button": "Apoyar en Patreon",
       "hint": "Abrir Patreon, clic derecho para copiar el enlace."
     },
     "linkHint": "Clic para abrir, clic derecho para copiar el enlace.",
     "madeBy": "Creado por {0}",
     "version": "v {0}",
-    "link": {
-      "github": "GitHub",
-      "discord": "Discord",
-      "discussions": "Discusiones",
-      "bug": "Informar de un error",
-      "more": "Más plugins",
-      "security": "Seguridad"
-    },
+    "community": "Comunidad",
+    "discordTitle": "Únete al Discord",
+    "discordBody": "Consigue ayuda, informa de errores, comparte ideas y entérate antes que nadie de las novedades.",
+    "githubTitle": "Ver en GitHub",
+    "githubBody": "Explora el código fuente y todas las versiones.",
     "reminder": {
       "title": "Un pequeño recordatorio",
       "1": "¿Llevas un buen rato jugando? Gira los hombros y respira hondo una vez.",

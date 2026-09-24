@@ -329,28 +329,25 @@
     },
     "r2600": {
       "1": "Ajout de la page Console pour consulter, filtrer et copier les journaux du plugin",
-      "2": "Ajout de ce journal des modifications, avec un badge dès qu'une mise à jour apporte du nouveau"
+      "2": "Ajout de ce journal des modifications, avec un badge dès qu'une mise à jour apporte du nouveau",
+      "3": "Refonte complète de la page À propos, avec le nouveau lien Discord"
     }
   },
   "about": {
-    "connect": "Contact",
     "support": {
-      "title": "Fait avec soin",
-      "body": "Je développe et maintiens ce plugin sur mon temps libre. S'il vous a aidé, un abonnement Patreon me permet de continuer à l'améliorer. Sans pression, et merci d'être là.",
+      "title": "Fait avec amour et soin",
+      "body": "Ce plugin est un projet mené par une seule personne, pendant mon temps libre, parce que j'aime ce jeu et sa communauté. Le maintenir à jour me prend beaucoup de ces heures. S'il vous a aidé, me soutenir sur Patreon me permet de continuer à lui consacrer ce temps. Merci d'être là.",
       "button": "Soutenir sur Patreon",
       "hint": "Ouvrir Patreon, clic droit pour copier le lien."
     },
     "linkHint": "Cliquez pour ouvrir, clic droit pour copier le lien.",
     "madeBy": "Réalisé par {0}",
     "version": "v {0}",
-    "link": {
-      "github": "GitHub",
-      "discord": "Discord",
-      "discussions": "Discussions",
-      "bug": "Signaler un bug",
-      "more": "Autres plugins",
-      "security": "Sécurité"
-    },
+    "community": "Communauté",
+    "discordTitle": "Rejoindre le Discord",
+    "discordBody": "Obtenez de l'aide, signalez des bugs, partagez vos idées et découvrez les mises à jour en premier.",
+    "githubTitle": "Voir sur GitHub",
+    "githubBody": "Parcourez le code source et toutes les versions.",
     "reminder": {
       "title": "Un petit rappel",
       "1": "Ça fait un moment que vous jouez ? Roulez les épaules et prenez une grande respiration.",
