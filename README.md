@@ -5,6 +5,7 @@
 <h1 align="center">Auto PVP Series Grind</h1>
 
 <p align="center">
+  <a href="https://discord.gg/hppkAvdBEE"><img alt="Discord" src="https://img.shields.io/badge/Discord-join-5865F2?style=flat-square&logo=discord&logoColor=white"></a>
   <a href="https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/XeldarAlz/FFXIV-AutoPVPSeriesGrind?style=flat-square&color=blue"></a>
   <a href="https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/XeldarAlz/FFXIV-AutoPVPSeriesGrind/total?style=flat-square&color=blue&cacheSeconds=300"></a>
   <a href="https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/actions/workflows/release.yml"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/XeldarAlz/FFXIV-AutoPVPSeriesGrind/release.yml?style=flat-square"></a>
@@ -61,6 +62,8 @@ Two helper plugins are required: [vnavmesh](https://github.com/awgil/ffxiv_navme
 | `/apsg deps` | Open dependencies window (alias: `dependencies`) |
 | `/apsg about` | Open credits / links |
 | `/apsg stats` | Open run history (alias: `history`) |
+| `/apsg log` | Open the console |
+| `/apsg changelog` | Open the changelog |
 | `/apsg target` | Log targeted object's BaseId (debug helper) |
 | `/apsg objects` | Log the objective object IDs on the current map (debug helper) |
 
@@ -69,6 +72,12 @@ Two helper plugins are required: [vnavmesh](https://github.com/awgil/ffxiv_navme
 The windows are available in English, Deutsch, Français, Español, Português (Brasil), Русский, Türkçe, 日本語, and 中文. The plugin picks a language from your Dalamud and game client settings on first launch; change it any time under Settings, Session, Language. Game data such as job and map names always follows the game client.
 
 Spotted a wrong or awkward translation? Open a [translation issue](https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/issues/new?template=translation_report.yml) and tell me what it should say instead.
+
+## Community
+
+Questions, ideas, or just want to hang out with other players? Come say hi on Discord.
+
+→ [Join our Discord](https://discord.gg/hppkAvdBEE)
 
 ## More from me
 
