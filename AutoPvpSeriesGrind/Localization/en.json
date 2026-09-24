@@ -17,6 +17,7 @@
     "installed": "Installed",
     "installing": "Installing",
     "install": "Install",
+    "enable": "Enable",
     "purpose": {
       "vnavmesh": "Pathfinding and movement to the objective during a match.",
       "lifestream": "Optional: only for the return-to-the-inn action when the goal is reached; travels to the inn and enters your room.",
@@ -326,6 +327,11 @@
     "changes": {
       "one": "{0} change",
       "other": "{0} changes"
+    },
+    "r2700": {
+      "1": "Pushing the crystal now walks along with it instead of stopping and restarting every few steps",
+      "2": "Each character rides from its own spot in the crystal's circle, so teammates no longer stack on one point",
+      "3": "Installing a required plugin that is installed but disabled now enables it instead of breaking its install"
     },
     "r2600": {
       "1": "Added the Console page to view, filter and copy the plugin's logs",

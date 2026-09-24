@@ -228,6 +228,7 @@ internal static class L
         public static readonly LocString Installed = new("plugins.installed", "Installed");
         public static readonly LocString Installing = new("plugins.installing", "Installing");
         public static readonly LocString Install = new("plugins.install", "Install");
+        public static readonly LocString Enable = new("plugins.enable", "Enable");
 
         public static readonly LocString PurposeVnavmesh = new("plugins.purpose.vnavmesh", "Pathfinding and movement to the objective during a match.");
         public static readonly LocString PurposeLifestream = new("plugins.purpose.lifestream", "Optional: only for the return-to-the-inn action when the goal is reached; travels to the inn and enters your room.");
@@ -281,6 +282,13 @@ internal static class L
         public static readonly LocString Latest = new("changelog.latest", "Latest");
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
+
+        public static readonly LocString[] Release2700 =
+        [
+            new("changelog.r2700.1", "Pushing the crystal now walks along with it instead of stopping and restarting every few steps"),
+            new("changelog.r2700.2", "Each character rides from its own spot in the crystal's circle, so teammates no longer stack on one point"),
+            new("changelog.r2700.3", "Installing a required plugin that is installed but disabled now enables it instead of breaking its install"),
+        ];
 
         public static readonly LocString[] Release2600 =
         [

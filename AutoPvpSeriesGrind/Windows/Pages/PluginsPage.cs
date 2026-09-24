@@ -143,11 +143,13 @@ internal sealed class PluginsPage
             return end.X - padX - iconX + 12f * scale;
         }
 
-        var text = Loc.T(installing ? L.Plugins.Installing : L.Plugins.Install);
-        var width = PillButton.Width(text, FontAwesomeIcon.Download);
+        var disabled = ExternalPlugins.IsInstalledButDisabled(plugin);
+        var text = Loc.T(disabled ? L.Plugins.Enable : installing ? L.Plugins.Installing : L.Plugins.Install);
+        var buttonIcon = disabled ? FontAwesomeIcon.PowerOff : FontAwesomeIcon.Download;
+        var width = PillButton.Width(text, buttonIcon);
         ImGui.SetCursorScreenPos(new Vector2(end.X - padX - width, midY - 15f * scale));
         ImGui.PushID((nint)((int)plugin + 1));
-        if (PillButton.Draw("##install", text, Styling.AccentArc, PillButton.Emphasis.Filled, FontAwesomeIcon.Download, enabled: !installing, height: 30f))
+        if (PillButton.Draw("##install", text, Styling.AccentArc, PillButton.Emphasis.Filled, buttonIcon, enabled: !installing, height: 30f))
         {
             _ = PluginInstaller.Install(plugin);
         }

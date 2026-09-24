@@ -16,6 +16,7 @@ internal static class PluginInstaller
     private const string ReasonParameterName = "reason";
     private const string TaskResultProperty = "Result";
     private const string IsLoadedProperty = "IsLoaded";
+    private const string EnablePluginCommand = "/xlenableplugin";
 
     private static readonly HashSet<ExternalPlugin> InFlight = [];
 
@@ -27,6 +28,11 @@ internal static class PluginInstaller
 
     public static async Task<bool> Install(ExternalPlugin plugin)
     {
+        if (ExternalPlugins.IsInstalledButDisabled(plugin))
+        {
+            return Enable(plugin);
+        }
+
         if (!InFlight.Add(plugin)) return false;
         Failed.Remove(plugin);
         try
@@ -50,6 +56,19 @@ internal static class PluginInstaller
         {
             InFlight.Remove(plugin);
         }
+    }
+
+    private static bool Enable(ExternalPlugin plugin)
+    {
+        var info = ExternalPlugins.Catalog[plugin];
+        RunLog.Info($"{info.DisplayName} is installed but disabled; enabling it instead of reinstalling.");
+        var accepted = Svc.Commands.ProcessCommand($"{EnablePluginCommand} \"{info.InternalName}\"");
+        if (!accepted)
+        {
+            RunLog.Warning($"{EnablePluginCommand} was not accepted; enable {info.DisplayName} in /xlplugins.");
+            Failed.Add(plugin);
+        }
+        return accepted;
     }
 
     // Installs via Dalamud's internal PluginManager.InstallPluginAsync by reflection, binding

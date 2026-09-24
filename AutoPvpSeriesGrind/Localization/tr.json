@@ -17,6 +17,7 @@
     "installed": "Kurulu",
     "installing": "Kuruluyor",
     "install": "Kur",
+    "enable": "Etkinleştir",
     "purpose": {
       "vnavmesh": "Maç sırasında hedefe yol bulma ve hareket.",
       "lifestream": "İsteğe bağlı: sadece hedefe ulaşıldığında hana dönme eylemi için; hana gider ve odana girer.",
@@ -326,6 +327,11 @@
     "changes": {
       "one": "{0} değişiklik",
       "other": "{0} değişiklik"
+    },
+    "r2700": {
+      "1": "Kristali iterken karakter artık birkaç adımda bir durup yeniden başlamak yerine kristalle birlikte yürüyor",
+      "2": "Her karakter kristalin çemberinde kendi yerinden eşlik ediyor, böylece takım arkadaşları artık tek bir noktada üst üste binmiyor",
+      "3": "Yüklü ama devre dışı olan gerekli bir eklentiyi yüklemek artık kurulumunu bozmak yerine onu etkinleştiriyor"
     },
     "r2600": {
       "1": "Eklentinin günlüklerini görüntülemek, filtrelemek ve kopyalamak için Konsol sayfası eklendi",

@@ -17,6 +17,7 @@
     "installed": "Installiert",
     "installing": "Installiert",
     "install": "Installieren",
+    "enable": "Aktivieren",
     "purpose": {
       "vnavmesh": "Wegfindung und Bewegung zum Ziel während eines Matches.",
       "lifestream": "Optional: nur für die Rückkehr zum Gasthaus nach Erreichen des Ziels; reist zum Gasthaus und betritt dein Zimmer.",
@@ -326,6 +327,11 @@
     "changes": {
       "one": "{0} Änderung",
       "other": "{0} Änderungen"
+    },
+    "r2700": {
+      "1": "Beim Schieben des Kristalls läuft die Figur jetzt mit ihm mit, statt alle paar Schritte anzuhalten und neu loszulaufen",
+      "2": "Jede Figur begleitet den Kristall von einem eigenen Platz in seinem Kreis, sodass Teammitglieder nicht mehr auf einem Punkt stehen",
+      "3": "Ein installiertes, aber deaktiviertes Pflicht-Plugin wird jetzt aktiviert, statt seine Installation zu beschädigen"
     },
     "r2600": {
       "1": "Konsole hinzugefügt, um die Protokolle des Plugins anzusehen, zu filtern und zu kopieren",

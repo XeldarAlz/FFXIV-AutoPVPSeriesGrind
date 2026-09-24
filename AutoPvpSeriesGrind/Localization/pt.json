@@ -17,6 +17,7 @@
     "installed": "Instalado",
     "installing": "Instalando",
     "install": "Instalar",
+    "enable": "Ativar",
     "purpose": {
       "vnavmesh": "Busca de caminho e movimento até o objetivo durante uma partida.",
       "lifestream": "Opcional: apenas para a ação de voltar à estalagem ao atingir a meta; viaja até a estalagem e entra no seu quarto.",
@@ -326,6 +327,11 @@
     "changes": {
       "one": "{0} mudança",
       "other": "{0} mudanças"
+    },
+    "r2700": {
+      "1": "Ao empurrar o cristal, o personagem agora caminha junto com ele em vez de parar e recomeçar a cada poucos passos",
+      "2": "Cada personagem acompanha o cristal a partir do próprio lugar no círculo, então os colegas de equipe não se amontoam mais em um só ponto",
+      "3": "Instalar um plugin obrigatório já instalado, mas desativado, agora o ativa em vez de danificar a instalação"
     },
     "r2600": {
       "1": "Adicionada a página Console para ver, filtrar e copiar os logs do plugin",

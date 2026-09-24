@@ -17,6 +17,7 @@
     "installed": "Instalado",
     "installing": "Instalando",
     "install": "Instalar",
+    "enable": "Activar",
     "purpose": {
       "vnavmesh": "Búsqueda de rutas y movimiento hacia el objetivo durante una partida.",
       "lifestream": "Opcional: solo para la acción de volver a la posada al alcanzar el objetivo; viaja a la posada y entra en tu habitación.",
@@ -326,6 +327,11 @@
     "changes": {
       "one": "{0} cambio",
       "other": "{0} cambios"
+    },
+    "r2700": {
+      "1": "Al empujar el cristal, ahora se camina junto a él en lugar de detenerse y arrancar cada pocos pasos",
+      "2": "Cada personaje acompaña el cristal desde su propio sitio dentro del círculo, así los compañeros ya no se amontonan en un mismo punto",
+      "3": "Instalar un plugin requerido que ya está instalado pero desactivado ahora lo activa en lugar de dañar su instalación"
     },
     "r2600": {
       "1": "Añadida la página Consola para ver, filtrar y copiar los registros del plugin",

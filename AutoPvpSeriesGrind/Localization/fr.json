@@ -17,6 +17,7 @@
     "installed": "Installé",
     "installing": "Installation",
     "install": "Installer",
+    "enable": "Activer",
     "purpose": {
       "vnavmesh": "Recherche de chemin et déplacement vers l'objectif pendant un match.",
       "lifestream": "Optionnel : uniquement pour l'action de retour à l'auberge une fois l'objectif atteint ; voyage jusqu'à l'auberge et entre dans votre chambre.",
@@ -326,6 +327,11 @@
     "changes": {
       "one": "{0} changement",
       "other": "{0} changements"
+    },
+    "r2700": {
+      "1": "En poussant le cristal, le personnage marche désormais avec lui au lieu de s'arrêter et repartir tous les quelques pas",
+      "2": "Chaque personnage accompagne le cristal depuis sa propre place dans le cercle, les coéquipiers ne s'empilent plus sur un même point",
+      "3": "Installer un plugin requis déjà installé mais désactivé l'active désormais au lieu d'endommager son installation"
     },
     "r2600": {
       "1": "Ajout de la page Console pour consulter, filtrer et copier les journaux du plugin",
