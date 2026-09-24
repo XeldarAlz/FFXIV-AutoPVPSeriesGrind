@@ -43,6 +43,7 @@
       "history": "Geçmiş",
       "plugins": "Eklentiler",
       "log": "Konsol",
+      "changelog": "Değişiklikler",
       "about": "Hakkında"
     },
     "minimize": "Başlık çubuğuna küçült",
@@ -315,6 +316,21 @@
     "onlySource": "Yalnızca {0} göster",
     "repeated": "Art arda {0} kez tekrarlandı",
     "hasDetails": "Yığın izi içerir. Okumak için satırı seçin."
+  },
+  "changelog": {
+    "title": "Yenilikler",
+    "subtitle": "Tüm güncellemeler, en yenisi en üstte.",
+    "version": "Sürüm {0}",
+    "latest": "Güncel",
+    "new": "Yeni",
+    "changes": {
+      "one": "{0} değişiklik",
+      "other": "{0} değişiklik"
+    },
+    "r2600": {
+      "1": "Eklentinin günlüklerini görüntülemek, filtrelemek ve kopyalamak için Konsol sayfası eklendi",
+      "2": "Bu değişiklik günlüğü eklendi; bir güncelleme yenilik getirdiğinde rozetle bildirir"
+    }
   },
   "about": {
     "connect": "Bağlantı",
@@ -634,7 +650,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | log | about | target | objects.",
+    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | log | changelog | about | target | objects.",
     "commandHelpAlias": "/apsg için kısayol."
   }
 }

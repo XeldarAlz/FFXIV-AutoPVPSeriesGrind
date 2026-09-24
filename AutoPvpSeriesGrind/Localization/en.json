@@ -43,6 +43,7 @@
       "history": "History",
       "plugins": "Plugins",
       "log": "Console",
+      "changelog": "Changelog",
       "about": "About"
     },
     "minimize": "Minimize to the header bar",
@@ -315,6 +316,21 @@
     "onlySource": "Show only {0}",
     "repeated": "Repeated {0} times in a row",
     "hasDetails": "Has a stack trace. Select the line to read it."
+  },
+  "changelog": {
+    "title": "What's new",
+    "subtitle": "Every update, newest first.",
+    "version": "Version {0}",
+    "latest": "Latest",
+    "new": "New",
+    "changes": {
+      "one": "{0} change",
+      "other": "{0} changes"
+    },
+    "r2600": {
+      "1": "Added the Console page to view, filter and copy the plugin's logs",
+      "2": "Added this changelog, with a badge whenever an update brings something new"
+    }
   },
   "about": {
     "connect": "Connect",
@@ -634,7 +650,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | about | target | objects.",
+    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | changelog | about | target | objects.",
     "commandHelpAlias": "Alias for /apsg."
   }
 }

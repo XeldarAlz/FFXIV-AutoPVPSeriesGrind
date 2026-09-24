@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core;
+using AutoPvpSeriesGrind.Core.Changelog;
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Modes;
 using Dalamud.Configuration;
@@ -63,6 +64,22 @@ public sealed class Configuration : IPluginConfiguration
     public int BreakMinutes { get; set; } = 5;
 
     public AfterRunAction AfterRun { get; set; } = AfterRunAction.StayLoggedIn;
+
+    public string LastSeenChangelogVersion { get; set; } = string.Empty;
+
+    [Newtonsoft.Json.JsonIgnore]
+    public bool HasUnseenChangelog => !string.Equals(LastSeenChangelogVersion, ChangelogData.LatestVersion, StringComparison.Ordinal);
+
+    public void MarkChangelogSeen()
+    {
+        if (!HasUnseenChangelog)
+        {
+            return;
+        }
+
+        LastSeenChangelogVersion = ChangelogData.LatestVersion;
+        Save();
+    }
 
     public void Save() => Plugin.PluginInterface.SavePluginConfig(this);
 

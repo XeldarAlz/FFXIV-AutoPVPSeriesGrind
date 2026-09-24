@@ -43,6 +43,7 @@
       "history": "Verlauf",
       "plugins": "Plugins",
       "log": "Konsole",
+      "changelog": "Änderungen",
       "about": "Über"
     },
     "minimize": "Auf die Titelleiste verkleinern",
@@ -315,6 +316,21 @@
     "onlySource": "Nur {0} anzeigen",
     "repeated": "{0}-mal hintereinander wiederholt",
     "hasDetails": "Enthält einen Stacktrace. Wähle die Zeile aus, um ihn zu lesen."
+  },
+  "changelog": {
+    "title": "Was ist neu",
+    "subtitle": "Alle Updates, das neueste zuerst.",
+    "version": "Version {0}",
+    "latest": "Aktuell",
+    "new": "Neu",
+    "changes": {
+      "one": "{0} Änderung",
+      "other": "{0} Änderungen"
+    },
+    "r2600": {
+      "1": "Konsole hinzugefügt, um die Protokolle des Plugins anzusehen, zu filtern und zu kopieren",
+      "2": "Dieses Änderungsprotokoll hinzugefügt, mit einem Hinweis, sobald ein Update Neues bringt"
+    }
   },
   "about": {
     "connect": "Kontakt",
@@ -634,7 +650,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg config | stats | deps | log | about | target | objects.",
+    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg config | stats | deps | log | changelog | about | target | objects.",
     "commandHelpAlias": "Alias für /apsg."
   }
 }

@@ -43,6 +43,7 @@
       "history": "История",
       "plugins": "Плагины",
       "log": "Консоль",
+      "changelog": "Изменения",
       "about": "О плагине"
     },
     "minimize": "Свернуть в заголовок",
@@ -315,6 +316,21 @@
     "onlySource": "Показать только {0}",
     "repeated": "Повторено подряд: {0}",
     "hasDetails": "Есть трассировка стека. Выберите строку, чтобы прочитать её."
+  },
+  "changelog": {
+    "title": "Что нового",
+    "subtitle": "Все обновления, начиная с последнего.",
+    "version": "Версия {0}",
+    "latest": "Текущая",
+    "new": "Новое",
+    "changes": {
+      "one": "{0} изменение",
+      "other": "Изменений: {0}"
+    },
+    "r2600": {
+      "1": "Добавлена консоль для просмотра, фильтрации и копирования журналов плагина",
+      "2": "Добавлен этот список изменений со значком, когда обновление приносит что-то новое"
+    }
   },
   "about": {
     "connect": "Связь",
@@ -634,7 +650,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Открывает или закрывает окно Auto PVP Series Grind. /apsg config | stats | deps | log | about | target | objects.",
+    "commandHelp": "Открывает или закрывает окно Auto PVP Series Grind. /apsg config | stats | deps | log | changelog | about | target | objects.",
     "commandHelpAlias": "Синоним /apsg."
   }
 }

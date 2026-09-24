@@ -115,6 +115,7 @@ public sealed class Plugin : IDalamudPlugin
         ["stats"] = ToggleHistoryUi,
         ["history"] = ToggleHistoryUi,
         ["log"] = ToggleLogUi,
+        ["changelog"] = ToggleChangelogUi,
         ["target"] = TargetDumper.Dump,
         ["objects"] = TargetDumper.DumpObjects,
     };
@@ -177,4 +178,5 @@ public sealed class Plugin : IDalamudPlugin
     public void ToggleDependenciesUi() => appWindow.TogglePage(AppWindow.Page.Plugins);
     public void ToggleHistoryUi() => appWindow.TogglePage(AppWindow.Page.History);
     public void ToggleLogUi() => appWindow.TogglePage(AppWindow.Page.Log);
+    public void ToggleChangelogUi() => appWindow.TogglePage(AppWindow.Page.Changelog);
 }

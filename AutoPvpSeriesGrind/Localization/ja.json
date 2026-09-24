@@ -43,6 +43,7 @@
       "history": "履歴",
       "plugins": "プラグイン",
       "log": "コンソール",
+      "changelog": "更新履歴",
       "about": "情報"
     },
     "minimize": "タイトルバーに最小化",
@@ -315,6 +316,21 @@
     "onlySource": "{0}のみ表示",
     "repeated": "連続で{0}回繰り返し",
     "hasDetails": "スタックトレースがあります。行を選択すると確認できます。"
+  },
+  "changelog": {
+    "title": "新機能",
+    "subtitle": "すべての更新を新しい順に表示します。",
+    "version": "バージョン {0}",
+    "latest": "最新",
+    "new": "新着",
+    "changes": {
+      "one": "{0}件の変更",
+      "other": "{0}件の変更"
+    },
+    "r2600": {
+      "1": "プラグインのログを表示、絞り込み、コピーできるコンソールを追加",
+      "2": "この更新履歴を追加。新しい更新があるとバッジで知らせます"
+    }
   },
   "about": {
     "connect": "リンク",
@@ -634,7 +650,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grindのウィンドウを開閉します。/apsg config | stats | deps | log | about | target | objects。",
+    "commandHelp": "Auto PVP Series Grindのウィンドウを開閉します。/apsg config | stats | deps | log | changelog | about | target | objects。",
     "commandHelpAlias": "/apsg の別名です。"
   }
 }

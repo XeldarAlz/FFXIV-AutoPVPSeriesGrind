@@ -43,6 +43,7 @@
       "history": "Historique",
       "plugins": "Plugins",
       "log": "Console",
+      "changelog": "Nouveautés",
       "about": "À propos"
     },
     "minimize": "Réduire à la barre de titre",
@@ -315,6 +316,21 @@
     "onlySource": "Afficher uniquement {0}",
     "repeated": "Répété {0} fois d'affilée",
     "hasDetails": "Contient une trace de pile. Sélectionnez la ligne pour la lire."
+  },
+  "changelog": {
+    "title": "Quoi de neuf",
+    "subtitle": "Toutes les mises à jour, de la plus récente à la plus ancienne.",
+    "version": "Version {0}",
+    "latest": "Actuelle",
+    "new": "Nouveau",
+    "changes": {
+      "one": "{0} changement",
+      "other": "{0} changements"
+    },
+    "r2600": {
+      "1": "Ajout de la page Console pour consulter, filtrer et copier les journaux du plugin",
+      "2": "Ajout de ce journal des modifications, avec un badge dès qu'une mise à jour apporte du nouveau"
+    }
   },
   "about": {
     "connect": "Contact",
@@ -634,7 +650,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Affiche ou masque la fenêtre Auto PVP Series Grind. /apsg config | stats | deps | log | about | target | objects.",
+    "commandHelp": "Affiche ou masque la fenêtre Auto PVP Series Grind. /apsg config | stats | deps | log | changelog | about | target | objects.",
     "commandHelpAlias": "Alias de /apsg."
   }
 }

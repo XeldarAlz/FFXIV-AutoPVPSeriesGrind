@@ -24,6 +24,7 @@ internal static class L
         public static readonly LocString NavHistory = new("shell.nav.history", "History");
         public static readonly LocString NavPlugins = new("shell.nav.plugins", "Plugins");
         public static readonly LocString NavLog = new("shell.nav.log", "Console");
+        public static readonly LocString NavChangelog = new("shell.nav.changelog", "Changelog");
         public static readonly LocString NavAbout = new("shell.nav.about", "About");
         public static readonly LocString Minimize = new("shell.minimize", "Minimize to the header bar");
         public static readonly LocString Restore = new("shell.restore", "Restore");
@@ -270,6 +271,22 @@ internal static class L
         public static readonly LocString OnlySource = new("log.onlySource", "Show only {0}");
         public static readonly LocString Repeated = new("log.repeated", "Repeated {0} times in a row");
         public static readonly LocString HasDetails = new("log.hasDetails", "Has a stack trace. Select the line to read it.");
+    }
+
+    internal static class Changelog
+    {
+        public static readonly LocString Title = new("changelog.title", "What's new");
+        public static readonly LocString Subtitle = new("changelog.subtitle", "Every update, newest first.");
+        public static readonly LocString Version = new("changelog.version", "Version {0}");
+        public static readonly LocString Latest = new("changelog.latest", "Latest");
+        public static readonly LocString New = new("changelog.new", "New");
+        public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
+
+        public static readonly LocString[] Release2600 =
+        [
+            new("changelog.r2600.1", "Added the Console page to view, filter and copy the plugin's logs"),
+            new("changelog.r2600.2", "Added this changelog, with a badge whenever an update brings something new"),
+        ];
     }
 
     internal static class About
@@ -585,7 +602,7 @@ internal static class L
 
     internal static class Plugin
     {
-        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | about | target | objects.");
+        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | changelog | about | target | objects.");
         public static readonly LocString CommandHelpAlias = new("plugin.commandHelpAlias", "Alias for /apsg.");
     }
 }
