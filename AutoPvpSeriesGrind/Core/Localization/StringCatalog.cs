@@ -1,4 +1,3 @@
-using ECommons.DalamudServices;
 using Newtonsoft.Json.Linq;
 using System.IO;
 
@@ -35,7 +34,7 @@ internal sealed class StringCatalog
         }
         catch (Exception exception)
         {
-            Svc.Log.Error(exception, $"{ApsgConstants.LogPrefix} Failed to load language catalog '{path}'");
+            RunLog.Error(exception, $"Failed to load language catalog '{path}'");
             return Empty;
         }
 
@@ -55,7 +54,7 @@ internal sealed class StringCatalog
         }
         catch (Exception exception)
         {
-            Svc.Log.Error(exception, $"{ApsgConstants.LogPrefix} Failed to scan glyphs from '{path}'");
+            RunLog.Error(exception, $"Failed to scan glyphs from '{path}'");
             return [0];
         }
 

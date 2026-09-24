@@ -35,7 +35,7 @@ internal static class GameText
         }
         catch (Exception exception)
         {
-            ApsgLog.Warn($"quick chat row {rowId} lookup failed, falling back to English: {exception.Message}");
+            RunLog.Warning($"quick chat row {rowId} lookup failed, falling back to English: {exception.Message}");
             return null;
         }
     }

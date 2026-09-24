@@ -42,6 +42,7 @@
       "settings": "Einstellungen",
       "history": "Verlauf",
       "plugins": "Plugins",
+      "log": "Konsole",
       "about": "Über"
     },
     "minimize": "Auf die Titelleiste verkleinern",
@@ -260,6 +261,60 @@
       "hoursAgo": "vor {0} h",
       "daysAgo": "vor {0} T."
     }
+  },
+  "log": {
+    "title": "Konsole",
+    "entries": {
+      "one": "{0} Zeile im Puffer",
+      "other": "{0} Zeilen im Puffer"
+    },
+    "empty": "Noch nichts protokolliert. Starte einen Lauf, dann erscheint hier jeder Schritt des Plugins.",
+    "noMatches": "Keine Zeile passt zu den aktuellen Filtern.",
+    "footer": "Jede Zeile landet außerdem mit dem Präfix {0} im Dalamud-Log (/xllog). Für einen Fehlerbericht drücke Protokoll kopieren und füge das Ergebnis in das Issue ein.",
+    "searchHint": "Nachrichten und Quellen durchsuchen",
+    "copyAll": "Protokoll kopieren",
+    "copyFiltered": {
+      "one": "{0} Zeile kopieren",
+      "other": "{0} Zeilen kopieren"
+    },
+    "copyTooltip": "Kopiert die unten angezeigten Zeilen samt Kopfzeile mit Plugin-Version, Dalamud-Version und Gebiet, bereit zum Einfügen in einen Fehlerbericht.",
+    "copied": "Kopiert",
+    "copiedLines": {
+      "one": "{0} Zeile in die Zwischenablage kopiert",
+      "other": "{0} Zeilen in die Zwischenablage kopiert"
+    },
+    "clear": "Leeren",
+    "confirmClear": "Zum Leeren erneut klicken",
+    "close": "Schließen",
+    "level": {
+      "verbose": "Ausführlich",
+      "debug": "Debug",
+      "info": "Info",
+      "warning": "Warnungen",
+      "error": "Fehler"
+    },
+    "levelTooltip": "Klicken, um diese Zeilen ein- oder auszublenden. Umschalt-Klick zeigt nur diese Stufe.",
+    "sourceChip": "Quelle: {0}",
+    "sourceChipTooltip": "Klicken, um den Quellenfilter zu entfernen.",
+    "jumpLatest": "Zum Neuesten springen",
+    "newLines": {
+      "one": "{0} neue Zeile",
+      "other": "{0} neue Zeilen"
+    },
+    "showing": "{0} von {1} angezeigt",
+    "resetFilters": "Filter zurücksetzen",
+    "shortcuts": "Strg+F suchen · Strg+C kopieren · Umschalt-Klick wählt einen Bereich · Doppelklick kopiert eine Zeile",
+    "selected": {
+      "one": "{0} Zeile ausgewählt",
+      "other": "{0} Zeilen ausgewählt"
+    },
+    "copySelection": "Auswahl kopieren",
+    "clearSelection": "Auswahl aufheben",
+    "copyLine": "Zeile kopieren",
+    "copyToEnd": "Ab hier bis zum Ende kopieren",
+    "onlySource": "Nur {0} anzeigen",
+    "repeated": "{0}-mal hintereinander wiederholt",
+    "hasDetails": "Enthält einen Stacktrace. Wähle die Zeile aus, um ihn zu lesen."
   },
   "about": {
     "connect": "Kontakt",
@@ -579,7 +634,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg config | stats | deps | about | target | objects.",
+    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg config | stats | deps | log | about | target | objects.",
     "commandHelpAlias": "Alias für /apsg."
   }
 }

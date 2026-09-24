@@ -42,6 +42,7 @@
       "settings": "Ayarlar",
       "history": "Geçmiş",
       "plugins": "Eklentiler",
+      "log": "Konsol",
       "about": "Hakkında"
     },
     "minimize": "Başlık çubuğuna küçült",
@@ -260,6 +261,60 @@
       "hoursAgo": "{0} sa önce",
       "daysAgo": "{0} gün önce"
     }
+  },
+  "log": {
+    "title": "Konsol",
+    "entries": {
+      "one": "Arabellekte {0} satır",
+      "other": "Arabellekte {0} satır"
+    },
+    "empty": "Henüz bir kayıt yok. Bir çalıştırma başlatın, eklentinin attığı her adım burada görünür.",
+    "noMatches": "Geçerli filtrelerle eşleşen satır yok.",
+    "footer": "Her satır {0} ön ekiyle Dalamud günlüğüne (/xllog) de gider. Hata bildirirken Günlüğü kopyala düğmesine basın ve sonucu issue'ya yapıştırın.",
+    "searchHint": "Mesajlarda ve kaynaklarda ara",
+    "copyAll": "Günlüğü kopyala",
+    "copyFiltered": {
+      "one": "{0} satırı kopyala",
+      "other": "{0} satırı kopyala"
+    },
+    "copyTooltip": "Aşağıda gösterilen satırları eklenti sürümü, Dalamud sürümü ve bölgeyi belirten bir başlıkla kopyalar; hata bildirimine yapıştırmaya hazırdır.",
+    "copied": "Kopyalandı",
+    "copiedLines": {
+      "one": "{0} satır panoya kopyalandı",
+      "other": "{0} satır panoya kopyalandı"
+    },
+    "clear": "Temizle",
+    "confirmClear": "Temizlemek için tekrar tıklayın",
+    "close": "Kapat",
+    "level": {
+      "verbose": "Ayrıntılı",
+      "debug": "Hata ayıklama",
+      "info": "Bilgi",
+      "warning": "Uyarılar",
+      "error": "Hatalar"
+    },
+    "levelTooltip": "Bu satırları göstermek veya gizlemek için tıklayın. Yalnızca bu düzeyi göstermek için Shift ile tıklayın.",
+    "sourceChip": "Kaynak: {0}",
+    "sourceChipTooltip": "Kaynağa göre filtrelemeyi kaldırmak için tıklayın.",
+    "jumpLatest": "En yeniye git",
+    "newLines": {
+      "one": "{0} yeni satır",
+      "other": "{0} yeni satır"
+    },
+    "showing": "{1} satırdan {0} tanesi gösteriliyor",
+    "resetFilters": "Filtreleri sıfırla",
+    "shortcuts": "Ctrl+F ara · Ctrl+C kopyala · Shift ile tıklama aralık seçer · Çift tıklama satırı kopyalar",
+    "selected": {
+      "one": "{0} satır seçildi",
+      "other": "{0} satır seçildi"
+    },
+    "copySelection": "Seçimi kopyala",
+    "clearSelection": "Seçimi temizle",
+    "copyLine": "Satırı kopyala",
+    "copyToEnd": "Buradan sona kadar kopyala",
+    "onlySource": "Yalnızca {0} göster",
+    "repeated": "Art arda {0} kez tekrarlandı",
+    "hasDetails": "Yığın izi içerir. Okumak için satırı seçin."
   },
   "about": {
     "connect": "Bağlantı",
@@ -579,7 +634,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | about | target | objects.",
+    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | log | about | target | objects.",
     "commandHelpAlias": "/apsg için kısayol."
   }
 }

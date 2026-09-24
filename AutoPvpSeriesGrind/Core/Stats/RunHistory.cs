@@ -36,7 +36,7 @@ internal sealed class RunHistory
         }
         catch (Exception ex)
         {
-            ApsgLog.Warn(ex, "RunHistory load failed; starting empty");
+            RunLog.Warning(ex, "RunHistory load failed; starting empty");
         }
     }
 
@@ -88,7 +88,7 @@ internal sealed class RunHistory
         }
         catch (Exception ex)
         {
-            ApsgLog.Warn(ex, "RunHistory save failed");
+            RunLog.Warning(ex, "RunHistory save failed");
         }
     }
 

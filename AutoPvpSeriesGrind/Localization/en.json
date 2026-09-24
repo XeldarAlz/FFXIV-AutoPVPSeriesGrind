@@ -42,6 +42,7 @@
       "settings": "Settings",
       "history": "History",
       "plugins": "Plugins",
+      "log": "Console",
       "about": "About"
     },
     "minimize": "Minimize to the header bar",
@@ -260,6 +261,60 @@
       "hoursAgo": "{0}h ago",
       "daysAgo": "{0}d ago"
     }
+  },
+  "log": {
+    "title": "Console",
+    "entries": {
+      "one": "{0} line in the buffer",
+      "other": "{0} lines in the buffer"
+    },
+    "empty": "Nothing logged yet. Start a run and every step the plugin takes shows up here.",
+    "noMatches": "No lines match the current filters.",
+    "footer": "Every line also goes to the Dalamud log (/xllog) with the {0} prefix. When reporting a bug, press Copy log and paste the result into the issue.",
+    "searchHint": "Search messages and sources",
+    "copyAll": "Copy log",
+    "copyFiltered": {
+      "one": "Copy {0} line",
+      "other": "Copy {0} lines"
+    },
+    "copyTooltip": "Copies the lines shown below with a header naming the plugin version, Dalamud version and zone, ready to paste into a bug report.",
+    "copied": "Copied",
+    "copiedLines": {
+      "one": "Copied {0} line to the clipboard",
+      "other": "Copied {0} lines to the clipboard"
+    },
+    "clear": "Clear",
+    "confirmClear": "Click again to clear",
+    "close": "Close",
+    "level": {
+      "verbose": "Verbose",
+      "debug": "Debug",
+      "info": "Info",
+      "warning": "Warnings",
+      "error": "Errors"
+    },
+    "levelTooltip": "Click to show or hide these lines. Shift-click to show only this level.",
+    "sourceChip": "Source: {0}",
+    "sourceChipTooltip": "Click to stop filtering by source.",
+    "jumpLatest": "Jump to latest",
+    "newLines": {
+      "one": "{0} new line",
+      "other": "{0} new lines"
+    },
+    "showing": "Showing {0} of {1}",
+    "resetFilters": "Reset filters",
+    "shortcuts": "Ctrl+F search · Ctrl+C copy · Shift-click selects a range · Double-click copies a line",
+    "selected": {
+      "one": "{0} line selected",
+      "other": "{0} lines selected"
+    },
+    "copySelection": "Copy selection",
+    "clearSelection": "Clear selection",
+    "copyLine": "Copy line",
+    "copyToEnd": "Copy from here to the end",
+    "onlySource": "Show only {0}",
+    "repeated": "Repeated {0} times in a row",
+    "hasDetails": "Has a stack trace. Select the line to read it."
   },
   "about": {
     "connect": "Connect",
@@ -579,7 +634,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | about | target | objects.",
+    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | about | target | objects.",
     "commandHelpAlias": "Alias for /apsg."
   }
 }

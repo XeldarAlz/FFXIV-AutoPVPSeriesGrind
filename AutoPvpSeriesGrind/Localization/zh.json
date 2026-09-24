@@ -42,6 +42,7 @@
       "settings": "设置",
       "history": "历史",
       "plugins": "插件",
+      "log": "控制台",
       "about": "关于"
     },
     "minimize": "最小化到标题栏",
@@ -260,6 +261,60 @@
       "hoursAgo": "{0} 小时前",
       "daysAgo": "{0} 天前"
     }
+  },
+  "log": {
+    "title": "控制台",
+    "entries": {
+      "one": "缓冲区中有 {0} 行",
+      "other": "缓冲区中有 {0} 行"
+    },
+    "empty": "尚无记录。开始运行后，插件执行的每一步都会显示在这里。",
+    "noMatches": "没有符合当前筛选条件的行。",
+    "footer": "每一行也会以 {0} 前缀写入 Dalamud 日志（/xllog）。报告错误时，请点击“复制日志”并将结果粘贴到 issue 中。",
+    "searchHint": "搜索消息和来源",
+    "copyAll": "复制日志",
+    "copyFiltered": {
+      "one": "复制 {0} 行",
+      "other": "复制 {0} 行"
+    },
+    "copyTooltip": "复制下方显示的行，并附带注明插件版本、Dalamud 版本和区域的标头，可直接粘贴到错误报告中。",
+    "copied": "已复制",
+    "copiedLines": {
+      "one": "已将 {0} 行复制到剪贴板",
+      "other": "已将 {0} 行复制到剪贴板"
+    },
+    "clear": "清空",
+    "confirmClear": "再次点击以清空",
+    "close": "关闭",
+    "level": {
+      "verbose": "详细",
+      "debug": "调试",
+      "info": "信息",
+      "warning": "警告",
+      "error": "错误"
+    },
+    "levelTooltip": "点击以显示或隐藏这些行。按住 Shift 点击则只显示此级别。",
+    "sourceChip": "来源：{0}",
+    "sourceChipTooltip": "点击以取消按来源筛选。",
+    "jumpLatest": "跳到最新",
+    "newLines": {
+      "one": "{0} 条新行",
+      "other": "{0} 条新行"
+    },
+    "showing": "显示 {0} / {1}",
+    "resetFilters": "重置筛选",
+    "shortcuts": "Ctrl+F 搜索 · Ctrl+C 复制 · Shift+点击选择范围 · 双击复制一行",
+    "selected": {
+      "one": "已选择 {0} 行",
+      "other": "已选择 {0} 行"
+    },
+    "copySelection": "复制所选内容",
+    "clearSelection": "取消选择",
+    "copyLine": "复制此行",
+    "copyToEnd": "复制从此处到末尾",
+    "onlySource": "仅显示 {0}",
+    "repeated": "连续重复 {0} 次",
+    "hasDetails": "包含堆栈跟踪。选中此行即可查看。"
   },
   "about": {
     "connect": "联系",
@@ -579,7 +634,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg config | stats | deps | about | target | objects。",
+    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg config | stats | deps | log | about | target | objects。",
     "commandHelpAlias": "/apsg 的别名。"
   }
 }

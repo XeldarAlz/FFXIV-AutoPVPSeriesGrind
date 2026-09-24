@@ -122,7 +122,7 @@ internal sealed class MovementExecutor
         var accepted = stopRange > MinStopRangeForMoveCloseTo ? Nav.MoveCloseTo(target, stopRange) : Nav.MoveTo(target);
         if (!accepted)
         {
-            ApsgLog.Debug($"move to {destination:F0} dropped by vnavmesh (pathfind pending), retrying next tick");
+            RunLog.Debug($"move to {destination:F0} dropped by vnavmesh (pathfind pending), retrying next tick");
             return;
         }
 

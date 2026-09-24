@@ -21,8 +21,8 @@ internal sealed class LifestreamIpc
 
     public void ExecuteCommand(string command)
         => IpcGate.Run(executeCommand.HasFunction, () => executeCommand.InvokeAction(command),
-            "[LifestreamIPC] ExecuteCommand failed");
+            "ExecuteCommand failed");
 
     public bool IsBusy()
-        => IpcGate.Invoke(isBusy.HasFunction, isBusy.InvokeFunc, false, "[LifestreamIPC] IsBusy failed");
+        => IpcGate.Invoke(isBusy.HasFunction, isBusy.InvokeFunc, false, "IsBusy failed");
 }

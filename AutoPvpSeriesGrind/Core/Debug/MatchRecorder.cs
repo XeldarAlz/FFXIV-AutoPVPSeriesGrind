@@ -30,11 +30,11 @@ internal static class MatchRecorder
             writer = new StreamWriter(Path.Combine(directory, fileName), append: false, Encoding.UTF8) { AutoFlush = true };
             startedAtMs = Environment.TickCount64;
             warnedWriteFailure = false;
-            ApsgLog.Debug($"match recorder -> {fileName}");
+            RunLog.Debug($"match recorder -> {fileName}");
         }
         catch (Exception ex)
         {
-            ApsgLog.Warn(ex, "MatchRecorder: failed to open log file");
+            RunLog.Warning(ex, "failed to open log file");
             writer = null;
         }
     }
@@ -54,7 +54,7 @@ internal static class MatchRecorder
             if (!warnedWriteFailure)
             {
                 warnedWriteFailure = true;
-                ApsgLog.Warn(ex, "MatchRecorder: write failed, recording stopped");
+                RunLog.Warning(ex, "write failed, recording stopped");
             }
             End();
         }
@@ -131,7 +131,7 @@ internal static class MatchRecorder
         }
         catch (Exception ex)
         {
-            ApsgLog.Warn(ex, "MatchRecorder: prune failed");
+            RunLog.Warning(ex, "prune failed");
         }
     }
 

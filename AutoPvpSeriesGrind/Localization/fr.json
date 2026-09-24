@@ -42,6 +42,7 @@
       "settings": "Réglages",
       "history": "Historique",
       "plugins": "Plugins",
+      "log": "Console",
       "about": "À propos"
     },
     "minimize": "Réduire à la barre de titre",
@@ -260,6 +261,60 @@
       "hoursAgo": "il y a {0} h",
       "daysAgo": "il y a {0} j"
     }
+  },
+  "log": {
+    "title": "Console",
+    "entries": {
+      "one": "{0} ligne en mémoire",
+      "other": "{0} lignes en mémoire"
+    },
+    "empty": "Rien n'a encore été enregistré. Lancez une exécution et chaque étape du plugin s'affichera ici.",
+    "noMatches": "Aucune ligne ne correspond aux filtres actuels.",
+    "footer": "Chaque ligne est aussi envoyée dans le journal Dalamud (/xllog) avec le préfixe {0}. Pour signaler un bug, cliquez sur Copier le journal et collez le résultat dans le ticket.",
+    "searchHint": "Rechercher dans les messages et les sources",
+    "copyAll": "Copier le journal",
+    "copyFiltered": {
+      "one": "Copier {0} ligne",
+      "other": "Copier {0} lignes"
+    },
+    "copyTooltip": "Copie les lignes affichées ci-dessous avec un en-tête indiquant la version du plugin, celle de Dalamud et la zone, prêt à coller dans un rapport de bug.",
+    "copied": "Copié",
+    "copiedLines": {
+      "one": "{0} ligne copiée dans le presse-papiers",
+      "other": "{0} lignes copiées dans le presse-papiers"
+    },
+    "clear": "Effacer",
+    "confirmClear": "Cliquez à nouveau pour effacer",
+    "close": "Fermer",
+    "level": {
+      "verbose": "Détaillé",
+      "debug": "Débogage",
+      "info": "Info",
+      "warning": "Avertissements",
+      "error": "Erreurs"
+    },
+    "levelTooltip": "Cliquez pour afficher ou masquer ces lignes. Maj+clic pour n'afficher que ce niveau.",
+    "sourceChip": "Source : {0}",
+    "sourceChipTooltip": "Cliquez pour ne plus filtrer par source.",
+    "jumpLatest": "Aller au plus récent",
+    "newLines": {
+      "one": "{0} nouvelle ligne",
+      "other": "{0} nouvelles lignes"
+    },
+    "showing": "{0} sur {1} affichées",
+    "resetFilters": "Réinitialiser les filtres",
+    "shortcuts": "Ctrl+F rechercher · Ctrl+C copier · Maj+clic sélectionne une plage · Double-clic copie une ligne",
+    "selected": {
+      "one": "{0} ligne sélectionnée",
+      "other": "{0} lignes sélectionnées"
+    },
+    "copySelection": "Copier la sélection",
+    "clearSelection": "Effacer la sélection",
+    "copyLine": "Copier la ligne",
+    "copyToEnd": "Copier d'ici jusqu'à la fin",
+    "onlySource": "Afficher uniquement {0}",
+    "repeated": "Répété {0} fois d'affilée",
+    "hasDetails": "Contient une trace de pile. Sélectionnez la ligne pour la lire."
   },
   "about": {
     "connect": "Contact",
@@ -579,7 +634,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Affiche ou masque la fenêtre Auto PVP Series Grind. /apsg config | stats | deps | about | target | objects.",
+    "commandHelp": "Affiche ou masque la fenêtre Auto PVP Series Grind. /apsg config | stats | deps | log | about | target | objects.",
     "commandHelpAlias": "Alias de /apsg."
   }
 }

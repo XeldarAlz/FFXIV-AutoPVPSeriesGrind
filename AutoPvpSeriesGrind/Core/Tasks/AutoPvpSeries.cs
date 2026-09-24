@@ -101,7 +101,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         brain.Targeting = cfg.Targeting;
         rotation.Configure(cfg.RotationProvider == RotationProvider.Internal, RotationSettings.From(cfg));
 
-        ApsgLog.Chat($"Starting PvP Series grind ({matchType}, {cfg.ActiveMode.DisplayName}).");
+        ApsgChat.Print($"Starting PvP Series grind ({matchType}, {cfg.ActiveMode.DisplayName}).");
 
         await Startup();
 

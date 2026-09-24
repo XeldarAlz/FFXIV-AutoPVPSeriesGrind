@@ -44,7 +44,7 @@ internal sealed class RotationController(PvpBrain brain)
 
         wasDead = true;
         brain.Reset();
-        ApsgLog.Info("death detected -> waiting for respawn");
+        RunLog.Info("death detected -> waiting for respawn");
     }
 
     private void OnRespawnDetected()
@@ -56,7 +56,7 @@ internal sealed class RotationController(PvpBrain brain)
 
         wasDead = false;
         driver.OnAlive();
-        ApsgLog.Info("respawn detected");
+        RunLog.Info("respawn detected");
     }
 
     public RotationOutcome Drive(PvpSnapshot snapshot, ulong targetId, Posture posture, Vector3 moveDestination, bool underBurst, Action holdStill)

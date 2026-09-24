@@ -38,7 +38,7 @@ internal sealed class GreetingDirector
         var helloDelay = HumanTiming.RandomSecondsInclusive(settings.HelloDelayMinSec, settings.HelloDelayMaxSec);
         portraitHelloThreshold = Math.Clamp(IntroBandUpperSec - helloDelay, PortraitHelloThresholdFloorSeconds, PortraitHelloThresholdCeilingSeconds);
         portraitHelloSent = false;
-        ApsgLog.Info($"portrait hello threshold set -> {portraitHelloThreshold}s");
+        RunLog.Info($"portrait hello threshold set -> {portraitHelloThreshold}s");
 
         emoteMoments.Clear();
         emoteDeferLogged = false;
@@ -49,7 +49,7 @@ internal sealed class GreetingDirector
             {
                 emoteMoments.Enqueue(HumanTiming.RandomSecondsInclusive(SecondEmoteLatestSec, SecondEmoteEarliestSec));
             }
-            ApsgLog.Info($"emote moments planned -> [{string.Join(", ", emoteMoments)}]s left");
+            RunLog.Info($"emote moments planned -> [{string.Join(", ", emoteMoments)}]s left");
         }
     }
 
@@ -69,7 +69,7 @@ internal sealed class GreetingDirector
         if (!HumanTiming.Maybe(settings.HelloChance)) return false;
 
         Chat.ExecuteCommand(GameText.QuickChatHello());
-        ApsgLog.Info($"quickchat Hello sent at tLeft={timeLeftSeconds} (threshold={portraitHelloThreshold})");
+        RunLog.Info($"quickchat Hello sent at tLeft={timeLeftSeconds} (threshold={portraitHelloThreshold})");
         return true;
     }
 
@@ -89,7 +89,7 @@ internal sealed class GreetingDirector
         {
             if (!emoteDeferLogged)
             {
-                ApsgLog.Info($"emote deferred at tLeft={timeLeftSeconds} (player busy/moving) -> retrying");
+                RunLog.Info($"emote deferred at tLeft={timeLeftSeconds} (player busy/moving) -> retrying");
                 emoteDeferLogged = true;
             }
             return;
@@ -99,7 +99,7 @@ internal sealed class GreetingDirector
         emoteDeferLogged = false;
         var emote = GameCommands.GreetEmotes[HumanTiming.SharedRandom.Next(GameCommands.GreetEmotes.Length)];
         Chat.ExecuteCommand(emote);
-        ApsgLog.Info($"random emote '{emote}' sent at tLeft={timeLeftSeconds}");
+        RunLog.Info($"random emote '{emote}' sent at tLeft={timeLeftSeconds}");
     }
 
     private static bool CanEmoteNow() => Player.Available && !Player.IsDead && !Player.IsBusy;

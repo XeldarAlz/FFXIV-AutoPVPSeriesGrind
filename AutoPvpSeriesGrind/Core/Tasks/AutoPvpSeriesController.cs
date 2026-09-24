@@ -42,7 +42,7 @@ internal sealed class AutoPvpSeriesController
 
     public void ClearLastResult() => lastResultTick = NoResult;
 
-    private static void LogDiagnostic(string message) => ApsgLog.Info(message);
+    private static void LogDiagnostic(string message) => RunLog.Info(message);
 
     public void Start()
     {
@@ -52,7 +52,7 @@ internal sealed class AutoPvpSeriesController
         {
             var missing = MissingRequiredPluginNames();
             LogDiagnostic($"Start aborted: required plugins missing ({missing}).");
-            ApsgLog.ChatError($"Cannot start. Install all required plugins first: {missing}.");
+            ApsgChat.PrintError($"Cannot start. Install all required plugins first: {missing}.");
             return;
         }
 

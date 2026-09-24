@@ -1,6 +1,6 @@
+using AutoPvpSeriesGrind.Core;
 using AutoPvpSeriesGrind.Windows.Components;
 using Dalamud.Bindings.ImGui;
-using ECommons.DalamudServices;
 using System.Diagnostics;
 
 namespace AutoPvpSeriesGrind.Windows;
@@ -22,7 +22,7 @@ internal static class UrlActions
 
     public static void OpenOrCopy(string url)
         => OpenInBrowser(url, exception =>
-            Svc.Log.Warning(exception, $"failed to launch browser for {url}, copied to clipboard instead"));
+            RunLog.Warning(exception, $"failed to launch browser for {url}, copied to clipboard instead"));
 
     public static void HoveredLinkInteraction(string url, string tooltip)
     {

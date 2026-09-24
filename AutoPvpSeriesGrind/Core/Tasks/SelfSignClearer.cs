@@ -37,6 +37,6 @@ internal struct SelfSignClearer
 
         Chat.ExecuteCommand(GameCommands.ClearSignOnSelf);
         clearAtMs = now + RetryAfterMs;
-        ApsgLog.Info("sign on self -> cleared");
+        RunLog.Info("sign on self -> cleared");
     }
 }

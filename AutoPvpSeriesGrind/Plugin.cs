@@ -114,6 +114,7 @@ public sealed class Plugin : IDalamudPlugin
         ["dependencies"] = ToggleDependenciesUi,
         ["stats"] = ToggleHistoryUi,
         ["history"] = ToggleHistoryUi,
+        ["log"] = ToggleLogUi,
         ["target"] = TargetDumper.Dump,
         ["objects"] = TargetDumper.DumpObjects,
     };
@@ -137,7 +138,7 @@ public sealed class Plugin : IDalamudPlugin
         if (e.Exception.ToString().Contains(ApsgConstants.VnavmeshIpcProviderMarker))
         {
             e.SetObserved();
-            ApsgLog.Debug($"Observed vnavmesh IPC task fault: {e.Exception.GetBaseException().Message}");
+            RunLog.Debug($"Observed vnavmesh IPC task fault: {e.Exception.GetBaseException().Message}");
         }
     }
 
@@ -175,4 +176,5 @@ public sealed class Plugin : IDalamudPlugin
     public void ToggleAboutUi() => appWindow.TogglePage(AppWindow.Page.About);
     public void ToggleDependenciesUi() => appWindow.TogglePage(AppWindow.Page.Plugins);
     public void ToggleHistoryUi() => appWindow.TogglePage(AppWindow.Page.History);
+    public void ToggleLogUi() => appWindow.TogglePage(AppWindow.Page.Log);
 }

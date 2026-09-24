@@ -179,6 +179,6 @@ internal static class PvpActionCatalog
             names.Append(kit.Buttons[buttonIndex].Name);
         }
         var tableState = JobRotationTables.TryGet((uint)job, out _) ? "with a job table" : "generic order";
-        ApsgLog.Info($"built-in rotation kit for {job} ({tableState}): {names}");
+        RunLog.Info($"built-in rotation kit for {job} ({tableState}): {names}");
     }
 }

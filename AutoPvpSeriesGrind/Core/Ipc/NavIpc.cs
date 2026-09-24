@@ -46,7 +46,7 @@ internal sealed class NavIpc
             return true;
         }
 
-        return IpcGate.Invoke(true, () => moveTo.InvokeFunc(dest, fly), false, "NavIpc: PathfindAndMoveTo failed");
+        return IpcGate.Invoke(true, () => moveTo.InvokeFunc(dest, fly), false, "PathfindAndMoveTo failed");
     }
 
     public bool MoveCloseTo(Vector3 dest, float range, bool fly = false)
@@ -57,33 +57,33 @@ internal sealed class NavIpc
             return true;
         }
 
-        return IpcGate.Invoke(true, () => moveCloseTo.InvokeFunc(dest, fly, range), false, "NavIpc: PathfindAndMoveCloseTo failed");
+        return IpcGate.Invoke(true, () => moveCloseTo.InvokeFunc(dest, fly, range), false, "PathfindAndMoveCloseTo failed");
     }
 
     public void Stop()
     {
         if (stop.HasFunction)
-            IpcGate.Run(true, stop.InvokeAction, "NavIpc: Path.Stop failed");
+            IpcGate.Run(true, stop.InvokeAction, "Path.Stop failed");
         else
             Chat.ExecuteCommand(GameCommands.NavStop);
     }
 
     public bool IsRunning()
-        => IpcGate.Invoke(isRunning.HasFunction, isRunning.InvokeFunc, false, "NavIpc: IsRunning failed")
-        || IpcGate.Invoke(pathfindInProgress.HasFunction, pathfindInProgress.InvokeFunc, false, "NavIpc: PathfindInProgress failed");
+        => IpcGate.Invoke(isRunning.HasFunction, isRunning.InvokeFunc, false, "IsRunning failed")
+        || IpcGate.Invoke(pathfindInProgress.HasFunction, pathfindInProgress.InvokeFunc, false, "PathfindInProgress failed");
 
     // vnavmesh silently ignores movement requests while the zone mesh is still building, which reads
     // as the character standing around doing nothing; surfaced so the log says which one it was.
     public bool IsReady()
-        => IpcGate.Invoke(isReady.HasFunction, isReady.InvokeFunc, false, "NavIpc: IsReady failed");
+        => IpcGate.Invoke(isReady.HasFunction, isReady.InvokeFunc, false, "IsReady failed");
 
     public float BuildProgress()
-        => IpcGate.Invoke(buildProgress.HasFunction, buildProgress.InvokeFunc, -1f, "NavIpc: BuildProgress failed");
+        => IpcGate.Invoke(buildProgress.HasFunction, buildProgress.InvokeFunc, -1f, "BuildProgress failed");
 
     public Vector3? NearestPointReachable(Vector3 point, float halfExtentXZ = DefaultHalfExtentXZ, float halfExtentY = DefaultHalfExtentY)
         => IpcGate.Invoke(nearestPointReachable.HasFunction,
             () => nearestPointReachable.InvokeFunc(point, halfExtentXZ, halfExtentY), (Vector3?)null,
-            "NavIpc: NearestPointReachable failed");
+            "NearestPointReachable failed");
 
     private static void MoveToViaChatCommand(Vector3 destination)
         => Chat.ExecuteCommand(GameCommands.NavMoveTo(destination));

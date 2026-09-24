@@ -1,13 +1,14 @@
 using clib.TaskSystem;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
 internal abstract class AutoCommon : TaskBase
 {
-    protected void LogDiagnostic(string message) => ApsgLog.Info(message);
+    protected void LogDiagnostic(string message, [CallerFilePath] string callerFile = "") => RunLog.Info(message, callerFile);
 
-    protected void Warn(string message) => ApsgLog.Warn(message);
+    protected void Warn(string message, [CallerFilePath] string callerFile = "") => RunLog.Warning(message, callerFile);
 
     protected async Task<bool> WaitUntilTimed(Func<bool> condition, int timeoutMs, string scope, int checkMs = 30)
     {

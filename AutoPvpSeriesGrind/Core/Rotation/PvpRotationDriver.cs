@@ -135,7 +135,7 @@ internal sealed class PvpRotationDriver
         }
 
         ActionOps.CancelCast();
-        ApsgLog.Debug(dead ? "rotation: cast cancelled, target died" : "rotation: cast cancelled, target became immune");
+        RunLog.Debug(dead ? "cast cancelled, target died" : "cast cancelled, target became immune");
     }
 
     private bool TryEscape(in RuleContext context, Posture posture, Vector3 moveDestination)
@@ -197,7 +197,7 @@ internal sealed class PvpRotationDriver
             if (used)
             {
                 lastUsedActionId = actionId;
-                ApsgLog.Debug($"rotation: dash {info.Name} -> {target.Name}");
+                RunLog.Debug($"dash {info.Name} -> {target.Name}");
                 return true;
             }
         }
@@ -228,7 +228,7 @@ internal sealed class PvpRotationDriver
             if (used)
             {
                 lastUsedActionId = actionId;
-                ApsgLog.Debug($"rotation: dash {info.Name}");
+                RunLog.Debug($"dash {info.Name}");
                 return true;
             }
         }
@@ -345,7 +345,7 @@ internal sealed class PvpRotationDriver
         }
 
         lastUsedActionId = adjustedId;
-        ApsgLog.Debug($"rotation: {info.Name} -> {target.Name}");
+        RunLog.Debug($"{info.Name} -> {target.Name}");
         outcome = info.HasCastTime ? RotationOutcome.Cast : RotationOutcome.Instant;
         return true;
     }
@@ -562,7 +562,7 @@ internal sealed class PvpRotationDriver
         }
 
         lastUsedActionId = actionId;
-        ApsgLog.Debug($"rotation: {label}");
+        RunLog.Debug($"{label}");
         return true;
     }
 

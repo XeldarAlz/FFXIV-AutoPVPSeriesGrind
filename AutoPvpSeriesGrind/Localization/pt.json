@@ -42,6 +42,7 @@
       "settings": "Configurações",
       "history": "Histórico",
       "plugins": "Plugins",
+      "log": "Console",
       "about": "Sobre"
     },
     "minimize": "Minimizar para a barra de título",
@@ -260,6 +261,60 @@
       "hoursAgo": "há {0} h",
       "daysAgo": "há {0} d"
     }
+  },
+  "log": {
+    "title": "Console",
+    "entries": {
+      "one": "{0} linha no buffer",
+      "other": "{0} linhas no buffer"
+    },
+    "empty": "Nada registrado ainda. Inicie uma execução e cada passo do plugin aparecerá aqui.",
+    "noMatches": "Nenhuma linha corresponde aos filtros atuais.",
+    "footer": "Cada linha também vai para o log do Dalamud (/xllog) com o prefixo {0}. Ao relatar um bug, clique em Copiar log e cole o resultado na issue.",
+    "searchHint": "Pesquisar mensagens e origens",
+    "copyAll": "Copiar log",
+    "copyFiltered": {
+      "one": "Copiar {0} linha",
+      "other": "Copiar {0} linhas"
+    },
+    "copyTooltip": "Copia as linhas exibidas abaixo com um cabeçalho indicando a versão do plugin, a do Dalamud e a zona, pronto para colar em um relatório de bug.",
+    "copied": "Copiado",
+    "copiedLines": {
+      "one": "{0} linha copiada para a área de transferência",
+      "other": "{0} linhas copiadas para a área de transferência"
+    },
+    "clear": "Limpar",
+    "confirmClear": "Clique de novo para limpar",
+    "close": "Fechar",
+    "level": {
+      "verbose": "Detalhado",
+      "debug": "Depuração",
+      "info": "Info",
+      "warning": "Avisos",
+      "error": "Erros"
+    },
+    "levelTooltip": "Clique para mostrar ou ocultar estas linhas. Shift+clique mostra apenas este nível.",
+    "sourceChip": "Origem: {0}",
+    "sourceChipTooltip": "Clique para parar de filtrar pela origem.",
+    "jumpLatest": "Ir para o mais recente",
+    "newLines": {
+      "one": "{0} linha nova",
+      "other": "{0} linhas novas"
+    },
+    "showing": "Mostrando {0} de {1}",
+    "resetFilters": "Redefinir filtros",
+    "shortcuts": "Ctrl+F pesquisar · Ctrl+C copiar · Shift+clique seleciona um intervalo · Clique duplo copia uma linha",
+    "selected": {
+      "one": "{0} linha selecionada",
+      "other": "{0} linhas selecionadas"
+    },
+    "copySelection": "Copiar seleção",
+    "clearSelection": "Limpar seleção",
+    "copyLine": "Copiar linha",
+    "copyToEnd": "Copiar daqui até o fim",
+    "onlySource": "Mostrar apenas {0}",
+    "repeated": "Repetido {0} vezes seguidas",
+    "hasDetails": "Contém um stack trace. Selecione a linha para lê-lo."
   },
   "about": {
     "connect": "Contato",
@@ -579,7 +634,7 @@
     }
   },
   "plugin": {
-    "commandHelp": "Abre ou fecha a janela do Auto PVP Series Grind. /apsg config | stats | deps | about | target | objects.",
+    "commandHelp": "Abre ou fecha a janela do Auto PVP Series Grind. /apsg config | stats | deps | log | about | target | objects.",
     "commandHelpAlias": "Atalho para /apsg."
   }
 }

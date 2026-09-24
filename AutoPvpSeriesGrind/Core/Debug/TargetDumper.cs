@@ -17,7 +17,7 @@ internal static unsafe class TargetDumper
         var me = Svc.Objects.LocalPlayer;
         if (me is null)
         {
-            ApsgLog.Chat("No local player; enter a match first.");
+            ApsgChat.Print("No local player; enter a match first.");
             return;
         }
 
@@ -29,7 +29,7 @@ internal static unsafe class TargetDumper
             .Take(MaxNearbyObjectRows)
             .ToList();
 
-        ApsgLog.Chat($"Territory {Svc.ClientState.TerritoryType}: {rows.Count} nearby event/battle objects (nearest first):");
+        ApsgChat.Print($"Territory {Svc.ClientState.TerritoryType}: {rows.Count} nearby event/battle objects (nearest first):");
         for (var rowIndex = 0; rowIndex < rows.Count; rowIndex++)
         {
             var (gameObject, distance) = rows[rowIndex];
@@ -44,12 +44,12 @@ internal static unsafe class TargetDumper
             ?.GetRowOrDefault(territoryId)
             ?.PlaceName.Value.Name.ToString() ?? "?";
 
-        ApsgLog.Chat($"Territory: {territoryId} ({territoryName})");
+        ApsgChat.Print($"Territory: {territoryId} ({territoryName})");
 
         var target = TargetSystem.Instance()->Target;
         if (target == null)
         {
-            ApsgLog.Chat("No target. Click an NPC or FATE marker first, then re-run /apsg target.");
+            ApsgChat.Print("No target. Click an NPC or FATE marker first, then re-run /apsg target.");
             return;
         }
 
@@ -58,7 +58,7 @@ internal static unsafe class TargetDumper
         var residentName = Svc.Data.GetExcelSheet<ENpcResident>()
             ?.GetRowOrDefault(baseId)?.Singular.ToString() ?? name;
 
-        ApsgLog.Chat($"Target: BaseId={baseId}  Name=\"{residentName}\"");
-        ApsgLog.Info($"TargetDumper: territory={territoryId} BaseId={baseId} name='{residentName}'");
+        ApsgChat.Print($"Target: BaseId={baseId}  Name=\"{residentName}\"");
+        RunLog.Info($"territory={territoryId} BaseId={baseId} name='{residentName}'");
     }
 }

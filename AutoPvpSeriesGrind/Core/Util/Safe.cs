@@ -1,8 +1,10 @@
+using System.Runtime.CompilerServices;
+
 namespace AutoPvpSeriesGrind.Core.Util;
 
 internal static class Safe
 {
-    public static T Try<T>(string label, Func<T> body, T fallback)
+    public static T Try<T>(string label, Func<T> body, T fallback, [CallerFilePath] string callerFile = "")
     {
         try
         {
@@ -10,12 +12,12 @@ internal static class Safe
         }
         catch (Exception exception)
         {
-            ApsgLog.Warn(exception, label);
+            RunLog.Warning(exception, label, callerFile);
             return fallback;
         }
     }
 
-    public static void Try(string label, Action body)
+    public static void Try(string label, Action body, [CallerFilePath] string callerFile = "")
     {
         try
         {
@@ -23,7 +25,7 @@ internal static class Safe
         }
         catch (Exception exception)
         {
-            ApsgLog.Warn(exception, label);
+            RunLog.Warning(exception, label, callerFile);
         }
     }
 

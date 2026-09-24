@@ -32,9 +32,9 @@ internal static class PluginInstaller
         try
         {
             var info = ExternalPlugins.Catalog[plugin];
-            ApsgLog.Info($"Installing {info.DisplayName} from {info.RepoUrl}");
+            RunLog.Info($"Installing {info.DisplayName} from {info.RepoUrl}");
             var ok = await AddPlugin(info.RepoUrl, info.InternalName);
-            ApsgLog.Info(ok
+            RunLog.Info(ok
                 ? $"{info.DisplayName} installed."
                 : $"{info.DisplayName} install reported failure; repo may need to be added manually.");
             if (!ok) Failed.Add(plugin);
@@ -42,7 +42,7 @@ internal static class PluginInstaller
         }
         catch (Exception ex)
         {
-            ApsgLog.Warn(ex, "plugin install threw");
+            RunLog.Warning(ex, "plugin install threw");
             Failed.Add(plugin);
             return false;
         }
@@ -66,7 +66,7 @@ internal static class PluginInstaller
         var pluginManager = DalamudReflector.GetPluginManager();
         if (pluginManager is null)
         {
-            ApsgLog.Warn("Could not resolve Dalamud PluginManager");
+            RunLog.Warning("Could not resolve Dalamud PluginManager");
             return false;
         }
 
@@ -91,14 +91,14 @@ internal static class PluginInstaller
         var plugins = await DalamudReflector.GetPluginMaster(masterUrl);
         if (plugins is null || plugins.Count == 0)
         {
-            ApsgLog.Warn($"No manifests fetched from {masterUrl}");
+            RunLog.Warning($"No manifests fetched from {masterUrl}");
             return null;
         }
 
         var manifest = plugins.FirstOrDefault(candidate => (string)candidate.GetFoP(InternalNameProperty) == internalName);
         if (manifest is null)
         {
-            ApsgLog.Warn($"'{internalName}' not found in {masterUrl}");
+            RunLog.Warning($"'{internalName}' not found in {masterUrl}");
             return null;
         }
 
@@ -121,7 +121,7 @@ internal static class PluginInstaller
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         if (installMethod is null)
         {
-            ApsgLog.Warn("PluginManager.InstallPluginAsync not found");
+            RunLog.Warning("PluginManager.InstallPluginAsync not found");
         }
         return installMethod;
     }
