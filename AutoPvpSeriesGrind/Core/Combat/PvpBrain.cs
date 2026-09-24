@@ -26,7 +26,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float StickyTargetBonus = 0.75f;
     private const float HealerPriorityBonus = 1.5f;
     private const float RangedPriorityBonus = 1f;
-    private const float CrystalRideStopRange = 1f;
     private const float CrystalRideHeadStart = 8f;   // ride a free point only with this much travel lead over the nearest enemy
     private const float CrystalRideEscortSlack = 8f; // or with the ally cluster arriving within this many yalms of you
     private const int StagePointDeficit = 2;          // allies on the point outmanned by this many = stage, don't trickle in
@@ -62,6 +61,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private bool roleOverlayEnabled = strategy != PvpStrategy.Custom;
     private PvpRole appliedRole = PvpRole.Unknown;
     private readonly Queue<(long Tick, float Hp)> hpSamples = new();
+    private readonly CrystalEscort escort = new();
     private Vector3? enemyBase;
     private bool retreating;
     private Stance committedStance = Stance.Engage;
@@ -101,6 +101,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         allyRoster.Clear();
         enemyRoster.Clear();
         hpSamples.Clear();
+        escort.Reset();
         enemyBase = null;
         retreating = false;
         committedStance = Stance.Engage;
@@ -295,16 +296,18 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
         if (RideableObjective(snapshot) is { } crystal)
         {
+            var escortStep = escort.Step(snapshot, crystal, enemyBase);
             return new MovePlan(
                 Kind: MoveKind.Engage,
-                Destination: crystal,
+                Destination: escortStep.Destination,
                 Fallback: crystal,
-                StopRange: CrystalRideStopRange,
-                Sprint: true,
-                Reason: "ride crystal, point free",
-                Pursue: false,
+                StopRange: escortStep.StopRange,
+                Sprint: escortStep.Sprint,
+                Reason: escortStep.Walk ? "ride crystal, point free, pacing it" : "ride crystal, point free",
+                Pursue: true,
                 Posture: Posture.Push,
-                TargetId: target?.Id ?? 0);
+                TargetId: target?.Id ?? 0,
+                Walk: escortStep.Walk);
         }
 
         EngageChoice choice;

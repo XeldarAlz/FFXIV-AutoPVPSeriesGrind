@@ -238,6 +238,7 @@ internal sealed partial class AutoPvpSeries
     // still until it resolves is what made the bot look parked at the spawn exit, so walk the line instead.
     private void AdvanceWithoutObjective(in PvpSnapshot snapshot)
     {
+        WalkPace.Release();
         if (matchFlow.Bases is not { } bases)
         {
             BrainTelemetry.Record(snapshot, new MovePlan(MoveKind.Hold, snapshot.Self, snapshot.Self, 0f, false, "no objective"));

@@ -16,4 +16,5 @@ internal readonly record struct MovePlan(
     string Reason,
     bool Pursue = false,
     Posture Posture = Posture.Idle,
-    ulong TargetId = 0);
+    ulong TargetId = 0,
+    bool Walk = false);

@@ -43,6 +43,7 @@ internal sealed class MovementExecutor
         lastMoveAtMs = 0;
         destinationCommittedAtMs = 0;
         lastPosture = null;
+        WalkPace.Release();
     }
 
     public bool UpdatePosture(Posture posture)
@@ -73,6 +74,7 @@ internal sealed class MovementExecutor
 
     public void Stop()
     {
+        WalkPace.Release();
         if (!Nav.IsRunning()) return;
         Nav.Stop();
         lastMoveDestination = default;
@@ -81,6 +83,7 @@ internal sealed class MovementExecutor
 
     public void Execute(in MovePlan plan)
     {
+        WalkPace.Apply(plan.Walk);
         if (plan.Sprint)
         {
             EnsureSprinting();

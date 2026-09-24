@@ -126,6 +126,7 @@ internal sealed class AutoPvpSeriesController
     {
         var ending = session;
         Svc.Automation.Stop();
+        WalkPace.Release();
         FinalizeRun(ending);
         session = null;
         series = null;
