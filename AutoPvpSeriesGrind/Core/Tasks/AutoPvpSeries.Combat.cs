@@ -18,6 +18,7 @@ internal sealed partial class AutoPvpSeries
     private const float SpawnExitArrivalRange = 3.5f;
     private const float ObjectiveFallbackStopRange = 3f;
     private const int SpawnExitTimeoutMs = 8000;
+    private const float RespawnMinTravelYalms = 30f;
 
     private async Task TickLiveMatch()
     {
@@ -69,6 +70,7 @@ internal sealed partial class AutoPvpSeries
         rotation.TickDeathAndRespawn();
         if (IsDead())
         {
+            matchFlow.FrontlineDeathSpot ??= MatchState.PlayerPosition();
             movement.Stop();
             BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead, waiting to respawn", Posture.Retreat);
             return;
@@ -84,6 +86,7 @@ internal sealed partial class AutoPvpSeries
         }
 
         var snapshot = MatchState.Capture();
+        TrackFrontlineBase(snapshot.Self);
         var plan = frontline.Decide(snapshot);
         BrainTelemetry.Record(snapshot, plan);
 
@@ -91,8 +94,9 @@ internal sealed partial class AutoPvpSeries
         {
             return;
         }
+        var rotationPosture = frontline.TeamOnTheMove ? Posture.Idle : plan.Posture;
         if (!Svc.Condition[ConditionFlag.Mounted]
-            && HoldsStillForRotation(snapshot, plan.TargetId, plan.Posture, plan.Destination, frontline.UnderBurst))
+            && HoldsStillForRotation(snapshot, plan.TargetId, rotationPosture, plan.Destination, frontline.UnderBurst))
         {
             return;
         }
@@ -100,6 +104,31 @@ internal sealed partial class AutoPvpSeries
         movement.UpdatePosture(plan.Posture);
         ApplyBrainTarget(plan.TargetId);
         movement.Execute(plan);
+    }
+
+    private void TrackFrontlineBase(Vector3 self)
+    {
+        if (!matchFlow.FrontlineBaseChecked)
+        {
+            matchFlow.FrontlineBaseChecked = true;
+            if (matchFlow.DutyBaselineTime == 0)
+            {
+                frontline.MarkBase(self);
+                LogDiagnostic($"Frontline: own base marked at the start position {self:F0}");
+            }
+        }
+
+        if (matchFlow.FrontlineDeathSpot is not { } deathSpot)
+        {
+            return;
+        }
+
+        matchFlow.FrontlineDeathSpot = null;
+        if (Vector3.Distance(self, deathSpot) > RespawnMinTravelYalms)
+        {
+            frontline.MarkBase(self);
+            LogDiagnostic($"Frontline: own base marked at the respawn position {self:F0}");
+        }
     }
 
     private bool HandleMount()
@@ -265,14 +294,13 @@ internal sealed partial class AutoPvpSeries
     private bool HoldsStillForRotation(PvpSnapshot snapshot, ulong targetId, Posture posture, Vector3 moveDestination, bool underBurst)
     {
         var outcome = rotation.Drive(snapshot, targetId, posture, moveDestination, underBurst, holdStill);
-        if (outcome is not (RotationOutcome.Cast or RotationOutcome.Guarding))
+        if (outcome != RotationOutcome.Cast)
         {
             return false;
         }
 
         movement.Stop();
-        var reason = outcome == RotationOutcome.Guarding ? "guarding, holding still" : "casting, holding still";
-        BrainTelemetry.RecordStatus(snapshot, MoveKind.Hold, reason, Posture.Hold);
+        BrainTelemetry.RecordStatus(snapshot, MoveKind.Hold, "casting, holding still", Posture.Hold);
         return true;
     }
 

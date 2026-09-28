@@ -461,7 +461,7 @@
       "manualHelp": "You press your own skills. The bot still queues, moves, fires the Limit Break and re-queues.",
       "group": "Rotation",
       "guardHp": "Guard below",
-      "guardHpHelp": "Press Guard when your HP falls under this. Guard blocks 90% of damage for a few seconds but ends the moment you move or act, so the bot holds still while it lasts.",
+      "guardHpHelp": "Press Guard when your HP falls under this. Guard cuts 99% of damage for a few seconds and ends as soon as you use another action, so the bot keeps moving but holds its skills while it lasts.",
       "guardOnBurst": "Guard when bursted",
       "guardOnBurstHelp": "Also Guard earlier, while your HP is dropping fast and at least two enemies are on you.",
       "guardOnBurstHp": "Bursted Guard below",

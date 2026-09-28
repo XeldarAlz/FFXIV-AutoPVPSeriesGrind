@@ -36,7 +36,7 @@ internal sealed class PvpSnapshot
         {
             if (!allyClusterComputed)
             {
-                allyCluster = LargestCluster(Allies, Self);
+                allyCluster = Largest(Clusters(Allies), Self);
                 allyClusterComputed = true;
             }
             return allyCluster;
@@ -89,11 +89,12 @@ internal sealed class PvpSnapshot
         return min;
     }
 
-    private static AllyCluster? LargestCluster(IReadOnlyList<PvpActor> allies, Vector3 self)
+    public static List<AllyCluster> Clusters(IReadOnlyList<PvpActor> allies)
     {
+        var clusters = new List<AllyCluster>();
         if (allies.Count == 0)
         {
-            return null;
+            return clusters;
         }
 
         var groupIds = new int[allies.Count];
@@ -134,21 +135,29 @@ internal sealed class PvpSnapshot
             }
         }
 
-        AllyCluster? best = null;
-        var bestDistance = float.MaxValue;
         for (var label = 0; label < allies.Count; label++)
         {
-            if (counts[label] == 0)
+            if (counts[label] > 0)
             {
-                continue;
+                clusters.Add(new AllyCluster(sums[label] / counts[label], counts[label], mountedCounts[label]));
             }
-            var centroid = sums[label] / counts[label];
-            var distance = Vector3.Distance(self, centroid);
+        }
+        return clusters;
+    }
+
+    public static AllyCluster? Largest(List<AllyCluster> clusters, Vector3 self)
+    {
+        AllyCluster? best = null;
+        var bestDistance = float.MaxValue;
+        for (var clusterIndex = 0; clusterIndex < clusters.Count; clusterIndex++)
+        {
+            var cluster = clusters[clusterIndex];
+            var distance = Vector3.Distance(self, cluster.Centroid);
             if (best is not { } current
-                || counts[label] > current.Size
-                || (counts[label] == current.Size && distance < bestDistance))
+                || cluster.Size > current.Size
+                || (cluster.Size == current.Size && distance < bestDistance))
             {
-                best = new AllyCluster(centroid, counts[label], mountedCounts[label]);
+                best = cluster;
                 bestDistance = distance;
             }
         }

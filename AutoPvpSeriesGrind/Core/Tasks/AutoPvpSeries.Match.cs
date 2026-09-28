@@ -194,13 +194,13 @@ internal sealed partial class AutoPvpSeries
         }
 
         LogDiagnostic($"gate open detected by ContentTimeLeft -> {timeLeftSeconds}");
+        WarnIfNavmeshNotReady();
         BeginLiveMatch();
         return true;
     }
 
     private void BeginLiveMatch()
     {
-        WarnIfNavmeshNotReady();
         matchFlow.InMatchLive = true;
         if (settings.RecordMatches)
         {

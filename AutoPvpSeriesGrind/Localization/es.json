@@ -461,7 +461,7 @@
       "manualHelp": "Tú pulsas tus propias habilidades. El bot sigue haciendo cola, moviéndose, lanzando el Límite y volviendo a la cola.",
       "group": "Rotación",
       "guardHp": "Guardia por debajo de",
-      "guardHpHelp": "Usa Guardia cuando tu vida baje de este valor. Guardia bloquea el 90 % del daño unos segundos pero termina en cuanto te mueves o actúas, así que el bot se queda quieto mientras dura.",
+      "guardHpHelp": "Usa Guardia cuando tu vida baje de este valor. Guardia reduce el daño un 99 % unos segundos y termina en cuanto usas otra acción, así que el bot sigue moviéndose pero no usa habilidades mientras dura.",
       "guardOnBurst": "Guardia al recibir burst",
       "guardOnBurstHelp": "Usa Guardia antes también, cuando tu vida cae rápido y al menos dos enemigos te atacan.",
       "guardOnBurstHp": "Guardia de burst por debajo de",

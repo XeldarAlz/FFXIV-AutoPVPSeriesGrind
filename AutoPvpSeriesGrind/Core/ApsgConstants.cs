@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace AutoPvpSeriesGrind.Core;
 
 internal static class ApsgConstants
@@ -68,9 +66,6 @@ internal static class ApsgConstants
         public const string CloseGame = "/xlkill";
 
         public const string NavStop = "/vnav stop";
-
-        public static string NavMoveTo(Vector3 dest)
-            => FormattableString.Invariant($"/vnav moveto {dest.X} {dest.Y} {dest.Z}");
     }
 
     internal static class LifestreamCommands
@@ -80,11 +75,10 @@ internal static class ApsgConstants
 
     internal static class IpcGates
     {
-        public const string NavMoveTo = "vnavmesh.SimpleMove.PathfindAndMoveTo";
-        public const string NavMoveCloseTo = "vnavmesh.SimpleMove.PathfindAndMoveCloseTo";
+        public const string NavPathfind = "vnavmesh.Nav.Pathfind";
+        public const string NavFollowWaypoints = "vnavmesh.Path.MoveTo";
         public const string NavStop = "vnavmesh.Path.Stop";
         public const string NavIsRunning = "vnavmesh.Path.IsRunning";
-        public const string NavPathfindInProgress = "vnavmesh.SimpleMove.PathfindInProgress";
         public const string NavNearestPointReachable = "vnavmesh.Query.Mesh.NearestPointReachable";
         public const string NavIsReady = "vnavmesh.Nav.IsReady";
         public const string NavBuildProgress = "vnavmesh.Nav.BuildProgress";

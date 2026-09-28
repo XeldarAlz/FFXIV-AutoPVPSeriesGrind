@@ -16,24 +16,30 @@ internal sealed class FrontlineBrain
     private const float StickyTargetBonus = 0.75f;
     private const float HealerPriorityBonus = 1.5f;
     private const float RangedPriorityBonus = 1f;
+    private const float CrowdLeadSeconds = 1.2f;
 
     private readonly Queue<(long Tick, float Hp)> hpSamples = new();
+    private readonly CrowdPicker crowdPicker = new();
+    private readonly CrowdTracker crowdTracker = new();
     private FrontlineProfile profile = FrontlineProfile.For(PvpStrategy.Moderate);
-    private Vector3? lastKnownCrowd;
     private bool hurt;
     private ulong lastTargetId;
 
     public bool UnderBurst { get; private set; }
     public bool WantsMount { get; private set; }
     public bool WantsDismount { get; private set; }
+    public bool TeamOnTheMove => crowdTracker.Moving;
 
     public void SetStrategy(PvpStrategy strategy, CustomFrontlineProfile? custom = null)
         => profile = FrontlineProfile.For(strategy, custom);
 
+    public void MarkBase(Vector3 position) => crowdPicker.MarkBase(position);
+
     public void Reset()
     {
         hpSamples.Clear();
-        lastKnownCrowd = null;
+        crowdPicker.Reset();
+        crowdTracker.Reset();
         hurt = false;
         lastTargetId = 0;
         UnderBurst = false;
@@ -48,11 +54,16 @@ internal sealed class FrontlineBrain
         var target = ChooseTarget(snapshot);
         var targetId = target?.Id ?? 0;
 
-        if (snapshot.AllyCluster is { } cluster)
+        var cluster = crowdPicker.Pick(snapshot, crowdTracker.Position);
+        if (cluster is { } picked)
         {
-            lastKnownCrowd = cluster.Centroid;
+            crowdTracker.Update(picked.Centroid);
         }
-        if (lastKnownCrowd is not { } crowd)
+        else
+        {
+            crowdTracker.Stall();
+        }
+        if (crowdTracker.Position is not { } crowd)
         {
             WantsMount = false;
             WantsDismount = true;
@@ -62,25 +73,26 @@ internal sealed class FrontlineBrain
 
         var distanceToCrowd = Vector3.Distance(snapshot.Self, crowd);
         var enemiesNear = snapshot.NearestEnemyDistance <= profile.EnemyAwareRadius;
-        var crowdRiding = snapshot.AllyCluster is { IsRiding: true };
+        var crowdRiding = cluster is { IsRiding: true };
         WantsMount = !enemiesNear && (crowdRiding || distanceToCrowd > profile.MountDistance);
         WantsDismount = enemiesNear || (!crowdRiding && distanceToCrowd <= profile.RegroupDistance);
 
+        var lead = crowdTracker.Lead(CrowdLeadSeconds);
         if (distanceToCrowd > profile.RegroupDistance)
         {
-            return new MovePlan(MoveKind.Engage, crowd, crowd, TravelStopRange, Sprint: true, $"rejoin the team, {distanceToCrowd:F0}y away",
+            return new MovePlan(MoveKind.Engage, crowd + lead, crowd, TravelStopRange, Sprint: true, $"rejoin the team, {distanceToCrowd:F0}y away",
                 Pursue: false, Posture.Regroup, targetId);
         }
 
         var front = FrontDirection(snapshot, crowd);
         if (hurt)
         {
-            var safe = crowd - front * profile.RetreatOffset;
+            var safe = crowd + lead - front * profile.RetreatOffset;
             return new MovePlan(MoveKind.Retreat, safe, crowd, HoldStopRange, Sprint: true, $"hurt hp={snapshot.SelfHp:P0}, behind the team",
                 Pursue: false, Posture.Retreat, targetId);
         }
 
-        var station = crowd + front * (snapshot.PrefersBackline ? -profile.BackOffset : profile.FrontOffset);
+        var station = crowd + lead + front * (snapshot.PrefersBackline ? -profile.BackOffset : profile.FrontOffset);
         var fighting = target is { } chosen && snapshot.EnemiesWithin(profile.EngageRange) > 0;
         var reason = fighting
             ? $"with the team → {(int)(target!.Value.Hp * 100)}%@{target.Value.DistanceToSelf:F0}y"

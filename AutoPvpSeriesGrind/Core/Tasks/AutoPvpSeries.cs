@@ -4,6 +4,7 @@ using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Rotation;
 using AutoPvpSeriesGrind.Core.Stats;
 using ECommons.Automation;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
@@ -60,6 +61,8 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         public long LeaveSpawnStartedAtMs;
         public int GateApproachStartSec;
         public TeamBases? Bases;
+        public bool FrontlineBaseChecked;
+        public Vector3? FrontlineDeathSpot;
 
         public void Reset() => this = default;
     }

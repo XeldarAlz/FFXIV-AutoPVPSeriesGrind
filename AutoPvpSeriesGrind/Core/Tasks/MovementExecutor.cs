@@ -2,9 +2,11 @@ using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Ipc;
 using AutoPvpSeriesGrind.Core.Rotation;
+using AutoPvpSeriesGrind.Core.Util;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
@@ -12,11 +14,9 @@ internal sealed class MovementExecutor
 {
     private const float SameDestinationDriftThreshold = 2.5f;
     private const float PursuitSameDestinationDriftThreshold = 1f;
-    private const float MinStopRangeForMoveCloseTo = 0.5f;
     private const float HoldRepathSlack = 1.5f;
     private const float MinJitterDirectionSq = 0.01f;
 
-    // Minimum gap before re-pathing to an unchanged, not-yet-reached destination (avoids per-tick pathfind spam when stuck).
     private const int RepathCooldownMs = 2000;
 
     private const int DestinationCommitMs = 1800;
@@ -24,9 +24,13 @@ internal sealed class MovementExecutor
 
     private const float StuckJitterYalms = 3f;
 
+    private const int PathfindTimeoutMs = 5000;
+    private const float MaxTravelYalmsPerSecond = 20f;
+    private const float PassedWaypointSlackYalms = 3f;
+
     private static NavIpc Nav => NavIpc.Instance;
 
-    public bool IsPathing => Nav.IsRunning();
+    public bool IsPathing => Nav.IsFollowingPath() || HasLivePendingPath;
 
     private readonly StuckDetector stuck = new();
 
@@ -36,6 +40,15 @@ internal sealed class MovementExecutor
     private int jitterSign = 1;
     private Posture? lastPosture;
 
+    private Task<List<Vector3>>? pendingPath;
+    private Vector3 pendingDestination;
+    private float pendingStopRange;
+    private long pendingSinceMs;
+    private bool pendingDiscarded;
+    private long navmeshWaitStartedAtMs;
+
+    private bool HasLivePendingPath => pendingPath is not null && !pendingDiscarded;
+
     public void Reset()
     {
         stuck.Reset();
@@ -43,6 +56,9 @@ internal sealed class MovementExecutor
         lastMoveAtMs = 0;
         destinationCommittedAtMs = 0;
         lastPosture = null;
+        pendingPath = null;
+        pendingDiscarded = false;
+        navmeshWaitStartedAtMs = 0;
         WalkPace.Release();
     }
 
@@ -59,7 +75,7 @@ internal sealed class MovementExecutor
 
     public static void EnsureSprinting()
     {
-        if (Svc.Condition[ConditionFlag.Mounted] || MatchState.HasStatus(PvpStatuses.Sprint))
+        if (Svc.Condition[ConditionFlag.Mounted] || MatchState.HasStatus(PvpStatuses.Sprint) || MatchState.HasStatus(PvpStatuses.Guard))
         {
             return;
         }
@@ -69,13 +85,22 @@ internal sealed class MovementExecutor
 
     public void HaltPathing()
     {
-        if (Nav.IsRunning()) Nav.Stop();
+        DiscardPendingPath();
+        if (Nav.IsFollowingPath())
+        {
+            Nav.Stop();
+        }
     }
 
     public void Stop()
     {
         WalkPace.Release();
-        if (!Nav.IsRunning()) return;
+        var discarded = DiscardPendingPath();
+        if (!discarded && !Nav.IsFollowingPath())
+        {
+            return;
+        }
+
         Nav.Stop();
         lastMoveDestination = default;
         destinationCommittedAtMs = 0;
@@ -83,6 +108,7 @@ internal sealed class MovementExecutor
 
     public void Execute(in MovePlan plan)
     {
+        ApplyFinishedPath();
         WalkPace.Apply(plan.Walk);
         if (plan.Sprint)
         {
@@ -97,10 +123,7 @@ internal sealed class MovementExecutor
         switch (plan.Kind)
         {
             case MoveKind.Hold:
-                if (DistanceToSelf(plan.Destination) > plan.StopRange + HoldRepathSlack)
-                    IssueMove(plan.Destination, plan.Fallback, plan.StopRange);
-                else
-                    Stop();
+                HoldAt(plan.Destination, plan.Fallback, plan.StopRange);
                 break;
 
             case MoveKind.Engage:
@@ -112,9 +135,19 @@ internal sealed class MovementExecutor
 
     public void IssueMove(Vector3 destination, Vector3 fallback, float stopRange, bool pursue = false)
     {
+        ApplyFinishedPath();
+        if (!NavmeshReady())
+        {
+            return;
+        }
+
         var driftThreshold = DriftThreshold(pursue);
         var stopSlack = pursue ? 0f : SameDestinationDriftThreshold;
         if (ShouldSkipRepath(destination, stopRange, driftThreshold, stopSlack))
+        {
+            return;
+        }
+        if (pendingPath is not null || MatchState.PlayerPosition() is not { } self)
         {
             return;
         }
@@ -122,16 +155,108 @@ internal sealed class MovementExecutor
         var target = Nav.NearestPointReachable(destination)
                      ?? (fallback != destination ? Nav.NearestPointReachable(fallback) : null)
                      ?? fallback;
-        var accepted = stopRange > MinStopRangeForMoveCloseTo ? Nav.MoveCloseTo(target, stopRange) : Nav.MoveTo(target);
-        if (!accepted)
+        if (Nav.Pathfind(self, target) is not { } request)
         {
-            RunLog.Debug($"move to {destination:F0} dropped by vnavmesh (pathfind pending), retrying next tick");
             return;
         }
 
+        pendingPath = request;
+        pendingDestination = destination;
+        pendingStopRange = stopRange;
+        pendingSinceMs = Environment.TickCount64;
+        pendingDiscarded = false;
+
         lastMoveDestination = destination;
-        lastMoveAtMs = Environment.TickCount64;
-        destinationCommittedAtMs = lastMoveAtMs;
+        lastMoveAtMs = pendingSinceMs;
+        destinationCommittedAtMs = pendingSinceMs;
+    }
+
+    private void HoldAt(Vector3 destination, Vector3 fallback, float stopRange)
+    {
+        var holdRadius = stopRange + HoldRepathSlack;
+        if (DistanceToSelf(destination) > holdRadius)
+        {
+            IssueMove(destination, fallback, stopRange);
+            return;
+        }
+        if (Vector3.Distance(lastMoveDestination, destination) > holdRadius)
+        {
+            Stop();
+        }
+    }
+
+    private void ApplyFinishedPath()
+    {
+        if (pendingPath is not { } request)
+        {
+            return;
+        }
+
+        var ageMs = Environment.TickCount64 - pendingSinceMs;
+        if (!request.IsCompleted)
+        {
+            if (ageMs > PathfindTimeoutMs)
+            {
+                RunLog.Debug($"pathfind to {pendingDestination:F0} still running after {ageMs}ms, giving up on it");
+                pendingPath = null;
+            }
+            return;
+        }
+
+        pendingPath = null;
+        if (pendingDiscarded)
+        {
+            return;
+        }
+        if (!request.IsCompletedSuccessfully)
+        {
+            RunLog.Debug($"pathfind to {pendingDestination:F0} failed: {request.Exception?.GetBaseException().Message}");
+            return;
+        }
+
+        var waypoints = request.Result;
+        PathTrim.ShortenTail(waypoints, pendingStopRange);
+        if (MatchState.PlayerPosition() is { } self)
+        {
+            PathTrim.DropPassed(waypoints, self, ageMs / 1000f * MaxTravelYalmsPerSecond + PassedWaypointSlackYalms);
+        }
+        if (waypoints.Count == 0)
+        {
+            return;
+        }
+
+        Nav.FollowWaypoints(waypoints);
+    }
+
+    private bool DiscardPendingPath()
+    {
+        if (!HasLivePendingPath)
+        {
+            return false;
+        }
+
+        pendingDiscarded = true;
+        return true;
+    }
+
+    private bool NavmeshReady()
+    {
+        if (Nav.IsReady())
+        {
+            if (navmeshWaitStartedAtMs != 0)
+            {
+                RunLog.Info($"navmesh ready after {(Environment.TickCount64 - navmeshWaitStartedAtMs) / 1000f:F1}s -> moving");
+                navmeshWaitStartedAtMs = 0;
+            }
+            return true;
+        }
+
+        if (navmeshWaitStartedAtMs == 0)
+        {
+            navmeshWaitStartedAtMs = Environment.TickCount64;
+            RunLog.Info($"navmesh still loading (progress {Nav.BuildProgress():F2}) -> holding movement until it is ready");
+        }
+        return false;
     }
 
     private bool TryRecoverFromStuck(in MovePlan plan)
@@ -140,15 +265,14 @@ internal sealed class MovementExecutor
         {
             return false;
         }
-        if (!stuck.IsStuck(self, Nav.IsRunning()))
+        if (!stuck.IsStuck(self, Nav.IsFollowingPath()))
         {
             return false;
         }
 
-        Nav.Stop();
-        lastMoveDestination = default;
+        Stop();
+        stuck.Reset();
         lastMoveAtMs = 0;
-        destinationCommittedAtMs = 0;
         IssueMove(JitterPerpendicular(plan.Destination, self), plan.Fallback, plan.StopRange, plan.Pursue);
         return true;
     }
@@ -185,7 +309,7 @@ internal sealed class MovementExecutor
             return false;
         }
 
-        if (Nav.IsRunning())
+        if (IsPathing)
         {
             return true;
         }

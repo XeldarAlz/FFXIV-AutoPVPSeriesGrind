@@ -437,7 +437,7 @@ internal static class L
         public static readonly LocString RotationManualHelp = new("settings.rotation.manualHelp", "You press your own skills. The bot still queues, moves, fires the Limit Break and re-queues.");
         public static readonly LocString GroupRotation = new("settings.rotation.group", "Rotation");
         public static readonly LocString RotationGuardHp = new("settings.rotation.guardHp", "Guard below");
-        public static readonly LocString RotationGuardHpHelp = new("settings.rotation.guardHpHelp", "Press Guard when your HP falls under this. Guard blocks 90% of damage for a few seconds but ends the moment you move or act, so the bot holds still while it lasts.");
+        public static readonly LocString RotationGuardHpHelp = new("settings.rotation.guardHpHelp", "Press Guard when your HP falls under this. Guard cuts 99% of damage for a few seconds and ends as soon as you use another action, so the bot keeps moving but holds its skills while it lasts.");
         public static readonly LocString RotationGuardOnBurst = new("settings.rotation.guardOnBurst", "Guard when bursted");
         public static readonly LocString RotationGuardOnBurstHelp = new("settings.rotation.guardOnBurstHelp", "Also Guard earlier, while your HP is dropping fast and at least two enemies are on you.");
         public static readonly LocString RotationGuardOnBurstHp = new("settings.rotation.guardOnBurstHp", "Bursted Guard below");

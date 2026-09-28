@@ -461,7 +461,7 @@
       "manualHelp": "Yetenekleri kendin basarsın. Bot yine kuyruğa girer, hareket eder, Limit Break'i kullanır ve tekrar kuyruğa girer.",
       "group": "Rotasyon",
       "guardHp": "Guard, can şunun altındayken",
-      "guardHpHelp": "Canın bunun altına düşünce Guard'a basar. Guard birkaç saniye hasarın %90'ını keser ama hareket ettiğin ya da bir şey yaptığın anda biter; bu yüzden bot süresi boyunca yerinde durur.",
+      "guardHpHelp": "Canın bunun altına düşünce Guard'a basar. Guard birkaç saniye hasarın %99'unu keser ve başka bir yetenek kullandığın anda biter; bu yüzden bot süresi boyunca hareket etmeye devam eder ama yeteneklerini bekletir.",
       "guardOnBurst": "Burst yerken Guard",
       "guardOnBurstHelp": "Canın hızla düşüyorsa ve en az iki düşman üzerindeyse Guard'ı daha erken de kullan.",
       "guardOnBurstHp": "Burst Guard'ı şunun altında",

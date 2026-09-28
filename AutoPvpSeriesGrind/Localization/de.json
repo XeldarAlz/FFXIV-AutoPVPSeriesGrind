@@ -461,7 +461,7 @@
       "manualHelp": "Du drückst deine Fähigkeiten selbst. Der Bot stellt sich weiter in die Warteschlange, bewegt sich, zündet den Limitrausch und stellt sich erneut an.",
       "group": "Rotation",
       "guardHp": "Guard unter",
-      "guardHpHelp": "Drückt Guard, wenn deine HP darunter fallen. Guard blockt einige Sekunden 90 % des Schadens, endet aber, sobald du dich bewegst oder handelst; der Bot bleibt deshalb solange stehen.",
+      "guardHpHelp": "Drückt Guard, wenn deine HP darunter fallen. Guard verringert einige Sekunden lang den Schaden um 99 % und endet, sobald du eine andere Aktion einsetzt; der Bot bewegt sich deshalb weiter, hält aber seine Fähigkeiten zurück, solange es anhält.",
       "guardOnBurst": "Guard bei Burst",
       "guardOnBurstHelp": "Guard auch früher, wenn deine HP schnell fallen und mindestens zwei Gegner auf dir sind.",
       "guardOnBurstHp": "Burst-Guard unter",

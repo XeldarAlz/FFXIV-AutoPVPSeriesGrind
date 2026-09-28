@@ -461,7 +461,7 @@
       "manualHelp": "Vous appuyez vous-même sur vos compétences. Le bot continue de faire la file, de se déplacer, de déclencher la Transcendance et de se réinscrire.",
       "group": "Rotation",
       "guardHp": "Garde sous",
-      "guardHpHelp": "Utilise Garde quand vos PV passent sous ce seuil. Garde bloque 90 % des dégâts quelques secondes mais cesse dès que vous bougez ou agissez ; le bot reste donc immobile tant qu'elle dure.",
+      "guardHpHelp": "Utilise Garde quand vos PV passent sous ce seuil. Garde réduit les dégâts de 99 % pendant quelques secondes et cesse dès que vous utilisez une autre action ; le bot continue donc de se déplacer mais retient ses compétences tant qu'elle dure.",
       "guardOnBurst": "Garde en cas de burst",
       "guardOnBurstHelp": "Garde aussi plus tôt, quand vos PV chutent vite et qu'au moins deux ennemis vous ciblent.",
       "guardOnBurstHp": "Garde de burst sous",

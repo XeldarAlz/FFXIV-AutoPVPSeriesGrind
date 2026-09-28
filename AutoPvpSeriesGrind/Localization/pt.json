@@ -461,7 +461,7 @@
       "manualHelp": "Você aperta suas próprias habilidades. O bot continua entrando na fila, se movendo, disparando o Limit Break e voltando para a fila.",
       "group": "Rotação",
       "guardHp": "Guard abaixo de",
-      "guardHpHelp": "Usa Guard quando sua vida cai abaixo disto. Guard bloqueia 90% do dano por alguns segundos, mas termina assim que você se move ou age; por isso o bot fica parado enquanto dura.",
+      "guardHpHelp": "Usa Guard quando sua vida cai abaixo disto. Guard reduz o dano em 99% por alguns segundos e termina assim que você usa outra ação; por isso o bot continua se movendo, mas segura as habilidades enquanto dura.",
       "guardOnBurst": "Guard ao sofrer burst",
       "guardOnBurstHelp": "Usa Guard mais cedo também, quando sua vida cai rápido e pelo menos dois inimigos estão em cima de você.",
       "guardOnBurstHp": "Guard de burst abaixo de",

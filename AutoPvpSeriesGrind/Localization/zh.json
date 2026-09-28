@@ -461,7 +461,7 @@
       "manualHelp": "技能由你自己按。机器人仍会负责排队、移动、释放极限技并重新排队。",
       "group": "循环",
       "guardHp": "低于此血量时 Guard",
-      "guardHpHelp": "血量跌到此值以下时按下 Guard。Guard 在数秒内减免 90% 伤害，但一旦移动或行动就会结束，因此期间机器人会保持不动。",
+      "guardHpHelp": "血量跌到此值以下时按下 Guard。Guard 在数秒内减免 99% 伤害，使用其他技能时即会结束，因此期间机器人会继续移动，但暂停使用技能。",
       "guardOnBurst": "被爆发时 Guard",
       "guardOnBurstHelp": "当血量快速下降且至少两名敌人盯着你时，也会提前使用 Guard。",
       "guardOnBurstHp": "爆发 Guard 的血量",
