@@ -328,6 +328,15 @@
       "one": "{0} değişiklik",
       "other": "{0} değişiklik"
     },
+    "r2800": {
+      "1": "Düzeltildi: Karakter Frontline'da takımını takip ederken geri adım atıyordu",
+      "2": "Düzeltildi: Frontline maçı başlarken karakter başlangıç noktasında ileri geri yürüyordu",
+      "3": "Düzeltildi: Guard açıkken karakter yerinde duruyordu; artık hareket etmeye devam ediyor ve yalnızca becerilerini bekletiyor",
+      "4": "İyileştirildi: Frontline'da bot, üssünüzün yakınındaki değil haritadaki müttefik gruplarıyla kalıyor ve grup değiştirmeyi daha az yapıyor"
+    },
+    "r2710": {
+      "1": "Savaş beyni rozeti artık Frontline maçlarında Crystalline Conflict yerine Frontline davranışınızı gösteriyor"
+    },
     "r2700": {
       "1": "Kristali iterken karakter artık birkaç adımda bir durup yeniden başlamak yerine kristalle birlikte yürüyor",
       "2": "Her karakter kristalin çemberinde kendi yerinden eşlik ediyor, böylece takım arkadaşları artık tek bir noktada üst üste binmiyor",

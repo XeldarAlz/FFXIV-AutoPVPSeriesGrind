@@ -283,6 +283,14 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release2800 =
+        [
+            new("changelog.r2800.1", "Fixed the character stepping backwards while following its team in Frontline"),
+            new("changelog.r2800.2", "Fixed the character walking back and forth at spawn when a Frontline match starts"),
+            new("changelog.r2800.3", "Fixed the character standing still while Guard is up; it now keeps moving and only holds its skills"),
+            new("changelog.r2800.4", "Improved Frontline team following: the bot sticks with ally groups out on the map instead of near your base, and switches groups less often"),
+        ];
+
         public static readonly LocString[] Release2710 =
         [
             new("changelog.r2710.1", "The combat brain badge now shows your Frontline behavior during Frontline runs instead of the Crystalline Conflict one"),

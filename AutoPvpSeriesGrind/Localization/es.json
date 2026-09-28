@@ -328,6 +328,15 @@
       "one": "{0} cambio",
       "other": "{0} cambios"
     },
+    "r2800": {
+      "1": "Corregido: el personaje daba pasos hacia atrás al seguir a su equipo en Frontline",
+      "2": "Corregido: el personaje iba y venía en la zona de inicio al empezar una partida de Frontline",
+      "3": "Corregido: el personaje se quedaba quieto con Guardia activa; ahora sigue moviéndose y solo retiene sus habilidades",
+      "4": "Mejorado el seguimiento del equipo en Frontline: el bot se queda con grupos aliados en el mapa en lugar de cerca de tu base, y cambia de grupo con menos frecuencia"
+    },
+    "r2710": {
+      "1": "La insignia del cerebro de combate ahora muestra tu comportamiento en Frontline durante las partidas de Frontline en lugar del de Crystalline Conflict"
+    },
     "r2700": {
       "1": "Al empujar el cristal, ahora se camina junto a él en lugar de detenerse y arrancar cada pocos pasos",
       "2": "Cada personaje acompaña el cristal desde su propio sitio dentro del círculo, así los compañeros ya no se amontonan en un mismo punto",

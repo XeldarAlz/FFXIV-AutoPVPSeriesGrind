@@ -328,6 +328,15 @@
       "one": "{0} Änderung",
       "other": "{0} Änderungen"
     },
+    "r2800": {
+      "1": "Behoben: Die Figur machte in Frontline Schritte rückwärts, während sie ihrem Team folgte",
+      "2": "Behoben: Die Figur lief zu Beginn eines Frontline-Matches am Startpunkt hin und her",
+      "3": "Behoben: Die Figur blieb bei aktivem Guard stehen; jetzt läuft sie weiter und hält nur ihre Fähigkeiten zurück",
+      "4": "Verbessert: Beim Folgen in Frontline bleibt der Bot bei Verbündetengruppen draußen auf der Karte statt nahe der eigenen Basis und wechselt seltener die Gruppe"
+    },
+    "r2710": {
+      "1": "Das Abzeichen des Kampf-Brains zeigt bei Frontline-Läufen jetzt dein Frontline-Verhalten statt des Crystalline-Conflict-Verhaltens"
+    },
     "r2700": {
       "1": "Beim Schieben des Kristalls läuft die Figur jetzt mit ihm mit, statt alle paar Schritte anzuhalten und neu loszulaufen",
       "2": "Jede Figur begleitet den Kristall von einem eigenen Platz in seinem Kreis, sodass Teammitglieder nicht mehr auf einem Punkt stehen",
