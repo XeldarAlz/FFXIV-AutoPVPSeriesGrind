@@ -283,6 +283,11 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release2810 =
+        [
+            new("changelog.r2810.1", "Added a Buy Me a Coffee button under Patreon on the About page"),
+        ];
+
         public static readonly LocString[] Release2800 =
         [
             new("changelog.r2800.1", "Fixed the character stepping backwards while following its team in Frontline"),
