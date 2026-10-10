@@ -335,6 +335,15 @@
       "one": "{0} Änderung",
       "other": "{0} Änderungen"
     },
+    "r2900": {
+      "1": "Tab „Einkaufen“ hinzugefügt: gibt Wolfsmarken und Kristalltrophäen am Wolfshöhlen-Pier nach deiner Liste aus; übrige Wolfsmarken gehen an Wertmarken",
+      "2": "„Selbst steuern“ hinzugefügt: Du bewegst die Figur, das Plugin wählt weiter Ziele, kämpft und meldet an (Einstellungen oder /apsg steer)",
+      "3": "Verbessert: „Menschliches Spiel“ gibt jedem Match eigene Wege, Abstände, Tor-Timing und Reitgewohnheiten, damit Bots im selben Match nicht mehr im Gleichschritt laufen",
+      "4": "Behoben: ständiges Auf- und Absteigen, Hängenbleiben an unerreichbaren Stellen und Laufen ins Eis in Frontline"
+    },
+    "r2810": {
+      "1": "Buy-Me-a-Coffee-Schaltfläche unter Patreon auf der Seite „Über“ hinzugefügt"
+    },
     "r2800": {
       "1": "Behoben: Die Figur machte in Frontline Schritte rückwärts, während sie ihrem Team folgte",
       "2": "Behoben: Die Figur lief zu Beginn eines Frontline-Matches am Startpunkt hin und her",

@@ -335,6 +335,15 @@
       "one": "{0} changement",
       "other": "{0} changements"
     },
+    "r2900": {
+      "1": "Ajout de l'onglet « Achats » : dépense vos marques de loup et cristaux-trophées à la Jetée de l'Antre des loups selon votre liste, le reste des marques allant aux jetons de tâche",
+      "2": "Ajout de « Se déplacer soi-même » : vous déplacez le personnage, le plugin continue de cibler, de combattre et de s'inscrire (réglages ou /apsg steer)",
+      "3": "Amélioration de « Jeu humain » : chaque match a ses propres trajets, espacements, moment de sortie et habitudes de monture, les bots d'un même match ne bougent plus en même temps",
+      "4": "Correction : montée et descente de monture en boucle, blocage sur des points inaccessibles et marche dans la glace en Frontline"
+    },
+    "r2810": {
+      "1": "Ajout d'un bouton Buy Me a Coffee sous Patreon sur la page À propos"
+    },
     "r2800": {
       "1": "Correction : le personnage reculait en suivant son équipe en Frontline",
       "2": "Correction : le personnage faisait des allers-retours au point de départ au début d'une partie de Frontline",

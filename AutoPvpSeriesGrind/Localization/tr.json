@@ -335,6 +335,15 @@
       "one": "{0} değişiklik",
       "other": "{0} değişiklik"
     },
+    "r2900": {
+      "1": "\"Alışveriş\" sekmesi eklendi: listene göre Wolves' Den Pier'da Wolf Marks ve Trophy Crystals harcar; artan Wolf Marks Ventures'a gider",
+      "2": "\"Kendin yönet\" eklendi: karakteri sen hareket ettirirsin, eklenti hedef seçmeye, savaşmaya ve sıraya girmeye devam eder (ayarlar veya /apsg steer)",
+      "3": "İyileştirildi: \"İnsan gibi oyun\" her maça kendi rotalarını, mesafelerini, çıkış zamanlamasını ve binek alışkanlıklarını verir; aynı maçtaki botlar artık aynı anda hareket etmez",
+      "4": "Düzeltildi: Sürekli binip inme, ulaşılamayan noktalarda takılma ve Frontline'da buza girme"
+    },
+    "r2810": {
+      "1": "Hakkında sayfasında Patreon’un altına Buy Me a Coffee düğmesi eklendi"
+    },
     "r2800": {
       "1": "Düzeltildi: Karakter Frontline'da takımını takip ederken geri adım atıyordu",
       "2": "Düzeltildi: Frontline maçı başlarken karakter başlangıç noktasında ileri geri yürüyordu",

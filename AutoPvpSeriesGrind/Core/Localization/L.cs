@@ -290,6 +290,14 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release2900 =
+        [
+            new("changelog.r2900.1", "Added a Shopping tab that spends Wolf Marks and Trophy Crystals at Wolves' Den Pier from your list, with leftover Wolf Marks going to Ventures"),
+            new("changelog.r2900.2", "Added Steer yourself: you move the character while the plugin keeps targeting, fighting and queueing (settings or /apsg steer)"),
+            new("changelog.r2900.3", "Improved Human-like play: each match gets its own routes, spacing, gate timing and mount habits, so bots in the same match no longer move in lockstep"),
+            new("changelog.r2900.4", "Fixed mounting and dismounting over and over, getting stuck on unreachable spots, and walking into the ice in Frontline"),
+        ];
+
         public static readonly LocString[] Release2810 =
         [
             new("changelog.r2810.1", "Added a Buy Me a Coffee button under Patreon on the About page"),

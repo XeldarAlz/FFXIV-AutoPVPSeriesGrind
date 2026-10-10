@@ -335,6 +335,15 @@
       "one": "{0} cambio",
       "other": "{0} cambios"
     },
+    "r2900": {
+      "1": "Añadida la pestaña «Compras»: gasta Wolf Marks y Trophy Crystals en Wolves' Den Pier según tu lista, y las Wolf Marks sobrantes van a Ventures",
+      "2": "Añadido «Moverte tú»: tú mueves el personaje y el plugin sigue eligiendo objetivos, luchando y poniéndose en cola (ajustes o /apsg steer)",
+      "3": "Mejorado «Juego humano»: cada partida tiene sus propias rutas, distancias, momento de salida y hábitos de montura, así que los bots de una misma partida ya no se mueven al unísono",
+      "4": "Corregido: montar y desmontar sin parar, atascarse en puntos inalcanzables y meterse en el hielo de Frontline"
+    },
+    "r2810": {
+      "1": "Añadido un botón de Buy Me a Coffee debajo de Patreon en la página Acerca de"
+    },
     "r2800": {
       "1": "Corregido: el personaje daba pasos hacia atrás al seguir a su equipo en Frontline",
       "2": "Corregido: el personaje iba y venía en la zona de inicio al empezar una partida de Frontline",
