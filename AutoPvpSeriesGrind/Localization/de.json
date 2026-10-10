@@ -655,8 +655,6 @@
     "betweenMatchesHelp": "Vor dem nächsten Anmelden geht es zum Wolfshöhlen-Pier, sobald deine Wolfsmarken die Schwelle erreichen oder du dir einen Artikel für Kristalltrophäen auf deiner Liste leisten kannst. Das nächste Match wird vom Pier aus angemeldet.",
     "threshold": "Wolfsmarken-Schwelle",
     "thresholdHelp": "Einkaufen, sobald du mindestens so viele Wolfsmarken hast. Sie sind auf 20.000 begrenzt, und alles darüber geht verloren.",
-    "atRunEnd": "Am Ende des Laufs einkaufen",
-    "atRunEndHelp": "Wenn der Lauf sein Ziel erreicht oder nach „Zu Ende spielen, dann stoppen“, wird vor der Aktion nach dem Lauf ausgegeben, was Liste und Resteinstellung erlauben.",
     "goNow": "Jetzt einkaufen gehen",
     "goNowHelp": "Teleportiert zum Wolfshöhlen-Pier und kauft sofort von deiner Liste, ohne auf die Schwelle zu achten. Nur verfügbar, solange kein Lauf aktiv ist.",
     "shopNow": "Jetzt einkaufen",
@@ -691,6 +689,7 @@
     "chatDone": "Einkauf erledigt: {0}.",
     "chatNothingBought": "Der Einkauf endete, ohne etwas zu kaufen. Details stehen in /apsg log.",
     "chatFailed": "Der Einkauf wurde abgebrochen: {0}",
+    "chatBusy": "Einkauf übersprungen: Beende zuerst den Inhalt, den Kampf oder die Warteschlange.",
     "quantityItem": "{0} × {1}"
   },
   "brain": {

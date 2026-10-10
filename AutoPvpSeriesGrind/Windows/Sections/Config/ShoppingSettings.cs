@@ -65,12 +65,6 @@ internal static class ShoppingSettings
                     ThresholdMinimum, PvpWallet.CurrencyCap, Loc.T(L.Shop.FormatMarks)));
         }
 
-        SettingsRow.Draw(Loc.T(L.Shop.AtRunEnd),
-            Loc.T(L.Shop.AtRunEndHelp),
-            SettingsControls.ToggleWidth,
-            () => SettingsControls.DrawToggle(cfg, () => cfg.ShopAtRunEnd, value => cfg.ShopAtRunEnd = value, "##shop_runend"),
-            SettingsRow.ToggleHeight);
-
         DrawShopNowRow();
     }
 

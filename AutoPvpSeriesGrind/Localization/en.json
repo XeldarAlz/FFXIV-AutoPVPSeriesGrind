@@ -655,8 +655,6 @@
     "betweenMatchesHelp": "Before queueing again, head to Wolves' Den Pier once Wolf Marks reach the threshold, or once a Trophy Crystal item on your list is affordable. The next match is queued from the pier.",
     "threshold": "Wolf Marks threshold",
     "thresholdHelp": "Go shopping once you hold at least this many Wolf Marks. They cap at 20,000, and marks earned past the cap are lost.",
-    "atRunEnd": "Shop when the run ends",
-    "atRunEndHelp": "When the run reaches its goal, or after \"Finish, then stop\", spend what the list and the leftover setting allow before the after-run action.",
     "goNow": "Go shopping now",
     "goNowHelp": "Teleports to Wolves' Den Pier and buys from your list right away, ignoring the threshold. Available while no run is active.",
     "shopNow": "Shop now",
@@ -691,6 +689,7 @@
     "chatDone": "Shopping done: {0}.",
     "chatNothingBought": "The shopping trip ended without buying anything. /apsg log has the details.",
     "chatFailed": "The shopping trip stopped: {0}",
+    "chatBusy": "Shopping skipped: finish the duty, fight or queue first.",
     "quantityItem": "{0} × {1}"
   },
   "brain": {

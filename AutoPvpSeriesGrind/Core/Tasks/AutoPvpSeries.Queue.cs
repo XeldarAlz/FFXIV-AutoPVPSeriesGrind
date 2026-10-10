@@ -43,18 +43,12 @@ internal sealed partial class AutoPvpSeries
 
         if (stopAfterCurrentMatch)
         {
-            if (!queued)
-            {
-                await ShopBeforeRunEnds();
-            }
-
             LogDiagnostic("stop condition reached -> ending run");
             return true;
         }
 
         if (stopRequested && !queued)
         {
-            await ShopBeforeRunEnds();
             LogDiagnostic("stop requested and nothing in flight -> ending run");
             return true;
         }

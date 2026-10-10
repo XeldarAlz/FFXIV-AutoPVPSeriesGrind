@@ -625,8 +625,6 @@ internal static class L
         public static readonly LocString BetweenMatchesHelp = new("shop.betweenMatchesHelp", "Before queueing again, head to Wolves' Den Pier once Wolf Marks reach the threshold, or once a Trophy Crystal item on your list is affordable. The next match is queued from the pier.");
         public static readonly LocString Threshold = new("shop.threshold", "Wolf Marks threshold");
         public static readonly LocString ThresholdHelp = new("shop.thresholdHelp", "Go shopping once you hold at least this many Wolf Marks. They cap at 20,000, and marks earned past the cap are lost.");
-        public static readonly LocString AtRunEnd = new("shop.atRunEnd", "Shop when the run ends");
-        public static readonly LocString AtRunEndHelp = new("shop.atRunEndHelp", "When the run reaches its goal, or after \"Finish, then stop\", spend what the list and the leftover setting allow before the after-run action.");
         public static readonly LocString GoNow = new("shop.goNow", "Go shopping now");
         public static readonly LocString GoNowHelp = new("shop.goNowHelp", "Teleports to Wolves' Den Pier and buys from your list right away, ignoring the threshold. Available while no run is active.");
         public static readonly LocString ShopNow = new("shop.shopNow", "Shop now");
@@ -661,6 +659,7 @@ internal static class L
         public static readonly LocString ChatDone = new("shop.chatDone", "Shopping done: {0}.");
         public static readonly LocString ChatNothingBought = new("shop.chatNothingBought", "The shopping trip ended without buying anything. /apsg log has the details.");
         public static readonly LocString ChatFailed = new("shop.chatFailed", "The shopping trip stopped: {0}");
+        public static readonly LocString ChatBusy = new("shop.chatBusy", "Shopping skipped: finish the duty, fight or queue first.");
         public static readonly LocString QuantityItem = new("shop.quantityItem", "{0} × {1}");
     }
 

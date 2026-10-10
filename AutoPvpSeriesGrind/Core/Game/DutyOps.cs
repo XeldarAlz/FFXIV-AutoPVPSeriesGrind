@@ -1,5 +1,6 @@
 using AutoPvpSeriesGrind.Core.Util;
 using clib.Extensions;
+using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -56,8 +57,15 @@ internal static unsafe class DutyOps
             return false;
         }
         return queueInfo->QueueState is ContentsFinderQueueState.Pending
-            or ContentsFinderQueueState.Queued or ContentsFinderQueueState.Ready;
+            or ContentsFinderQueueState.Queued or ContentsFinderQueueState.Ready or ContentsFinderQueueState.Accepted;
     }, fallback: false);
+
+    public static bool HasDutyInFlight()
+        => MatchState.InDuty()
+        || Svc.Condition[ConditionFlag.InDutyQueue]
+        || Svc.Condition[ConditionFlag.WaitingForDuty]
+        || IsQueued()
+        || AddonProbe.IsReady(ApsgConstants.AddonNames.DutyReady);
 
     public static int QueuePenaltyMinutes() => Safe.TrySilent(() =>
     {

@@ -5,10 +5,14 @@ using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using System.Text;
 using GameObjectStruct = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
 
 namespace AutoPvpSeriesGrind.Core.Shopping;
+
+internal readonly record struct InclusionAgentState(byte CategoryCount, byte SelectedCategory, byte VisibleTabs);
 
 internal static unsafe class ShopWindows
 {
@@ -24,6 +28,7 @@ internal static unsafe class ShopWindows
     private const int InclusionCategoryEvent = 12;
     private const int InclusionSubCategoryEvent = 13;
 
+    private const int DescribedItemLimit = 5;
     private const int ClickThrottleMs = 250;
     private const string ClickThrottleKey = "AutoPvpSeriesGrind.Shop.Click";
     private const string ConfirmThrottleKey = "AutoPvpSeriesGrind.Shop.Confirm";
@@ -82,6 +87,52 @@ internal static unsafe class ShopWindows
     }
 
     public static bool InclusionShopLists(uint itemId) => FindInclusionItem(itemId) is not null;
+
+    public static bool TryReadInclusionAgent(out InclusionAgentState state)
+    {
+        state = default;
+        var agent = AgentInclusionShop.Instance();
+        if (agent == null || agent->Data == null)
+        {
+            return false;
+        }
+
+        var data = agent->Data;
+        state = new InclusionAgentState(data->CategoryCount, data->SelectedCategoryIndex, data->VisibleSubCategoryCount);
+        return true;
+    }
+
+    public static bool InclusionCategoryReady(int category)
+        => TryReadInclusionAgent(out var state) && state.SelectedCategory == category && state.VisibleTabs > 1;
+
+    public static string DescribeInclusionShop()
+    {
+        var builder = new StringBuilder();
+        if (TryReadInclusionAgent(out var state))
+        {
+            builder.Append($"agent: {state.CategoryCount} categories, category {state.SelectedCategory} selected, {state.VisibleTabs} tabs; ");
+        }
+        else
+        {
+            builder.Append("agent: unavailable; ");
+        }
+
+        if (!AddonProbe.TryGetReady(InclusionShopAddon, out var addon))
+        {
+            builder.Append("window closed");
+            return builder.ToString();
+        }
+
+        var master = new AddonMaster.InclusionShop((nint)addon);
+        var entries = master.ShopItems;
+        builder.Append($"window reports {master.NumEntries} entries, {entries.Length} with an item id");
+        for (var entryIndex = 0; entryIndex < entries.Length && entryIndex < DescribedItemLimit; entryIndex++)
+        {
+            builder.Append(entryIndex == 0 ? ": " : ", ").Append(entries[entryIndex].ItemId);
+        }
+
+        return builder.ToString();
+    }
 
     public static bool CurrencyShopLists(uint itemId) => FindCurrencyItem(itemId) is not null;
 

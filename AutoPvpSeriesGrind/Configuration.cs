@@ -69,7 +69,6 @@ public sealed class Configuration : IPluginConfiguration
 
     public bool ShopBetweenMatches { get; set; } = false;
     public int ShopMarksThreshold { get; set; } = 18_000;
-    public bool ShopAtRunEnd { get; set; } = false;
     public List<ShoppingListEntry> ShoppingList { get; set; } = [];
     public uint LeftoverMarksItemId { get; set; } = ShopCatalog.VentureItemId;
     public int KeepWolfMarks { get; set; } = 0;

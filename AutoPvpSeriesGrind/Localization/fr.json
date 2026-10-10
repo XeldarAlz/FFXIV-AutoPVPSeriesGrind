@@ -655,8 +655,6 @@
     "betweenMatchesHelp": "Avant de se réinscrire, le bot se rend à la Jetée de l'Antre des loups dès que vos marques de loup atteignent le seuil, ou dès qu'un article en cristaux-trophées de votre liste est abordable. Le match suivant est lancé depuis la jetée.",
     "threshold": "Seuil de marques de loup",
     "thresholdHelp": "Faire les achats dès que vous avez au moins ce nombre de marques de loup. Elles sont plafonnées à 20 000, et celles gagnées au-delà sont perdues.",
-    "atRunEnd": "Faire les achats en fin de session",
-    "atRunEndHelp": "Quand la session atteint son objectif, ou après « Finir, puis arrêter », dépense ce que la liste et le réglage des restes permettent avant l'action de fin de session.",
     "goNow": "Faire les achats maintenant",
     "goNowHelp": "Se téléporte à la Jetée de l'Antre des loups et achète immédiatement depuis votre liste, sans tenir compte du seuil. Disponible quand aucune session n'est en cours.",
     "shopNow": "Acheter",
@@ -691,6 +689,7 @@
     "chatDone": "Achats terminés : {0}.",
     "chatNothingBought": "La tournée d'achats s'est terminée sans rien acheter. Les détails sont dans /apsg log.",
     "chatFailed": "La tournée d'achats s'est arrêtée : {0}",
+    "chatBusy": "Achats annulés : terminez d'abord le contenu, le combat ou la file d'attente.",
     "quantityItem": "{0} × {1}"
   },
   "brain": {

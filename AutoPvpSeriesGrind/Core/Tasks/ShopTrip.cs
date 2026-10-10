@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Shopping;
 using clib.TaskSystem;
@@ -20,7 +21,8 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
     private const int BuyClickWaitMs = 2_000;
     private const int SpendWaitMs = 8_000;
     private const int ConfirmCloseWaitMs = 2_000;
-    private const int CategorySettleMs = 300;
+    private const int CategoryWaitMs = 3_000;
+    private const int CategorySettleMs = 500;
     private const int SettleMs = 400;
     private const int PollMs = 100;
     private const int MaxPerPurchase = 99;
@@ -28,6 +30,7 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
     private readonly ShoppingPlan plan = plan;
     private readonly HashSet<uint> skippedItemIds = skippedItemIds;
     private readonly List<(ShopItem Item, int Count)> receipt = [];
+    private int selectedInclusionCategory = -1;
 
     public bool Faulted { get; private set; }
 
@@ -51,7 +54,13 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
 
     private async Task Shop()
     {
-        await WaitUntilTimed(IsFreeToAct, ReadyWaitMs, "shop-ready");
+        if (!await WaitUntilTimed(CanTravel, ReadyWaitMs, "shop-ready"))
+        {
+            Warn("Shopping: still in combat, a duty or the queue; skipping the trip.");
+            ApsgChat.PrintError(Loc.T(L.Shop.ChatBusy));
+            return;
+        }
+
         ApsgChat.Print(Loc.T(L.Shop.ChatStart, DescribePlan()));
 
         await VisitVendor(PvpVendors.MarkQuartermaster);
@@ -163,9 +172,15 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
             return true;
         }
 
-        if (!ShopWindows.InclusionShopOpen() && !await TalkTo(vendor, ShopWindows.InclusionShopOpen))
+        if (!ShopWindows.InclusionShopOpen())
         {
-            return false;
+            selectedInclusionCategory = -1;
+            if (!await TalkTo(vendor, ShopWindows.InclusionShopOpen))
+            {
+                return false;
+            }
+
+            LogDiagnostic($"Shopping: inclusion shop open; {ShopWindows.DescribeInclusionShop()}");
         }
 
         var candidates = InclusionTabCandidates(item);
@@ -224,19 +239,33 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
     private async Task<bool> TryInclusionTab(ShopItem item, int category, int tab)
     {
         Status = $"Looking for {item.Name}";
-        if (!ShopWindows.SelectInclusionCategory(category))
+        if (category != selectedInclusionCategory)
         {
-            return false;
+            if (!ShopWindows.SelectInclusionCategory(category))
+            {
+                return false;
+            }
+
+            selectedInclusionCategory = category;
+            await WaitUntilTimed(() => ShopWindows.InclusionCategoryReady(category), CategoryWaitMs, $"shop-category-{category}");
+            await DelayMs(CategorySettleMs);
         }
 
-        await DelayMs(CategorySettleMs);
         if (!ShopWindows.SelectInclusionSubCategory(tab))
         {
             return false;
         }
 
-        return await WaitUntilTimed(() => ShopWindows.InclusionShopLists(item.ItemId), ListWaitMs, $"shop-tab-{category}-{tab}");
+        if (await WaitUntilTimed(() => ShopWindows.InclusionShopLists(item.ItemId), ListWaitMs, $"shop-tab-{category}-{tab}"))
+        {
+            return true;
+        }
+
+        LogDiagnostic($"Shopping: no {item.Name} in category {category}, tab {tab}; {ShopWindows.DescribeInclusionShop()}");
+        return false;
     }
+
+    private static bool CanTravel() => IsFreeToAct() && !DutyOps.HasDutyInFlight();
 
     private async Task<bool> ShowInCurrencyShop(PvpVendor vendor, ShopItem item)
     {

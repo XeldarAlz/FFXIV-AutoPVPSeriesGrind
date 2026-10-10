@@ -655,8 +655,6 @@
     "betweenMatchesHelp": "Antes de volver a la cola, va a Wolves' Den Pier cuando tus Wolf Marks llegan al umbral o cuando puedes pagar un objeto de Trophy Crystals de tu lista. La siguiente partida se pone en cola desde el muelle.",
     "threshold": "Umbral de Wolf Marks",
     "thresholdHelp": "Va de compras cuando tienes al menos esta cantidad de Wolf Marks. El límite es 20.000 y las que ganes por encima se pierden.",
-    "atRunEnd": "Comprar al terminar la sesión",
-    "atRunEndHelp": "Cuando la sesión alcanza su objetivo, o tras «Terminar y luego parar», gasta lo que permitan la lista y el ajuste de sobrantes antes de la acción final.",
     "goNow": "Ir de compras ahora",
     "goNowHelp": "Se teletransporta a Wolves' Den Pier y compra de tu lista al momento, sin mirar el umbral. Disponible cuando no hay ninguna sesión en marcha.",
     "shopNow": "Comprar ahora",
@@ -691,6 +689,7 @@
     "chatDone": "Compras terminadas: {0}.",
     "chatNothingBought": "La salida de compras terminó sin comprar nada. Los detalles están en /apsg log.",
     "chatFailed": "La salida de compras se detuvo: {0}",
+    "chatBusy": "Compras omitidas: termina antes el contenido, el combate o la cola.",
     "quantityItem": "{0} × {1}"
   },
   "brain": {

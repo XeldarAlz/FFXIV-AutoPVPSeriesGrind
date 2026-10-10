@@ -655,8 +655,6 @@
     "betweenMatchesHelp": "Yeniden sıraya girmeden önce, Wolf Marks eşiğe ulaştığında ya da listendeki bir Trophy Crystals eşyasına paran yettiğinde Wolves' Den Pier'a gider. Sonraki maç için sıraya iskeleden girilir.",
     "threshold": "Wolf Marks eşiği",
     "thresholdHelp": "En az bu kadar Wolf Marks biriktiğinde alışverişe gider. Üst sınır 20.000; sınırın üstünde kazanılanlar kaybolur.",
-    "atRunEnd": "Oturum bitince alışveriş yap",
-    "atRunEndHelp": "Oturum hedefine ulaştığında ya da \"Bitir, sonra dur\" sonrasında, oturum sonu eyleminden önce listenin ve artan ayarının izin verdiği kadar harcar.",
     "goNow": "Şimdi alışverişe git",
     "goNowHelp": "Wolves' Den Pier'a ışınlanır ve eşiğe bakmadan listenden hemen satın alır. Etkin bir oturum yokken kullanılabilir.",
     "shopNow": "Şimdi al",
@@ -691,6 +689,7 @@
     "chatDone": "Alışveriş bitti: {0}.",
     "chatNothingBought": "Alışveriş hiçbir şey alınmadan bitti. Ayrıntılar /apsg log'da.",
     "chatFailed": "Alışveriş durdu: {0}",
+    "chatBusy": "Alışveriş atlandı: önce içeriği, savaşı ya da sırayı bitir.",
     "quantityItem": "{0} × {1}"
   },
   "brain": {

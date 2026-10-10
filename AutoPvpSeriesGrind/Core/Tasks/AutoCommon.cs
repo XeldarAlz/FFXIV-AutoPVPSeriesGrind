@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
+internal enum ChildOutcome : byte
+{
+    Finished,
+    Aborted,
+    TimedOut,
+}
+
 internal abstract class AutoCommon : TaskBase
 {
     private const int ChildUnwindGraceMs = 5_000;
@@ -21,25 +28,34 @@ internal abstract class AutoCommon : TaskBase
         && !Svc.Condition[ConditionFlag.BetweenAreas]
         && !Svc.Condition[ConditionFlag.Casting];
 
-    protected async Task<bool> RunChild(clib.Services.AutoTask child, int timeoutMs, string scope)
+    protected async Task<ChildOutcome> RunChild(clib.Services.AutoTask child, int timeoutMs, string scope, Func<bool> abortIf)
     {
         var completion = new TaskCompletionSource();
         child.Run(() => completion.TrySetResult());
         using var registration = CancelToken.Register(() => CancelChild(child, scope));
 
+        var outcome = ChildOutcome.TimedOut;
         var deadline = Environment.TickCount64 + timeoutMs;
-        while (!completion.Task.IsCompleted && Environment.TickCount64 < deadline)
+        while (Environment.TickCount64 < deadline)
         {
+            if (completion.Task.IsCompleted)
+            {
+                return ChildOutcome.Finished;
+            }
+
+            if (abortIf())
+            {
+                outcome = ChildOutcome.Aborted;
+                break;
+            }
+
             Status = child.Status;
             await NextFrame();
         }
 
-        if (completion.Task.IsCompleted)
-        {
-            return true;
-        }
-
-        Warn($"WATCHDOG: '{scope}' exceeded {timeoutMs / 1000}s; cancelling it");
+        Warn(outcome == ChildOutcome.Aborted
+            ? $"'{scope}' abort condition met; cancelling it"
+            : $"WATCHDOG: '{scope}' exceeded {timeoutMs / 1000}s; cancelling it");
         CancelChild(child, scope);
         var graceDeadline = Environment.TickCount64 + ChildUnwindGraceMs;
         while (!completion.Task.IsCompleted && Environment.TickCount64 < graceDeadline)
@@ -47,7 +63,7 @@ internal abstract class AutoCommon : TaskBase
             await NextFrame();
         }
 
-        return false;
+        return outcome;
     }
 
     private void CancelChild(clib.Services.AutoTask child, string scope)
