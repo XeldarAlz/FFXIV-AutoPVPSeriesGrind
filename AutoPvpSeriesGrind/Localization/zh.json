@@ -35,7 +35,11 @@
     "working": "处理中",
     "search": "搜索",
     "noMatches": "没有匹配“{0}”的结果",
-    "dragAdjustHint": "拖动调整，或点击按钮。"
+    "dragAdjustHint": "拖动调整，或点击按钮。",
+    "add": "添加",
+    "remove": "移除",
+    "moveUp": "上移",
+    "moveDown": "下移"
   },
   "shell": {
     "nav": {
@@ -84,12 +88,14 @@
       "wrappingUp": "收尾中",
       "grinding": "刷取中",
       "almostThere": "就快好了",
-      "ready": "随时可以开始"
+      "ready": "随时可以开始",
+      "shopping": "购物中"
     },
     "detail": {
       "wrappingUp": "正在完成本次刷取的最后步骤。",
       "almostThere": "装好必需插件，机器人就可以开工了。",
-      "ready": "按下开始，排队交给它就行。"
+      "ready": "按下开始，排队交给它就行。",
+      "shopping": "正在狼狱停船场花费PvP货币。"
     },
     "stage": {
       "starting": "启动中",
@@ -97,7 +103,8 @@
       "portraits": "出场展示",
       "fighting": "战斗中",
       "done": "完成",
-      "inMatch": "比赛中"
+      "inMatch": "比赛中",
+      "shopping": "购物中"
     },
     "stageDetail": {
       "starting": "正在准备排队。",
@@ -430,7 +437,9 @@
       "combat": "战斗",
       "combatSub": "机器人如何走位、如何挑选战斗。",
       "match": "比赛中",
-      "matchSub": "机器人在每场比赛中的社交小动作。"
+      "matchSub": "机器人在每场比赛中的社交小动作。",
+      "shopping": "购物",
+      "shoppingSub": "在狼狱停船场花掉狼印战绩和奖杯水晶。"
     },
     "session": {
       "footnote": "一次刷取持续多久、结束后做什么，都在 Grind 页面的计划句子里设置。",
@@ -630,6 +639,50 @@
       "enemyAware": "敌人接近判定距离",
       "enemyAwareHelp": "有敌人在此距离内时不上坐骑，并立即下坐骑。"
     }
+  },
+  "shop": {
+    "groupWhen": "购物时机",
+    "betweenMatches": "比赛间隙购物",
+    "betweenMatchesHelp": "再次排队前，当狼印战绩达到阈值，或清单中的奖杯水晶物品买得起时，前往狼狱停船场。下一场比赛会在停船场排队。",
+    "threshold": "狼印战绩阈值",
+    "thresholdHelp": "持有至少这么多狼印战绩时去购物。上限为20,000，超出上限获得的部分会丢失。",
+    "atRunEnd": "运行结束时购物",
+    "atRunEndHelp": "运行达成目标或使用“打完再停止”后，在运行结束操作之前，按清单和剩余设置花费货币。",
+    "goNow": "立即去购物",
+    "goNowHelp": "传送到狼狱停船场并立即按清单购买，忽略阈值。仅在没有运行时可用。",
+    "shopNow": "立即购物",
+    "nothingToBuy": "现在没有可买的：清单已完成，或买不起清单上的任何物品。",
+    "groupList": "购物清单",
+    "wallet": "你有 {0:N0} 狼印战绩和 {1:N0} 奖杯水晶。",
+    "addItem": "添加物品",
+    "addItemHelp": "狼狱停船场狼印战绩和奖杯水晶商人出售的所有物品。",
+    "list": "你的清单",
+    "listHelp": "从上到下购买，直到货币用完。一次性解锁物品只买一次；其他物品持续购买，或在设定数量时停止。",
+    "listEmpty": "清单还是空的。",
+    "catalogEmpty": "无法从游戏数据中读取商人的货品。",
+    "alreadyListed": "已在清单中。",
+    "costMarks": "{0}  ({1:N0} 狼印战绩)",
+    "costCrystals": "{0}  ({1:N0} 奖杯水晶)",
+    "buyOnce": "仅购买一次",
+    "keepBuying": "持续购买",
+    "stopAt": "达到 %d 个停止",
+    "statusOwned": "已拥有",
+    "statusHave": "持有 {0}",
+    "statusHaveOf": "持有 {0}/{1}",
+    "unknownItem": "未知物品 {0}",
+    "groupLeftover": "剩余狼印战绩",
+    "leftoverItem": "剩余用于",
+    "leftoverItemHelp": "清单之后，超出保留量的狼印战绩会用于此物品。探险币是常见选择。",
+    "leftoverNone": "不花，留着",
+    "reserve": "至少保留",
+    "reserveHelp": "狼印战绩不会花到低于此数量。",
+    "formatMarks": "%d 战绩",
+    "footnote": "探险币每枚100狼印战绩。购物需要已在狼狱停船场的以太之光登记。",
+    "chatStart": "在狼狱停船场购物：{0}。",
+    "chatDone": "购物完成：{0}。",
+    "chatNothingBought": "购物结束，但没有买到任何东西。详情见 /apsg log。",
+    "chatFailed": "购物已中止：{0}",
+    "quantityItem": "{1}×{0}"
   },
   "brain": {
     "legend": {

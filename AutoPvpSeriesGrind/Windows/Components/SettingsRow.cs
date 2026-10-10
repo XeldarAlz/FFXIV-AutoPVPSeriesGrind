@@ -12,6 +12,9 @@ internal static class SettingsRow
     private const float HelpIconGap = 7f;
     private const float CaptionPullUp = 7f;
     private const float CaptionBottomGap = 10f;
+    private const float BlockBottomGap = 6f;
+    private const float NoteTopGap = 6f;
+    private const float NoteBottomGap = 8f;
 
     public const float ToggleHeight = 22f;
 
@@ -35,6 +38,27 @@ internal static class SettingsRow
 
         DrawControl(area, controlWidth, controlHeight, drawControl);
         EndRow(area);
+    }
+
+    public static void DrawBlock(string label, string? help, Action drawContent)
+    {
+        Draw(label, help, 0f, static () => { });
+        drawContent();
+        Styling.VSpace(BlockBottomGap);
+    }
+
+    public static void Note(string text, Vector4? color = null)
+    {
+        Styling.VSpace(NoteTopGap);
+        var wrapLocalX = ImGui.GetCursorPosX() + (SettingsGroup.ContentRightEdge - ImGui.GetCursorScreenPos().X);
+        ImGui.PushTextWrapPos(wrapLocalX);
+        using (ImRaii.PushColor(ImGuiCol.Text, color ?? Styling.TextMuted))
+        {
+            ImGui.TextUnformatted(text);
+        }
+
+        ImGui.PopTextWrapPos();
+        Styling.VSpace(NoteBottomGap);
     }
 
     public static void Caption(string text)

@@ -15,7 +15,7 @@ internal static class ReadyState
 {
     public enum Kind { SetupNeeded, Ready, Running, Finishing }
 
-    public enum Stage { Preparing, Queueing, Portraits, Fighting, InMatch, Finishing }
+    public enum Stage { Preparing, Queueing, Portraits, Fighting, InMatch, Shopping, Finishing }
 
     public readonly record struct Info(Kind Kind, Vector4 Accent, Vector4 AccentSoft, FontAwesomeIcon Icon, string Title, string Detail);
 
@@ -43,6 +43,12 @@ internal static class ReadyState
             {
                 return new Info(Kind.Finishing, Styling.AccentMint, Styling.AccentMintSoft, FontAwesomeIcon.CheckCircle,
                     Loc.T(L.Grind.TitleWrappingUp), Loc.T(L.Grind.DetailWrappingUp));
+            }
+
+            if (ctrl.Phase == AutoPhase.Shopping)
+            {
+                return new Info(Kind.Running, Styling.AccentAmber, Styling.AccentAmberSoft, FontAwesomeIcon.ShoppingCart,
+                    Loc.T(L.Grind.TitleShopping), Loc.T(L.Grind.DetailShopping));
             }
 
             var stage = ResolveStage(ctrl);
@@ -75,6 +81,7 @@ internal static class ReadyState
     private static Stage ComputeStage(AutoPvpSeriesController ctrl)
     {
         if (ctrl.Phase == AutoPhase.Finishing) return Stage.Finishing;
+        if (ctrl.Phase == AutoPhase.Shopping) return Stage.Shopping;
 
         var inDuty = Svc.Condition[ConditionFlag.BoundByDuty];
         if (!inDuty)
@@ -98,6 +105,7 @@ internal static class ReadyState
         Stage.Queueing  => (Styling.AccentBlue,   Styling.AccentBlueSoft,   Loc.T(L.Grind.StageInQueue)),
         Stage.Portraits => (Styling.AccentAmber,  Styling.AccentAmberSoft,  Loc.T(L.Grind.StagePortraits)),
         Stage.Fighting  => (Styling.AccentArc, Styling.AccentArcSoft, Loc.T(L.Grind.StageFighting)),
+        Stage.Shopping  => (Styling.AccentAmber,  Styling.AccentAmberSoft,  Loc.T(L.Grind.StageShopping)),
         Stage.Finishing => (Styling.AccentMint,   Styling.AccentMintSoft,   Loc.T(L.Grind.StageDone)),
         _               => (Styling.AccentBlue,   Styling.AccentBlueSoft,   Loc.T(L.Grind.StageInMatch)),
     };
@@ -132,6 +140,7 @@ internal static class ReadyState
         Stage.Queueing  => Loc.T(cfg.MatchType == MatchType.Frontline ? L.Grind.StageDetailInQueueFrontline : L.Grind.StageDetailInQueue),
         Stage.Portraits => Loc.T(L.Grind.StageDetailPortraits),
         Stage.Fighting  => Loc.T(L.Grind.StageDetailFighting),
+        Stage.Shopping  => Loc.T(L.Grind.DetailShopping),
         Stage.Finishing => Loc.T(L.Grind.StageDetailDone),
         _               => Loc.T(L.Grind.StageDetailInMatch),
     };

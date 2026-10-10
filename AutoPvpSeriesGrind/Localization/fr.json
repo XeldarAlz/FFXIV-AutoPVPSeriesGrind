@@ -35,7 +35,11 @@
     "working": "En cours",
     "search": "Rechercher",
     "noMatches": "Aucun résultat pour « {0} »",
-    "dragAdjustHint": "Glissez pour ajuster, ou cliquez les boutons."
+    "dragAdjustHint": "Glissez pour ajuster, ou cliquez les boutons.",
+    "add": "Ajouter",
+    "remove": "Retirer",
+    "moveUp": "Monter",
+    "moveDown": "Descendre"
   },
   "shell": {
     "nav": {
@@ -84,12 +88,14 @@
       "wrappingUp": "Finalisation",
       "grinding": "En cours",
       "almostThere": "Presque prêt",
-      "ready": "Prêt quand vous l'êtes"
+      "ready": "Prêt quand vous l'êtes",
+      "shopping": "Achats"
     },
     "detail": {
       "wrappingUp": "Dernières étapes de la session en cours.",
       "almostThere": "Installez les plugins requis et le bot est prêt à partir.",
-      "ready": "Appuyez sur Démarrer, la file d'attente s'occupe du reste."
+      "ready": "Appuyez sur Démarrer, la file d'attente s'occupe du reste.",
+      "shopping": "Dépense de la monnaie JcJ à la Jetée de l'Antre des loups."
     },
     "stage": {
       "starting": "Démarrage",
@@ -97,7 +103,8 @@
       "portraits": "Portraits",
       "fighting": "Combat",
       "done": "Terminé",
-      "inMatch": "En match"
+      "inMatch": "En match",
+      "shopping": "Achats"
     },
     "stageDetail": {
       "starting": "Préparation de l'inscription.",
@@ -430,7 +437,9 @@
       "combat": "Combat",
       "combatSub": "Comment le bot se positionne et choisit ses combats.",
       "match": "En match",
-      "matchSub": "Les touches sociales que le bot exécute pendant chaque match."
+      "matchSub": "Les touches sociales que le bot exécute pendant chaque match.",
+      "shopping": "Achats",
+      "shoppingSub": "Dépensez vos marques de loup et cristaux-trophées à la Jetée de l'Antre des loups."
     },
     "session": {
       "footnote": "La durée d'une session et ce qui se passe ensuite se règlent sur la page Grind, dans la phrase du plan.",
@@ -630,6 +639,50 @@
       "enemyAware": "Ennemi proche à moins de",
       "enemyAwareHelp": "Un ennemi aussi proche : pas de monture, et descendre aussitôt."
     }
+  },
+  "shop": {
+    "groupWhen": "Quand faire les achats",
+    "betweenMatches": "Faire les achats entre les matchs",
+    "betweenMatchesHelp": "Avant de se réinscrire, le bot se rend à la Jetée de l'Antre des loups dès que vos marques de loup atteignent le seuil, ou dès qu'un article en cristaux-trophées de votre liste est abordable. Le match suivant est lancé depuis la jetée.",
+    "threshold": "Seuil de marques de loup",
+    "thresholdHelp": "Faire les achats dès que vous avez au moins ce nombre de marques de loup. Elles sont plafonnées à 20 000, et celles gagnées au-delà sont perdues.",
+    "atRunEnd": "Faire les achats en fin de session",
+    "atRunEndHelp": "Quand la session atteint son objectif, ou après « Finir, puis arrêter », dépense ce que la liste et le réglage des restes permettent avant l'action de fin de session.",
+    "goNow": "Faire les achats maintenant",
+    "goNowHelp": "Se téléporte à la Jetée de l'Antre des loups et achète immédiatement depuis votre liste, sans tenir compte du seuil. Disponible quand aucune session n'est en cours.",
+    "shopNow": "Acheter",
+    "nothingToBuy": "Rien à acheter pour l'instant : la liste est terminée ou vous ne pouvez rien vous offrir.",
+    "groupList": "Liste d'achats",
+    "wallet": "Vous avez {0:N0} marques de loup et {1:N0} cristaux-trophées.",
+    "addItem": "Ajouter un article",
+    "addItemHelp": "Tout ce que vendent les marchands de marques de loup et de cristaux-trophées de la Jetée de l'Antre des loups.",
+    "list": "Votre liste",
+    "listHelp": "Acheté de haut en bas jusqu'à épuisement de la monnaie. Les déblocages uniques sont achetés une fois ; le reste continue d'être acheté ou s'arrête au nombre choisi.",
+    "listEmpty": "La liste est vide pour l'instant.",
+    "catalogEmpty": "Impossible de lire l'inventaire des marchands dans les données du jeu.",
+    "alreadyListed": "Déjà dans la liste.",
+    "costMarks": "{0}  ({1:N0} marques de loup)",
+    "costCrystals": "{0}  ({1:N0} cristaux-trophées)",
+    "buyOnce": "Acheter une fois",
+    "keepBuying": "Continuer d'acheter",
+    "stopAt": "Arrêter à %d",
+    "statusOwned": "Possédé",
+    "statusHave": "Vous en avez {0}",
+    "statusHaveOf": "Vous en avez {0} sur {1}",
+    "unknownItem": "Article inconnu {0}",
+    "groupLeftover": "Marques de loup restantes",
+    "leftoverItem": "Dépenser le reste en",
+    "leftoverItemHelp": "Après la liste, les marques de loup au-dessus de la réserve vont à cet article. Les jetons de tâche sont le choix habituel.",
+    "leftoverNone": "Rien, les garder",
+    "reserve": "Garder au moins",
+    "reserveHelp": "Ne dépense jamais les marques de loup en dessous de ce montant.",
+    "formatMarks": "%d marques",
+    "footnote": "Les jetons de tâche coûtent 100 marques de loup chacun. Les achats nécessitent l'éthérite de la Jetée de l'Antre des loups comme destination de téléportation.",
+    "chatStart": "Achats à la Jetée de l'Antre des loups : {0}.",
+    "chatDone": "Achats terminés : {0}.",
+    "chatNothingBought": "La tournée d'achats s'est terminée sans rien acheter. Les détails sont dans /apsg log.",
+    "chatFailed": "La tournée d'achats s'est arrêtée : {0}",
+    "quantityItem": "{0} × {1}"
   },
   "brain": {
     "legend": {

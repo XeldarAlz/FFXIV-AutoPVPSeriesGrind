@@ -11,7 +11,7 @@ namespace AutoPvpSeriesGrind.Windows.Pages;
 
 internal sealed class SettingsPage
 {
-    private enum Tab { Session, Combat, Match }
+    private enum Tab { Session, Combat, Match, Shopping }
 
     private readonly record struct Entry(Tab Tab, LocString Label, FontAwesomeIcon Icon, LocString Subtitle);
 
@@ -20,6 +20,7 @@ internal sealed class SettingsPage
         new(Tab.Session, L.Settings.CatSession, FontAwesomeIcon.Flag,        L.Settings.CatSessionSub),
         new(Tab.Combat,  L.Settings.CatCombat,  FontAwesomeIcon.Brain,       L.Settings.CatCombatSub),
         new(Tab.Match,   L.Settings.CatMatch,   FontAwesomeIcon.CommentDots, L.Settings.CatMatchSub),
+        new(Tab.Shopping, L.Settings.CatShopping, FontAwesomeIcon.ShoppingCart, L.Settings.CatShoppingSub),
     ];
 
     private Tab activeTab = Tab.Session;
@@ -93,6 +94,7 @@ internal sealed class SettingsPage
             case Tab.Session: GeneralSettings.Draw(cfg); break;
             case Tab.Combat: CombatSettings.Draw(cfg); break;
             case Tab.Match: MatchSettings.Draw(cfg); break;
+            case Tab.Shopping: ShoppingSettings.Draw(cfg); break;
         }
     }
 }

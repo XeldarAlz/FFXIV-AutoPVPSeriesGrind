@@ -35,7 +35,11 @@
     "working": "Working",
     "search": "Search",
     "noMatches": "Nothing matches \"{0}\"",
-    "dragAdjustHint": "Drag to adjust, or click the buttons."
+    "dragAdjustHint": "Drag to adjust, or click the buttons.",
+    "add": "Add",
+    "remove": "Remove",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "shell": {
     "nav": {
@@ -84,12 +88,14 @@
       "wrappingUp": "Wrapping up",
       "grinding": "Grinding",
       "almostThere": "Almost there",
-      "ready": "Ready when you are"
+      "ready": "Ready when you are",
+      "shopping": "Shopping"
     },
     "detail": {
       "wrappingUp": "Finishing the last steps of the run.",
       "almostThere": "Install the required plugins and the bot is good to go.",
-      "ready": "Press Start and the queue takes it from there."
+      "ready": "Press Start and the queue takes it from there.",
+      "shopping": "Spending PvP currency at Wolves' Den Pier."
     },
     "stage": {
       "starting": "Starting",
@@ -97,7 +103,8 @@
       "portraits": "Portraits",
       "fighting": "Fighting",
       "done": "Done",
-      "inMatch": "In match"
+      "inMatch": "In match",
+      "shopping": "Shopping"
     },
     "stageDetail": {
       "starting": "Getting ready to queue.",
@@ -430,7 +437,9 @@
       "combat": "Combat",
       "combatSub": "How the bot positions itself and picks its fights.",
       "match": "In match",
-      "matchSub": "The social touches the bot performs during each match."
+      "matchSub": "The social touches the bot performs during each match.",
+      "shopping": "Shopping",
+      "shoppingSub": "Spend Wolf Marks and Trophy Crystals at Wolves' Den Pier."
     },
     "session": {
       "footnote": "How long a run lasts and what happens afterwards live on the Grind page, in the plan sentence.",
@@ -630,6 +639,50 @@
       "enemyAware": "Enemy nearby within",
       "enemyAwareHelp": "An enemy this close means no mounting, and dismount at once."
     }
+  },
+  "shop": {
+    "groupWhen": "When to shop",
+    "betweenMatches": "Shop between matches",
+    "betweenMatchesHelp": "Before queueing again, head to Wolves' Den Pier once Wolf Marks reach the threshold, or once a Trophy Crystal item on your list is affordable. The next match is queued from the pier.",
+    "threshold": "Wolf Marks threshold",
+    "thresholdHelp": "Go shopping once you hold at least this many Wolf Marks. They cap at 20,000, and marks earned past the cap are lost.",
+    "atRunEnd": "Shop when the run ends",
+    "atRunEndHelp": "When the run reaches its goal, or after \"Finish, then stop\", spend what the list and the leftover setting allow before the after-run action.",
+    "goNow": "Go shopping now",
+    "goNowHelp": "Teleports to Wolves' Den Pier and buys from your list right away, ignoring the threshold. Available while no run is active.",
+    "shopNow": "Shop now",
+    "nothingToBuy": "Nothing to buy right now: the list is done or you cannot afford anything on it.",
+    "groupList": "Shopping list",
+    "wallet": "You have {0:N0} Wolf Marks and {1:N0} Trophy Crystals.",
+    "addItem": "Add an item",
+    "addItemHelp": "Everything the Wolf Mark and Trophy Crystal vendors at Wolves' Den Pier sell.",
+    "list": "Your list",
+    "listHelp": "Bought top to bottom until the currency runs out. One-time unlocks are bought once; everything else keeps buying or stops at the count you set.",
+    "listEmpty": "Nothing on the list yet.",
+    "catalogEmpty": "Could not read the vendors' stock from the game data.",
+    "alreadyListed": "Already on the list.",
+    "costMarks": "{0}  ({1:N0} Wolf Marks)",
+    "costCrystals": "{0}  ({1:N0} Trophy Crystals)",
+    "buyOnce": "Buy once",
+    "keepBuying": "Keep buying",
+    "stopAt": "Stop at %d",
+    "statusOwned": "Owned",
+    "statusHave": "You have {0}",
+    "statusHaveOf": "You have {0} of {1}",
+    "unknownItem": "Unknown item {0}",
+    "groupLeftover": "Leftover Wolf Marks",
+    "leftoverItem": "Spend the rest on",
+    "leftoverItemHelp": "After the list, Wolf Marks above the reserve go to this item. Ventures are the usual pick.",
+    "leftoverNone": "Nothing, keep them",
+    "reserve": "Keep at least",
+    "reserveHelp": "Never spend Wolf Marks below this amount.",
+    "formatMarks": "%d marks",
+    "footnote": "Ventures cost 100 Wolf Marks each. Shopping needs the Wolves' Den Pier aetheryte attuned.",
+    "chatStart": "Shopping at Wolves' Den Pier: {0}.",
+    "chatDone": "Shopping done: {0}.",
+    "chatNothingBought": "The shopping trip ended without buying anything. /apsg log has the details.",
+    "chatFailed": "The shopping trip stopped: {0}",
+    "quantityItem": "{0} × {1}"
   },
   "brain": {
     "legend": {

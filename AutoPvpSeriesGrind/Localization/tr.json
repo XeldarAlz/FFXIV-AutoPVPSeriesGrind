@@ -35,7 +35,11 @@
     "working": "Çalışıyor",
     "search": "Ara",
     "noMatches": "\"{0}\" ile eşleşen yok",
-    "dragAdjustHint": "Ayarlamak için sürükle, ya da düğmelere tıkla."
+    "dragAdjustHint": "Ayarlamak için sürükle, ya da düğmelere tıkla.",
+    "add": "Ekle",
+    "remove": "Kaldır",
+    "moveUp": "Yukarı taşı",
+    "moveDown": "Aşağı taşı"
   },
   "shell": {
     "nav": {
@@ -84,12 +88,14 @@
       "wrappingUp": "Toparlanıyor",
       "grinding": "Farmlanıyor",
       "almostThere": "Az kaldı",
-      "ready": "Sen hazır olunca"
+      "ready": "Sen hazır olunca",
+      "shopping": "Alışverişte"
     },
     "detail": {
       "wrappingUp": "Koşunun son adımları tamamlanıyor.",
       "almostThere": "Gerekli eklentileri kur, bot hazır olsun.",
-      "ready": "Başlat'a bas, gerisini sıra halleder."
+      "ready": "Başlat'a bas, gerisini sıra halleder.",
+      "shopping": "Wolves' Den Pier'da PvP para birimi harcanıyor."
     },
     "stage": {
       "starting": "Başlıyor",
@@ -97,7 +103,8 @@
       "portraits": "Portreler",
       "fighting": "Savaşıyor",
       "done": "Bitti",
-      "inMatch": "Maçta"
+      "inMatch": "Maçta",
+      "shopping": "Alışveriş"
     },
     "stageDetail": {
       "starting": "Sıraya girmeye hazırlanıyor.",
@@ -430,7 +437,9 @@
       "combat": "Savaş",
       "combatSub": "Botun nasıl konumlandığı ve hangi kavgaları seçtiği.",
       "match": "Maçta",
-      "matchSub": "Botun her maçta yaptığı sosyal dokunuşlar."
+      "matchSub": "Botun her maçta yaptığı sosyal dokunuşlar.",
+      "shopping": "Alışveriş",
+      "shoppingSub": "Wolf Marks ve Trophy Crystals'ı Wolves' Den Pier'da harca."
     },
     "session": {
       "footnote": "Bir koşunun ne kadar süreceği ve sonrasında ne olacağı Grind sayfasındaki plan cümlesinde.",
@@ -630,6 +639,50 @@
       "enemyAware": "Yakındaki düşman şu mesafede",
       "enemyAwareHelp": "Bu kadar yakın bir düşman: bineğe binme, hemen in."
     }
+  },
+  "shop": {
+    "groupWhen": "Ne zaman alışveriş yapılsın",
+    "betweenMatches": "Maçlar arasında alışveriş yap",
+    "betweenMatchesHelp": "Yeniden sıraya girmeden önce, Wolf Marks eşiğe ulaştığında ya da listendeki bir Trophy Crystals eşyasına paran yettiğinde Wolves' Den Pier'a gider. Sonraki maç için sıraya iskeleden girilir.",
+    "threshold": "Wolf Marks eşiği",
+    "thresholdHelp": "En az bu kadar Wolf Marks biriktiğinde alışverişe gider. Üst sınır 20.000; sınırın üstünde kazanılanlar kaybolur.",
+    "atRunEnd": "Oturum bitince alışveriş yap",
+    "atRunEndHelp": "Oturum hedefine ulaştığında ya da \"Bitir, sonra dur\" sonrasında, oturum sonu eyleminden önce listenin ve artan ayarının izin verdiği kadar harcar.",
+    "goNow": "Şimdi alışverişe git",
+    "goNowHelp": "Wolves' Den Pier'a ışınlanır ve eşiğe bakmadan listenden hemen satın alır. Etkin bir oturum yokken kullanılabilir.",
+    "shopNow": "Şimdi al",
+    "nothingToBuy": "Şu an alınacak bir şey yok: liste tamamlandı ya da listedeki hiçbir şeye paran yetmiyor.",
+    "groupList": "Alışveriş listesi",
+    "wallet": "{0:N0} Wolf Marks ve {1:N0} Trophy Crystals'ın var.",
+    "addItem": "Eşya ekle",
+    "addItemHelp": "Wolves' Den Pier'daki Wolf Marks ve Trophy Crystals satıcılarının sattığı her şey.",
+    "list": "Listen",
+    "listHelp": "Para birimi bitene kadar yukarıdan aşağıya satın alınır. Tek seferlik kilit açmalar bir kez alınır; geri kalanlar alınmaya devam eder ya da belirlediğin adette durur.",
+    "listEmpty": "Listede henüz bir şey yok.",
+    "catalogEmpty": "Satıcıların stoku oyun verilerinden okunamadı.",
+    "alreadyListed": "Zaten listede.",
+    "costMarks": "{0}  ({1:N0} Wolf Marks)",
+    "costCrystals": "{0}  ({1:N0} Trophy Crystals)",
+    "buyOnce": "Bir kez al",
+    "keepBuying": "Almaya devam et",
+    "stopAt": "%d adette dur",
+    "statusOwned": "Sende var",
+    "statusHave": "{0} adet var",
+    "statusHaveOf": "{0}/{1} adet var",
+    "unknownItem": "Bilinmeyen eşya {0}",
+    "groupLeftover": "Artan Wolf Marks",
+    "leftoverItem": "Kalanı şuna harca",
+    "leftoverItemHelp": "Listeden sonra, yedeğin üstündeki Wolf Marks bu eşyaya gider. Genelde Ventures seçilir.",
+    "leftoverNone": "Hiçbir şey, sakla",
+    "reserve": "En az şu kadar sakla",
+    "reserveHelp": "Wolf Marks asla bu miktarın altına harcanmaz.",
+    "formatMarks": "%d mark",
+    "footnote": "Her Venture 100 Wolf Marks eder. Alışveriş için Wolves' Den Pier aetheryte'ının ışınlanma noktası olarak açık olması gerekir.",
+    "chatStart": "Wolves' Den Pier'da alışveriş: {0}.",
+    "chatDone": "Alışveriş bitti: {0}.",
+    "chatNothingBought": "Alışveriş hiçbir şey alınmadan bitti. Ayrıntılar /apsg log'da.",
+    "chatFailed": "Alışveriş durdu: {0}",
+    "quantityItem": "{0} × {1}"
   },
   "brain": {
     "legend": {

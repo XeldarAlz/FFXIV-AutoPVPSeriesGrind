@@ -15,6 +15,10 @@ internal static class L
         public static readonly LocString Search = new("common.search", "Search");
         public static readonly LocString NoMatches = new("common.noMatches", "Nothing matches \"{0}\"");
         public static readonly LocString DragAdjustHint = new("common.dragAdjustHint", "Drag to adjust, or click the buttons.");
+        public static readonly LocString Add = new("common.add", "Add");
+        public static readonly LocString Remove = new("common.remove", "Remove");
+        public static readonly LocString MoveUp = new("common.moveUp", "Move up");
+        public static readonly LocString MoveDown = new("common.moveDown", "Move down");
     }
 
     internal static class Shell
@@ -63,6 +67,8 @@ internal static class L
         public static readonly LocString DetailAlmostThere = new("grind.detail.almostThere", "Install the required plugins and the bot is good to go.");
         public static readonly LocString TitleReady = new("grind.title.ready", "Ready when you are");
         public static readonly LocString DetailReady = new("grind.detail.ready", "Press Start and the queue takes it from there.");
+        public static readonly LocString TitleShopping = new("grind.title.shopping", "Shopping");
+        public static readonly LocString DetailShopping = new("grind.detail.shopping", "Spending PvP currency at Wolves' Den Pier.");
 
         public static readonly LocString StageStarting = new("grind.stage.starting", "Starting");
         public static readonly LocString StageInQueue = new("grind.stage.inQueue", "In queue");
@@ -70,6 +76,7 @@ internal static class L
         public static readonly LocString StageFighting = new("grind.stage.fighting", "Fighting");
         public static readonly LocString StageDone = new("grind.stage.done", "Done");
         public static readonly LocString StageInMatch = new("grind.stage.inMatch", "In match");
+        public static readonly LocString StageShopping = new("grind.stage.shopping", "Shopping");
 
         public static readonly LocString StageDetailStarting = new("grind.stageDetail.starting", "Getting ready to queue.");
         public static readonly LocString StageDetailInQueue = new("grind.stageDetail.inQueue", "Waiting for a Casual Match.");
@@ -410,6 +417,8 @@ internal static class L
         public static readonly LocString CatCombatSub = new("settings.cat.combatSub", "How the bot positions itself and picks its fights.");
         public static readonly LocString CatMatch = new("settings.cat.match", "In match");
         public static readonly LocString CatMatchSub = new("settings.cat.matchSub", "The social touches the bot performs during each match.");
+        public static readonly LocString CatShopping = new("settings.cat.shopping", "Shopping");
+        public static readonly LocString CatShoppingSub = new("settings.cat.shoppingSub", "Spend Wolf Marks and Trophy Crystals at Wolves' Den Pier.");
 
         public static readonly LocString SessionFootnote = new("settings.session.footnote", "How long a run lasts and what happens afterwards live on the Grind page, in the plan sentence.");
         public static readonly LocString GroupPacing = new("settings.session.pacing", "Pacing");
@@ -599,6 +608,52 @@ internal static class L
         public static readonly LocString FormatHp = new("settings.format.hp", "%d HP");
         public static readonly LocString FormatPercentOfMatches = new("settings.format.percentOfMatches", "%d%% of matches");
         public static readonly LocString FormatPercentPerSecond = new("settings.format.percentPerSecond", "%d%%/s");
+    }
+
+    internal static class Shop
+    {
+        public static readonly LocString GroupWhen = new("shop.groupWhen", "When to shop");
+        public static readonly LocString BetweenMatches = new("shop.betweenMatches", "Shop between matches");
+        public static readonly LocString BetweenMatchesHelp = new("shop.betweenMatchesHelp", "Before queueing again, head to Wolves' Den Pier once Wolf Marks reach the threshold, or once a Trophy Crystal item on your list is affordable. The next match is queued from the pier.");
+        public static readonly LocString Threshold = new("shop.threshold", "Wolf Marks threshold");
+        public static readonly LocString ThresholdHelp = new("shop.thresholdHelp", "Go shopping once you hold at least this many Wolf Marks. They cap at 20,000, and marks earned past the cap are lost.");
+        public static readonly LocString AtRunEnd = new("shop.atRunEnd", "Shop when the run ends");
+        public static readonly LocString AtRunEndHelp = new("shop.atRunEndHelp", "When the run reaches its goal, or after \"Finish, then stop\", spend what the list and the leftover setting allow before the after-run action.");
+        public static readonly LocString GoNow = new("shop.goNow", "Go shopping now");
+        public static readonly LocString GoNowHelp = new("shop.goNowHelp", "Teleports to Wolves' Den Pier and buys from your list right away, ignoring the threshold. Available while no run is active.");
+        public static readonly LocString ShopNow = new("shop.shopNow", "Shop now");
+        public static readonly LocString NothingToBuy = new("shop.nothingToBuy", "Nothing to buy right now: the list is done or you cannot afford anything on it.");
+        public static readonly LocString GroupList = new("shop.groupList", "Shopping list");
+        public static readonly LocString Wallet = new("shop.wallet", "You have {0:N0} Wolf Marks and {1:N0} Trophy Crystals.");
+        public static readonly LocString AddItem = new("shop.addItem", "Add an item");
+        public static readonly LocString AddItemHelp = new("shop.addItemHelp", "Everything the Wolf Mark and Trophy Crystal vendors at Wolves' Den Pier sell.");
+        public static readonly LocString YourList = new("shop.list", "Your list");
+        public static readonly LocString ListHelp = new("shop.listHelp", "Bought top to bottom until the currency runs out. One-time unlocks are bought once; everything else keeps buying or stops at the count you set.");
+        public static readonly LocString ListEmpty = new("shop.listEmpty", "Nothing on the list yet.");
+        public static readonly LocString CatalogEmpty = new("shop.catalogEmpty", "Could not read the vendors' stock from the game data.");
+        public static readonly LocString AlreadyListed = new("shop.alreadyListed", "Already on the list.");
+        public static readonly LocString CostMarks = new("shop.costMarks", "{0}  ({1:N0} Wolf Marks)");
+        public static readonly LocString CostCrystals = new("shop.costCrystals", "{0}  ({1:N0} Trophy Crystals)");
+        public static readonly LocString BuyOnce = new("shop.buyOnce", "Buy once");
+        public static readonly LocString KeepBuying = new("shop.keepBuying", "Keep buying");
+        public static readonly LocString StopAt = new("shop.stopAt", "Stop at %d");
+        public static readonly LocString StatusOwned = new("shop.statusOwned", "Owned");
+        public static readonly LocString StatusHave = new("shop.statusHave", "You have {0}");
+        public static readonly LocString StatusHaveOf = new("shop.statusHaveOf", "You have {0} of {1}");
+        public static readonly LocString UnknownItem = new("shop.unknownItem", "Unknown item {0}");
+        public static readonly LocString GroupLeftover = new("shop.groupLeftover", "Leftover Wolf Marks");
+        public static readonly LocString LeftoverItem = new("shop.leftoverItem", "Spend the rest on");
+        public static readonly LocString LeftoverItemHelp = new("shop.leftoverItemHelp", "After the list, Wolf Marks above the reserve go to this item. Ventures are the usual pick.");
+        public static readonly LocString LeftoverNone = new("shop.leftoverNone", "Nothing, keep them");
+        public static readonly LocString Reserve = new("shop.reserve", "Keep at least");
+        public static readonly LocString ReserveHelp = new("shop.reserveHelp", "Never spend Wolf Marks below this amount.");
+        public static readonly LocString FormatMarks = new("shop.formatMarks", "%d marks");
+        public static readonly LocString Footnote = new("shop.footnote", "Ventures cost 100 Wolf Marks each. Shopping needs the Wolves' Den Pier aetheryte attuned.");
+        public static readonly LocString ChatStart = new("shop.chatStart", "Shopping at Wolves' Den Pier: {0}.");
+        public static readonly LocString ChatDone = new("shop.chatDone", "Shopping done: {0}.");
+        public static readonly LocString ChatNothingBought = new("shop.chatNothingBought", "The shopping trip ended without buying anything. /apsg log has the details.");
+        public static readonly LocString ChatFailed = new("shop.chatFailed", "The shopping trip stopped: {0}");
+        public static readonly LocString QuantityItem = new("shop.quantityItem", "{0} × {1}");
     }
 
     internal static class Brain

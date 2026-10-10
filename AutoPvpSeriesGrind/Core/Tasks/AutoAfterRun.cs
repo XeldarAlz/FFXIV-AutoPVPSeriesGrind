@@ -20,7 +20,7 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
 
     protected override async Task Execute()
     {
-        await WaitUntilTimed(IsSafeToFinish, ReadyWaitMs, "afterrun-ready");
+        await WaitUntilTimed(IsFreeToAct, ReadyWaitMs, "afterrun-ready");
         if (CancelToken.IsCancellationRequested) return;
 
         switch (action)
@@ -107,13 +107,6 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
     private static bool IsTransitioning()
         => Svc.Condition[ConditionFlag.BetweenAreas]
         || Svc.Condition[ConditionFlag.BetweenAreas51];
-
-    private static bool IsSafeToFinish()
-        => Svc.Objects.LocalPlayer is not null
-        && !Svc.Condition[ConditionFlag.InCombat]
-        && !Svc.Condition[ConditionFlag.BoundByDuty]
-        && !Svc.Condition[ConditionFlag.BetweenAreas]
-        && !Svc.Condition[ConditionFlag.Casting];
 
     private static bool SelectYesnoOpen() => AddonProbe.IsReady(ApsgConstants.AddonNames.SelectYesno);
 

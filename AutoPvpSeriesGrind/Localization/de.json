@@ -35,7 +35,11 @@
     "working": "Arbeitet",
     "search": "Suchen",
     "noMatches": "Nichts passt zu „{0}“",
-    "dragAdjustHint": "Zum Anpassen ziehen oder die Tasten klicken."
+    "dragAdjustHint": "Zum Anpassen ziehen oder die Tasten klicken.",
+    "add": "Hinzufügen",
+    "remove": "Entfernen",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten"
   },
   "shell": {
     "nav": {
@@ -84,12 +88,14 @@
       "wrappingUp": "Abschluss",
       "grinding": "Grindet",
       "almostThere": "Fast geschafft",
-      "ready": "Bereit, wenn du es bist"
+      "ready": "Bereit, wenn du es bist",
+      "shopping": "Einkaufen"
     },
     "detail": {
       "wrappingUp": "Die letzten Schritte des Laufs werden erledigt.",
       "almostThere": "Installiere die benötigten Plugins, dann ist der Bot startklar.",
-      "ready": "Drücke Start, die Warteschlange übernimmt den Rest."
+      "ready": "Drücke Start, die Warteschlange übernimmt den Rest.",
+      "shopping": "Gibt PvP-Währung am Wolfshöhlen-Pier aus."
     },
     "stage": {
       "starting": "Startet",
@@ -97,7 +103,8 @@
       "portraits": "Porträts",
       "fighting": "Kampf",
       "done": "Fertig",
-      "inMatch": "Im Match"
+      "inMatch": "Im Match",
+      "shopping": "Einkaufen"
     },
     "stageDetail": {
       "starting": "Bereitet die Anmeldung vor.",
@@ -430,7 +437,9 @@
       "combat": "Kampf",
       "combatSub": "Wie der Bot sich positioniert und seine Kämpfe wählt.",
       "match": "Im Match",
-      "matchSub": "Die sozialen Gesten, die der Bot in jedem Match zeigt."
+      "matchSub": "Die sozialen Gesten, die der Bot in jedem Match zeigt.",
+      "shopping": "Einkaufen",
+      "shoppingSub": "Wolfsmarken und Kristalltrophäen am Wolfshöhlen-Pier ausgeben."
     },
     "session": {
       "footnote": "Wie lange ein Lauf dauert und was danach passiert, steht auf der Grind-Seite im Plan-Satz.",
@@ -630,6 +639,50 @@
       "enemyAware": "Gegner in der Nähe bis",
       "enemyAwareHelp": "Ein so naher Gegner heißt: nicht aufsitzen, und sofort absitzen."
     }
+  },
+  "shop": {
+    "groupWhen": "Wann einkaufen",
+    "betweenMatches": "Zwischen Matches einkaufen",
+    "betweenMatchesHelp": "Vor dem nächsten Anmelden geht es zum Wolfshöhlen-Pier, sobald deine Wolfsmarken die Schwelle erreichen oder du dir einen Artikel für Kristalltrophäen auf deiner Liste leisten kannst. Das nächste Match wird vom Pier aus angemeldet.",
+    "threshold": "Wolfsmarken-Schwelle",
+    "thresholdHelp": "Einkaufen, sobald du mindestens so viele Wolfsmarken hast. Sie sind auf 20.000 begrenzt, und alles darüber geht verloren.",
+    "atRunEnd": "Am Ende des Laufs einkaufen",
+    "atRunEndHelp": "Wenn der Lauf sein Ziel erreicht oder nach „Zu Ende spielen, dann stoppen“, wird vor der Aktion nach dem Lauf ausgegeben, was Liste und Resteinstellung erlauben.",
+    "goNow": "Jetzt einkaufen gehen",
+    "goNowHelp": "Teleportiert zum Wolfshöhlen-Pier und kauft sofort von deiner Liste, ohne auf die Schwelle zu achten. Nur verfügbar, solange kein Lauf aktiv ist.",
+    "shopNow": "Jetzt einkaufen",
+    "nothingToBuy": "Gerade gibt es nichts zu kaufen: Die Liste ist erledigt oder du kannst dir nichts darauf leisten.",
+    "groupList": "Einkaufsliste",
+    "wallet": "Du hast {0:N0} Wolfsmarken und {1:N0} Kristalltrophäen.",
+    "addItem": "Artikel hinzufügen",
+    "addItemHelp": "Alles, was die Händler für Wolfsmarken und Kristalltrophäen am Wolfshöhlen-Pier verkaufen.",
+    "list": "Deine Liste",
+    "listHelp": "Wird von oben nach unten gekauft, bis die Währung aufgebraucht ist. Einmalige Freischaltungen werden einmal gekauft; alles andere wird weiter gekauft oder stoppt bei der eingestellten Anzahl.",
+    "listEmpty": "Noch nichts auf der Liste.",
+    "catalogEmpty": "Das Sortiment der Händler konnte nicht aus den Spieldaten gelesen werden.",
+    "alreadyListed": "Bereits auf der Liste.",
+    "costMarks": "{0}  ({1:N0} Wolfsmarken)",
+    "costCrystals": "{0}  ({1:N0} Kristalltrophäen)",
+    "buyOnce": "Einmal kaufen",
+    "keepBuying": "Weiter kaufen",
+    "stopAt": "Stopp bei %d",
+    "statusOwned": "Im Besitz",
+    "statusHave": "Du hast {0}",
+    "statusHaveOf": "Du hast {0} von {1}",
+    "unknownItem": "Unbekannter Artikel {0}",
+    "groupLeftover": "Übrige Wolfsmarken",
+    "leftoverItem": "Den Rest ausgeben für",
+    "leftoverItemHelp": "Nach der Liste gehen Wolfsmarken über der Reserve an diesen Artikel. Wertmarken sind die übliche Wahl.",
+    "leftoverNone": "Nichts, behalten",
+    "reserve": "Mindestens behalten",
+    "reserveHelp": "Gibt Wolfsmarken nie unter diesen Betrag aus.",
+    "formatMarks": "%d Marken",
+    "footnote": "Wertmarken kosten je 100 Wolfsmarken. Zum Einkaufen brauchst du den Ätheryten am Wolfshöhlen-Pier als Teleportziel.",
+    "chatStart": "Einkauf am Wolfshöhlen-Pier: {0}.",
+    "chatDone": "Einkauf erledigt: {0}.",
+    "chatNothingBought": "Der Einkauf endete, ohne etwas zu kaufen. Details stehen in /apsg log.",
+    "chatFailed": "Der Einkauf wurde abgebrochen: {0}",
+    "quantityItem": "{0} × {1}"
   },
   "brain": {
     "legend": {

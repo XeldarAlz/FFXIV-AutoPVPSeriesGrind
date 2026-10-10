@@ -1,14 +1,16 @@
 using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.External;
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Modes;
+using AutoPvpSeriesGrind.Core.Shopping;
 using AutoPvpSeriesGrind.Core.Stats;
 using clib.Services;
 using System.Text;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-internal enum AutoPhase { Idle, Queueing, InMatch, Finishing }
+internal enum AutoPhase { Idle, Queueing, InMatch, Shopping, Finishing }
 
 internal sealed class AutoPvpSeriesController
 {
@@ -78,6 +80,26 @@ internal sealed class AutoPvpSeriesController
         }
 
         series.SetStopRequested(!series.StopRequested);
+    }
+
+    public void ShopNow()
+    {
+        if (Running)
+        {
+            return;
+        }
+
+        var skippedItemIds = new HashSet<uint>();
+        var plan = ShoppingList.PlanTrip(ShopTrigger.Always, skippedItemIds);
+        if (plan is null)
+        {
+            ApsgChat.Print(Loc.T(L.Shop.NothingToBuy));
+            return;
+        }
+
+        LogDiagnostic("Shop now: starting a shopping trip.");
+        Phase = AutoPhase.Shopping;
+        Svc.Automation.Start(new ShopTrip(plan, skippedItemIds), OnCompleted: () => Phase = AutoPhase.Idle);
     }
 
     private static void LiftRankTargetAboveCurrentRank()

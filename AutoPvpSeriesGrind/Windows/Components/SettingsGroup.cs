@@ -63,6 +63,9 @@ internal sealed class SettingsGroup : IDisposable
         Styling.VSpace(GroupGap);
     }
 
+    public static float InnerRightLocalX()
+        => ImGui.GetCursorPosX() + (ContentRightEdge - ImGui.GetCursorScreenPos().X);
+
     public static void Footnote(string text)
     {
         var scale = ImGuiHelpers.GlobalScale;
