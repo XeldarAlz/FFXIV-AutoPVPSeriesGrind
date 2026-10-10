@@ -23,6 +23,7 @@ internal sealed class PvpSnapshot
     public required Vector3? EnemyCentroid { get; init; }
     public required int FocusCount { get; init; }
     public required IReadOnlyList<Hazard> Hazards { get; init; }
+    public required IReadOnlyList<PvpStructure> Structures { get; init; }
 
     private AllyCluster? allyCluster;
     private bool allyClusterComputed;
@@ -58,6 +59,7 @@ internal sealed class PvpSnapshot
     }
 
     public float NearestEnemyDistance => MinDistanceToSelf(Enemies);
+    public PvpActor? NearestEnemy => NearestToSelf(Enemies);
     public float NearestAllyDistance => MinDistanceToSelf(Allies);
 
     public int AlliesWithin(float radius) => CountWithin(Allies, radius);
@@ -74,6 +76,19 @@ internal sealed class PvpSnapshot
             }
         }
         return count;
+    }
+
+    private static PvpActor? NearestToSelf(IReadOnlyList<PvpActor> actors)
+    {
+        PvpActor? nearest = null;
+        for (var actorIndex = 0; actorIndex < actors.Count; actorIndex++)
+        {
+            if (nearest is null || actors[actorIndex].DistanceToSelf < nearest.Value.DistanceToSelf)
+            {
+                nearest = actors[actorIndex];
+            }
+        }
+        return nearest;
     }
 
     private static float MinDistanceToSelf(IReadOnlyList<PvpActor> actors)

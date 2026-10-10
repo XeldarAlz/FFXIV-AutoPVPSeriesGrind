@@ -16,6 +16,10 @@ internal static class CombatSettings
         SettingsGroup.Footnote(Loc.T(L.Settings.CombatIntroMovement) +
             Loc.T(L.Settings.CombatIntroRotation));
 
+        if (cfg.ManualMovement)
+        {
+            return;
+        }
         if (cfg.MatchType == MatchType.Frontline)
         {
             if (cfg.FrontlineStrategy == PvpStrategy.Custom)
@@ -34,6 +38,22 @@ internal static class CombatSettings
         using var group = SettingsGroup.Begin(Loc.T(L.Settings.GroupCombat));
 
         DrawRotationProviderRow(cfg);
+        DrawSteeringRow(cfg);
+        if (cfg.ManualMovement)
+        {
+            DrawTargetingRow(cfg);
+        }
+        else
+        {
+            DrawMovementRows(cfg);
+            DrawHumanizeRow(cfg);
+        }
+
+        DrawRecorderRow(cfg);
+    }
+
+    private static void DrawMovementRows(Configuration cfg)
+    {
         if (cfg.MatchType == MatchType.Frontline)
         {
             DrawFrontlineBehaviorRow(cfg);
@@ -47,9 +67,15 @@ internal static class CombatSettings
         {
             DrawTargetingRow(cfg);
         }
+    }
 
-        DrawHumanizeRow(cfg);
-        DrawRecorderRow(cfg);
+    private static void DrawSteeringRow(Configuration cfg)
+    {
+        SettingsRow.Draw(Loc.T(L.Settings.ManualMovement),
+            Loc.T(L.Settings.ManualMovementHelp),
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.ManualMovement, value => cfg.ManualMovement = value, "##cmb_steer"),
+            SettingsRow.ToggleHeight);
     }
 
     private static void DrawRotationGroup(Configuration cfg)

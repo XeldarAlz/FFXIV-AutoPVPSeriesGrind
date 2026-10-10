@@ -108,7 +108,7 @@ internal static class BrainPanel
 
     public static bool Draw(Configuration cfg, AutoPvpSeriesController ctrl)
     {
-        if (!cfg.EnableCombatBrain || ctrl.Phase != AutoPhase.InMatch || BrainTelemetry.Plan is not { } plan) return false;
+        if ((!cfg.EnableCombatBrain && !cfg.ManualMovement) || ctrl.Phase != AutoPhase.InMatch || BrainTelemetry.Plan is not { } plan) return false;
 
         var snap = MatchState.Capture();
         TrackAppearance();
@@ -272,7 +272,9 @@ internal static class BrainPanel
         }
 
         var strategy = cfg.MatchType == MatchType.Frontline ? cfg.FrontlineStrategy : cfg.Strategy;
-        rightX = DrawChip(dl, rightX, y, leftLimit, StrategyLabel(strategy), StrategyColor(strategy), null, metrics.Chip);
+        rightX = cfg.ManualMovement
+            ? DrawChip(dl, rightX, y, leftLimit, Loc.T(L.Brain.Steering), Styling.AccentAmber, FontAwesomeIcon.Gamepad, metrics.Chip)
+            : DrawChip(dl, rightX, y, leftLimit, StrategyLabel(strategy), StrategyColor(strategy), null, metrics.Chip);
         DrawChip(dl, rightX, y, leftLimit, RoleLabel(snap.SelfRole), Styling.TextDim, null, metrics.Chip);
     }
 

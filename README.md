@@ -29,7 +29,9 @@ Grinds the **PvP Series Malmstones** by looping Crystalline Conflict Casual Matc
 ## Features
 
 - **Hands-off match loop**: queue → fight → leave → requeue, in Crystalline Conflict or Frontline.
-- **Frontline mode**: queues the daily Frontline roulette on every arena and sticks with the team, holding a role-appropriate spot in the group, falling back when hurt and mounting up to rejoin after a respawn.
+- **Frontline mode**: queues the daily Frontline roulette on every arena and sticks with the team, holding a role-appropriate spot in the group, falling back when hurt, mounting up for long rides, and hitting the objective the team is attacking, like the ice on Fields of Glory.
+- **Human-like play**: every match rolls its own play style (reaction speed, route, spot in the group, gate timing, mount habits, the odd hop), so several copies in one match never move in lockstep. It hops small ledges instead of walking around them and gives up on spots it cannot reach instead of running into walls.
+- **Steer yourself**: turn on manual movement and the plugin keeps picking targets, running the rotation and firing the Limit Break while you move. Flip it any time, even mid-match, from Settings or with `/apsg steer` (macro it to a hotbar for a one-key toggle).
 - **Built-in PvP rotation**: presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself; the defensive thresholds are adjustable under Settings, Combat. Switch it to Manual there if you would rather press your own skills.
 - **Goals**: run N matches, reach a Series rank, run for a set time, or go endless until you press Stop.
 - **Two ways to stop**: **Stop** ends the run at once; **Finish, then stop** lets the match in progress play out first, so nobody gets abandoned.

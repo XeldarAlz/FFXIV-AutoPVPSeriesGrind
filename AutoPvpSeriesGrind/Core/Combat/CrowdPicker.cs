@@ -20,6 +20,8 @@ internal sealed class CrowdPicker
         awayFromBase.Clear();
     }
 
+    public Vector3? Base => ownBase;
+
     public void MarkBase(Vector3 position) => ownBase = position;
 
     public AllyCluster? Pick(PvpSnapshot snapshot, Vector3? followed)
@@ -68,7 +70,8 @@ internal sealed class CrowdPicker
 
             var field = PvpSnapshot.Clusters(awayFromBase);
             preferred = PvpSnapshot.Largest(field, snapshot.Self);
-            if (preferred is { Size: >= MinFieldGroupSize })
+            var leftBase = Vector3.Distance(snapshot.Self, basePosition) > BaseRadiusYalms;
+            if (leftBase || preferred is { Size: >= MinFieldGroupSize })
             {
                 return field;
             }

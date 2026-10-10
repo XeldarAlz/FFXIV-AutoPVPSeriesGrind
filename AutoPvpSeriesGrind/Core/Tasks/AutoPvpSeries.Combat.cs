@@ -1,9 +1,11 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Ipc;
 using AutoPvpSeriesGrind.Core.Rotation;
 using AutoPvpSeriesGrind.Core.Util;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
+using ECommons.GameHelpers;
 using System.Numerics;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
@@ -19,12 +21,22 @@ internal sealed partial class AutoPvpSeries
     private const float ObjectiveFallbackStopRange = 3f;
     private const int SpawnExitTimeoutMs = 8000;
     private const float RespawnMinTravelYalms = 30f;
+    private const int RespawnHesitationReactions = 4;
+    private const float GateSnapExtentXZ = 1f;
+    private const float GateSnapExtentY = 1.5f;
+    private const float GateSnapToleranceYalms = 1f;
 
     private async Task TickLiveMatch()
     {
+        if (TrackSteering())
+        {
+            TickPlayerSteering();
+            return;
+        }
+
         if (matchType == MatchType.Frontline)
         {
-            TickFrontlineLive();
+            await TickFrontlineLive();
             return;
         }
 
@@ -34,10 +46,12 @@ internal sealed partial class AutoPvpSeries
             movement.Stop();
             matchFlow.LeftSpawn = false;
             matchFlow.LeaveSpawnStartedAtMs = 0;
+            matchFlow.AwaitingRespawnExit = true;
             BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead, waiting to respawn", Posture.Retreat);
             return;
         }
 
+        ScheduleRespawnExit();
         signClearer.Tick();
 
         var territory = Svc.ClientState.TerritoryType;
@@ -56,7 +70,7 @@ internal sealed partial class AutoPvpSeries
             return;
         }
 
-        if (!matchFlow.LeftSpawn && !TryLeaveSpawn(territory))
+        if (!matchFlow.LeftSpawn && (HesitatingInSpawn() || !TryLeaveSpawn(territory)))
             return;
 
         if (settings.EnableBrain)
@@ -65,12 +79,108 @@ internal sealed partial class AutoPvpSeries
             LegacyCrystalMove();
     }
 
-    private void TickFrontlineLive()
+    private bool TrackSteering()
+    {
+        var steering = Plugin.Cfg.ManualMovement;
+        if (steering == playerSteering)
+        {
+            return steering;
+        }
+
+        playerSteering = steering;
+        movement.Stop();
+        LogDiagnostic(steering
+            ? "manual movement on -> you steer, the plugin keeps targeting and fighting"
+            : "manual movement off -> the plugin steers again");
+        return steering;
+    }
+
+    private void TickPlayerSteering()
+    {
+        rotation.TickDeathAndRespawn();
+        if (IsDead())
+        {
+            if (matchType == MatchType.Frontline)
+            {
+                matchFlow.FrontlineDeathSpot ??= MatchState.PlayerPosition();
+                frontline.OnDeath();
+            }
+            manual.Reset();
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead, waiting to respawn", Posture.Retreat);
+            return;
+        }
+
+        signClearer.Tick();
+        var snapshot = MatchState.Capture();
+        KeepAutopilotReady(snapshot.Self);
+        if (MatchState.LocalIsCasting())
+        {
+            BrainTelemetry.RecordStatus(snapshot, MoveKind.Hold, "you steer, casting", Posture.Hold);
+            return;
+        }
+
+        var targetId = manual.PickTarget(snapshot, settings.PicksTargets, settings.Targeting, MatchState.HostileTargetId());
+        var moving = Player.IsMoving;
+        var posture = moving ? Posture.Idle : Posture.Hold;
+        var reason = targetId == 0 ? "you steer, nothing in reach" : moving ? "you steer, instant skills on the move" : "you steer, free to cast";
+        BrainTelemetry.Record(snapshot, new MovePlan(MoveKind.Hold, snapshot.Self, snapshot.Self, 0f, Sprint: false, reason,
+            Pursue: false, posture, targetId));
+
+        if (settings.PicksTargets && targetId != 0)
+        {
+            MatchState.SetTarget(targetId);
+        }
+        rotation.Drive(snapshot, targetId, posture, snapshot.Self, manual.UnderBurst, holdStill);
+    }
+
+    private void KeepAutopilotReady(Vector3 self)
+    {
+        if (matchType == MatchType.Frontline)
+        {
+            TrackFrontlineBase(self);
+            return;
+        }
+
+        var inSpawn = MatchState.HasStatus(PvpStatuses.SpawnProtection);
+        if (inSpawn)
+        {
+            CaptureBasesAtSpawn(Svc.ClientState.TerritoryType);
+        }
+        matchFlow.LeftSpawn = !inSpawn;
+        matchFlow.LeaveSpawnStartedAtMs = 0;
+        matchFlow.LeaveSpawnNotBeforeMs = 0;
+        matchFlow.AwaitingRespawnExit = false;
+    }
+
+    private void ScheduleRespawnExit()
+    {
+        if (!matchFlow.AwaitingRespawnExit)
+        {
+            return;
+        }
+
+        matchFlow.AwaitingRespawnExit = false;
+        matchFlow.LeaveSpawnNotBeforeMs = Environment.TickCount64 + persona.NextReactionMs() * RespawnHesitationReactions;
+    }
+
+    private bool HesitatingInSpawn()
+    {
+        if (Environment.TickCount64 >= matchFlow.LeaveSpawnNotBeforeMs)
+        {
+            return false;
+        }
+
+        BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, "taking a moment before leaving spawn", Posture.Idle);
+        return true;
+    }
+
+    private async Task TickFrontlineLive()
     {
         rotation.TickDeathAndRespawn();
         if (IsDead())
         {
             matchFlow.FrontlineDeathSpot ??= MatchState.PlayerPosition();
+            frontline.OnDeath();
             movement.Stop();
             BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead, waiting to respawn", Posture.Retreat);
             return;
@@ -89,8 +199,9 @@ internal sealed partial class AutoPvpSeries
         TrackFrontlineBase(snapshot.Self);
         var plan = frontline.Decide(snapshot);
         BrainTelemetry.Record(snapshot, plan);
+        movement.SetObstacles(snapshot.Structures);
 
-        if (HandleMount())
+        if (HandleMount(snapshot, in plan))
         {
             return;
         }
@@ -101,7 +212,7 @@ internal sealed partial class AutoPvpSeries
             return;
         }
 
-        movement.UpdatePosture(plan.Posture);
+        await ReactToPostureChange(movement.UpdatePosture(plan.Posture));
         ApplyBrainTarget(plan.TargetId);
         movement.Execute(plan);
     }
@@ -131,24 +242,30 @@ internal sealed partial class AutoPvpSeries
         }
     }
 
-    private bool HandleMount()
+    private bool HandleMount(PvpSnapshot snapshot, in MovePlan plan)
     {
-        var mounted = Svc.Condition[ConditionFlag.Mounted];
-        if (!mounted && frontline.WantsMount && !Svc.Condition[ConditionFlag.InCombat]
-            && ActionOps.IsGeneralActionReady(GeneralActions.MountRoulette))
+        var inputs = new MountInputs(
+            Mounted: Svc.Condition[ConditionFlag.Mounted],
+            CanMount: !Svc.Condition[ConditionFlag.InCombat] && ActionOps.IsGeneralActionReady(GeneralActions.MountRoulette),
+            NearestEnemyYalms: snapshot.NearestEnemyDistance,
+            TravelYalms: VectorMath.HorizontalDistance(snapshot.Self, plan.Destination),
+            CrowdRiding: frontline.CrowdRiding);
+        var decision = frontline.DecideMount(in inputs, Environment.TickCount64);
+        switch (decision.Intent)
         {
-            movement.Stop();
-            ActionOps.UseGeneralAction(GeneralActions.MountRoulette);
-            LogDiagnostic("team is riding or far away -> mounting up");
-            return true;
+            case MountIntent.Mount:
+                movement.Stop();
+                ActionOps.UseGeneralAction(GeneralActions.MountRoulette);
+                break;
+            case MountIntent.Dismount:
+                ActionOps.UseGeneralAction(GeneralActions.Dismount);
+                break;
+            default:
+                return false;
         }
-        if (mounted && frontline.WantsDismount)
-        {
-            ActionOps.UseGeneralAction(GeneralActions.Dismount);
-            LogDiagnostic("back with the team -> dismounting");
-            return true;
-        }
-        return false;
+
+        LogDiagnostic(decision.Reason);
+        return true;
     }
 
     private void CaptureBasesAtSpawn(uint territory)
@@ -162,7 +279,43 @@ internal sealed partial class AutoPvpSeries
     }
 
     private Vector3? SpawnExit(uint territory, Vector3 self)
-        => matchFlow.Bases?.Own ?? MatchState.NearestSafeAnchor(territory, self);
+    {
+        if (matchFlow.Bases is not { } bases)
+        {
+            return MatchState.NearestSafeAnchor(territory, self);
+        }
+        if (matchFlow.GateTarget is { } cached)
+        {
+            return cached;
+        }
+        if (SpreadAlongGate(bases) is not { } spread)
+        {
+            return bases.Own;
+        }
+
+        matchFlow.GateTarget = spread;
+        return spread;
+    }
+
+    private Vector3? SpreadAlongGate(TeamBases bases)
+    {
+        if (persona.GateLateralYalms == 0f || VectorMath.FlatDirection(bases.Enemy - bases.Own) is not { } axis)
+        {
+            return bases.Own;
+        }
+
+        var nav = NavIpc.Instance;
+        if (!nav.IsReady())
+        {
+            return null;
+        }
+
+        var candidate = bases.Own + VectorMath.RightOf(axis) * persona.GateLateralYalms;
+        return nav.NearestPointReachable(candidate, GateSnapExtentXZ, GateSnapExtentY) is { } snapped
+               && VectorMath.HorizontalDistance(snapped, candidate) <= GateSnapToleranceYalms
+            ? snapped
+            : bases.Own;
+    }
 
     // Players are already pressed against the barrier when it drops. Requesting the gate path a few
     // seconds early hides pathfind latency, so the character is moving the moment the gate opens.
@@ -252,12 +405,7 @@ internal sealed partial class AutoPvpSeries
             return;
         }
 
-        var planChanged = movement.UpdatePosture(plan.Posture);
-        if (settings.Humanize != HumanizeLevel.Off && planChanged)
-        {
-            var (reactionMinMs, reactionMaxMs) = HumanTiming.ReactionBand(settings.Humanize);
-            await DelayMs(HumanTiming.Reaction(reactionMinMs, reactionMaxMs));
-        }
+        await ReactToPostureChange(movement.UpdatePosture(plan.Posture));
 
         ApplyBrainTarget(plan.TargetId);
         movement.Execute(plan);
@@ -267,7 +415,6 @@ internal sealed partial class AutoPvpSeries
     // still until it resolves is what made the bot look parked at the spawn exit, so walk the line instead.
     private void AdvanceWithoutObjective(in PvpSnapshot snapshot)
     {
-        WalkPace.Release();
         if (matchFlow.Bases is not { } bases)
         {
             BrainTelemetry.Record(snapshot, new MovePlan(MoveKind.Hold, snapshot.Self, snapshot.Self, 0f, false, "no objective"));

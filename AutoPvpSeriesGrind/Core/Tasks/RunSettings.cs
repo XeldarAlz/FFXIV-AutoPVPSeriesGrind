@@ -1,3 +1,5 @@
+using AutoPvpSeriesGrind.Core.Combat;
+
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
 internal readonly record struct RunSettings(
@@ -12,6 +14,8 @@ internal readonly record struct RunSettings(
     bool RandomEmotes,
     bool EnableBrain,
     bool BrainTargets,
+    bool PicksTargets,
+    TargetingMode Targeting,
     bool RecordMatches,
     HumanizeLevel Humanize,
     int LeaveDutyDelayMs,
@@ -36,6 +40,8 @@ internal readonly record struct RunSettings(
         RandomEmotes: cfg.RandomEmotes,
         EnableBrain: cfg.EnableCombatBrain,
         BrainTargets: cfg.EnableCombatBrain && cfg.BrainPicksTargets,
+        PicksTargets: cfg.BrainPicksTargets,
+        Targeting: cfg.Targeting,
         RecordMatches: cfg.RecordBrainLogs,
         Humanize: cfg.Humanize,
         LeaveDutyDelayMs: Math.Max(0, cfg.LeaveDutyDelaySeconds) * MillisecondsPerSecond,

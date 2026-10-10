@@ -1,6 +1,7 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Rotation;
 using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
@@ -11,6 +12,8 @@ namespace AutoPvpSeriesGrind.Core.Game;
 
 internal static class MatchState
 {
+    private const uint UnownedObjectId = 0xE0000000;
+
     public static bool InPvpArea()
         => CrystallineConflictMaps.Contains(Svc.ClientState.TerritoryType)
         || FrontlineMaps.Contains(Svc.ClientState.TerritoryType)
@@ -81,6 +84,9 @@ internal static class MatchState
         return 0;
     }
 
+    public static ulong HostileTargetId()
+        => Svc.Targets.Target is IBattleChara target && target.CurrentHp > 0 && IsHostile(target) ? target.GameObjectId : 0;
+
     public static void SetTarget(ulong gameObjectId)
     {
         if (Svc.Targets.Target?.GameObjectId == gameObjectId)
@@ -125,7 +131,9 @@ internal static class MatchState
         return null;
     }
 
-    public static bool IsEnemyPlayer(IGameObject gameObject)
+    public static bool IsEnemyPlayer(IGameObject gameObject) => IsHostile(gameObject);
+
+    private static bool IsHostile(IGameObject gameObject)
     {
         try { return gameObject.IsHostile(); }
         catch { return false; }
@@ -155,6 +163,7 @@ internal static class MatchState
         var enemies = new List<PvpActor>();
         var allies = new List<PvpActor>();
         var hazards = new List<Hazard>();
+        var structures = new List<PvpStructure>();
         var enemySum = Vector3.Zero;
         var focusCount = 0;
         PvpActor? currentTarget = null;
@@ -164,6 +173,7 @@ internal static class MatchState
             if (gameObject is not IPlayerCharacter playerCharacter || playerCharacter.CurrentHp == 0)
             {
                 Telegraphs.CollectNonPlayerCast(gameObject, hazards);
+                CollectStructure(gameObject, structures);
                 continue;
             }
             if (localPlayer is not null && playerCharacter.Address == localPlayer.Address)
@@ -193,7 +203,40 @@ internal static class MatchState
         }
 
         Telegraphs.CollectPlacedZones(hazards);
-        return new ClassifiedPlayers(enemies, allies, hazards, enemySum, focusCount, currentTarget);
+        CountStructureVotes(structures, allies);
+        return new ClassifiedPlayers(enemies, allies, hazards, structures, enemySum, focusCount, currentTarget);
+    }
+
+    private static void CollectStructure(IGameObject gameObject, List<PvpStructure> structures)
+    {
+        if (gameObject is not IBattleNpc npc
+            || npc.BattleNpcKind != BattleNpcSubKind.Combatant
+            || !npc.IsTargetable
+            || npc.CurrentHp == 0
+            || npc.NameId == ApsgConstants.TacticalCrystalNameId
+            || (npc.OwnerId != 0 && npc.OwnerId != UnownedObjectId)
+            || !IsHostile(npc))
+        {
+            return;
+        }
+
+        structures.Add(new PvpStructure(npc.GameObjectId, npc.Position, npc.HitboxRadius, HpFraction(npc.CurrentHp, npc.MaxHp), AllyVotes: 0));
+    }
+
+    private static void CountStructureVotes(List<PvpStructure> structures, List<PvpActor> allies)
+    {
+        for (var structureIndex = 0; structureIndex < structures.Count; structureIndex++)
+        {
+            var votes = 0;
+            for (var allyIndex = 0; allyIndex < allies.Count; allyIndex++)
+            {
+                if (allies[allyIndex].TargetId == structures[structureIndex].Id)
+                {
+                    votes++;
+                }
+            }
+            structures[structureIndex] = structures[structureIndex] with { AllyVotes = votes };
+        }
     }
 
     private static PvpSnapshot AssembleSnapshot(Vector3 self, float selfRotation, ulong selfId, Vector3? objective, ClassifiedPlayers players)
@@ -212,6 +255,7 @@ internal static class MatchState
             EnemyCentroid = players.Enemies.Count > 0 ? players.EnemySum / players.Enemies.Count : null,
             FocusCount = players.FocusCount,
             Hazards = players.Hazards,
+            Structures = players.Structures,
         };
     }
 
@@ -246,6 +290,7 @@ internal static class MatchState
         List<PvpActor> Enemies,
         List<PvpActor> Allies,
         List<Hazard> Hazards,
+        List<PvpStructure> Structures,
         Vector3 EnemySum,
         int FocusCount,
         PvpActor? CurrentTarget);

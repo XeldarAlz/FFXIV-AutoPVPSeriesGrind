@@ -1,7 +1,7 @@
 using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Humanize;
 using AutoPvpSeriesGrind.Core.Ipc;
-using AutoPvpSeriesGrind.Core.Util;
 using ECommons.DalamudServices;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
@@ -16,8 +16,8 @@ internal sealed partial class AutoPvpSeries
     private const int PostQuickChatMs = 500;
     private const int LeaveDutyTimeoutMs = 10_000;
     private const int PortraitPhasePollMs = 250;
-    private const int GateApproachEarliestSec = 3;
-    private const int GateApproachLatestSec = 2;
+    private const int GateApproachJitterReactions = 2;
+    private const int MillisecondsPerSecond = 1000;
 
     private async Task<bool> TryHandleMatchEnd()
     {
@@ -97,6 +97,7 @@ internal sealed partial class AutoPvpSeries
         ResetMatchFlow();
         matchFlow.DutyBaselineTime = DutyOps.ContentTimeLeft();
         matchFlow.BaselineCaptured = true;
+        RollPersona();
         greeting.PrepareForMatch(settings);
         SetPhase(AutoPhase.InMatch);
 
@@ -165,13 +166,13 @@ internal sealed partial class AutoPvpSeries
         {
             LogDiagnostic("intro/portraits phase detected (timer ~31s)");
             matchFlow.AnnouncedPortrait = true;
-            matchFlow.GateApproachStartSec = HumanTiming.RandomSecondsInclusive(GateApproachLatestSec, GateApproachEarliestSec);
+            PlanGateApproach();
         }
 
         var territory = Svc.ClientState.TerritoryType;
         CaptureBasesAtSpawn(territory);
 
-        if (timeLeftSeconds <= matchFlow.GateApproachStartSec)
+        if (!Plugin.Cfg.ManualMovement && timeLeftSeconds <= matchFlow.GateApproachStartSec && GateApproachDue())
         {
             ApproachGate(territory);
         }
@@ -185,6 +186,26 @@ internal sealed partial class AutoPvpSeries
         await DelayMs(PortraitPhasePollMs);
     }
 
+    private void PlanGateApproach()
+    {
+        var late = persona.Gate == GateStyle.Late;
+        matchFlow.GateApproachStartSec = late ? 0 : Math.Max(1, (int)MathF.Ceiling(persona.GateSeconds));
+        matchFlow.GateApproachDelayMs = late ? 0 : persona.NextReactionMs() * GateApproachJitterReactions;
+        LogDiagnostic(late
+            ? $"gate plan: leave spawn {persona.GateSeconds:F1}s after it opens"
+            : $"gate plan: move up at {matchFlow.GateApproachStartSec}s left (+{matchFlow.GateApproachDelayMs}ms)");
+    }
+
+    private bool GateApproachDue()
+    {
+        var now = Environment.TickCount64;
+        if (matchFlow.GateApproachArmedAtMs == 0)
+        {
+            matchFlow.GateApproachArmedAtMs = now;
+        }
+        return now - matchFlow.GateApproachArmedAtMs >= matchFlow.GateApproachDelayMs;
+    }
+
     private async Task<bool> TryStartLiveMatch(int timeLeftSeconds)
     {
         var gateOpen = timeLeftSeconds > GateOpenSec && (matchFlow.SawIntroBand || matchFlow.TimerMovedFromBaseline);
@@ -195,6 +216,10 @@ internal sealed partial class AutoPvpSeries
 
         LogDiagnostic($"gate open detected by ContentTimeLeft -> {timeLeftSeconds}");
         WarnIfNavmeshNotReady();
+        if (persona.Gate == GateStyle.Late)
+        {
+            matchFlow.LeaveSpawnNotBeforeMs = Environment.TickCount64 + (long)(persona.GateSeconds * MillisecondsPerSecond);
+        }
         BeginLiveMatch();
         return true;
     }

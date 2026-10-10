@@ -455,8 +455,10 @@
       "rotationPluginHelp": "Maçlarda savaş yeteneklerini neyin basacağı.",
       "behavior": "Davranış",
       "behaviorHelp": "Botun nasıl konumlandığı ve hangi kavgaları seçtiği.",
-      "reactionTime": "Tepki süresi",
-      "reactionTimeHelp": "Bot yaptığı şeyi değiştirmeden önce insana benzer bir tepki gecikmesi ekler.",
+      "manualMovement": "Kendin yönet",
+      "manualMovementHelp": "Karakteri sen hareket ettirirsin, gerisini eklenti yapar: hedefler, rotasyon, Limit Break ve sıra. Senin yerine asla yürümez, bineğe binmez, kaçmaz veya atılmaz; döküm süreli yetenekler sen durana kadar bekler. İstediğin zaman, maç ortasında bile değiştir ya da /apsg steer yaz.",
+      "reactionTime": "İnsan gibi oyun",
+      "reactionTimeHelp": "İnsana benzer tepki gecikmeleri ekler ve her maça kendi oyun tarzını verir: rota, mesafe, kapıdan çıkış zamanı ve binek alışkanlıkları. Aynı maçtaki botlar artık aynı anda aynı hareketi yapmaz.",
       "recordMatches": "Maçları kaydet",
       "recordMatchesHelp": "Her beyin kararını (konum, can, duruş, gerekçe) eklenti klasöründe maç başına bir günlük dosyasına yazar, ",
       "recordMatchesHelpSize": "nasıl oynadığını inceleyip ince ayar yapmak için. Maç başına yaklaşık 1 MB; yalnızca son 30 maç saklanır.",
@@ -498,13 +500,13 @@
     },
     "reaction": {
       "off": "Kapalı",
-      "offHelp": "Anında tepki verir, kare kare kusursuz hareketle.",
+      "offHelp": "Anında tepki ve her zaman en kısa rota. Aynı maçtaki botlar aynı şekilde hareket eder.",
       "light": "Hafif",
-      "lightHelp": "~80–220 ms tepki gecikmesi.",
+      "lightHelp": "~80–220 ms tepki, rota, mesafe ve zamanlamada biraz çeşitlilik.",
       "realistic": "Gerçekçi",
-      "realisticHelp": "~140–380 ms tepki gecikmesi. İyi bir varsayılan.",
+      "realisticHelp": "~140–380 ms tepki, rota, mesafe ve zamanlamada doğal çeşitlilik ve küçük çıkıntıların üzerinden zıplama. İyi bir varsayılan.",
       "heavy": "Yüksek",
-      "heavyHelp": "~260–650 ms tepki gecikmesi, belirgin şekilde acelesiz."
+      "heavyHelp": "~260–650 ms tepki, geniş rotalar ve belirgin şekilde acelesiz bir tempo."
     },
     "custom": {
       "health": "Can",
@@ -624,7 +626,7 @@
       "recoverAboveHelp": "Bunun üstüne iyileşince gruptaki yerini yeniden alırsın.",
       "riding": "Binekle dönüş",
       "mountDistance": "Şundan uzaksa bineğe bin",
-      "mountDistanceHelp": "Yeniden doğduktan ya da ayrı düştükten sonra grup en az bu kadar uzaksa dönüş için bineğe bin.",
+      "mountDistanceHelp": "Yeniden doğduktan ya da ayrı düştükten sonra grup aşağı yukarı bu kadar uzaktaysa dönüş için bineğe bin. Her maç bu değeri biraz değiştirir.",
       "enemyAware": "Yakındaki düşman şu mesafede",
       "enemyAwareHelp": "Bu kadar yakın bir düşman: bineğe binme, hemen in."
     }
@@ -659,10 +661,13 @@
       "ranged": "menzilli",
       "healer": "healer",
       "unknown": "bilinmeyen rol"
-    }
+    },
+    "steering": "Sen yönetiyorsun"
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | log | changelog | about | target | objects.",
-    "commandHelpAlias": "/apsg için kısayol."
+    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelpAlias": "/apsg için kısayol.",
+    "steerOn": "Artık sen yönetiyorsun. Eklenti hedef seçmeye ve savaşmaya devam ediyor.",
+    "steerOff": "Eklenti yeniden yönetiyor."
   }
 }

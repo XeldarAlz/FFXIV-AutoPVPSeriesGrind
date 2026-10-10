@@ -455,8 +455,10 @@
       "rotationPluginHelp": "What presses your combat skills during matches.",
       "behavior": "Behavior",
       "behaviorHelp": "How the bot positions itself and picks its fights.",
-      "reactionTime": "Reaction time",
-      "reactionTimeHelp": "Adds a human reaction delay before the bot changes what it's doing.",
+      "manualMovement": "Steer yourself",
+      "manualMovementHelp": "You move the character and the plugin does the rest: targets, rotation, Limit Break and the queue. It never paths, mounts, dodges or dashes for you, and cast-time skills wait until you stand still. Switch it any time, even mid-match, or type /apsg steer.",
+      "reactionTime": "Human-like play",
+      "reactionTimeHelp": "Adds human reaction delays and gives each match its own play style: route, spacing, gate timing and mount habits. Bots in the same match stop moving in lockstep.",
       "recordMatches": "Record matches",
       "recordMatchesHelp": "Writes every brain decision (positions, HP, posture, reason) to a per-match log file in the plugin folder, ",
       "recordMatchesHelpSize": "for reviewing and tuning how it played. Roughly 1 MB per match; only the last 30 matches are kept.",
@@ -498,13 +500,13 @@
     },
     "reaction": {
       "off": "Off",
-      "offHelp": "Reacts instantly, with frame-perfect movement.",
+      "offHelp": "Instant reactions and the shortest route every time. Bots in the same match move alike.",
       "light": "Light",
-      "lightHelp": "~80–220 ms reaction delay.",
+      "lightHelp": "~80–220 ms reactions, a little variety in routes, spacing and timing.",
       "realistic": "Realistic",
-      "realisticHelp": "~140–380 ms reaction delay. A good default.",
+      "realisticHelp": "~140–380 ms reactions, natural variety in routes, spacing and timing, and hops over small ledges. A good default.",
       "heavy": "Heavy",
-      "heavyHelp": "~260–650 ms reaction delay, clearly unhurried."
+      "heavyHelp": "~260–650 ms reactions, wide routes and a clearly unhurried pace."
     },
     "custom": {
       "health": "Health",
@@ -624,7 +626,7 @@
       "recoverAboveHelp": "Once healed above this, take your spot in the group again.",
       "riding": "Riding back",
       "mountDistance": "Mount when farther than",
-      "mountDistanceHelp": "After a respawn or a split, mount up for the ride back when the group is at least this far away.",
+      "mountDistanceHelp": "After a respawn or a split, mount up for the ride back when the group is about this far away. Each match varies it a little.",
       "enemyAware": "Enemy nearby within",
       "enemyAwareHelp": "An enemy this close means no mounting, and dismount at once."
     }
@@ -659,10 +661,13 @@
       "ranged": "ranged",
       "healer": "healer",
       "unknown": "unknown role"
-    }
+    },
+    "steering": "You steer"
   },
   "plugin": {
-    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | changelog | about | target | objects.",
-    "commandHelpAlias": "Alias for /apsg."
+    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelpAlias": "Alias for /apsg.",
+    "steerOn": "You steer now. The plugin keeps targeting and fighting.",
+    "steerOff": "The plugin steers again."
   }
 }

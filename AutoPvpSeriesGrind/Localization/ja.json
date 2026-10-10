@@ -455,8 +455,10 @@
       "rotationPluginHelp": "試合中に戦闘スキルを押す仕組み。",
       "behavior": "動作",
       "behaviorHelp": "ボットの立ち位置と、戦うかどうかの判断。",
-      "reactionTime": "反応時間",
-      "reactionTimeHelp": "ボットが行動を切り替える前に、人間らしい反応の遅れを加えます。",
+      "manualMovement": "自分で移動",
+      "manualMovementHelp": "キャラクターの移動はあなたが行い、ターゲット、ローテーション、リミットブレイク、申請はプラグインが行います。プラグインが移動、騎乗、回避、突進をすることはなく、詠唱のあるスキルは立ち止まるまで待ちます。試合中でもいつでも切り替えられ、/apsg steer でも切り替えできます。",
+      "reactionTime": "人間らしい動き",
+      "reactionTimeHelp": "人間らしい反応の遅れを加え、試合ごとにルート、間隔、出撃のタイミング、騎乗の癖といった独自のプレイスタイルを与えます。同じ試合のボット同士が同じ動きをしなくなります。",
       "recordMatches": "試合を記録",
       "recordMatchesHelp": "ブレインの判断（位置、HP、姿勢、理由）を試合ごとのログファイルとしてプラグインフォルダーに書き出します。 ",
       "recordMatchesHelpSize": "動きの振り返りや調整に使えます。1試合あたり約1 MBで、直近30試合のみ保持されます。",
@@ -498,13 +500,13 @@
     },
     "reaction": {
       "off": "オフ",
-      "offHelp": "フレーム単位の正確な動きで、即座に反応します。",
+      "offHelp": "即座に反応し、常に最短ルートを通ります。同じ試合のボットは同じ動きになります。",
       "light": "軽め",
-      "lightHelp": "約80–220 msの反応遅延。",
+      "lightHelp": "約80–220 msの反応。ルート、間隔、タイミングに少しばらつきを加えます。",
       "realistic": "リアル",
-      "realisticHelp": "約140–380 msの反応遅延。おすすめの既定値です。",
+      "realisticHelp": "約140–380 msの反応。ルート、間隔、タイミングに自然なばらつきがあり、小さな段差は飛び越えます。おすすめの既定値です。",
       "heavy": "重め",
-      "heavyHelp": "約260–650 msの反応遅延。はっきりとゆったりした動きです。"
+      "heavyHelp": "約260–650 msの反応。大きく回るルートで、はっきりとゆったりした動きです。"
     },
     "custom": {
       "health": "HP",
@@ -624,7 +626,7 @@
       "recoverAboveHelp": "このHPを超えて回復したら、集団内の持ち場に戻ります。",
       "riding": "騎乗で戻る",
       "mountDistance": "騎乗する距離",
-      "mountDistanceHelp": "リスポーン後や分断後、集団がこの距離以上離れていれば騎乗して戻ります。",
+      "mountDistanceHelp": "リスポーン後や分断後、集団がおよそこの距離離れていれば騎乗して戻ります。試合ごとに少し変わります。",
       "enemyAware": "敵が近いとみなす距離",
       "enemyAwareHelp": "この距離に敵がいれば騎乗せず、すぐに降ります。"
     }
@@ -659,10 +661,13 @@
       "ranged": "遠隔",
       "healer": "ヒーラー",
       "unknown": "ロール不明"
-    }
+    },
+    "steering": "手動移動"
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grindのウィンドウを開閉します。/apsg config | stats | deps | log | changelog | about | target | objects。",
-    "commandHelpAlias": "/apsg の別名です。"
+    "commandHelp": "Auto PVP Series Grindのウィンドウを開閉します。/apsg config | stats | deps | log | changelog | about | target | objects | steer。",
+    "commandHelpAlias": "/apsg の別名です。",
+    "steerOn": "移動は手動になりました。ターゲットと戦闘は引き続きプラグインが行います。",
+    "steerOff": "移動は再びプラグインが行います。"
   }
 }

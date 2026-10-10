@@ -6,7 +6,7 @@ internal static class ModerateFrontlineBaseline
     public const int BackOffset = 6;
     public const int RetreatOffset = 12;
     public const int RegroupDistance = 25;
-    public const int MountDistance = 60;
+    public const int MountDistance = 35;
     public const int EnemyAwareRadius = 30;
     public const int EngageRange = 25;
     public const int HurtHpPercent = 45;
@@ -31,11 +31,11 @@ internal sealed record FrontlineProfile(
     float BurstDropPerSec)
 {
     private static readonly FrontlineProfile DefensivePreset = new(
-        FrontOffset: 3f, BackOffset: 8f, RetreatOffset: 16f, RegroupDistance: 18f, MountDistance: 60f, EnemyAwareRadius: 35f,
+        FrontOffset: 3f, BackOffset: 8f, RetreatOffset: 16f, RegroupDistance: 18f, MountDistance: 35f, EnemyAwareRadius: 35f,
         EngageRange: 25f, HurtHp: 0.55f, FocusedHurtHp: 0.70f, RecoveredHp: 0.80f, FocusHurtCount: 2, BurstDropPerSec: 0.20f);
 
     private static readonly FrontlineProfile AggressivePreset = new(
-        FrontOffset: 10f, BackOffset: 3f, RetreatOffset: 8f, RegroupDistance: 32f, MountDistance: 60f, EnemyAwareRadius: 25f,
+        FrontOffset: 10f, BackOffset: 3f, RetreatOffset: 8f, RegroupDistance: 32f, MountDistance: 35f, EnemyAwareRadius: 25f,
         EngageRange: 25f, HurtHp: 0.30f, FocusedHurtHp: 0.45f, RecoveredHp: 0.55f, FocusHurtCount: 3, BurstDropPerSec: 0.40f);
 
     private static readonly FrontlineProfile ModeratePreset = new(

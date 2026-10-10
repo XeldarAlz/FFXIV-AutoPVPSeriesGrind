@@ -455,8 +455,10 @@
       "rotationPluginHelp": "Qué pulsa tus habilidades de combate durante las partidas.",
       "behavior": "Comportamiento",
       "behaviorHelp": "Cómo se posiciona el bot y elige sus peleas.",
-      "reactionTime": "Tiempo de reacción",
-      "reactionTimeHelp": "Añade un retardo de reacción humano antes de que el bot cambie lo que está haciendo.",
+      "manualMovement": "Moverte tú",
+      "manualMovementHelp": "Tú mueves al personaje y el plugin hace el resto: objetivos, rotación, Límite y la cola. Nunca se desplaza, monta, esquiva ni embiste por ti, y las habilidades con lanzamiento esperan a que te quedes quieto. Cámbialo cuando quieras, incluso en plena partida, o escribe /apsg steer.",
+      "reactionTime": "Juego humano",
+      "reactionTimeHelp": "Añade retardos de reacción humanos y da a cada partida su propio estilo: ruta, separación, momento de salida y hábitos de montura. Los bots de una misma partida dejan de moverse al unísono.",
       "recordMatches": "Grabar partidas",
       "recordMatchesHelp": "Escribe cada decisión del cerebro (posiciones, vida, postura, motivo) en un archivo de registro por partida en la carpeta del plugin, ",
       "recordMatchesHelpSize": "para revisar y afinar cómo jugó. Alrededor de 1 MB por partida; solo se guardan las últimas 30.",
@@ -498,13 +500,13 @@
     },
     "reaction": {
       "off": "Desactivado",
-      "offHelp": "Reacciona al instante, con movimiento perfecto por frame.",
+      "offHelp": "Reacciones instantáneas y siempre la ruta más corta. Los bots de una misma partida se mueven igual.",
       "light": "Ligero",
-      "lightHelp": "~80–220 ms de retardo de reacción.",
+      "lightHelp": "~80–220 ms de reacción, algo de variedad en rutas, separación y tiempos.",
       "realistic": "Realista",
-      "realisticHelp": "~140–380 ms de retardo de reacción. Una buena opción por defecto.",
+      "realisticHelp": "~140–380 ms de reacción, variedad natural en rutas, separación y tiempos, y saltos sobre bordes pequeños. Una buena opción por defecto.",
       "heavy": "Alto",
-      "heavyHelp": "~260–650 ms de retardo de reacción, claramente pausado."
+      "heavyHelp": "~260–650 ms de reacción, rutas amplias y un ritmo claramente pausado."
     },
     "custom": {
       "health": "Vida",
@@ -624,7 +626,7 @@
       "recoverAboveHelp": "Una vez curado por encima de esto, retomas tu puesto en el grupo.",
       "riding": "Volver montado",
       "mountDistance": "Montar a más de",
-      "mountDistanceHelp": "Tras reaparecer o separarte, montas para el regreso cuando el grupo está al menos a esta distancia.",
+      "mountDistanceHelp": "Tras reaparecer o separarte, montas para el regreso cuando el grupo está más o menos a esta distancia. Cada partida la varía un poco.",
       "enemyAware": "Enemigo cerca a menos de",
       "enemyAwareHelp": "Un enemigo así de cerca: nada de montar, y desmontar de inmediato."
     }
@@ -659,10 +661,13 @@
       "ranged": "distancia",
       "healer": "sanador",
       "unknown": "rol desconocido"
-    }
+    },
+    "steering": "Te mueves tú"
   },
   "plugin": {
-    "commandHelp": "Abre o cierra la ventana de Auto PVP Series Grind. /apsg config | stats | deps | log | changelog | about | target | objects.",
-    "commandHelpAlias": "Alias de /apsg."
+    "commandHelp": "Abre o cierra la ventana de Auto PVP Series Grind. /apsg config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelpAlias": "Alias de /apsg.",
+    "steerOn": "Ahora te mueves tú. El plugin sigue eligiendo objetivos y luchando.",
+    "steerOff": "El plugin vuelve a moverse solo."
   }
 }

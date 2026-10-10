@@ -455,8 +455,10 @@
       "rotationPluginHelp": "Ce qui appuie sur vos compétences de combat pendant les matchs.",
       "behavior": "Comportement",
       "behaviorHelp": "Comment le bot se positionne et choisit ses combats.",
-      "reactionTime": "Temps de réaction",
-      "reactionTimeHelp": "Ajoute un délai de réaction humain avant que le bot ne change ce qu'il fait.",
+      "manualMovement": "Se déplacer soi-même",
+      "manualMovementHelp": "Vous déplacez le personnage, le plugin fait le reste : cibles, rotation, Transcendance et file d'attente. Il ne se déplace, ne monte, n'esquive et ne fonce jamais à votre place, et les compétences à incantation attendent que vous soyez immobile. Changez quand vous voulez, même en pleine partie, ou tapez /apsg steer.",
+      "reactionTime": "Jeu humain",
+      "reactionTimeHelp": "Ajoute des délais de réaction humains et donne à chaque partie son propre style : trajet, espacement, timing à la porte et habitudes de monture. Les bots d'une même partie ne bougent plus en cadence.",
       "recordMatches": "Enregistrer les matchs",
       "recordMatchesHelp": "Écrit chaque décision du cerveau (positions, PV, posture, raison) dans un fichier journal par match dans le dossier du plugin, ",
       "recordMatchesHelpSize": "pour revoir et affiner sa façon de jouer. Environ 1 Mo par match ; seuls les 30 derniers matchs sont conservés.",
@@ -498,13 +500,13 @@
     },
     "reaction": {
       "off": "Désactivé",
-      "offHelp": "Réagit instantanément, avec un déplacement à la frame près.",
+      "offHelp": "Réactions instantanées et toujours le trajet le plus court. Les bots d'une même partie bougent pareil.",
       "light": "Léger",
-      "lightHelp": "~80–220 ms de délai de réaction.",
+      "lightHelp": "~80–220 ms de réaction, un peu de variété dans les trajets, l'espacement et le timing.",
       "realistic": "Réaliste",
-      "realisticHelp": "~140–380 ms de délai de réaction. Un bon choix par défaut.",
+      "realisticHelp": "~140–380 ms de réaction, une variété naturelle dans les trajets, l'espacement et le timing, et des sauts par-dessus les petits rebords. Un bon choix par défaut.",
       "heavy": "Marqué",
-      "heavyHelp": "~260–650 ms de délai de réaction, nettement posé."
+      "heavyHelp": "~260–650 ms de réaction, des trajets larges et un rythme nettement posé."
     },
     "custom": {
       "health": "Points de vie",
@@ -624,7 +626,7 @@
       "recoverAboveHelp": "Une fois soigné au-dessus de ce seuil, vous reprenez votre place dans le groupe.",
       "riding": "Retour à cheval",
       "mountDistance": "Monter au-delà de",
-      "mountDistanceHelp": "Après une mort ou une séparation, monter pour le retour quand le groupe est au moins à cette distance.",
+      "mountDistanceHelp": "Après une mort ou une séparation, monter pour le retour quand le groupe est à peu près à cette distance. Chaque partie la fait un peu varier.",
       "enemyAware": "Ennemi proche à moins de",
       "enemyAwareHelp": "Un ennemi aussi proche : pas de monture, et descendre aussitôt."
     }
@@ -659,10 +661,13 @@
       "ranged": "distance",
       "healer": "soigneur",
       "unknown": "rôle inconnu"
-    }
+    },
+    "steering": "Vous dirigez"
   },
   "plugin": {
-    "commandHelp": "Affiche ou masque la fenêtre Auto PVP Series Grind. /apsg config | stats | deps | log | changelog | about | target | objects.",
-    "commandHelpAlias": "Alias de /apsg."
+    "commandHelp": "Affiche ou masque la fenêtre Auto PVP Series Grind. /apsg config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelpAlias": "Alias de /apsg.",
+    "steerOn": "Vous dirigez maintenant. Le plugin continue de cibler et de combattre.",
+    "steerOff": "Le plugin reprend les déplacements."
   }
 }

@@ -118,7 +118,15 @@ public sealed class Plugin : IDalamudPlugin
         ["changelog"] = ToggleChangelogUi,
         ["target"] = TargetDumper.Dump,
         ["objects"] = TargetDumper.DumpObjects,
+        ["steer"] = ToggleSteering,
     };
+
+    private static void ToggleSteering()
+    {
+        Cfg.ManualMovement = !Cfg.ManualMovement;
+        Cfg.Save();
+        ApsgChat.Print(Loc.T(Cfg.ManualMovement ? L.Plugin.SteerOn : L.Plugin.SteerOff));
+    }
 
     private void RegisterCommands()
     {

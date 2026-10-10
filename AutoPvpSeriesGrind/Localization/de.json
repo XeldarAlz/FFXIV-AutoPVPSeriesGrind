@@ -455,8 +455,10 @@
       "rotationPluginHelp": "Was während der Matches deine Kampffähigkeiten drückt.",
       "behavior": "Verhalten",
       "behaviorHelp": "Wie der Bot sich positioniert und seine Kämpfe wählt.",
-      "reactionTime": "Reaktionszeit",
-      "reactionTimeHelp": "Fügt eine menschliche Reaktionsverzögerung hinzu, bevor der Bot sein Verhalten ändert.",
+      "manualMovement": "Selbst steuern",
+      "manualMovementHelp": "Du bewegst den Charakter, das Plugin erledigt den Rest: Ziele, Rotation, Limitrausch und die Warteschlange. Es läuft, reitet, weicht und stürmt nie für dich, und Fähigkeiten mit Wirkzeit warten, bis du stillstehst. Jederzeit umschaltbar, auch mitten im Match, oder tippe /apsg steer.",
+      "reactionTime": "Menschliches Spiel",
+      "reactionTimeHelp": "Fügt menschliche Reaktionsverzögerungen hinzu und gibt jedem Match einen eigenen Spielstil: Route, Abstand, Timing am Tor und Reitgewohnheiten. Bots im selben Match bewegen sich nicht mehr im Gleichschritt.",
       "recordMatches": "Matches aufzeichnen",
       "recordMatchesHelp": "Schreibt jede Brain-Entscheidung (Positionen, HP, Haltung, Grund) in eine Logdatei pro Match im Plugin-Ordner, ",
       "recordMatchesHelpSize": "zum Nachvollziehen und Feintunen des Spielverlaufs. Etwa 1 MB pro Match; nur die letzten 30 Matches bleiben erhalten.",
@@ -498,13 +500,13 @@
     },
     "reaction": {
       "off": "Aus",
-      "offHelp": "Reagiert sofort, mit framegenauer Bewegung.",
+      "offHelp": "Sofortige Reaktionen und immer der kürzeste Weg. Bots im selben Match bewegen sich gleich.",
       "light": "Leicht",
-      "lightHelp": "~80–220 ms Reaktionsverzögerung.",
+      "lightHelp": "~80–220 ms Reaktionszeit, etwas Abwechslung bei Route, Abstand und Timing.",
       "realistic": "Realistisch",
-      "realisticHelp": "~140–380 ms Reaktionsverzögerung. Eine gute Voreinstellung.",
+      "realisticHelp": "~140–380 ms Reaktionszeit, natürliche Abwechslung bei Route, Abstand und Timing, dazu Sprünge über kleine Kanten. Eine gute Voreinstellung.",
       "heavy": "Stark",
-      "heavyHelp": "~260–650 ms Reaktionsverzögerung, deutlich gemächlich."
+      "heavyHelp": "~260–650 ms Reaktionszeit, weite Wege und ein deutlich gemächliches Tempo."
     },
     "custom": {
       "health": "Leben",
@@ -624,7 +626,7 @@
       "recoverAboveHelp": "Bist du über diesen Wert geheilt, nimmst du deinen Platz in der Gruppe wieder ein.",
       "riding": "Zurückreiten",
       "mountDistance": "Aufsitzen ab",
-      "mountDistanceHelp": "Nach einem Respawn oder einer Trennung sitzt du für den Rückweg auf, wenn die Gruppe mindestens so weit weg ist.",
+      "mountDistanceHelp": "Nach einem Respawn oder einer Trennung sitzt du für den Rückweg auf, wenn die Gruppe etwa so weit weg ist. Jedes Match variiert den Wert etwas.",
       "enemyAware": "Gegner in der Nähe bis",
       "enemyAwareHelp": "Ein so naher Gegner heißt: nicht aufsitzen, und sofort absitzen."
     }
@@ -659,10 +661,13 @@
       "ranged": "Fernkampf",
       "healer": "Heiler",
       "unknown": "unbekannte Rolle"
-    }
+    },
+    "steering": "Du steuerst"
   },
   "plugin": {
-    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg config | stats | deps | log | changelog | about | target | objects.",
-    "commandHelpAlias": "Alias für /apsg."
+    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelpAlias": "Alias für /apsg.",
+    "steerOn": "Du steuerst jetzt. Das Plugin wählt weiter Ziele und kämpft.",
+    "steerOff": "Das Plugin steuert wieder."
   }
 }

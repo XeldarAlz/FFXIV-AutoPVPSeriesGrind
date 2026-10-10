@@ -455,8 +455,10 @@
       "rotationPluginHelp": "比赛中由什么来按下你的战斗技能。",
       "behavior": "行为",
       "behaviorHelp": "机器人如何走位、如何挑选战斗。",
-      "reactionTime": "反应时间",
-      "reactionTimeHelp": "在机器人改变动作之前，加入接近真人的反应延迟。",
+      "manualMovement": "自己操控移动",
+      "manualMovementHelp": "由你移动角色，其余交给插件：选择目标、输出循环、极限技和排队。插件不会替你寻路、上坐骑、闪避或突进，有咏唱的技能会等你站定后再用。随时可以切换，对战中也行，或输入 /apsg steer。",
+      "reactionTime": "拟人操作",
+      "reactionTimeHelp": "加入接近真人的反应延迟，并让每场对战都有自己的风格：路线、间距、出门时机和上坐骑的习惯。同一场对战中的机器人不再步调一致。",
       "recordMatches": "记录比赛",
       "recordMatchesHelp": "把大脑的每次判断（位置、血量、姿态、原因）写入插件目录下每场一个的日志文件， ",
       "recordMatchesHelpSize": "便于回看和调整它的打法。每场约 1 MB；只保留最近 30 场。",
@@ -498,13 +500,13 @@
     },
     "reaction": {
       "off": "关闭",
-      "offHelp": "立即反应，移动精确到帧。",
+      "offHelp": "立即反应，始终走最短路线。同一场对战中的机器人动作相同。",
       "light": "轻微",
-      "lightHelp": "约 80–220 毫秒反应延迟。",
+      "lightHelp": "约 80–220 毫秒反应，路线、间距和时机略有变化。",
       "realistic": "真实",
-      "realisticHelp": "约 140–380 毫秒反应延迟。不错的默认选项。",
+      "realisticHelp": "约 140–380 毫秒反应，路线、间距和时机自然变化，并会跳过小台阶。不错的默认选项。",
       "heavy": "明显",
-      "heavyHelp": "约 260–650 毫秒反应延迟，明显从容。"
+      "heavyHelp": "约 260–650 毫秒反应，绕行更宽，节奏明显从容。"
     },
     "custom": {
       "health": "血量",
@@ -624,7 +626,7 @@
       "recoverAboveHelp": "恢复到此血量以上后，回到队伍中的位置。",
       "riding": "骑乘返回",
       "mountDistance": "超过此距离时上坐骑",
-      "mountDistanceHelp": "复活或走散后，若队伍至少在此距离外，则上坐骑返回。",
+      "mountDistanceHelp": "复活或走散后，若队伍大约在此距离外，则上坐骑返回。每场对战会略有变化。",
       "enemyAware": "敌人接近判定距离",
       "enemyAwareHelp": "有敌人在此距离内时不上坐骑，并立即下坐骑。"
     }
@@ -659,10 +661,13 @@
       "ranged": "远程",
       "healer": "治疗",
       "unknown": "职能未知"
-    }
+    },
+    "steering": "手动移动"
   },
   "plugin": {
-    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg config | stats | deps | log | changelog | about | target | objects。",
-    "commandHelpAlias": "/apsg 的别名。"
+    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg config | stats | deps | log | changelog | about | target | objects | steer。",
+    "commandHelpAlias": "/apsg 的别名。",
+    "steerOn": "现在由你移动。插件继续选择目标并战斗。",
+    "steerOff": "插件重新接管移动。"
   }
 }

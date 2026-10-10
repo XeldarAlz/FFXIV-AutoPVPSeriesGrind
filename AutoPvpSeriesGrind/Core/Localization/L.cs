@@ -440,8 +440,10 @@ internal static class L
         public static readonly LocString TargetingLowestHpHelp = new("settings.targeting.lowestHpHelp", "The enemy with the least HP within 25 yards, skipping anyone with Guard up while someone else is available.");
         public static readonly LocString TargetingCurrent = new("settings.targeting.current", "Your current target");
         public static readonly LocString TargetingCurrentHelp = new("settings.targeting.currentHelp", "Attacks whatever you have targeted and only picks for itself when you have nothing targeted.");
-        public static readonly LocString ReactionTime = new("settings.combat.reactionTime", "Reaction time");
-        public static readonly LocString ReactionTimeHelp = new("settings.combat.reactionTimeHelp", "Adds a human reaction delay before the bot changes what it's doing.");
+        public static readonly LocString ManualMovement = new("settings.combat.manualMovement", "Steer yourself");
+        public static readonly LocString ManualMovementHelp = new("settings.combat.manualMovementHelp", "You move the character and the plugin does the rest: targets, rotation, Limit Break and the queue. It never paths, mounts, dodges or dashes for you, and cast-time skills wait until you stand still. Switch it any time, even mid-match, or type /apsg steer.");
+        public static readonly LocString ReactionTime = new("settings.combat.reactionTime", "Human-like play");
+        public static readonly LocString ReactionTimeHelp = new("settings.combat.reactionTimeHelp", "Adds human reaction delays and gives each match its own play style: route, spacing, gate timing and mount habits. Bots in the same match stop moving in lockstep.");
         public static readonly LocString RecordMatches = new("settings.combat.recordMatches", "Record matches");
         public static readonly LocString RecordMatchesHelp = new("settings.combat.recordMatchesHelp", "Writes every brain decision (positions, HP, posture, reason) to a per-match log file in the plugin folder, ");
         public static readonly LocString RecordMatchesHelpSize = new("settings.combat.recordMatchesHelpSize", "for reviewing and tuning how it played. Roughly 1 MB per match; only the last 30 matches are kept.");
@@ -507,18 +509,18 @@ internal static class L
         public static readonly LocString FrontlineRecoverAboveHelp = new("settings.frontlineCustom.recoverAboveHelp", "Once healed above this, take your spot in the group again.");
         public static readonly LocString FrontlineGroupRiding = new("settings.frontlineCustom.riding", "Riding back");
         public static readonly LocString FrontlineMountDistance = new("settings.frontlineCustom.mountDistance", "Mount when farther than");
-        public static readonly LocString FrontlineMountDistanceHelp = new("settings.frontlineCustom.mountDistanceHelp", "After a respawn or a split, mount up for the ride back when the group is at least this far away.");
+        public static readonly LocString FrontlineMountDistanceHelp = new("settings.frontlineCustom.mountDistanceHelp", "After a respawn or a split, mount up for the ride back when the group is about this far away. Each match varies it a little.");
         public static readonly LocString FrontlineEnemyAware = new("settings.frontlineCustom.enemyAware", "Enemy nearby within");
         public static readonly LocString FrontlineEnemyAwareHelp = new("settings.frontlineCustom.enemyAwareHelp", "An enemy this close means no mounting, and dismount at once.");
 
         public static readonly LocString ReactionOff = new("settings.reaction.off", "Off");
-        public static readonly LocString ReactionOffHelp = new("settings.reaction.offHelp", "Reacts instantly, with frame-perfect movement.");
+        public static readonly LocString ReactionOffHelp = new("settings.reaction.offHelp", "Instant reactions and the shortest route every time. Bots in the same match move alike.");
         public static readonly LocString ReactionLight = new("settings.reaction.light", "Light");
-        public static readonly LocString ReactionLightHelp = new("settings.reaction.lightHelp", "~80–220 ms reaction delay.");
+        public static readonly LocString ReactionLightHelp = new("settings.reaction.lightHelp", "~80–220 ms reactions, a little variety in routes, spacing and timing.");
         public static readonly LocString ReactionRealistic = new("settings.reaction.realistic", "Realistic");
-        public static readonly LocString ReactionRealisticHelp = new("settings.reaction.realisticHelp", "~140–380 ms reaction delay. A good default.");
+        public static readonly LocString ReactionRealisticHelp = new("settings.reaction.realisticHelp", "~140–380 ms reactions, natural variety in routes, spacing and timing, and hops over small ledges. A good default.");
         public static readonly LocString ReactionHeavy = new("settings.reaction.heavy", "Heavy");
-        public static readonly LocString ReactionHeavyHelp = new("settings.reaction.heavyHelp", "~260–650 ms reaction delay, clearly unhurried.");
+        public static readonly LocString ReactionHeavyHelp = new("settings.reaction.heavyHelp", "~260–650 ms reactions, wide routes and a clearly unhurried pace.");
 
         public static readonly LocString GroupHealth = new("settings.custom.health", "Health");
         public static readonly LocString RetreatBelow = new("settings.custom.retreatBelow", "Retreat below");
@@ -625,11 +627,14 @@ internal static class L
         public static readonly LocString RoleRanged = new("brain.role.ranged", "ranged");
         public static readonly LocString RoleHealer = new("brain.role.healer", "healer");
         public static readonly LocString RoleUnknown = new("brain.role.unknown", "unknown role");
+        public static readonly LocString Steering = new("brain.steering", "You steer");
     }
 
     internal static class Plugin
     {
-        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | changelog | about | target | objects.");
+        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | changelog | about | target | objects | steer.");
         public static readonly LocString CommandHelpAlias = new("plugin.commandHelpAlias", "Alias for /apsg.");
+        public static readonly LocString SteerOn = new("plugin.steerOn", "You steer now. The plugin keeps targeting and fighting.");
+        public static readonly LocString SteerOff = new("plugin.steerOff", "The plugin steers again.");
     }
 }

@@ -15,6 +15,7 @@ internal sealed class CrowdTracker
     private long sampledAtMs;
 
     public Vector3? Position => smoothed;
+    public Vector3 Velocity => velocity;
     public bool Moving { get; private set; }
 
     public Vector3 Lead(float seconds) => Moving ? velocity * seconds : Vector3.Zero;

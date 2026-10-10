@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.Humanize;
 using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Core.Combat;
@@ -17,15 +18,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float FocusFalloffEpsilon = 0.01f;
     private const float EnemyBaseAvoidRadius = 25f; // defensive moves never resolve this close to the enemy spawn gate
     private const float MeleeFocusBump = 0.5f;    // a melee in your face commits harder than a ranged poke
-    private const long BurstWindowMs = 1000;      // hp-drop rate is measured over this window, not tick-to-tick
     private const long MinDwellMs = 700;          // hold a defensive stance this long before relaxing it (anti-thrash)
-    private const float KillPotentialWeight = 3f;
-    private const float FocusFireVoteWeight = 1.5f;
-    private const float TargetDistanceWeight = 1.5f;
-    private const float GuardPenalty = 4f;
-    private const float StickyTargetBonus = 0.75f;
-    private const float HealerPriorityBonus = 1.5f;
-    private const float RangedPriorityBonus = 1f;
     private const float CrystalRideHeadStart = 8f;   // ride a free point only with this much travel lead over the nearest enemy
     private const float CrystalRideEscortSlack = 8f; // or with the ally cluster arriving within this many yalms of you
     private const int StagePointDeficit = 2;          // allies on the point outmanned by this many = stage, don't trickle in
@@ -40,6 +33,11 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float TeamAdvantageForceWeight = 0.5f; // each net dead enemy counts as half a fighter on our side
     private const float DegToRad = MathF.PI / 180f;
     private const float LowestHpRangeYalms = 25f;
+    private const float HoldDriftYalmsPerSec = 0.5f;
+    private const int HoldSlotMinMs = 3500;
+    private const int HoldSlotMaxMs = 9000;
+    private const float MinFidgetYalms = 0.6f;
+    private const float FidgetSpreadYalms = 2.4f;
 
     private static readonly float[] FanAngleDegrees = [30f, -30f, 60f, -60f, 90f, -90f, 120f, -120f];
 
@@ -60,8 +58,10 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private StrategyProfile profile = StrategyProfile.For(strategy);
     private bool roleOverlayEnabled = strategy != PvpStrategy.Custom;
     private PvpRole appliedRole = PvpRole.Unknown;
-    private readonly Queue<(long Tick, float Hp)> hpSamples = new();
+    private readonly BurstMeter burst = new();
     private readonly CrystalEscort escort = new();
+    private readonly DriftingSlot holdSlot = new(HoldDriftYalmsPerSec, HoldSlotMinMs, HoldSlotMaxMs);
+    private Persona persona = Persona.Neutral;
     private Vector3? enemyBase;
     private bool retreating;
     private Stance committedStance = Stance.Engage;
@@ -75,6 +75,10 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     public bool UnderBurst { get; private set; }
 
     public Func<Vector3, Vector3, bool> CanSee { get; set; } = static (_, _) => true;
+
+    public Func<Vector3, bool> Reachable { get; set; } = static _ => true;
+
+    public void SetPersona(in Persona value) => persona = value;
 
     public void SetStrategy(PvpStrategy s, CustomStrategyProfile? custom = null)
     {
@@ -100,8 +104,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     {
         allyRoster.Clear();
         enemyRoster.Clear();
-        hpSamples.Clear();
+        burst.Reset();
         escort.Reset();
+        holdSlot.Reset();
         enemyBase = null;
         retreating = false;
         committedStance = Stance.Engage;
@@ -114,7 +119,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     {
         enemyBase = enemyBasePosition;
         ApplyRole(snapshot.SelfRole);
-        var bursting = HpDropPerSec(snapshot.SelfHp) >= profile.BurstDropPerSec;
+        var bursting = burst.DropPerSecond(snapshot.SelfHp) >= profile.BurstDropPerSec;
         UnderBurst = bursting;
 
         var focal = FocalPoint(snapshot);
@@ -296,18 +301,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
         if (RideableObjective(snapshot) is { } crystal)
         {
-            var escortStep = escort.Step(snapshot, crystal, enemyBase);
-            return new MovePlan(
-                Kind: MoveKind.Engage,
-                Destination: escortStep.Destination,
-                Fallback: crystal,
-                StopRange: escortStep.StopRange,
-                Sprint: escortStep.Sprint,
-                Reason: escortStep.Walk ? "ride crystal, point free, pacing it" : "ride crystal, point free",
-                Pursue: true,
-                Posture: Posture.Push,
-                TargetId: target?.Id ?? 0,
-                Walk: escortStep.Walk);
+            return RideCrystal(snapshot, crystal, target?.Id ?? 0);
         }
 
         EngageChoice choice;
@@ -324,7 +318,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             choice = EngageHold(focal);
         }
 
-        var destination = ClampCohesion(choice.Destination, snapshot.AllyCluster?.Centroid, profile.CohesionRadius);
+        var anchored = choice.Posture == Posture.Hold ? Fidget(choice.Destination) : choice.Destination;
+        var destination = ClampCohesion(anchored, snapshot.AllyCluster?.Centroid, profile.CohesionRadius);
         if (snapshot.PrefersBackline && target is { } losTarget)
         {
             destination = EnsureLineOfFire(losTarget, destination);
@@ -342,6 +337,30 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             Pursue: choice.Pursue,
             Posture: choice.Posture,
             TargetId: target?.Id ?? 0);
+    }
+
+    private MovePlan RideCrystal(PvpSnapshot snapshot, Vector3 crystal, ulong targetId)
+    {
+        var step = escort.Step(snapshot, crystal, enemyBase, in persona);
+        if (step.Settled)
+        {
+            return new MovePlan(MoveKind.Hold, snapshot.Self, crystal, 0f, Sprint: false, "on the crystal, letting it come",
+                Pursue: false, Posture.Push, targetId);
+        }
+        return new MovePlan(MoveKind.Engage, step.Destination, crystal, step.StopRange, step.Sprint, "ride crystal, point free",
+            Pursue: true, Posture.Push, targetId);
+    }
+
+    private Vector3 Fidget(Vector3 destination)
+    {
+        if (persona.Restlessness <= 0f)
+        {
+            return destination;
+        }
+
+        var reach = MinFidgetYalms + persona.Restlessness * FidgetSpreadYalms;
+        var offset = holdSlot.Step(new SlotShape(Vector2.Zero, new Vector2(reach, reach), 0f, reach), Environment.TickCount64);
+        return destination + new Vector3(offset.X, 0f, offset.Y);
     }
 
     private Vector3? RideableObjective(PvpSnapshot snapshot)
@@ -433,33 +452,37 @@ internal sealed class PvpBrain(PvpStrategy strategy)
 
     private MovePlan FallBack(PvpSnapshot snapshot, Vector3 safeAnchor, Posture posture, string reason)
     {
+        var anchorReachable = Reachable(safeAnchor);
+        var haven = anchorReachable ? safeAnchor : snapshot.AllyCluster?.Centroid ?? snapshot.Self;
         var threat = NearestEnemyPos(snapshot) ?? snapshot.EnemyCentroid;
         if (threat is not { } threatPosition || NormalizedAwayFrom(snapshot.Self, threatPosition) is not { } direction)
         {
-            return new MovePlan(Kind: MoveKind.Retreat, Destination: safeAnchor, Fallback: safeAnchor,
-                StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
+            return RetreatTo(haven, haven, posture, reason);
         }
 
-        var pull = safeAnchor;
+        var pull = haven;
         if (snapshot.AllyCluster?.Centroid is { } clusterCentroid)
         {
             var toAllies = clusterCentroid - snapshot.Self;
             if (toAllies.LengthSquared() > MinVectorSq)
             {
-                if (Vector3.Dot(Vector3.Normalize(toAllies), direction) <= AllyBlendMinDot)
+                var alliesBehindEnemies = Vector3.Dot(Vector3.Normalize(toAllies), direction) <= AllyBlendMinDot;
+                if (alliesBehindEnemies && anchorReachable)
                 {
-                    return new MovePlan(Kind: MoveKind.Retreat, Destination: safeAnchor, Fallback: safeAnchor,
-                        StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
+                    return RetreatTo(safeAnchor, safeAnchor, posture, reason);
                 }
-                pull = clusterCentroid;
+                pull = alliesBehindEnemies ? snapshot.Self + direction * profile.KiteDistance : clusterCentroid;
             }
         }
 
         var kiteDestination = PickEscapePoint(snapshot, profile.KiteDistance, pull)
             ?? AwayFromEnemyBase(snapshot.Self + direction * profile.KiteDistance, snapshot.Self);
-        return new MovePlan(Kind: MoveKind.Retreat, Destination: kiteDestination, Fallback: safeAnchor,
-            StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
+        return RetreatTo(kiteDestination, anchorReachable ? safeAnchor : kiteDestination, posture, reason);
     }
+
+    private static MovePlan RetreatTo(Vector3 destination, Vector3 fallback, Posture posture, string reason)
+        => new(Kind: MoveKind.Retreat, Destination: destination, Fallback: fallback,
+            StopRange: RetreatStopRange, Sprint: true, Reason: reason, Pursue: false, Posture: posture);
 
     private MovePlan Reposition(PvpSnapshot snapshot, bool sprint, string reason)
     {
@@ -480,7 +503,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         {
             var angle = candidateIndex * (MathF.Tau / EscapeCandidateCount);
             var candidate = snapshot.Self + new Vector3(MathF.Cos(angle), 0f, MathF.Sin(angle)) * distance;
-            if (TooCloseToEnemyBase(candidate))
+            if (TooCloseToEnemyBase(candidate) || !Reachable(candidate))
             {
                 continue;
             }
@@ -532,7 +555,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
                 dest = ec + Vector3.Normalize(fromEnemy) * profile.StageStandoff;
         }
 
-        dest = AwayFromEnemyBase(ClampCohesion(dest, s.AllyCluster?.Centroid, profile.CohesionRadius), s.Self);
+        dest = AwayFromEnemyBase(ClampCohesion(Fidget(dest), s.AllyCluster?.Centroid, profile.CohesionRadius), s.Self);
         return new MovePlan(MoveKind.Hold, dest, anchor, StageStopRange, false, reason, false, Posture.Stage);
     }
 
@@ -540,7 +563,9 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     {
         if (Targeting == TargetingMode.LowestHp)
         {
-            return LowestHpInRange(snapshot);
+            var lowest = TargetScoring.LowestHp(snapshot, LowestHpRangeYalms);
+            lastTargetId = lowest?.Id ?? 0;
+            return lowest;
         }
 
         var pool = TargetPool(snapshot, focal);
@@ -551,11 +576,11 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         }
 
         var best = pool[0];
-        var bestScore = ScoreTarget(snapshot, best);
+        var bestScore = TargetScoring.Score(snapshot, in best, profile.EngageRadius, lastTargetId);
         for (var poolIndex = 1; poolIndex < pool.Count; poolIndex++)
         {
             var candidate = pool[poolIndex];
-            var score = ScoreTarget(snapshot, candidate);
+            var score = TargetScoring.Score(snapshot, in candidate, profile.EngageRadius, lastTargetId);
             if (score > bestScore)
             {
                 best = candidate;
@@ -564,35 +589,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         }
         lastTargetId = best.Id;
         return best;
-    }
-
-    private PvpActor? LowestHpInRange(PvpSnapshot snapshot)
-    {
-        PvpActor? lowestOpen = null;
-        PvpActor? lowestGuarded = null;
-        for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
-        {
-            var enemy = snapshot.Enemies[enemyIndex];
-            if (enemy.DistanceToSelf > LowestHpRangeYalms)
-            {
-                continue;
-            }
-            if (enemy.HasGuard)
-            {
-                if (lowestGuarded is null || enemy.Hp < lowestGuarded.Value.Hp)
-                {
-                    lowestGuarded = enemy;
-                }
-            }
-            else if (lowestOpen is null || enemy.Hp < lowestOpen.Value.Hp)
-            {
-                lowestOpen = enemy;
-            }
-        }
-
-        var chosen = lowestOpen ?? lowestGuarded ?? (snapshot.Enemies.Count > 0 ? NearestEnemy(snapshot) : null);
-        lastTargetId = chosen?.Id ?? 0;
-        return chosen;
     }
 
     private List<PvpActor> TargetPool(PvpSnapshot snapshot, Vector3 focal)
@@ -606,49 +602,12 @@ internal sealed class PvpBrain(PvpStrategy strategy)
                 pool.Add(enemy);
             }
         }
-        if (pool.Count == 0 && snapshot.Enemies.Count > 0)
+        if (pool.Count == 0 && snapshot.NearestEnemy is { } nearest)
         {
-            pool.Add(NearestEnemy(snapshot));
+            pool.Add(nearest);
         }
         return pool;
     }
-
-    private float ScoreTarget(PvpSnapshot snapshot, PvpActor enemy)
-    {
-        var score = (1f - enemy.Hp) * KillPotentialWeight;
-        score += AllyVotes(snapshot, enemy.Id) * FocusFireVoteWeight;
-        score += RolePriority(enemy.Role);
-        score -= enemy.DistanceToSelf / profile.EngageRadius * TargetDistanceWeight;
-        if (enemy.HasGuard)
-        {
-            score -= GuardPenalty;
-        }
-        if (enemy.Id == lastTargetId)
-        {
-            score += StickyTargetBonus;
-        }
-        return score;
-    }
-
-    private static int AllyVotes(PvpSnapshot snapshot, ulong enemyId)
-    {
-        var votes = 0;
-        for (var allyIndex = 0; allyIndex < snapshot.Allies.Count; allyIndex++)
-        {
-            if (snapshot.Allies[allyIndex].TargetId == enemyId)
-            {
-                votes++;
-            }
-        }
-        return votes;
-    }
-
-    private static float RolePriority(PvpRole role) => role switch
-    {
-        PvpRole.Healer => HealerPriorityBonus,
-        PvpRole.Ranged => RangedPriorityBonus,
-        _ => 0f,
-    };
 
     private Vector3 BacklineOnTarget(PvpSnapshot s, PvpActor target)
     {
@@ -665,24 +624,6 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             if (away.LengthSquared() > MinVectorSq) return focal + Vector3.Normalize(away) * profile.RangedStandoff;
         }
         return focal;
-    }
-
-    // Peak-to-current hp loss over the trailing window; a single hit between two 150ms ticks
-    // would otherwise read as an enormous instantaneous rate and trip every preset's threshold.
-    private float HpDropPerSec(float hp)
-    {
-        var now = Environment.TickCount64;
-        while (hpSamples.Count > 0 && now - hpSamples.Peek().Tick > BurstWindowMs)
-        {
-            hpSamples.Dequeue();
-        }
-        var peak = hp;
-        foreach (var sample in hpSamples)
-        {
-            peak = MathF.Max(peak, sample.Hp);
-        }
-        hpSamples.Enqueue((now, hp));
-        return (peak - hp) / (BurstWindowMs / 1000f);
     }
 
     private Vector3 AwayFromEnemyBase(Vector3 dest, Vector3 self)
@@ -720,22 +661,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         return Vector3.Normalize(away);
     }
 
-    private static PvpActor NearestEnemy(PvpSnapshot snapshot)
-    {
-        var nearest = snapshot.Enemies[0];
-        for (var enemyIndex = 1; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
-        {
-            var enemy = snapshot.Enemies[enemyIndex];
-            if (enemy.DistanceToSelf < nearest.DistanceToSelf)
-            {
-                nearest = enemy;
-            }
-        }
-        return nearest;
-    }
-
-    private static Vector3? NearestEnemyPos(PvpSnapshot snapshot)
-        => snapshot.Enemies.Count == 0 ? null : NearestEnemy(snapshot).Position;
+    private static Vector3? NearestEnemyPos(PvpSnapshot snapshot) => snapshot.NearestEnemy?.Position;
 
     private static Vector3? NearestFocuserPos(PvpSnapshot snapshot)
     {

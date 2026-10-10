@@ -51,6 +51,7 @@ internal static class ApsgConstants
 
     internal static class GeneralActions
     {
+        public const uint Jump = 2;
         public const uint MountRoulette = 9;
         public const uint Dismount = 23;
     }

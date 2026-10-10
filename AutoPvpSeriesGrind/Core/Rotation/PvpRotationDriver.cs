@@ -81,7 +81,7 @@ internal sealed class PvpRotationDriver
         {
             return RotationOutcome.Instant;
         }
-        if (TryElixir(self, snapshot, aliveMs, holdStill))
+        if (posture != Posture.Idle && TryElixir(self, snapshot, aliveMs, holdStill))
         {
             return RotationOutcome.Cast;
         }
