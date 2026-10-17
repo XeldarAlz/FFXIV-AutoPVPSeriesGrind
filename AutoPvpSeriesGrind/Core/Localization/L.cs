@@ -290,6 +290,11 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release21000 =
+        [
+            new("changelog.r21000.1", "Fixed mounting, taking two steps and dismounting over and over in Frontline when an enemy is close: after an enemy forces a dismount, riding again waits for more room and a longer pause"),
+        ];
+
         public static readonly LocString[] Release2900 =
         [
             new("changelog.r2900.1", "Added a Shopping tab that spends Wolf Marks and Trophy Crystals at Wolves' Den Pier from your list, with leftover Wolf Marks going to Ventures"),
