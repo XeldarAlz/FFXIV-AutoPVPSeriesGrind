@@ -271,7 +271,7 @@ internal static class BrainPanel
             rightX = DrawChip(dl, rightX, y, leftLimit, Loc.T(L.Brain.NavFallback), Styling.AccentRose, FontAwesomeIcon.ExclamationTriangle, metrics.Chip);
         }
 
-        var strategy = cfg.MatchType == MatchType.Frontline ? cfg.FrontlineStrategy : cfg.Strategy;
+        var strategy = cfg.MatchType is MatchType.Frontline or MatchType.RivalWings ? cfg.FrontlineStrategy : cfg.Strategy;
         rightX = cfg.ManualMovement
             ? DrawChip(dl, rightX, y, leftLimit, Loc.T(L.Brain.Steering), Styling.AccentAmber, FontAwesomeIcon.Gamepad, metrics.Chip)
             : DrawChip(dl, rightX, y, leftLimit, StrategyLabel(strategy), StrategyColor(strategy), null, metrics.Chip);

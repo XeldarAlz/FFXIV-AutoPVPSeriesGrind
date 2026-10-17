@@ -111,7 +111,12 @@ internal static class ReadyState
     };
 
     public static LocString ModeName(Configuration cfg)
-        => cfg.MatchType == MatchType.Frontline ? L.Plan.ModeFrontline : L.Plan.Mode;
+        => cfg.MatchType switch
+        {
+            MatchType.Frontline => L.Plan.ModeFrontline,
+            MatchType.RivalWings => L.Plan.ModeRivalWings,
+            _ => cfg.RankedCrystallineConflict ? L.Setup.ConflictRanked : L.Run.ModeCasual,
+        };
 
     public static LocString FinishDetail(AutoPvpSeriesController ctrl)
     {
@@ -137,7 +142,13 @@ internal static class ReadyState
     private static string StageDetail(Stage stage, Configuration cfg) => stage switch
     {
         Stage.Preparing => Loc.T(L.Grind.StageDetailStarting),
-        Stage.Queueing  => Loc.T(cfg.MatchType == MatchType.Frontline ? L.Grind.StageDetailInQueueFrontline : L.Grind.StageDetailInQueue),
+        Stage.Queueing  => Loc.T(cfg.MatchType switch
+        {
+            MatchType.Frontline => L.Grind.StageDetailInQueueFrontline,
+            MatchType.RivalWings => L.Plan.QueueRivalWingsWaiting,
+            MatchType.CrystallineConflict when cfg.RankedCrystallineConflict => L.Setup.RankedWaiting,
+            _ => L.Grind.StageDetailInQueue,
+        }),
         Stage.Portraits => Loc.T(L.Grind.StageDetailPortraits),
         Stage.Fighting  => Loc.T(L.Grind.StageDetailFighting),
         Stage.Shopping  => Loc.T(L.Grind.DetailShopping),

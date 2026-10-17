@@ -26,7 +26,13 @@ internal sealed class GrindPage
 
         var running = ctrl.Running;
         using var reveal = Motion.PushSwitch("##apsg_grind_state", running, SwitchRevealMs);
-        if (running) RunningPanel.Draw(cfg, ctrl);
+        if (running)
+        {
+            if (PillButton.Draw("##running_combat", Loc.T(L.Setup.RunSettings), Styling.AccentArc, icon: FontAwesomeIcon.Cog))
+                window.ShowCombatSettings();
+            Styling.VSpace(10f);
+            RunningPanel.Draw(cfg, ctrl);
+        }
         else DrawIdle(plugin, window, cfg, ctrl);
     }
 
@@ -35,7 +41,11 @@ internal sealed class GrindPage
         if (Headline.Draw(cfg, ctrl, plugin.History)) window.Show(AppWindow.Page.Plugins);
         Styling.VSpace(20f);
 
+        ModePicker.Draw(cfg);
+        Styling.VSpace(10f);
         PlanCard.Draw(cfg, ctrl);
+        Styling.VSpace(14f);
+        if (CombatSetup.Draw(cfg)) window.ShowCombatSettings();
         Styling.VSpace(12f);
     }
 

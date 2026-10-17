@@ -29,7 +29,7 @@ internal static class Segmented
         return (widest + SegmentPadX * 2f * scale) * count + Inset * 2f * scale;
     }
 
-    public static bool Draw(string id, ReadOnlySpan<Item> items, ref int selected, bool enabled = true, float height = Layout.SegmentHeight, float width = 0f)
+    public static bool Draw(string id, ReadOnlySpan<Item> items, ref int selected, bool enabled = true, float height = Layout.SegmentHeight, float width = 0f, bool allowNone = false)
     {
         var count = Math.Min(items.Length, MaxItems);
         if (count == 0) return false;
@@ -41,7 +41,7 @@ internal static class Segmented
         var inset = Inset * scale;
         var rounding = size.Y * 0.5f;
         var dl = ImGui.GetWindowDrawList();
-        var current = Math.Clamp(selected, 0, count - 1);
+        var current = allowNone && selected < 0 ? -1 : Math.Clamp(selected, 0, count - 1);
 
         ResolveWidths(items, count, size.X - inset * 2f);
 
@@ -49,15 +49,18 @@ internal static class Segmented
         Paint.Stroke(dl, origin, end, Styling.WithAlpha(Styling.BorderDim, 0.6f), rounding);
 
         ImGui.PushID(id);
-        var indicatorX = Motion.Approach(Motion.Key("##seg"), SegmentOffset(current), 18f);
-        var indicatorWidth = Motion.Approach(Motion.Key("##seg", 1), segmentWidths[current], 18f);
-        var indicatorMin = new Vector2(origin.X + inset + indicatorX, origin.Y + inset);
-        var indicatorMax = indicatorMin + new Vector2(indicatorWidth, size.Y - inset * 2f);
-        var indicatorAccent = enabled ? Styling.AccentArc : Styling.Surface3;
-        Paint.Gradient(dl, indicatorMin, indicatorMax,
-            Styling.Tint(Styling.Surface3, indicatorAccent, 0.30f), Styling.Tint(Styling.Surface2, indicatorAccent, 0.22f), rounding - inset);
-        Paint.TopLight(dl, indicatorMin, indicatorMax, rounding - inset, 0.10f);
-        Paint.Stroke(dl, indicatorMin, indicatorMax, Styling.WithAlpha(enabled ? Styling.AccentArcSoft : Styling.BorderDim, 0.55f), rounding - inset);
+        if (current >= 0)
+        {
+            var indicatorX = Motion.Approach(Motion.Key("##seg"), SegmentOffset(Math.Max(0, current)), 18f);
+            var indicatorWidth = Motion.Approach(Motion.Key("##seg", 1), segmentWidths[Math.Max(0, current)], 18f);
+            var indicatorMin = new Vector2(origin.X + inset + indicatorX, origin.Y + inset);
+            var indicatorMax = indicatorMin + new Vector2(indicatorWidth, size.Y - inset * 2f);
+            var indicatorAccent = enabled ? Styling.AccentArc : Styling.Surface3;
+            Paint.Gradient(dl, indicatorMin, indicatorMax,
+                Styling.Tint(Styling.Surface3, indicatorAccent, 0.30f), Styling.Tint(Styling.Surface2, indicatorAccent, 0.22f), rounding - inset);
+            Paint.TopLight(dl, indicatorMin, indicatorMax, rounding - inset, 0.10f);
+            Paint.Stroke(dl, indicatorMin, indicatorMax, Styling.WithAlpha(enabled ? Styling.AccentArcSoft : Styling.BorderDim, 0.55f), rounding - inset);
+        }
 
         var changed = false;
         var segmentX = origin.X + inset;

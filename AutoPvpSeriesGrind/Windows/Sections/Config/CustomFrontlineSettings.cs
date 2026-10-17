@@ -87,7 +87,7 @@ internal static class CustomFrontlineSettings
         SettingsRow.Draw(Loc.T(row.Label), Loc.T(row.Help), SettingsControls.RowSliderWidth,
             () => SettingsControls.DrawIntSlider(cfg, row.SliderId,
                 () => row.Getter(custom), value => row.Setter(custom, value),
-                row.Minimum, row.Maximum, Loc.T(row.Format)));
+                row.Minimum, row.Maximum, Loc.T(row.Format)), showHelp: true);
     }
 
     private static void DrawResetRow(Configuration cfg)

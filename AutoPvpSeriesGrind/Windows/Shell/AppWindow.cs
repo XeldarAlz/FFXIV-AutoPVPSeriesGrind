@@ -29,7 +29,7 @@ public sealed class AppWindow : Window, IDisposable
     };
     private static readonly WindowSizeConstraints ExpandedConstraints = new()
     {
-        MinimumSize = new Vector2(HeaderBar.MinimumWidth, Layout.HeaderHeight + Layout.DockHeight + MinimumBodyHeight),
+        MinimumSize = new Vector2(620f, Layout.HeaderHeight + Layout.DockHeight + MinimumBodyHeight),
         MaximumSize = Unbounded,
     };
 
@@ -82,6 +82,12 @@ public sealed class AppWindow : Window, IDisposable
 
         if (compact) ToggleCompact();
         IsOpen = true;
+    }
+
+    public void ShowCombatSettings()
+    {
+        settingsPage.ShowCombat();
+        Show(Page.Settings);
     }
 
     public void TogglePage(Page target)

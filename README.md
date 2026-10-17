@@ -24,12 +24,16 @@
 
 ## What it does
 
-Grinds the **PvP Series Malmstones** by looping Crystalline Conflict Casual Match or the daily Frontline roulette. Press **Start** and the plugin queues, rides out each match, runs your job's PvP rotation, fires the Limit Break, sends a quick greeting, leaves on the results screen, and requeues until it reaches the goal you set: a match count, a Series rank, a time box, or endless.
+Grinds the **PvP Series Malmstones** by looping Crystalline Conflict Casual or Ranked Matches, the daily Frontline roulette, or Hidden Gorge in Rival Wings. Press **Start** and the plugin queues, rides out each match, runs your job's PvP rotation, fires the Limit Break, sends a quick greeting, leaves after confirmed completion, and requeues until it reaches the goal you set: a match count, a Series rank, a time box, or endless.
 
 ## Features
 
-- **Hands-off match loop**: queue → fight → leave → requeue, in Crystalline Conflict or Frontline.
-- **Frontline mode**: queues the daily Frontline roulette on every arena and sticks with the team, holding a role-appropriate spot in the group, falling back when hurt, mounting up for long rides, and hitting the objective the team is attacking, like the ice on Fields of Glory.
+- **Visible mode selection**: three cards for Crystalline Conflict, Frontline, and Rival Wings. CC has an explicit Casual / Ranked selector; existing configurations default to Casual. The chosen queue is captured for the run and used for both registration and queue ownership checks. A compact plan strip shows the session goal and after-run action; click either to edit it. Endless mode disables after-run actions without clearing your saved choice.
+- **Combat setup on the grind screen**: Defensive, Moderate, Aggressive, and Customize cards. Custom parameters open inline with explanations; switching presets preserves your saved custom values. Frontline and Rival Wings share a profile, clearly labeled in the UI.
+- **Direct settings access**: “All combat settings” opens the Combat tab. Full-width settings, wrapping cards, and stacked parameter rows accommodate smaller windows and larger text. Run-bound combat settings are locked during a session; manual movement remains adjustable live.
+- **Match loop**: queue → fight → leave → requeue, with explicit handling for Crystalline Conflict, Frontline, and Hidden Gorge.
+- **Rival Wings infantry support (preview)**: queues Hidden Gorge, waits for the match to start, follows allied groups, retreats and mounts, and joins NPC objectives allies are attacking. Uses the built-in job rotations. Mech piloting remains manual; this version does not implement train, mercenary, ceruleum, or lane strategy. Queueing, match-start detection, and results handling still need in-game validation.
+- **Frontline mode**: queues the daily Frontline roulette on every arena, mounts and waits in place until the gates open, then sticks with the team, holding a role-appropriate spot in the group, falling back when hurt, mounting up for long rides, and hitting the objective the team is attacking, like the ice on Fields of Glory.
 - **Human-like play**: every match rolls its own play style (reaction speed, route, spot in the group, gate timing, mount habits, the odd hop), so several copies in one match never move in lockstep. It hops small ledges instead of walking around them and gives up on spots it cannot reach instead of running into walls.
 - **Steer yourself**: turn on manual movement and the plugin keeps picking targets, running the rotation and firing the Limit Break while you move. Flip it any time, even mid-match, from Settings or with `/apsg steer` (macro it to a hotbar for a one-key toggle).
 - **Built-in PvP rotation**: presses your job's PvP skills, Guard, Purify, Recuperate and Elixir itself; the defensive thresholds are adjustable under Settings, Combat. Switch it to Manual there if you would rather press your own skills.
@@ -40,7 +44,20 @@ Grinds the **PvP Series Malmstones** by looping Crystalline Conflict Casual Matc
 - **Social touches**: optional `Hello` during portraits and `Good Match` on results.
 - **Run history**: matches, deaths, and time tracked per session.
 - **After the run**: stay where you are, return to the inn via Lifestream, log out, or close the game.
-- **Resilient**: cancellable mid-run, settings persist across reloads.
+- **Verified queueing and completion**: submits only from a known idle queue, verifies registration with bounded retries, and counts each confirmed completion once. Departing without completion evidence stops the run without counting that match. Unrelated queues are left alone.
+- **Navigation cleanup**: cancels pending pathfinding on stop, reset, timeout or a major destination change; observes late task failures. Older vnavmesh providers fall back to the original API, where abandoned results are discarded but the provider's work cannot be cancelled.
+- **Target protection**: skips untargetable and invulnerable enemies; optional Chiten avoidance also covers chasing and offensive actions. Guard remains a scoring penalty so Guard-breaking actions can still be used.
+- **Regrouping**: supplements visible allies with party/alliance roster positions for navigation, without treating roster-only actors as combat or healing targets.
+
+## Validation
+
+Build with `dotnet build AutoPvpSeriesGrind.sln -c Release` and run policy regressions with `dotnet test AutoPvpSeriesGrind.sln -c Release`. The tests exercise queue transitions/timeouts, pre-match mounting and waiting for duty start, completion deduplication, cancellation, target eligibility, mode separation (including Casual versus Ranked queue ownership), and roster-only regrouping without loading Dalamud.
+
+For Frontline, verify that the character mounts once ready and stays still through the pre-match countdown, then follows the team when the gates open. Also check starting the plugin in an already active match and manual movement, which leaves mounting to the player.
+
+Before enabling unattended Rival Wings runs, validate one Hidden Gorge match: registration, pre-match hold, team movement after spawn and respawn, infantry attacks, manual mech control, completion/results detection, and exit. Also verify Stop while pathfinding, Finish-then-stop during registration, and CC/Frontline regression behavior. Automated tests do not verify native game calls or match performance. Also validate CC Ranked registration and acceptance in-game, then Casual and Frontline requeueing. Queue IDs are the game-data ContentRoulette rows [40 (Casual)](https://v2.xivapi.com/api/sheet/ContentRoulette/40?fields=Name) and [41 (Ranked)](https://v2.xivapi.com/api/sheet/ContentRoulette/41?fields=Name).
+
+For UI validation, check all three mode cards, Casual / Ranked persistence after reload, the Custom editor in both Grind and Settings, preset switching without losing custom values, live manual movement during a run, the compact goal and after-run editors (including Endless mode and narrow windows), and the pinned Start/Stop dock. Check the 620px minimum expanded width and higher Dalamud UI/font scales. New setup copy is included in all nine language catalogs.
 
 ## Install
 

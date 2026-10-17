@@ -11,469 +11,207 @@ using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Windows.Sections;
 
-// The idle screen states the whole run as one sentence. Every underlined word is a token that
-// unfurls the popover editing exactly that part of the plan, so a run is configured by reading it.
 internal static class PlanCard
 {
-    private const float PadX = 18f;
-    private const float PadY = 16f;
-    private const float TokenHeight = 30f;
-    private const float TokenPadX = 11f;
-    private const float ChevronGap = 6f;
-    private const float WordGap = 8f;
-    private const float LineGap = 10f;
-    private const float PopoverWidth = 420f;
-    private const float PopoverSegmentHeight = 40f;
-    private const float PopoverGap = 6f;
-    private const float PopoverRevealMs = 220f;
-    private const float PopoverSlide = 8f;
+    private const string GoalPopup = "##session_goal_editor";
+    private const string AfterPopup = "##session_after_editor";
+    private const float ButtonHeight = 34f;
+    private const float PopupWidth = 480f;
 
-    private const string ActivityPopup = "##apsg_activity_popover";
-    private const string GoalPopup = "##apsg_goal_popover";
-    private const string AfterPopup = "##apsg_after_popover";
-
-    private static readonly AfterRunAction[] afterRunOrder =
+    private static readonly Segmented.Item[] Goals = new Segmented.Item[4];
+    private static readonly Segmented.Item[] After = new Segmented.Item[4];
+    private static readonly AfterRunAction[] Actions =
         [AfterRunAction.StayLoggedIn, AfterRunAction.ReturnToInn, AfterRunAction.Logout, AfterRunAction.CloseGame];
-
-    private static readonly (LocString Token, LocString Name, LocString Detail)[] afterRunChoices =
+    private static readonly (LocString Label, LocString Help, FontAwesomeIcon Icon)[] AfterChoices =
     [
-        (L.Plan.AfterStayPhrase,   L.Plan.AfterStayLabel,   L.Plan.AfterStayHelp),
-        (L.Plan.AfterInnPhrase,    L.Plan.AfterInnLabel,    L.Plan.AfterInnHelp),
-        (L.Plan.AfterLogoutPhrase, L.Plan.AfterLogoutLabel, L.Plan.AfterLogoutHelp),
-        (L.Plan.AfterClosePhrase,  L.Plan.AfterCloseLabel,  L.Plan.AfterCloseHelp),
+        (L.Plan.AfterStayLabel, L.Plan.AfterStayHelp, FontAwesomeIcon.MapMarkerAlt),
+        (L.Plan.AfterInnLabel, L.Plan.AfterInnHelp, FontAwesomeIcon.Bed),
+        (L.Plan.AfterLogoutLabel, L.Plan.AfterLogoutHelp, FontAwesomeIcon.SignOutAlt),
+        (L.Plan.AfterCloseLabel, L.Plan.AfterCloseHelp, FontAwesomeIcon.PowerOff),
     ];
-
-    private static readonly Segmented.Item[] modeItems = new Segmented.Item[4];
-    private static readonly Piece[] pieces = new Piece[7];
-    private static readonly Vector2 PopoverPadding = new(16f, 16f);
-
-    private static Vector2 activityAnchor;
-    private static Vector2 goalAnchor;
-    private static Vector2 afterAnchor;
-    private static long activityOpenedTick;
-    private static long goalOpenedTick;
-    private static long afterOpenedTick;
-
-    private enum PieceKind { Word, Activity, Goal, After }
-
-    private readonly record struct Piece(PieceKind Kind, string Text);
 
     public static void Draw(Configuration cfg, AutoPvpSeriesController ctrl)
     {
         var scale = ImGuiHelpers.GlobalScale;
         var origin = ImGui.GetCursorScreenPos();
         var width = ImGui.GetContentRegionAvail().X;
-        var padX = PadX * scale;
-        var padY = PadY * scale;
+        var pad = new Vector2(12f, 8f) * scale;
+        var gap = 8f * scale;
+        var height = MathF.Max(ButtonHeight * scale, ImGui.GetTextLineHeight() + 12f * scale);
+        var title = Loc.T(L.Plan.Title);
+        var titleSize = TextDraw.Measure(title);
+        var fieldX = origin.X + pad.X + titleSize.X + 12f * scale;
+        var right = origin.X + width - pad.X;
+        var available = MathF.Max(1f, right - fieldX);
+        var endless = cfg.ActiveMode.Id == EndlessMode.ModeId;
+        var afterIndex = Math.Max(0, Array.IndexOf(Actions, cfg.AfterRun));
+        var goal = GoalLabel(cfg);
+        var after = Loc.T(endless ? L.Setup.AfterInactive : AfterChoices[afterIndex].Label);
+        var afterIcon = endless ? FontAwesomeIcon.Minus : AfterChoices[afterIndex].Icon;
+        var goalLabel = FitButtonLabel(goal, FontAwesomeIcon.Flag, available);
+        var afterLabel = FitButtonLabel(after, afterIcon, available);
+        var goalWidth = PillButton.Width(goalLabel, FontAwesomeIcon.Flag);
+        var afterWidth = PillButton.Width(afterLabel, afterIcon);
+        var arrowWidth = TextDraw.IconSize(FontAwesomeIcon.ArrowRight).X;
+        var sameRow = goalWidth + gap * 2f + arrowWidth + afterWidth <= available;
+        var size = new Vector2(width, pad.Y * 2f + height * (sameRow ? 1f : 2f) + (sameRow ? 0f : gap));
         var dl = ImGui.GetWindowDrawList();
+        Paint.Surface(dl, origin, origin + size, Styling.PanelRounding * scale,
+            Styling.WithAlpha(Styling.Surface1, 0.5f), Styling.WithAlpha(Styling.BorderDim, 0.5f));
+        var firstY = origin.Y + pad.Y;
+        var titlePos = new Vector2(origin.X + pad.X, firstY + (height - titleSize.Y) * 0.5f);
+        TextDraw.At(title, titlePos, Styling.TextDim);
 
-        dl.ChannelsSplit(2);
-        dl.ChannelsSetCurrent(1);
+        ImGui.SetCursorScreenPos(new Vector2(fieldX, firstY));
+        if (PillButton.Draw("##goal_summary", goalLabel, Styling.AccentArc, icon: FontAwesomeIcon.Flag,
+                enabled: !ctrl.Running, height: height / scale, tooltip: Loc.T(L.Setup.RunGoal) + "\n" + goal))
+            ImGui.OpenPopup(GoalPopup);
 
-        var y = origin.Y + padY;
-        var planLabel = Loc.T(L.Plan.Title);
-        var labelSize = TextDraw.SectionTitleSize(planLabel);
-        TextDraw.SectionTitle(planLabel, new Vector2(origin.X + padX, y), Styling.TextStrong);
-        y += labelSize.Y + 10f * scale;
+        var afterPos = sameRow ? new Vector2(fieldX + goalWidth + gap * 2f + arrowWidth, firstY)
+            : new Vector2(fieldX, firstY + height + gap);
+        TextDraw.IconCentered(sameRow ? FontAwesomeIcon.ArrowRight : FontAwesomeIcon.LevelDownAlt,
+            sameRow ? new Vector2(fieldX + goalWidth + gap + arrowWidth * 0.5f, firstY + height * 0.5f)
+                : new Vector2(origin.X + pad.X + titleSize.X * 0.5f, afterPos.Y + height * 0.5f), Styling.TextDim);
+        ImGui.SetCursorScreenPos(afterPos);
+        var afterEnabled = !ctrl.Running && !endless;
+        var afterHelp = Loc.T(endless ? L.Setup.AfterEndless : AfterChoices[afterIndex].Help);
+        if (PillButton.Draw("##after_summary", afterLabel, Styling.AccentArc, PillButton.Emphasis.Ghost,
+                afterIcon, enabled: afterEnabled, height: height / scale,
+                tooltip: Loc.T(L.Plan.AfterGoalTitle) + "\n" + afterHelp))
+            ImGui.OpenPopup(AfterPopup);
+        if (!afterEnabled && Hit.HoveringRect(afterPos, afterPos + new Vector2(afterWidth, height)))
+            Tooltip.Show(ctrl.Running ? Loc.T(L.Plan.Locked) : afterHelp);
 
-        DrawSentence(cfg, ctrl, new Vector2(origin.X + padX, y), width - padX * 2f, out var sentenceBottom);
-        y = sentenceBottom + 14f * scale;
-
-        ImGui.SetCursorScreenPos(new Vector2(origin.X + padX, y));
-        using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(6f, 6f) * scale))
+        var summary = Loc.T(L.Plan.SeriesRank, PvpProfileReader.SeriesCurrentRank());
+        if (cfg.TakeBreaks) summary += TextDraw.Separator + Loc.T(L.Plan.BreakEveryHelp, cfg.BreakMinutes, cfg.BreakEveryMatches);
+        if (Hit.HoveringRect(titlePos, titlePos + titleSize)) Tooltip.Show(summary);
+        var metaX = afterPos.X + afterWidth + 18f * scale;
+        if (right - metaX >= 100f * scale)
         {
-            ImGui.PushID("##apsg_plan_chips");
-            ImGui.BeginGroup();
-            DrawChips(cfg);
-            ImGui.EndGroup();
-            ImGui.PopID();
+            using (Fonts.PushCaption())
+            {
+                var caption = Loc.T(L.Plan.SeriesRank, PvpProfileReader.SeriesCurrentRank());
+                if (cfg.TakeBreaks) caption += TextDraw.Separator + Loc.T(L.Plan.BreakEvery, cfg.BreakEveryMatches);
+                var metaPos = new Vector2(metaX, afterPos.Y + (height - ImGui.GetTextLineHeight()) * 0.5f);
+                TextDraw.At(TextDraw.Truncate(caption, right - metaX), metaPos, Styling.TextDim);
+                if (Hit.HoveringRect(metaPos, new Vector2(right, afterPos.Y + height))) Tooltip.Show(summary);
+            }
         }
-
-        var end = new Vector2(origin.X + width, ImGui.GetItemRectMax().Y + padY);
-
-        dl.ChannelsSetCurrent(0);
-        Paint.Glass(dl, origin, end, Styling.PanelRounding * scale, Styling.AccentArc, 0.07f, 0f, elevated: true);
-        dl.ChannelsMerge();
 
         ImGui.SetCursorScreenPos(origin);
-        ImGui.Dummy(new Vector2(width, end.Y - origin.Y));
-
-        DrawActivityPopover(cfg);
-        DrawGoalPopover(cfg);
-        DrawAfterPopover(cfg);
+        ImGui.Dummy(size);
+        DrawEditor(GoalPopup, cfg, ctrl.Running, goal: true);
+        DrawEditor(AfterPopup, cfg, ctrl.Running, goal: false);
     }
 
-    private static void DrawSentence(Configuration cfg, AutoPvpSeriesController ctrl, Vector2 start, float maxWidth, out float bottom)
-    {
-        var scale = ImGuiHelpers.GlobalScale;
-        var tokenHeight = TokenHeight * scale;
-        var wordGap = WordGap * scale;
-        var endless = cfg.ActiveMode.Id == EndlessMode.ModeId;
-
-        var count = 0;
-        pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.Queue));
-        pieces[count++] = new Piece(PieceKind.Activity, Loc.T(ReadyState.ModeName(cfg)));
-        pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.SentenceUntil));
-        pieces[count++] = new Piece(PieceKind.Goal, GoalLabel(cfg));
-        if (!endless)
-        {
-            pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.SentenceThen));
-            pieces[count++] = new Piece(PieceKind.After, Loc.T(afterRunChoices[AfterIndex(cfg)].Token));
-        }
-
-        pieces[count++] = new Piece(PieceKind.Word, Loc.T(L.Plan.SentenceEnd));
-
-        var x = start.X;
-        var y = start.Y;
-        var editable = !ctrl.Running;
-
-        for (var index = 0; index < count; index++)
-        {
-            var piece = pieces[index];
-            var isPunctuation = piece.Kind == PieceKind.Word && piece.Text == ".";
-            var pieceWidth = piece.Kind == PieceKind.Word ? TextDraw.Measure(piece.Text).X : TokenWidth(piece.Text);
-            var gap = isPunctuation ? 0f : wordGap;
-            if (x > start.X && x + pieceWidth > start.X + maxWidth)
-            {
-                x = start.X;
-                y += tokenHeight + LineGap * scale;
-            }
-
-            if (piece.Kind == PieceKind.Word)
-            {
-                var textSize = TextDraw.Measure(piece.Text);
-                TextDraw.At(piece.Text, new Vector2(x, y + (tokenHeight - textSize.Y) * 0.5f), Styling.TextSecondary);
-            }
-            else
-            {
-                ImGui.SetCursorScreenPos(new Vector2(x, y));
-                var clicked = DrawToken(TokenId(piece.Kind), piece.Text, Styling.AccentArc, editable);
-                var anchor = new Vector2(x, y + tokenHeight + PopoverGap * scale);
-                switch (piece.Kind)
-                {
-                    case PieceKind.Activity:
-                        activityAnchor = anchor;
-                        if (clicked) activityOpenedTick = OpenPopover(ActivityPopup);
-                        break;
-                    case PieceKind.Goal:
-                        goalAnchor = anchor;
-                        if (clicked) goalOpenedTick = OpenPopover(GoalPopup);
-                        break;
-                    case PieceKind.After:
-                        afterAnchor = anchor;
-                        if (clicked) afterOpenedTick = OpenPopover(AfterPopup);
-                        break;
-                }
-            }
-
-            x += pieceWidth + gap;
-        }
-
-        bottom = y + tokenHeight;
-    }
-
-    private static void DrawChips(Configuration cfg)
-    {
-        var scale = ImGuiHelpers.GlobalScale;
-        var rank = PvpProfileReader.SeriesCurrentRank();
-        Chip.Draw(Loc.T(L.Plan.SeriesRank, rank), Styling.AccentAmber, FontAwesomeIcon.Medal);
-
-        if (MatchState.LocalIsMelee())
-        {
-            ImGui.SameLine(0f, 6f * scale);
-            Chip.Draw(Loc.T(L.Plan.RangedFaster), Styling.AccentAmberSoft, FontAwesomeIcon.Lightbulb,
-                tooltip: Loc.T(L.Plan.RangedFasterHelp));
-        }
-
-        if (cfg.TakeBreaks)
-        {
-            ImGui.SameLine(0f, 6f * scale);
-            Chip.Draw(Loc.T(L.Plan.BreakEvery, cfg.BreakEveryMatches), Styling.AccentMint, FontAwesomeIcon.Coffee,
-                tooltip: Loc.T(L.Plan.BreakEveryHelp, cfg.BreakMinutes, cfg.BreakEveryMatches));
-        }
-    }
-
-    private static string TokenId(PieceKind kind) => kind switch
-    {
-        PieceKind.Activity => "##apsg_token_activity",
-        PieceKind.Goal     => "##apsg_token_goal",
-        _                  => "##apsg_token_after",
-    };
-
-    private static float TokenWidth(string label)
-    {
-        var scale = ImGuiHelpers.GlobalScale;
-        return TokenPadX * 2f * scale + TextDraw.Measure(label).X + ChevronGap * scale + TextDraw.IconSize(FontAwesomeIcon.ChevronDown).X;
-    }
-
-    private static bool DrawToken(string id, string label, Vector4 accent, bool enabled)
-    {
-        var scale = ImGuiHelpers.GlobalScale;
-        var size = new Vector2(TokenWidth(label), TokenHeight * scale);
-        var origin = ImGui.GetCursorScreenPos();
-        var end = origin + size;
-        var hit = Hit.Area(id, size, enabled);
-        var hover = Motion.Hover(Motion.Key(id), hit.Hovered);
-        var dl = ImGui.GetWindowDrawList();
-
-        var fill = enabled ? Styling.WithAlpha(accent, 0.16f + 0.12f * hover) : Styling.WithAlpha(Styling.Surface2, 0.8f);
-        var border = enabled ? Styling.WithAlpha(accent, 0.45f + 0.30f * hover) : Styling.WithAlpha(Styling.BorderDim, 0.6f);
-        var text = enabled ? Vector4.Lerp(Styling.Lighten(accent, 0.3f), Styling.TextStrong, hover * 0.5f) : Styling.TextDim;
-        if (hit.Held) fill = Styling.Darken(fill, 0.12f);
-        Paint.Pill(dl, origin, end, fill, border);
-
-        var midY = origin.Y + size.Y * 0.5f;
-        var labelSize = TextDraw.Measure(label);
-        TextDraw.At(label, new Vector2(origin.X + TokenPadX * scale, midY - labelSize.Y * 0.5f), text);
-
-        var chevronSize = TextDraw.IconSize(FontAwesomeIcon.ChevronDown);
-        TextDraw.Icon(FontAwesomeIcon.ChevronDown, new Vector2(end.X - TokenPadX * scale - chevronSize.X, midY - chevronSize.Y * 0.5f + 1f * scale),
-            Styling.WithAlpha(text, 0.75f));
-
-        if (!enabled && Hit.HoveringRect(origin, end)) Tooltip.Show(Loc.T(L.Plan.Locked));
-        return hit.Clicked;
-    }
+    private static string FitButtonLabel(string label, FontAwesomeIcon icon, float width)
+        => TextDraw.Truncate(label, MathF.Max(1f, width - PillButton.Width(string.Empty, icon)));
 
     private static string GoalLabel(Configuration cfg) => cfg.ActiveMode.Id switch
     {
         MatchCountMode.ModeId => Loc.T(L.Plan.GoalMatches, cfg.TargetMatchCount),
-        SeriesRankMode.ModeId => Loc.T(L.Plan.GoalRank, cfg.TargetSeriesRank),
-        TimeBoxedMode.ModeId  => Loc.T(L.Plan.GoalMinutes, cfg.TargetMinutes),
-        _                     => Loc.T(L.Plan.GoalEndless),
+        SeriesRankMode.ModeId => Loc.T(L.Plan.GoalRank,
+            Math.Max(cfg.TargetSeriesRank, SeriesRankMode.LowestOpenTarget(PvpProfileReader.SeriesCurrentRank()))),
+        TimeBoxedMode.ModeId => Loc.T(L.Plan.GoalMinutes, cfg.TargetMinutes),
+        _ => Loc.T(L.Plan.TabEndless),
     };
 
-    private static int AfterIndex(Configuration cfg) => Math.Max(0, Array.IndexOf(afterRunOrder, cfg.AfterRun));
-
-    private static void RefreshModeItems(IReadOnlyList<ISeriesGrindMode> modes)
+    private static void DrawEditor(string id, Configuration cfg, bool running, bool goal)
     {
-        for (var index = 0; index < modes.Count && index < modeItems.Length; index++)
+        if (!ImGui.IsPopupOpen(id)) return;
+        var scale = ImGuiHelpers.GlobalScale;
+        var viewport = ImGui.GetMainViewport();
+        var width = MathF.Min(PopupWidth * scale, viewport.WorkSize.X - 24f * scale);
+        // ImGui places the popup within the viewport; constrain its size so long translations
+        // wrap and small displays can scroll without growing the closed run-plan strip.
+        ImGui.SetNextWindowSizeConstraints(new Vector2(width, 0f),
+            new Vector2(width, MathF.Max(1f, viewport.WorkSize.Y - 24f * scale)));
+        using var popup = ContextMenu.Begin(id);
+        if (!popup.Open) return;
+        using var disabled = ImRaii.Disabled(running);
+        if (goal)
         {
-            modeItems[index] = modes[index].Id switch
+            DrawGoal(cfg);
+            Styling.VSpace(6f);
+            if (PillButton.Draw("##goal_done", Loc.T(L.Common.Done), Styling.AccentArc, icon: FontAwesomeIcon.Check))
+                ImGui.CloseCurrentPopup();
+        }
+        else DrawAfter(cfg);
+    }
+
+    private static void DrawGoal(Configuration cfg)
+    {
+        Styling.SectionLabel(Loc.T(L.Setup.RunGoal));
+        Styling.VSpace(6f);
+        var modes = SeriesGrindModes.All;
+        var selected = 0;
+        for (var i = 0; i < modes.Count && i < Goals.Length; i++)
+        {
+            if (cfg.ActiveMode.Id == modes[i].Id) selected = i;
+            Goals[i] = modes[i].Id switch
             {
-                MatchCountMode.ModeId => new Segmented.Item(FontAwesomeIcon.ListOl, Loc.T(L.Plan.TabMatches)),
-                SeriesRankMode.ModeId => new Segmented.Item(FontAwesomeIcon.Medal, Loc.T(L.Plan.TabRank)),
-                TimeBoxedMode.ModeId  => new Segmented.Item(FontAwesomeIcon.Stopwatch, Loc.T(L.Plan.TabTime)),
-                EndlessMode.ModeId    => new Segmented.Item(FontAwesomeIcon.Infinity, Loc.T(L.Plan.TabEndless)),
-                _                     => new Segmented.Item(FontAwesomeIcon.Flag, modes[index].DisplayName),
+                MatchCountMode.ModeId => new(FontAwesomeIcon.ListOl, Loc.T(L.Plan.TabMatches)),
+                SeriesRankMode.ModeId => new(FontAwesomeIcon.Medal, Loc.T(L.Setup.SeriesRank)),
+                TimeBoxedMode.ModeId => new(FontAwesomeIcon.Stopwatch, Loc.T(L.Plan.TabTime)),
+                _ => new(FontAwesomeIcon.Infinity, Loc.T(L.Plan.TabEndless)),
             };
         }
-    }
-
-    private static Vector2 PopoverPosition(Vector2 anchor, float contentWidth)
-    {
-        var viewport = ImGui.GetMainViewport();
-        var popupWidth = contentWidth + PopoverPadding.X * 2f * ImGuiHelpers.GlobalScale;
-        var maxX = viewport.WorkPos.X + viewport.WorkSize.X - popupWidth;
-        return anchor with { X = MathF.Max(viewport.WorkPos.X, MathF.Min(anchor.X, maxX)) };
-    }
-
-    private static long OpenPopover(string id)
-    {
-        ImGui.OpenPopup(id);
-        return Environment.TickCount64;
-    }
-
-    private ref struct Popover
-    {
-        private ImRaii.StyleDisposable style;
-        private ImRaii.PopupDisposable popup;
-
-        public Popover(string id, Vector2 anchor, float width, long openedTick)
-        {
-            var scale = ImGuiHelpers.GlobalScale;
-            var reveal = Motion.Reveal(openedTick, PopoverRevealMs);
-            var position = PopoverPosition(anchor, width) - new Vector2(0f, (1f - reveal) * PopoverSlide * scale);
-            ImGui.SetNextWindowPos(position, ImGuiCond.Always);
-            style = ImRaii.PushStyle(ImGuiStyleVar.WindowPadding, PopoverPadding * scale)
-                .Push(ImGuiStyleVar.Alpha, MathF.Max(0.05f, reveal));
-            popup = ImRaii.Popup(id, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoMove);
-        }
-
-        public bool Open => popup.Alive;
-
-        public void Dispose()
-        {
-            popup.Dispose();
-            style.Dispose();
-        }
-    }
-
-    private static void DrawActivityPopover(Configuration cfg)
-    {
-        if (!ImGui.IsPopupOpen(ActivityPopup)) return;
-
-        var scale = ImGuiHelpers.GlobalScale;
-        var width = PopoverWidth * scale;
-        using var popover = new Popover(ActivityPopup, activityAnchor, width, activityOpenedTick);
-        if (!popover.Open) return;
-
-        Heading(Loc.T(L.Plan.WhatToQueue), width);
-        if (DrawChoiceRow(0, Loc.T(L.Plan.Mode), Loc.T(L.Plan.QueueCasualHelp), cfg.MatchType == MatchType.CrystallineConflict, width))
-        {
-            SelectMatchType(cfg, MatchType.CrystallineConflict);
-        }
-        if (DrawChoiceRow(1, Loc.T(L.Plan.ModeFrontline), Loc.T(L.Plan.QueueFrontlineHelp), cfg.MatchType == MatchType.Frontline, width))
-        {
-            SelectMatchType(cfg, MatchType.Frontline);
-        }
-    }
-
-    private static void SelectMatchType(Configuration cfg, MatchType matchType)
-    {
-        cfg.MatchType = matchType;
-        cfg.SaveDebounced();
-        ImGui.CloseCurrentPopup();
-    }
-
-    private static void DrawGoalPopover(Configuration cfg)
-    {
-        if (!ImGui.IsPopupOpen(GoalPopup)) return;
-
-        var scale = ImGuiHelpers.GlobalScale;
-        var modes = SeriesGrindModes.All;
-        var visible = Math.Min(modes.Count, modeItems.Length);
-        RefreshModeItems(modes);
-        var width = MathF.Max(PopoverWidth * scale, Segmented.PreferredWidth(modeItems.AsSpan(0, visible)));
-
-        using var popover = new Popover(GoalPopup, goalAnchor, width, goalOpenedTick);
-        if (!popover.Open) return;
-
-        var selected = 0;
-        for (var index = 0; index < modes.Count; index++)
-        {
-            if (modes[index].Id == cfg.ActiveMode.Id) selected = index;
-        }
-
-        if (Segmented.Draw("##apsg_modes", modeItems.AsSpan(0, visible), ref selected, height: PopoverSegmentHeight, width: width))
+        if (Segmented.Draw("##session_goal", Goals.AsSpan(0, Math.Min(modes.Count, Goals.Length)), ref selected, height: 36f))
         {
             cfg.ModeId = modes[selected].Id;
             cfg.SaveDebounced();
         }
-
-        Styling.VSpace(14f);
+        Styling.VSpace(6f);
         if (cfg.ActiveMode.Id == EndlessMode.ModeId)
         {
-            Caption(Loc.T(L.Plan.EndlessHelp), width);
+            ChoiceCards.Description(Loc.T(L.Plan.EndlessHelp));
             return;
         }
-
-        var currentRank = PvpProfileReader.SeriesCurrentRank();
-        var lowestOpenRank = SeriesRankMode.LowestOpenTarget(currentRank);
-        var (label, unit, step, min, max, value, note) = cfg.ActiveMode.Id switch
+        var rank = PvpProfileReader.SeriesCurrentRank();
+        var minimumRank = SeriesRankMode.LowestOpenTarget(rank);
+        var (unit, step, min, max, value, note) = cfg.ActiveMode.Id switch
         {
-            MatchCountMode.ModeId => (Loc.T(L.Plan.StopAfter), Loc.T(L.Plan.UnitMatches), 5, 1, 999, cfg.TargetMatchCount,
-                Loc.T(L.Plan.StopAfterMatchesHelp)),
-            SeriesRankMode.ModeId => (Loc.T(L.Plan.ReachRank), Loc.T(L.Plan.UnitRank), 1, lowestOpenRank, SeriesRankMode.MaxRank, Math.Max(cfg.TargetSeriesRank, lowestOpenRank),
-                Loc.T(L.Plan.ReachRankHelp, currentRank)),
-            _                     => (Loc.T(L.Plan.StopAfter), Loc.T(L.Plan.UnitMinutes), 5, 1, 1440, cfg.TargetMinutes,
-                Loc.T(L.Plan.StopAfterTimeHelp)),
+            MatchCountMode.ModeId => (L.Plan.UnitMatches, 5, 1, 999, cfg.TargetMatchCount, Loc.T(L.Plan.StopAfterMatchesHelp)),
+            SeriesRankMode.ModeId => (L.Plan.UnitRank, 1, minimumRank, SeriesRankMode.MaxRank, Math.Max(cfg.TargetSeriesRank, minimumRank),
+                Loc.T(L.Plan.ReachRankHelp, rank) + " " + Loc.T(L.Setup.SeriesGoalHint)),
+            _ => (L.Plan.UnitMinutes, 5, 1, 1440, cfg.TargetMinutes, Loc.T(L.Plan.StopAfterTimeHelp)),
         };
-
-        var labelOrigin = ImGui.GetCursorScreenPos();
-        var labelSize = TextDraw.Measure(label);
-        TextDraw.At(label, labelOrigin, Styling.TextSecondary);
-        ImGui.Dummy(new Vector2(width, labelSize.Y + 8f * scale));
-
-        if (Stepper.Draw("##apsg_target", ref value, step, min, max, "%d"))
+        if (Stepper.Draw("##session_target", ref value, step, min, max, "%d"))
         {
-            ApplyTarget(cfg, value);
-        }
-
-        ImGui.SameLine(0f, 10f * scale);
-        ImGui.AlignTextToFramePadding();
-        using (ImRaii.PushColor(ImGuiCol.Text, Styling.TextDim))
-            ImGui.TextUnformatted(unit);
-
-        Styling.VSpace(8f);
-        Caption(note, width);
-    }
-
-    private static void ApplyTarget(Configuration cfg, int value)
-    {
-        switch (cfg.ActiveMode.Id)
-        {
-            case MatchCountMode.ModeId: cfg.TargetMatchCount = Math.Clamp(value, 1, 999); break;
-            case SeriesRankMode.ModeId: cfg.TargetSeriesRank = Math.Clamp(value, 1, SeriesRankMode.MaxRank); break;
-            default:                    cfg.TargetMinutes = Math.Clamp(value, 1, 1440); break;
-        }
-
-        cfg.SaveDebounced();
-    }
-
-    private static void DrawAfterPopover(Configuration cfg)
-    {
-        if (!ImGui.IsPopupOpen(AfterPopup)) return;
-
-        var scale = ImGuiHelpers.GlobalScale;
-        var width = PopoverWidth * scale;
-        using var popover = new Popover(AfterPopup, afterAnchor, width, afterOpenedTick);
-        if (!popover.Open) return;
-
-        var current = AfterIndex(cfg);
-        Heading(Loc.T(L.Plan.AfterGoalTitle), width);
-
-        for (var index = 0; index < afterRunChoices.Length; index++)
-        {
-            if (DrawChoiceRow(index, Loc.T(afterRunChoices[index].Name), Loc.T(afterRunChoices[index].Detail), index == current, width))
+            switch (cfg.ActiveMode.Id)
             {
-                cfg.AfterRun = afterRunOrder[index];
+                case MatchCountMode.ModeId: cfg.TargetMatchCount = value; break;
+                case SeriesRankMode.ModeId: cfg.TargetSeriesRank = value; break;
+                default: cfg.TargetMinutes = value; break;
+            }
+            cfg.SaveDebounced();
+        }
+        ImGui.SameLine(0f, 10f * ImGuiHelpers.GlobalScale);
+        ImGui.AlignTextToFramePadding();
+        ImGui.TextUnformatted(Loc.T(unit));
+        Styling.VSpace(4f);
+        ChoiceCards.Description(note);
+    }
+
+    private static void DrawAfter(Configuration cfg)
+    {
+        Styling.SectionLabel(Loc.T(L.Plan.AfterGoalTitle));
+        Styling.VSpace(6f);
+        for (var i = 0; i < After.Length; i++) After[i] = new(AfterChoices[i].Icon, Loc.T(AfterChoices[i].Label));
+        var selected = Math.Max(0, Array.IndexOf(Actions, cfg.AfterRun));
+        var enabled = cfg.ActiveMode.Id != EndlessMode.ModeId;
+        for (var row = 0; row < 2; row++)
+        {
+            var local = selected / 2 == row ? selected % 2 : -1;
+            if (Segmented.Draw($"##after_run_{row}", After.AsSpan(row * 2, 2), ref local, enabled, height: 34f, allowNone: true))
+            {
+                selected = row * 2 + local;
+                cfg.AfterRun = Actions[selected];
                 cfg.SaveDebounced();
                 ImGui.CloseCurrentPopup();
             }
         }
-    }
-
-    private static void Heading(string text, float width)
-    {
-        var scale = ImGuiHelpers.GlobalScale;
-        var origin = ImGui.GetCursorScreenPos();
-        var size = TextDraw.SectionTitleSize(text);
-        TextDraw.SectionTitle(text, origin, Styling.TextStrong);
-        ImGui.Dummy(new Vector2(width, size.Y + 8f * scale));
-    }
-
-    private static void Caption(string text, float width)
-    {
-        using (Fonts.PushCaption())
-        {
-            var origin = ImGui.GetCursorScreenPos();
-            TextDraw.Wrapped(text, origin, width, Styling.TextMuted);
-            ImGui.Dummy(new Vector2(width, TextDraw.MeasureWrapped(text, width).Y));
-        }
-    }
-
-    private static bool DrawChoiceRow(int index, string name, string detail, bool selected, float width)
-    {
-        var scale = ImGuiHelpers.GlobalScale;
-        var padX = 10f * scale;
-        var padY = 8f * scale;
-        var lineHeight = ImGui.GetTextLineHeight();
-        float detailHeight;
-        using (Fonts.PushCaption())
-            detailHeight = TextDraw.Measure(detail).Y;
-        var size = new Vector2(width, padY * 2f + lineHeight + 2f * scale + detailHeight);
-        var origin = ImGui.GetCursorScreenPos();
-
-        ImGui.PushID((nint)(index + 1));
-        var hit = Hit.Area("##choice", size);
-        var hover = Motion.Hover(Motion.Key("##choice"), hit.Hovered);
-        ImGui.PopID();
-
-        var dl = ImGui.GetWindowDrawList();
-        var fill = selected ? Styling.WithAlpha(Styling.AccentArc, 0.18f + 0.08f * hover) : Styling.WithAlpha(Styling.Surface2, 0.8f * hover);
-        if (fill.W > 0.01f) Paint.Fill(dl, origin, origin + size, fill, 8f * scale);
-
-        var nameColor = selected ? Styling.AccentArcSoft : Vector4.Lerp(Styling.TextSecondary, Styling.TextStrong, hover);
-        TextDraw.At(name, new Vector2(origin.X + padX, origin.Y + padY), nameColor);
-        using (Fonts.PushCaption())
-            TextDraw.At(detail, new Vector2(origin.X + padX, origin.Y + padY + lineHeight + 2f * scale), Styling.TextMuted);
-
-        if (selected)
-        {
-            var checkSize = TextDraw.IconSize(FontAwesomeIcon.Check);
-            TextDraw.Icon(FontAwesomeIcon.Check, new Vector2(origin.X + size.X - padX - checkSize.X, origin.Y + padY + (lineHeight - checkSize.Y) * 0.5f), Styling.AccentArcSoft);
-        }
-
-        return hit.Clicked;
+        Styling.VSpace(4f);
+        ChoiceCards.Description(Loc.T(enabled ? AfterChoices[selected].Help : L.Setup.AfterEndless));
     }
 }

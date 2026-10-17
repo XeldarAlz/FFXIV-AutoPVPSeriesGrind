@@ -5,7 +5,7 @@
     "InternalName": "AutoPvpSeriesGrind",
     "AssemblyVersion": "2.10.0.0",
     "TestingAssemblyVersion": "2.10.0.0",
-    "Description": "Grinds PvP Series Malmstones for you: queues and plays Crystalline Conflict Casual Matches or the Frontline roulette in a loop until your goal is met.",
+    "Description": "Grinds PvP Series Malmstones in Crystalline Conflict Casual or Ranked Matches, or Frontline, with preview infantry support for Rival Wings (Hidden Gorge). Queues and plays until your goal is met.",
     "Punchline": "PvP Series, grinded for you.",
     "RepoUrl": "https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind",
     "ApplicableVersion": "any",
@@ -14,7 +14,9 @@
       "Crystalline Conflict",
       "Series Malmstones",
       "Casual Match",
+      "Ranked Match",
       "Frontline",
+      "Rival Wings",
       "Automation"
     ],
     "CategoryTags": [

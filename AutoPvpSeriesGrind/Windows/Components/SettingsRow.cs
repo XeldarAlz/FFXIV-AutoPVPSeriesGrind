@@ -23,9 +23,16 @@ internal static class SettingsRow
         public float Width => RightEdge - Origin.X;
     }
 
-    public static void Draw(string label, string? help, float controlWidth, Action drawControl, float controlHeight = 0f)
+    public static void Draw(string label, string? help, float controlWidth, Action drawControl, float controlHeight = 0f, bool showHelp = false)
     {
         var area = BeginRow();
+        var scale = ImGuiHelpers.GlobalScale;
+        var labelWidth = ImGui.CalcTextSize(label).X + (string.IsNullOrEmpty(help) ? 0f : 28f * scale);
+        if (showHelp || labelWidth + (controlWidth + 20f) * scale > area.Width)
+        {
+            DrawExpandedRow(area, label, help, controlWidth, drawControl, controlHeight, showHelp);
+            return;
+        }
 
         DrawTopDivider(area);
         var labelHovered = DrawLabel(area, label);
@@ -38,6 +45,40 @@ internal static class SettingsRow
 
         DrawControl(area, controlWidth, controlHeight, drawControl);
         EndRow(area);
+    }
+
+    private static void DrawExpandedRow(RowArea area, string label, string? help, float controlWidth,
+        Action drawControl, float controlHeight, bool showHelp)
+    {
+        var scale = ImGuiHelpers.GlobalScale;
+        var controlPixels = controlWidth * scale;
+        var gap = 18f * scale;
+        var stacked = area.Width - controlPixels - gap < 260f * scale;
+        var textWidth = MathF.Max(1f, stacked ? area.Width : area.Width - controlPixels - gap);
+        var textPos = area.Origin + new Vector2(0f, 10f * scale);
+        DrawTopDivider(area);
+        TextDraw.Wrapped(label, textPos, textWidth, Styling.TextStrong);
+        var textHeight = TextDraw.MeasureWrapped(label, textWidth).Y;
+        if (showHelp && !string.IsNullOrEmpty(help))
+        {
+            using (Fonts.PushCaption())
+            {
+                var helpPos = textPos + new Vector2(0f, textHeight + 4f * scale);
+                TextDraw.Wrapped(help, helpPos, textWidth, Styling.TextSecondary);
+                textHeight += 4f * scale + TextDraw.MeasureWrapped(help, textWidth).Y;
+            }
+        }
+        else if (!string.IsNullOrEmpty(help) && Hit.HoveringRect(textPos, textPos + new Vector2(textWidth, textHeight)))
+            Tooltip.Show(help);
+
+        var resolvedHeight = controlHeight > 0f ? controlHeight * scale : ImGui.GetFrameHeight();
+        var controlY = stacked ? textPos.Y + textHeight + 8f * scale
+            : textPos.Y + MathF.Max(0f, (textHeight - resolvedHeight) * 0.5f);
+        ImGui.SetCursorScreenPos(new Vector2(stacked ? area.Origin.X : area.RightEdge - controlPixels, controlY));
+        drawControl();
+        var bottom = MathF.Max(textPos.Y + textHeight, controlY + resolvedHeight) + 10f * scale;
+        ImGui.SetCursorScreenPos(area.Origin);
+        ImGui.Dummy(new Vector2(area.Width, bottom - area.Origin.Y));
     }
 
     public static void DrawBlock(string label, string? help, Action drawContent)

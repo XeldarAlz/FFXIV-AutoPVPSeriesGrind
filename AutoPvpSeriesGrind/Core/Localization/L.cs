@@ -2,6 +2,39 @@ namespace AutoPvpSeriesGrind.Core.Localization;
 
 internal static class L
 {
+    internal static class Setup
+    {
+        public static readonly LocString ChooseMode = new("setup.chooseMode", "Choose your battleground");
+        public static readonly LocString CrystallineConflict = new("setup.crystallineConflict", "Crystalline Conflict");
+        public static readonly LocString ConflictDetail = new("setup.conflictDetail", "5v5 · Push the crystal");
+        public static readonly LocString FrontlineDetail = new("setup.frontlineDetail", "Alliance battles · Capture objectives");
+        public static readonly LocString WingsDetail = new("setup.wingsDetail", "Hidden Gorge · Infantry preview");
+        public static readonly LocString Casual = new("setup.casual", "Casual");
+        public static readonly LocString Ranked = new("setup.ranked", "Ranked");
+        public static readonly LocString ConflictRanked = new("setup.conflictRanked", "Crystalline Conflict, ranked");
+        public static readonly LocString RankedWaiting = new("setup.rankedWaiting", "Waiting for a ranked Crystalline Conflict match.");
+        public static readonly LocString CombatSetup = new("setup.combatSetup", "Combat setup");
+        public static readonly LocString CombatSettings = new("setup.combatSettings", "All combat settings");
+        public static readonly LocString DefensiveDetail = new("setup.defensiveDetail", "Retreat earlier. Stay with allies.");
+        public static readonly LocString ModerateDetail = new("setup.moderateDetail", "Balance pressure and survival.");
+        public static readonly LocString AggressiveDetail = new("setup.aggressiveDetail", "Push harder. Accept more risk.");
+        public static readonly LocString Customize = new("setup.customize", "Customize");
+        public static readonly LocString CustomDetail = new("setup.customDetail", "Edit every distance and threshold.");
+        public static readonly LocString SharedBehavior = new("setup.sharedBehavior", "Frontline & Rival Wings share these behavior settings.");
+        public static readonly LocString ConflictBehavior = new("setup.conflictBehavior", "Choose a movement preset or tune your own.");
+        public static readonly LocString ManualBehavior = new("setup.manualBehavior", "Manual movement is on. Turn it off in combat settings to use these presets.");
+        public static readonly LocString LegacyBehavior = new("setup.legacyBehavior", "Rush mode is active. Choose a preset to enable tactical movement.");
+        public static readonly LocString CustomParameters = new("setup.customParameters", "Custom parameters");
+        public static readonly LocString CustomParametersHelp = new("setup.customParametersHelp", "Changes save automatically. Switching presets keeps your custom values.");
+        public static readonly LocString CombatLocked = new("setup.combatLocked", "Combat settings are locked during a run. Manual movement can still be changed live.");
+        public static readonly LocString SeriesRank = new("setup.seriesRank", "Series rank");
+        public static readonly LocString SeriesGoalHint = new("setup.seriesGoalHint", "Series reward rank, separate from your competitive Ranked tier.");
+        public static readonly LocString RunGoal = new("setup.runGoal", "Session goal");
+        public static readonly LocString AfterEndless = new("setup.afterEndless", "After-run actions apply when a session goal is reached.");
+        public static readonly LocString AfterInactive = new("setup.afterInactive", "No end action");
+        public static readonly LocString RunSettings = new("setup.runSettings", "Combat settings");
+    }
+
     internal static class Common
     {
         public static readonly LocString Close = new("common.close", "Close");
@@ -108,6 +141,9 @@ internal static class L
         public static readonly LocString Title = new("plan.title", "Plan");
         public static readonly LocString Mode = new("plan.mode", "Crystalline Conflict");
         public static readonly LocString ModeFrontline = new("plan.modeFrontline", "Frontline");
+        public static readonly LocString ModeRivalWings = new("plan.modeRivalWings", "Rival Wings");
+        public static readonly LocString QueueRivalWingsHelp = new("plan.queue.rivalWingsHelp", "Hidden Gorge: follow allied groups and fight on foot. Mech piloting remains manual.");
+        public static readonly LocString QueueRivalWingsWaiting = new("plan.queue.rivalWingsWaiting", "Waiting for a Hidden Gorge match.");
         public static readonly LocString Queue = new("plan.sentence.queue", "Queue");
         public static readonly LocString SentenceUntil = new("plan.sentence.until", "until");
         public static readonly LocString SentenceThen = new("plan.sentence.then", "then");
@@ -504,6 +540,10 @@ internal static class L
         public static readonly LocString StrategyCustomHelp = new("settings.strategy.customHelp", "Hand-tuned: every threshold below is yours to set. Starts from the Moderate baseline.");
 
         public static readonly LocString FrontlineBehavior = new("settings.frontline.behavior", "Frontline behavior");
+        public static readonly LocString RivalWingsBehavior = new("settings.rivalWings.behavior", "Rival Wings behavior");
+        public static readonly LocString AvoidChiten = new("settings.targeting.avoidChiten", "Avoid Chiten");
+        public static readonly LocString AvoidChitenHelp = new("settings.targeting.avoidChitenHelp", "Skip enemies protected by Chiten when selecting targets, chasing, or using offensive actions.");
+        public static readonly LocString RivalWingsBehaviorHelp = new("settings.rivalWings.behaviorHelp", "Infantry formation, retreat and mounting. Shares your large-scale PvP behavior settings.");
         public static readonly LocString FrontlineBehaviorHelp = new("settings.frontline.behaviorHelp", "How the bot moves with its team in Frontline.");
         public static readonly LocString FrontlineDefensive = new("settings.frontline.defensive", "Defensive");
         public static readonly LocString FrontlineDefensiveHelp = new("settings.frontline.defensiveHelp", "Sticks to the back of the group, falls back below ~55% HP and keeps well clear of the enemy line.");

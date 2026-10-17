@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Combat;
+using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Windows.Components;
 
@@ -6,67 +7,41 @@ namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class CombatSettings
 {
-    public static void Draw(Configuration cfg)
+    public static void Draw(Configuration cfg, bool running = false)
     {
-        DrawCombatGroup(cfg);
-        if (cfg.RotationProvider == RotationProvider.Internal)
+        if (running)
         {
-            DrawRotationGroup(cfg);
+            ChoiceCards.Description(Loc.T(L.Setup.CombatLocked), Styling.AccentAmberSoft);
+            using (SettingsGroup.Begin(Loc.T(L.Settings.ManualMovement))) DrawSteeringRow(cfg);
         }
-        SettingsGroup.Footnote(Loc.T(L.Settings.CombatIntroMovement) +
-            Loc.T(L.Settings.CombatIntroRotation));
-
-        if (cfg.ManualMovement)
-        {
-            return;
-        }
-        if (cfg.MatchType == MatchType.Frontline)
-        {
-            if (cfg.FrontlineStrategy == PvpStrategy.Custom)
-            {
-                CustomFrontlineSettings.Draw(cfg);
-            }
-        }
-        else if (cfg.EnableCombatBrain && cfg.Strategy == PvpStrategy.Custom)
-        {
-            CustomStrategySettings.Draw(cfg);
-        }
+        using var disabled = Dalamud.Interface.Utility.Raii.ImRaii.Disabled(running);
+        ModePicker.Draw(cfg, !running);
+        Styling.VSpace(18f);
+        CombatSetup.Draw(cfg, showSettingsLink: false);
+        Styling.VSpace(12f);
+        DrawCombatGroup(cfg, running);
+        if (cfg.RotationProvider == RotationProvider.Internal) DrawRotationGroup(cfg);
     }
 
-    private static void DrawCombatGroup(Configuration cfg)
+    private static void DrawCombatGroup(Configuration cfg, bool running)
     {
         using var group = SettingsGroup.Begin(Loc.T(L.Settings.GroupCombat));
 
         DrawRotationProviderRow(cfg);
-        DrawSteeringRow(cfg);
-        if (cfg.ManualMovement)
+        if (!running) DrawSteeringRow(cfg);
+        DrawTargetingRow(cfg);
+        if (!cfg.ManualMovement) DrawHumanizeRow(cfg);
+        if (!cfg.MatchType.IsLargeScale() && !cfg.ManualMovement)
         {
-            DrawTargetingRow(cfg);
-        }
-        else
-        {
-            DrawMovementRows(cfg);
-            DrawHumanizeRow(cfg);
+            SettingsRow.Draw(Loc.T(L.Settings.StrategyRush), Loc.T(L.Settings.StrategyRushHelp), SettingsControls.ToggleWidth,
+                () => SettingsControls.DrawToggle(cfg, () => !cfg.EnableCombatBrain,
+                    value => cfg.EnableCombatBrain = !value, "##legacy_movement"), SettingsRow.ToggleHeight);
         }
 
         DrawRecorderRow(cfg);
-    }
-
-    private static void DrawMovementRows(Configuration cfg)
-    {
-        if (cfg.MatchType == MatchType.Frontline)
-        {
-            DrawFrontlineBehaviorRow(cfg);
-        }
-        else
-        {
-            DrawBehaviorRow(cfg);
-        }
-
-        if (cfg.EnableCombatBrain || cfg.MatchType == MatchType.Frontline)
-        {
-            DrawTargetingRow(cfg);
-        }
+        SettingsRow.Draw(Loc.T(L.Settings.AvoidChiten), Loc.T(L.Settings.AvoidChitenHelp), SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.AvoidChiten, value => cfg.AvoidChiten = value, "##avoid_chiten"),
+            SettingsRow.ToggleHeight);
     }
 
     private static void DrawSteeringRow(Configuration cfg)
@@ -139,36 +114,6 @@ internal static class CombatSettings
                 cfg.RotationProvider = RotationProviderChoices.All[choiceIndex].Provider;
                 cfg.SaveDebounced();
             }));
-    }
-
-    private static void DrawBehaviorRow(Configuration cfg)
-    {
-        var selected = BehaviorChoices.IndexFor(cfg);
-        SettingsRow.Draw(Loc.T(L.Settings.Behavior),
-            Loc.T(L.Settings.BehaviorHelp),
-            SettingsControls.RowComboWidth,
-            () => SettingsControls.Choices.DrawCombo("##behavior", BehaviorChoices.Options, selected, choiceIndex =>
-            {
-                BehaviorChoices.Apply(cfg, BehaviorChoices.All[choiceIndex]);
-                cfg.SaveDebounced();
-            }));
-
-        SettingsRow.Caption(Loc.T(BehaviorChoices.All[selected].Detail));
-    }
-
-    private static void DrawFrontlineBehaviorRow(Configuration cfg)
-    {
-        var selected = FrontlineBehaviorChoices.IndexFor(cfg.FrontlineStrategy);
-        SettingsRow.Draw(Loc.T(L.Settings.FrontlineBehavior),
-            Loc.T(L.Settings.FrontlineBehaviorHelp),
-            SettingsControls.RowComboWidth,
-            () => SettingsControls.Choices.DrawCombo("##flbehavior", FrontlineBehaviorChoices.Options, selected, choiceIndex =>
-            {
-                cfg.FrontlineStrategy = FrontlineBehaviorChoices.All[choiceIndex].Strategy;
-                cfg.SaveDebounced();
-            }));
-
-        SettingsRow.Caption(Loc.T(FrontlineBehaviorChoices.All[selected].Detail));
     }
 
     private static void DrawTargetingRow(Configuration cfg)
@@ -259,71 +204,6 @@ internal static class CombatSettings
         {
             cfg.BrainPicksTargets = entry.BrainPicks;
             cfg.Targeting = entry.Mode;
-        }
-    }
-
-    private static class FrontlineBehaviorChoices
-    {
-        public readonly record struct Entry(LocString Name, LocString Detail, PvpStrategy Strategy);
-
-        public static readonly Entry[] All =
-        [
-            new(L.Settings.FrontlineDefensive, L.Settings.FrontlineDefensiveHelp, PvpStrategy.Defensive),
-            new(L.Settings.FrontlineModerate, L.Settings.FrontlineModerateHelp, PvpStrategy.Moderate),
-            new(L.Settings.FrontlineAggressive, L.Settings.FrontlineAggressiveHelp, PvpStrategy.Aggressive),
-            new(L.Settings.FrontlineCustom, L.Settings.FrontlineCustomHelp, PvpStrategy.Custom),
-        ];
-
-        public static readonly SettingsControls.Choices.Choice[] Options =
-            All.Select(entry => new SettingsControls.Choices.Choice(entry.Name, entry.Detail)).ToArray();
-
-        public static int IndexFor(PvpStrategy strategy)
-            => Math.Max(0, Array.FindIndex(All, entry => entry.Strategy == strategy));
-    }
-
-    private static class BehaviorChoices
-    {
-        public readonly record struct Entry(LocString Name, LocString Detail, bool BrainEnabled, PvpStrategy Strategy);
-
-        public static readonly Entry[] All =
-        [
-            new(L.Settings.StrategyRush,
-                L.Settings.StrategyRushHelp,
-                BrainEnabled: false, PvpStrategy.Moderate),
-            new(L.Settings.StrategyDefensive,
-                L.Settings.StrategyDefensiveHelp,
-                BrainEnabled: true, PvpStrategy.Defensive),
-            new(L.Settings.StrategyModerate,
-                L.Settings.StrategyModerateHelp,
-                BrainEnabled: true, PvpStrategy.Moderate),
-            new(L.Settings.StrategyAggressive,
-                L.Settings.StrategyAggressiveHelp,
-                BrainEnabled: true, PvpStrategy.Aggressive),
-            new(L.Settings.StrategyCustom,
-                L.Settings.StrategyCustomHelp,
-                BrainEnabled: true, PvpStrategy.Custom),
-        ];
-
-        public static readonly SettingsControls.Choices.Choice[] Options =
-            All.Select(entry => new SettingsControls.Choices.Choice(entry.Name, entry.Detail)).ToArray();
-
-        public static int IndexFor(Configuration cfg)
-        {
-            if (!cfg.EnableCombatBrain)
-            {
-                return 0;
-            }
-
-            return Math.Max(0, Array.FindIndex(All, entry => entry.BrainEnabled && entry.Strategy == cfg.Strategy));
-        }
-
-        public static void Apply(Configuration cfg, Entry entry)
-        {
-            cfg.EnableCombatBrain = entry.BrainEnabled;
-            if (entry.BrainEnabled)
-            {
-                cfg.Strategy = entry.Strategy;
-            }
         }
     }
 

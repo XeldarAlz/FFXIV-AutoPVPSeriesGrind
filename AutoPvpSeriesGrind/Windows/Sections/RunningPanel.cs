@@ -52,7 +52,7 @@ internal static class RunningPanel
         TextDraw.SmallCaps(status, new Vector2(origin.X + radius * 2f + 12f * scale, midY - statusSize.Y * 0.5f), Styling.TextSecondary);
 
         var footer = stage is ReadyState.Stage.Preparing or ReadyState.Stage.Queueing
-            ? Loc.T(cfg.MatchType == MatchType.Frontline ? L.Run.ModeFrontline : L.Run.ModeCasual)
+            ? Loc.T(ReadyState.ModeName(cfg))
             : MiniPlayer.CurrentMapName();
         using (Fonts.PushCaption())
         {

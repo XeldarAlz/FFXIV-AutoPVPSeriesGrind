@@ -26,44 +26,24 @@ internal sealed class SettingsPage
     private Tab activeTab = Tab.Session;
     private bool resetScroll;
 
-    public void Draw(Plugin plugin)
+    private static readonly Segmented.Item[] tabs = new Segmented.Item[4];
+
+    public void ShowCombat()
     {
-        var cfg = plugin.Configuration;
-        var scale = ImGuiHelpers.GlobalScale;
-        var navWidth = Layout.SettingsNavWidth * scale;
-
-        using (ImRaii.PushStyle(ImGuiStyleVar.WindowPadding, Vector2.Zero))
-        {
-            using (var nav = ImRaii.Child("##apsg_settings_nav", new Vector2(navWidth, -1f), false, ImGuiWindowFlags.NoScrollbar))
-            {
-                if (nav) DrawNav();
-            }
-
-            ImGui.SameLine(0f, 18f * scale);
-
-            using (var content = ImRaii.Child("##apsg_settings_content", new Vector2(-1f, -1f), false, ImGuiWindowFlags.None))
-            {
-                if (content) DrawContent(cfg);
-            }
-        }
+        activeTab = Tab.Combat;
+        resetScroll = true;
     }
 
-    private void DrawNav()
+    public void Draw(Plugin plugin)
     {
-        var scale = ImGuiHelpers.GlobalScale;
-        var origin = ImGui.GetCursorScreenPos();
-        var title = Loc.T(L.Settings.Title);
-        using (Fonts.PushTitle())
-        {
-            TextDraw.At(title, new Vector2(origin.X + 6f * scale, origin.Y), Styling.TextStrong);
-            ImGui.Dummy(new Vector2(ImGui.GetContentRegionAvail().X, TextDraw.Measure(title).Y + 10f * scale));
-        }
-
         for (var index = 0; index < entries.Length; index++)
-        {
-            var entry = entries[index];
-            if (SidebarTab.Draw(Loc.T(entry.Label), entry.Icon, Styling.AccentArc, activeTab == entry.Tab)) Select(entry.Tab);
-        }
+            tabs[index] = new(entries[index].Icon, Loc.T(entries[index].Label));
+        var selected = (int)activeTab;
+        if (Segmented.Draw("##settings_tabs", tabs, ref selected)) Select((Tab)selected);
+        Styling.VSpace(14f);
+        using var padding = ImRaii.PushStyle(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+        using var content = ImRaii.Child("##apsg_settings_content", new Vector2(-1f, -1f), false, ImGuiWindowFlags.None);
+        if (content) DrawContent(plugin.Configuration, plugin.Controller.Running);
     }
 
     private void Select(Tab tab)
@@ -73,7 +53,7 @@ internal sealed class SettingsPage
         resetScroll = true;
     }
 
-    private void DrawContent(Configuration cfg)
+    private void DrawContent(Configuration cfg, bool running)
     {
         if (resetScroll)
         {
@@ -92,7 +72,7 @@ internal sealed class SettingsPage
         switch (activeTab)
         {
             case Tab.Session: GeneralSettings.Draw(cfg); break;
-            case Tab.Combat: CombatSettings.Draw(cfg); break;
+            case Tab.Combat: CombatSettings.Draw(cfg, running); break;
             case Tab.Match: MatchSettings.Draw(cfg); break;
             case Tab.Shopping: ShoppingSettings.Draw(cfg); break;
         }
