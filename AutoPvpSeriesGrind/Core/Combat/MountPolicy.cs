@@ -19,13 +19,18 @@ internal readonly record struct MountDecision(MountIntent Intent, string Reason)
 internal sealed class MountPolicy
 {
     private const float MountClearanceYalms = 10f;
+    // An enemy that forced a dismount is still around; riding again needs twice the room and a longer wait, or the
+    // character mounts, takes two steps and dismounts over and over (issue #49).
+    private const float ThreatenedClearanceYalms = 2f * MountClearanceYalms;
     private const float RidingTeamTravelYalms = 15f;
     private const int MinRideMs = 3000;
     private const int RemountCooldownMs = 8000;
+    private const int ThreatenedRemountCooldownMs = 15000;
     private const int RequestRetryMs = 2500;
     private const int HesitationReactions = 3;
 
     private bool wasMounted;
+    private bool dismountedByEnemy;
     private long mountedAtMs;
     private long dismountedAtMs;
     private long requestedAtMs;
@@ -35,6 +40,7 @@ internal sealed class MountPolicy
     public void Reset()
     {
         wasMounted = false;
+        dismountedByEnemy = false;
         mountedAtMs = 0;
         dismountedAtMs = 0;
         requestedAtMs = 0;
@@ -61,6 +67,7 @@ internal sealed class MountPolicy
         if (mounted)
         {
             mountedAtMs = nowMs;
+            dismountedByEnemy = false;
             return;
         }
         dismountedAtMs = nowMs;
@@ -75,6 +82,7 @@ internal sealed class MountPolicy
         }
         if (inputs.NearestEnemyYalms <= dangerRadius)
         {
+            dismountedByEnemy = true;
             return Request(MountIntent.Dismount, $"enemy {inputs.NearestEnemyYalms:F0}y away -> dismounting", nowMs);
         }
         if (nowMs - mountedAtMs < MinRideMs || inputs.CrowdRiding || inputs.TravelYalms > persona.DismountNearYalms)
@@ -88,8 +96,10 @@ internal sealed class MountPolicy
     {
         var tripYalms = mountDistance * persona.MountDistanceScale;
         var worthRiding = inputs.TravelYalms >= tripYalms || (inputs.CrowdRiding && inputs.TravelYalms >= RidingTeamTravelYalms);
-        var safe = inputs.NearestEnemyYalms > dangerRadius + MountClearanceYalms;
-        if (!inputs.CanMount || !safe || !worthRiding || nowMs - dismountedAtMs < RemountCooldownMs)
+        var clearanceYalms = dismountedByEnemy ? ThreatenedClearanceYalms : MountClearanceYalms;
+        var cooldownMs = dismountedByEnemy ? ThreatenedRemountCooldownMs : RemountCooldownMs;
+        var safe = inputs.NearestEnemyYalms > dangerRadius + clearanceYalms;
+        if (!inputs.CanMount || !safe || !worthRiding || nowMs - dismountedAtMs < cooldownMs)
         {
             wantedSinceMs = 0;
             return MountDecision.Stay;
