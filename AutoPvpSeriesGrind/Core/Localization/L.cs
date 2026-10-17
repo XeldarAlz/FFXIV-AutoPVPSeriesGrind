@@ -293,6 +293,8 @@ internal static class L
         public static readonly LocString[] Release21000 =
         [
             new("changelog.r21000.1", "Fixed mounting, taking two steps and dismounting over and over in Frontline when an enemy is close: after an enemy forces a dismount, riding again waits for more room and a longer pause"),
+            new("changelog.r21000.2", "Fixed Frontline matches idling at a Shatter tomelith with nothing targeted: with no enemy player in reach, the nearest structure within engage range is now attacked, in the team brain and in steer-yourself mode alike"),
+            new("changelog.r21000.3", "Fixed Black Mage never using Flare Star or Frost Star after Soul Resonance: the rotation now follows the swapped limit break button, and uses the stars directly while Elemental Star is up"),
         ];
 
         public static readonly LocString[] Release2900 =
