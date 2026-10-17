@@ -427,11 +427,18 @@ internal static class JobRotationTables
         private const uint FlareStar = 41480;
         private const uint FrostStar = 41481;
         private const uint Lethargy = 41510;
+        private const uint SoulResonance = 29662;
+        private const uint ElementalStar = 4317;
 
         public static readonly RotationTable Table = new(0,
         [
-            UseAs(Fire, FlareStar),
-            UseAs(Blizzard, FrostStar),
+            // Soul Resonance swaps the limit break button, not Fire or Blizzard, to Flare Star or Frost Star for 60 s;
+            // the button is outside the kit, so the swap is read from it here, with the stars used directly as a
+            // fallback while Elemental Star is up (Discord: "Black mage's rotation").
+            UseAs(SoulResonance, FlareStar),
+            UseAs(SoulResonance, FrostStar),
+            Use(FlareStar, SelfHas(ElementalStar)),
+            Use(FrostStar, SelfHas(ElementalStar)),
             UseAs(Fire, Flare),
             UseAs(Blizzard, Freeze),
             Use(Xenoglossy, SelfHpBelow(0.5f)),

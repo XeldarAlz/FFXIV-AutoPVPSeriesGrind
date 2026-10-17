@@ -30,7 +30,9 @@ internal sealed class ManualBrain
             : TargetScoring.Best(snapshot, EngageRangeYalms, lastTargetId);
         lastTargetId = enemy is { DistanceToSelf: <= EngageRangeYalms } inReach
             ? inReach.Id
-            : TargetScoring.TeamObjective(snapshot, snapshot.Self, EngageRangeYalms, EngageRangeYalms)?.Id ?? enemy?.Id ?? 0;
+            : TargetScoring.TeamObjective(snapshot, snapshot.Self, EngageRangeYalms, EngageRangeYalms)?.Id
+              ?? TargetScoring.NearestStructure(snapshot, snapshot.Self, EngageRangeYalms)?.Id
+              ?? enemy?.Id ?? 0;
         return lastTargetId;
     }
 }

@@ -89,7 +89,10 @@ internal sealed class FrontlineBrain
                 Pursue: false, Posture.Hold, target?.Id ?? 0);
         }
 
-        var structure = target is null ? TargetScoring.TeamObjective(snapshot, crowd, StructureCrowdReachYalms, profile.EngageRange) : null;
+        var structure = target is null
+            ? TargetScoring.TeamObjective(snapshot, crowd, StructureCrowdReachYalms, profile.EngageRange)
+              ?? TargetScoring.NearestStructure(snapshot, snapshot.Self, profile.EngageRange)
+            : null;
         var targetId = target?.Id ?? structure?.Id ?? 0;
         var forward = FormationAxis(snapshot, crowd);
         var right = VectorMath.RightOf(forward);

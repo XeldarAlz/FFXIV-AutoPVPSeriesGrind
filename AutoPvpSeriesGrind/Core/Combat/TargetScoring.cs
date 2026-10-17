@@ -102,6 +102,27 @@ internal static class TargetScoring
         return best;
     }
 
+    // An objective nobody on the team has targeted yet still beats standing idle beside it: the nearest structure in
+    // reach from where the character stands (Discord: Shatter's tomeliths were pathed to and never attacked).
+    public static PvpStructure? NearestStructure(PvpSnapshot snapshot, Vector3 from, float reachYalms)
+    {
+        PvpStructure? best = null;
+        var bestDistance = float.MaxValue;
+        for (var structureIndex = 0; structureIndex < snapshot.Structures.Count; structureIndex++)
+        {
+            var structure = snapshot.Structures[structureIndex];
+            var distance = VectorMath.HorizontalDistance(structure.Position, from) - structure.Radius;
+            if (distance > reachYalms || distance >= bestDistance)
+            {
+                continue;
+            }
+
+            best = structure;
+            bestDistance = distance;
+        }
+        return best;
+    }
+
     private static int AllyVotes(PvpSnapshot snapshot, ulong enemyId)
     {
         var votes = 0;
