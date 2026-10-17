@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Core.Combat;
 
-internal sealed class FrontlineBrain
+internal class FrontlineBrain
 {
     private const float EnemyFrontSampleYalms = 40f;
     private const float HoldStopRange = 2f;
@@ -39,6 +39,7 @@ internal sealed class FrontlineBrain
     public bool UnderBurst { get; private set; }
     public bool CrowdRiding { get; private set; }
     public bool TeamOnTheMove => crowdTracker.Moving;
+    protected virtual bool FollowTeamObjectivesOnly => false;
 
     public void SetStrategy(PvpStrategy strategy, CustomFrontlineProfile? custom = null)
         => profile = FrontlineProfile.For(strategy, custom);
@@ -91,7 +92,7 @@ internal sealed class FrontlineBrain
 
         var structure = target is null
             ? TargetScoring.TeamObjective(snapshot, crowd, StructureCrowdReachYalms, profile.EngageRange)
-              ?? TargetScoring.NearestStructure(snapshot, snapshot.Self, profile.EngageRange)
+              ?? (FollowTeamObjectivesOnly ? null : TargetScoring.NearestStructure(snapshot, snapshot.Self, profile.EngageRange))
             : null;
         var targetId = target?.Id ?? structure?.Id ?? 0;
         var forward = FormationAxis(snapshot, crowd);

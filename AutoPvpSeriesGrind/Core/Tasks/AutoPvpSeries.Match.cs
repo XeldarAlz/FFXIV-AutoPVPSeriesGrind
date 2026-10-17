@@ -21,23 +21,32 @@ internal sealed partial class AutoPvpSeries
 
     private async Task<bool> TryHandleMatchEnd()
     {
-        if (!ResultsScreenVisible())
+        if (!completion.Active || !InExpectedDuty())
         {
             return false;
         }
 
-        if (matchFlow.BaselineCaptured)
+        var resultsVisible = ResultsScreenVisible();
+        if (resultsVisible) completion.Confirm(Svc.ClientState.TerritoryType);
+        if (!completion.Confirmed) return false;
+        completionObservedAt ??= Environment.TickCount64;
+        movement.Stop();
+        CompleteMatch(resultsVisible ? "results screen visible" : "duty completion event");
+        if (!resultsVisible && Environment.TickCount64 - completionObservedAt.Value < 15_000)
         {
-            CompleteMatch("results screen visible");
+            Status = "Match completed; waiting for results";
+            await DelayMs(MainLoopIdleMs);
+            return true;
         }
 
         await LingerThenLeave();
-        ResetDutyState("left duty (post-match)");
+        if (!InDuty()) ResetDutyState("left duty (post-match)");
         return true;
     }
 
     private void CompleteMatch(string signal)
     {
+        if (!completion.TryCount()) return;
         session.MatchesCompleted++;
         LogDiagnostic($"completed match {session.MatchesCompleted} ({signal})");
 
@@ -64,7 +73,7 @@ internal sealed partial class AutoPvpSeries
         var lingerMs = Math.Max(0, settings.LeaveDutyDelayMs);
         var waitedMs = 0;
 
-        if (greeting.PlanGoodMatchDelayMs(settings) is { } goodbyeAtMs)
+        if (ResultsScreenVisible() && greeting.PlanGoodMatchDelayMs(settings) is { } goodbyeAtMs)
         {
             if (goodbyeAtMs <= lingerMs)
             {
@@ -82,19 +91,23 @@ internal sealed partial class AutoPvpSeries
         if (waitedMs < lingerMs)
             await DelayMs(lingerMs - waitedMs);
 
-        LogDiagnostic("match ended (results screen visible) -> leaving duty");
+        LogDiagnostic("match completion confirmed -> leaving duty");
         ExecuteGameCommand(GameCommands.NavStop);
         DutyOps.LeaveCurrentContent();
-        await WaitUntilTimed(() => !InDuty() && !ResultsScreenVisible(), LeaveDutyTimeoutMs, "left-duty", checkMs: PollMs);
+        if (!await WaitUntilTimed(() => !InDuty(), LeaveDutyTimeoutMs, "left-duty", checkMs: PollMs))
+            throw new InvalidOperationException("The completed duty did not exit. Run stopped; leave the duty manually.");
     }
 
     private async Task CaptureBaseline()
     {
         ExecuteGameCommand(GameCommands.NavStop);
         LogDiagnostic("in duty -> waiting for PvP area before baseline capture");
-        await WaitUntilTimed(MatchState.InPvpArea, PvpAreaWaitMs, "in-pvp-area", checkMs: PollMs);
+        if (!await WaitUntilTimed(InExpectedDuty, PvpAreaWaitMs, "selected-pvp-duty", checkMs: PollMs))
+            throw new InvalidOperationException("The selected PvP duty was not recognized. Run stopped.");
 
         ResetMatchFlow();
+        completion.Begin(Svc.ClientState.TerritoryType);
+        queueSubmission.Reset();
         matchFlow.DutyBaselineTime = DutyOps.ContentTimeLeft();
         matchFlow.BaselineCaptured = true;
         RollPersona();
@@ -106,18 +119,29 @@ internal sealed partial class AutoPvpSeries
 
     private async Task RunWaitingPhase()
     {
-        if (matchType == MatchType.Frontline)
+        if (matchType.IsLargeScale())
         {
+            if (matchType == MatchType.RivalWings && !Svc.DutyState.IsDutyStarted)
+            {
+                if (!matchFlow.FrontlineBaseChecked && MatchState.PlayerPosition() is { } spawn)
+                {
+                    TeamBrain.MarkBase(spawn);
+                    matchFlow.FrontlineBaseChecked = true;
+                }
+                movement.Stop();
+                Status = "Waiting for the Rival Wings match to start";
+                return;
+            }
             if (!matchFlow.InMatchLive && InDuty())
             {
                 AnnounceMatchEntryOnce();
-                LogDiagnostic("Frontline: staying with the team from the first moment");
+                LogDiagnostic($"{matchType}: following the team");
                 BeginLiveMatch();
             }
             return;
         }
 
-        while (InDuty() && !matchFlow.InMatchLive && !ResultsScreenVisible() && !CancelToken.IsCancellationRequested)
+        while (InExpectedDuty() && !matchFlow.InMatchLive && !completion.Confirmed && !ResultsScreenVisible() && !CancelToken.IsCancellationRequested)
         {
             rotation.TickDeathAndRespawn();
 
@@ -226,6 +250,7 @@ internal sealed partial class AutoPvpSeries
 
     private void BeginLiveMatch()
     {
+        Status = string.Empty;
         matchFlow.InMatchLive = true;
         if (settings.RecordMatches)
         {

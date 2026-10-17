@@ -17,9 +17,10 @@ internal static class MatchState
     public static bool InPvpArea()
         => CrystallineConflictMaps.Contains(Svc.ClientState.TerritoryType)
         || FrontlineMaps.Contains(Svc.ClientState.TerritoryType)
+        || Svc.ClientState.TerritoryType == PvpDuty.HiddenGorgeTerritoryId
         || Svc.Condition[ConditionFlag.PvPDisplayActive];
 
-    public static bool InDuty() => Svc.Condition[ConditionFlag.BoundByDuty];
+    public static bool InDuty() => Svc.Condition[ConditionFlag.BoundByDuty] || Svc.Condition[ConditionFlag.BoundByDuty56];
 
     public static bool IsNormalConditions() => Svc.Condition[ConditionFlag.NormalConditions];
 
@@ -257,7 +258,7 @@ internal static class MatchState
             CurrentTarget = players.CurrentTarget,
             Enemies = players.Enemies,
             Allies = players.Allies,
-            RegroupAllies = FrontlineMaps.Contains(Svc.ClientState.TerritoryType)
+            RegroupAllies = FrontlineMaps.Contains(Svc.ClientState.TerritoryType) || Svc.ClientState.TerritoryType == PvpDuty.HiddenGorgeTerritoryId
                 ? AlliancePositions.ForRegrouping(players.Allies, self, selfId) : null,
             EnemyCentroid = players.Enemies.Count > 0 ? players.EnemySum / players.Enemies.Count : null,
             FocusCount = players.FocusCount,

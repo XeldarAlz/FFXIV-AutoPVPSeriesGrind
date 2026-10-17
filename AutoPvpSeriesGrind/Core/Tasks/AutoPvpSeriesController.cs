@@ -15,7 +15,8 @@ internal enum AutoPhase { Idle, Queueing, InMatch, Shopping, Finishing }
 internal sealed class AutoPvpSeriesController
 {
     public bool Running => Svc.Automation.Running;
-    public string Status => Svc.Automation.CurrentTask?.Status ?? "Idle";
+    private string lastStopReason = string.Empty;
+    public string Status => Svc.Automation.CurrentTask?.Status ?? (lastStopReason.Length > 0 ? lastStopReason : "Idle");
     public AutoPhase Phase { get; set; } = AutoPhase.Idle;
 
     private SessionStats? session;
@@ -50,6 +51,13 @@ internal sealed class AutoPvpSeriesController
     {
         if (Running) return;
 
+        if (!Enum.IsDefined(Plugin.Cfg.MatchType) || !ECommons.DalamudServices.Svc.ClientState.IsLoggedIn
+            || (MatchState.InDuty() ? !PvpDuty.Contains(Plugin.Cfg.MatchType, ECommons.DalamudServices.Svc.ClientState.TerritoryType) : DutyOps.HasDutyInFlight()))
+        {
+            ApsgChat.PrintError("Cannot start: settle the character and clear any unrelated queue or duty first.");
+            return;
+        }
+
         if (!ExternalPlugins.AllRequiredInstalled())
         {
             var missing = MissingRequiredPluginNames();
@@ -59,6 +67,7 @@ internal sealed class AutoPvpSeriesController
         }
 
         ClearLastResult();
+        lastStopReason = string.Empty;
         LiftRankTargetAboveCurrentRank();
         var stats = new SessionStats();
         stats.CaptureJob();
@@ -147,6 +156,8 @@ internal sealed class AutoPvpSeriesController
     public void Stop()
     {
         var ending = session;
+        if (ending is not null) ending.CompletedByGoal = false;
+        series?.StopAutomation();
         Svc.Automation.Stop();
         FinalizeRun(ending);
         session = null;
@@ -166,7 +177,7 @@ internal sealed class AutoPvpSeriesController
 
     private void MaybeRunAfterAction(SessionStats stats)
     {
-        if (!stats.CompletedByGoal || stats.AfterActionDispatched) return;
+        if (!stats.CompletedByGoal || stats.AfterActionDispatched || stats.StopReason.Length > 0) return;
         stats.AfterActionDispatched = true;
 
         var action = Plugin.Cfg.AfterRun;
@@ -192,7 +203,8 @@ internal sealed class AutoPvpSeriesController
         MatchRecorder.End();
         if (stats is null || stats.Recorded) return;
         stats.Recorded = true;
-        if (stats.MatchesCompleted == 0) return;
+        lastStopReason = stats.StopReason;
+        if (stats.MatchesCompleted == 0 && stats.UnconfirmedDepartures == 0 && stats.StopReason.Length == 0) return;
 
         RecordRun(stats);
 
@@ -204,6 +216,8 @@ internal sealed class AutoPvpSeriesController
                 EndedAtUtc = DateTime.UtcNow,
                 DurationSeconds = stats.Elapsed.TotalSeconds,
                 MatchesCompleted = stats.MatchesCompleted,
+                UnconfirmedDepartures = stats.UnconfirmedDepartures,
+                StopReason = stats.StopReason,
                 SeriesExpGained = stats.SeriesExpGained,
                 JobId = stats.JobId,
                 JobAbbr = stats.JobAbbr,

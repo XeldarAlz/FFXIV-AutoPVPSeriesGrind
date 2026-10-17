@@ -4,4 +4,5 @@ public enum MatchType
 {
     CrystallineConflict,
     Frontline,
+    RivalWings,
 }

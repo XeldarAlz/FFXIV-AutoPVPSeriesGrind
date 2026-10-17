@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Util;
+using AutoPvpSeriesGrind.Core.Tasks;
 using clib.Extensions;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
@@ -19,7 +20,7 @@ internal static unsafe class DutyOps
     private const byte DutyFinderPenaltyIndex = 0;
     private const byte InactivityPenaltyIndex = 1;
 
-    public static bool QueueMatch(MatchType matchType) => Safe.Try("QueueMatch failed", () =>
+    public static bool QueueMatch(PvpQueueRoute route) => Safe.Try("QueueMatch failed", () =>
     {
         var contentsFinder = ContentsFinder.Instance();
         if (contentsFinder == null)
@@ -32,40 +33,70 @@ internal static unsafe class DutyOps
             return false;
         }
 
-        if (queueInfo->QueueState is ContentsFinderQueueState.Pending or ContentsFinderQueueState.Queued)
+        if (queueInfo->QueueState != ContentsFinderQueueState.None || HasDutyConditions())
         {
-            queueInfo->CancelQueue();
+            return false;
         }
+        if (route.RouletteId == 0 && route.DutyId == 0) return false;
         (*contentsFinder).ResetFlags();
-        queueInfo->QueueRoulette(RouletteFor(matchType), QueueRouletteUnknownArgument);
+        if (route.DutyId != 0)
+        {
+            uint duty = route.DutyId;
+            queueInfo->QueueDuties(&duty, 1);
+        }
+        else
+        {
+            queueInfo->QueueRoulette(route.RouletteId, QueueRouletteUnknownArgument);
+        }
         return true;
     }, fallback: false);
 
-    private static byte RouletteFor(MatchType matchType)
-        => matchType == MatchType.Frontline ? ApsgConstants.FrontlineRouletteId : ApsgConstants.CasualMatchRouletteId;
-
-    public static bool IsQueued() => Safe.TrySilent(() =>
+    public static QueueState ReadQueueState() => Safe.TrySilent(() =>
     {
         var contentsFinder = ContentsFinder.Instance();
         if (contentsFinder == null)
         {
-            return false;
+            return QueueState.Unknown;
         }
         var queueInfo = contentsFinder->GetQueueInfo();
         if (queueInfo == null)
         {
-            return false;
+            return QueueState.Unknown;
         }
-        return queueInfo->QueueState is ContentsFinderQueueState.Pending
-            or ContentsFinderQueueState.Queued or ContentsFinderQueueState.Ready or ContentsFinderQueueState.Accepted;
+        return queueInfo->QueueState switch
+        {
+            ContentsFinderQueueState.None => HasDutyConditions() ? QueueState.Unknown : QueueState.Idle,
+            ContentsFinderQueueState.Pending => QueueState.Registering,
+            ContentsFinderQueueState.Queued => QueueState.Queued,
+            ContentsFinderQueueState.Ready => QueueState.Ready,
+            ContentsFinderQueueState.Accepted => QueueState.Accepted,
+            ContentsFinderQueueState.InContent => QueueState.InDuty,
+            _ => QueueState.Unknown,
+        };
+    }, fallback: QueueState.Unknown);
+
+    public static bool IsQueued() => ReadQueueState() is QueueState.Registering or QueueState.Queued or QueueState.Ready or QueueState.Accepted;
+
+    public static bool IsQueuedFor(PvpQueueRoute route) => Safe.TrySilent(() =>
+    {
+        var finder = ContentsFinder.Instance();
+        if (finder == null) return false;
+        var info = finder->GetQueueInfo();
+        if (info == null) return false;
+        if (route.RouletteId != 0) return route.Matches(info->QueuedContentRouletteId);
+        if (info->QueuedContentRouletteId != 0) return false;
+        foreach (var entry in info->QueuedEntries)
+            if (route.Matches(info->QueuedContentRouletteId, entry.Id) && entry.ContentType == FFXIVClientStructs.FFXIV.Client.UI.Agent.ContentsType.Regular)
+                return true;
+        return false;
     }, fallback: false);
 
+    private static bool HasDutyConditions()
+        => MatchState.InDuty() || Svc.Condition[ConditionFlag.InDutyQueue]
+        || Svc.Condition[ConditionFlag.WaitingForDuty] || AddonProbe.IsReady(ApsgConstants.AddonNames.DutyReady);
+
     public static bool HasDutyInFlight()
-        => MatchState.InDuty()
-        || Svc.Condition[ConditionFlag.InDutyQueue]
-        || Svc.Condition[ConditionFlag.WaitingForDuty]
-        || IsQueued()
-        || AddonProbe.IsReady(ApsgConstants.AddonNames.DutyReady);
+        => HasDutyConditions() || ReadQueueState() != QueueState.Idle;
 
     public static int QueuePenaltyMinutes() => Safe.TrySilent(() =>
     {

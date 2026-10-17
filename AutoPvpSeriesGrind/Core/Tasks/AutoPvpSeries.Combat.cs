@@ -28,13 +28,19 @@ internal sealed partial class AutoPvpSeries
 
     private async Task TickLiveMatch()
     {
+        if (Svc.Condition[ConditionFlag.PilotingMech])
+        {
+            movement.Stop();
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, "piloting a mech: manual vehicle control", Posture.Hold);
+            return;
+        }
         if (TrackSteering())
         {
             TickPlayerSteering();
             return;
         }
 
-        if (matchType == MatchType.Frontline)
+        if (matchType.IsLargeScale())
         {
             await TickFrontlineLive();
             return;
@@ -100,10 +106,10 @@ internal sealed partial class AutoPvpSeries
         rotation.TickDeathAndRespawn();
         if (IsDead())
         {
-            if (matchType == MatchType.Frontline)
+            if (matchType.IsLargeScale())
             {
                 matchFlow.FrontlineDeathSpot ??= MatchState.PlayerPosition();
-                frontline.OnDeath();
+                TeamBrain.OnDeath();
             }
             manual.Reset();
             BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead, waiting to respawn", Posture.Retreat);
@@ -135,7 +141,7 @@ internal sealed partial class AutoPvpSeries
 
     private void KeepAutopilotReady(Vector3 self)
     {
-        if (matchType == MatchType.Frontline)
+        if (matchType.IsLargeScale())
         {
             TrackFrontlineBase(self);
             return;
@@ -180,7 +186,7 @@ internal sealed partial class AutoPvpSeries
         if (IsDead())
         {
             matchFlow.FrontlineDeathSpot ??= MatchState.PlayerPosition();
-            frontline.OnDeath();
+            TeamBrain.OnDeath();
             movement.Stop();
             BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Retreat, "dead, waiting to respawn", Posture.Retreat);
             return;
@@ -197,7 +203,7 @@ internal sealed partial class AutoPvpSeries
 
         var snapshot = MatchState.Capture();
         TrackFrontlineBase(snapshot.Self);
-        var plan = frontline.Decide(snapshot);
+        var plan = TeamBrain.Decide(snapshot);
         BrainTelemetry.Record(snapshot, plan);
         movement.SetObstacles(snapshot.Structures);
 
@@ -205,9 +211,9 @@ internal sealed partial class AutoPvpSeries
         {
             return;
         }
-        var rotationPosture = frontline.TeamOnTheMove ? Posture.Idle : plan.Posture;
+        var rotationPosture = TeamBrain.TeamOnTheMove ? Posture.Idle : plan.Posture;
         if (!Svc.Condition[ConditionFlag.Mounted]
-            && HoldsStillForRotation(snapshot, plan.TargetId, rotationPosture, plan.Destination, frontline.UnderBurst))
+            && HoldsStillForRotation(snapshot, plan.TargetId, rotationPosture, plan.Destination, TeamBrain.UnderBurst))
         {
             return;
         }
@@ -224,7 +230,7 @@ internal sealed partial class AutoPvpSeries
             matchFlow.FrontlineBaseChecked = true;
             if (matchFlow.DutyBaselineTime == 0)
             {
-                frontline.MarkBase(self);
+                TeamBrain.MarkBase(self);
                 LogDiagnostic($"Frontline: own base marked at the start position {self:F0}");
             }
         }
@@ -237,7 +243,7 @@ internal sealed partial class AutoPvpSeries
         matchFlow.FrontlineDeathSpot = null;
         if (Vector3.Distance(self, deathSpot) > RespawnMinTravelYalms)
         {
-            frontline.MarkBase(self);
+            TeamBrain.MarkBase(self);
             LogDiagnostic($"Frontline: own base marked at the respawn position {self:F0}");
         }
     }
@@ -249,8 +255,8 @@ internal sealed partial class AutoPvpSeries
             CanMount: !Svc.Condition[ConditionFlag.InCombat] && ActionOps.IsGeneralActionReady(GeneralActions.MountRoulette),
             NearestEnemyYalms: snapshot.NearestEnemyDistance,
             TravelYalms: VectorMath.HorizontalDistance(snapshot.Self, plan.Destination),
-            CrowdRiding: frontline.CrowdRiding);
-        var decision = frontline.DecideMount(in inputs, Environment.TickCount64);
+            CrowdRiding: TeamBrain.CrowdRiding);
+        var decision = TeamBrain.DecideMount(in inputs, Environment.TickCount64);
         switch (decision.Intent)
         {
             case MountIntent.Mount:

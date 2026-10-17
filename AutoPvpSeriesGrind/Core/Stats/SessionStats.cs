@@ -9,6 +9,8 @@ internal sealed class SessionStats
     public DateTime StartedAt { get; } = DateTime.UtcNow;
 
     public int MatchesCompleted { get; set; }
+    public int UnconfirmedDepartures { get; set; }
+    public string StopReason { get; set; } = string.Empty;
 
     public long SeriesExpStart { get; private set; }
 

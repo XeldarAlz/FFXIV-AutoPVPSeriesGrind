@@ -8,6 +8,8 @@ public sealed class RunRecord
     public double DurationSeconds { get; set; }
 
     public int MatchesCompleted { get; set; }
+    public int UnconfirmedDepartures { get; set; }
+    public string StopReason { get; set; } = string.Empty;
     public long SeriesExpGained { get; set; }
 
     public uint JobId { get; set; }

@@ -13,7 +13,15 @@
   </ItemGroup>
   <!-- Exercise the actual policy code without loading Dalamud or a running game. -->
   <ItemGroup>
+    <Compile Include="../AutoPvpSeriesGrind/MatchType.cs" Link="Source/MatchType.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/MatchCompletion.cs" Link="Source/MatchCompletion.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/QueueSubmission.cs" Link="Source/QueueSubmission.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/NavigationRequest.cs" Link="Source/NavigationRequest.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Game/PvpDuty.cs" Link="Source/PvpDuty.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Game/PvpQueueRoute.cs" Link="Source/PvpQueueRoute.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Game/FrontlineMaps.cs" Link="Source/FrontlineMaps.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Game/CrystallineConflictMaps.cs" Link="Source/CrystallineConflictMaps.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Game/SpawnAnchors.cs" Link="Source/SpawnAnchors.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/PvpActor.cs" Link="Source/PvpActor.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/PvpRole.cs" Link="Source/PvpRole.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/PvpSnapshot.cs" Link="Source/PvpSnapshot.cs" />

@@ -25,9 +25,17 @@ internal sealed partial class AutoPvpSeries
 
     private async Task<bool> TickOutOfDuty()
     {
-        if (matchFlow.InMatchLive)
+        if (completion.Active)
         {
-            CompleteMatch("duty ended without a results screen");
+            if (completion.Confirmed) CompleteMatch("confirmed duty completed before exit");
+            else
+            {
+                session.UnconfirmedDepartures++;
+                session.StopReason = "Left the duty without completion evidence; this match is not counted.";
+                Warn(session.StopReason);
+                ResetDutyState("unconfirmed duty departure");
+                return true;
+            }
         }
 
         if (matchFlow.InMatchLive || matchFlow.AnnouncedEntered || matchFlow.RanSafetyMoveThisDuty || matchFlow.BaselineCaptured)
@@ -35,25 +43,49 @@ internal sealed partial class AutoPvpSeries
             ResetDutyState("out of duty");
         }
 
-        var queued = Svc.Condition[ConditionFlag.InDutyQueue] || DutyOps.IsQueued();
-        if (!queued)
+        var state = DutyOps.ReadQueueState();
+        var decision = queueSubmission.Observe(state, Environment.TickCount64);
+        var queued = decision == QueueDecision.InFlight;
+        if (state == QueueState.Idle)
         {
             EvaluateStopCondition();
         }
 
-        if (stopAfterCurrentMatch)
+        if (stopAfterCurrentMatch && state == QueueState.Idle)
         {
             LogDiagnostic("stop condition reached -> ending run");
             return true;
         }
 
-        if (stopRequested && !queued)
+        if (stopRequested && state == QueueState.Idle && decision != QueueDecision.Wait)
         {
             LogDiagnostic("stop requested and nothing in flight -> ending run");
             return true;
         }
 
         SetPhase(AutoPhase.Queueing);
+
+        if (decision == QueueDecision.Failed)
+        {
+            session.StopReason = state == QueueState.Unknown ? "Queue state remained unavailable; run stopped."
+                : "Queue registration failed or timed out; run stopped.";
+            Warn(session.StopReason);
+            return true;
+        }
+        if (decision == QueueDecision.Wait)
+        {
+            Status = state == QueueState.Unknown ? "Waiting for readable queue state" : "Verifying queue registration";
+            await DelayMs(MainLoopIdleMs);
+            return false;
+        }
+        if (queued && (!queueSubmission.HasSubmitted || !DutyOps.IsQueuedFor(queueRoute)))
+        {
+            session.StopReason = "Another queue or duty is in flight; run stopped without changing it.";
+            Warn(session.StopReason);
+            return true;
+        }
+
+        if (queued) Status = $"Queued for {queueLabel}";
 
         if (!queued)
         {
@@ -85,8 +117,10 @@ internal sealed partial class AutoPvpSeries
             }
 
             queuePenaltyAnnounced = false;
-            LogDiagnostic($"not queued -> queueing {matchType} roulette");
-            DutyOps.QueueMatch(matchType);
+            LogDiagnostic($"submitting {queueLabel}, attempt {queueSubmission.Attempts + 1}/{QueueSubmission.MaxAttempts}");
+            var dispatched = DutyOps.QueueMatch(queueRoute);
+            queueSubmission.Submitted(Environment.TickCount64, dispatched);
+            Status = dispatched ? "Verifying queue registration" : "Queue submission failed; waiting before retry";
         }
 
         await DelayMs(MainLoopIdleMs);

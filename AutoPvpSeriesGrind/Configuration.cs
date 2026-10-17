@@ -17,6 +17,7 @@ public sealed class Configuration : IPluginConfiguration
 
     public string ModeId { get; set; } = MatchCountMode.ModeId;
     public MatchType MatchType { get; set; } = MatchType.CrystallineConflict;
+    public bool RankedCrystallineConflict { get; set; } = false;
 
     [Newtonsoft.Json.JsonIgnore]
     public ISeriesGrindMode ActiveMode => SeriesGrindModes.GetById(ModeId);

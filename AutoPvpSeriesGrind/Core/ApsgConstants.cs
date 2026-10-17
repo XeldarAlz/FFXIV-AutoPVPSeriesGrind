@@ -7,10 +7,6 @@ internal static class ApsgConstants
 
     public const string LogPrefix = "[APSG]";
 
-    // ContentRoulette row id for Crystalline Conflict (Casual Match), the roulette the source script queues.
-    public const byte CasualMatchRouletteId = 40;
-    public const byte FrontlineRouletteId = 7;
-
     // Crystalline Conflict objective, matched by BNpcName row id: the row carries a separate name per
     // client language, so comparing against the English text finds nothing on a non-English client.
     public const uint TacticalCrystalNameId = 11350;
