@@ -362,6 +362,16 @@
       "1": "Added the Console page to view, filter and copy the plugin's logs",
       "2": "Added this changelog, with a badge whenever an update brings something new",
       "3": "Overhauled the About page, with the updated Discord link"
+    },
+    "r21100": {
+      "1": "Changed the Grind layout to use three mode cards, compact session controls, and directly accessible combat presets and custom settings",
+      "2": "Added Casual and Ranked queue selection for Crystalline Conflict",
+      "3": "Added Rival Wings infantry support in Hidden Gorge as a preview, with queueing, team following and combat; mechs and map strategy remain manual",
+      "4": "Fixed queue retries and match counting: unrelated queues and unconfirmed exits stop the run, and completed matches are counted only once",
+      "5": "Fixed navigation cleanup when stopping, timing out or changing destinations, so outdated paths no longer affect movement",
+      "6": "Added protected-target filtering and optional Chiten avoidance; Guard lowers target priority while allowing Guard-breaking actions",
+      "7": "Changed regrouping to use party and alliance positions when allies are out of view",
+      "8": "Fixed moving around the Frontline starting area before the match begins: the character now mounts and waits for the gates to open"
     }
   },
   "about": {

@@ -326,6 +326,18 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release21100 =
+        [
+            new("changelog.r21100.1", "Changed the Grind layout to use three mode cards, compact session controls, and directly accessible combat presets and custom settings"),
+            new("changelog.r21100.2", "Added Casual and Ranked queue selection for Crystalline Conflict"),
+            new("changelog.r21100.3", "Added Rival Wings infantry support in Hidden Gorge as a preview, with queueing, team following and combat; mechs and map strategy remain manual"),
+            new("changelog.r21100.4", "Fixed queue retries and match counting: unrelated queues and unconfirmed exits stop the run, and completed matches are counted only once"),
+            new("changelog.r21100.5", "Fixed navigation cleanup when stopping, timing out or changing destinations, so outdated paths no longer affect movement"),
+            new("changelog.r21100.6", "Added protected-target filtering and optional Chiten avoidance; Guard lowers target priority while allowing Guard-breaking actions"),
+            new("changelog.r21100.7", "Changed regrouping to use party and alliance positions when allies are out of view"),
+            new("changelog.r21100.8", "Fixed moving around the Frontline starting area before the match begins: the character now mounts and waits for the gates to open"),
+        ];
+
         public static readonly LocString[] Release21000 =
         [
             new("changelog.r21000.1", "Fixed mounting, taking two steps and dismounting over and over in Frontline when an enemy is close: after an enemy forces a dismount, riding again waits for more room and a longer pause"),

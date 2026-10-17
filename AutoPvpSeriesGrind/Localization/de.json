@@ -362,6 +362,16 @@
       "1": "Konsole hinzugefügt, um die Protokolle des Plugins anzusehen, zu filtern und zu kopieren",
       "2": "Dieses Änderungsprotokoll hinzugefügt, mit einem Hinweis, sobald ein Update Neues bringt",
       "3": "Die Info-Seite komplett überarbeitet, mit dem neuen Discord-Link"
+    },
+    "r21100": {
+      "1": "Geändert: Grind bietet jetzt drei Moduskarten, kompakte Sitzungsoptionen und direkt zugängliche Kampfvoreinstellungen und benutzerdefinierte Einstellungen",
+      "2": "Hinzugefügt: Auswahl zwischen gewerteten und ungewerteten Spielen für Crystalline Conflict",
+      "3": "Hinzugefügt: Infanterieunterstützung für Rival Wings in Hidden Gorge als Vorschau, mit Anmeldung, Folgen des Teams und Kampf; Mechs und Kartenstrategie bleiben manuell",
+      "4": "Behoben: Wiederholte Anmeldeversuche und Spielzählung; eine andere Warteschlange oder ein Verlassen ohne bestätigten Abschluss stoppt den Lauf, abgeschlossene Spiele werden nur einmal gezählt",
+      "5": "Behoben: Bereinigung der Navigation beim Stoppen, bei Zeitüberschreitungen und Zielwechseln, damit veraltete Pfade die Bewegung nicht mehr beeinflussen",
+      "6": "Hinzugefügt: Filter für geschützte Ziele und optionales Meiden von Chiten; Guard senkt die Zielpriorität, Aktionen zum Brechen von Guard bleiben möglich",
+      "7": "Geändert: Beim Sammeln werden Gruppen- und Allianzpositionen genutzt, wenn Verbündete außer Sicht sind",
+      "8": "Behoben: Herumlaufen im Frontline-Startbereich vor Spielbeginn; der Charakter steigt jetzt auf ein Reittier und wartet, bis sich die Tore öffnen"
     }
   },
   "about": {

@@ -48,7 +48,8 @@ internal sealed class ChangelogPage
             var progress = Motion.Reveal(shownTick, RevealMs, index * RevealStaggerMs);
             using (Motion.PushReveal(progress, RevealSlide))
             {
-                DrawEntry(index, index == entries.Length - 1);
+                DrawEntry(entries[index], versionLabels[index], metaLabels[index],
+                    index < unseenAtVisit, index == 0, index == entries.Length - 1);
             }
         }
     }
@@ -84,12 +85,9 @@ internal sealed class ChangelogPage
         }
     }
 
-    private void DrawEntry(int index, bool isLast)
+    private static void DrawEntry(ChangelogEntry entry, string versionLabel, string metaLabel, bool isNew, bool isLatest, bool isLast)
     {
         var scale = ImGuiHelpers.GlobalScale;
-        var entry = ChangelogData.Entries[index];
-        var isNew = index < unseenAtVisit;
-        var isLatest = index == 0;
         var origin = ImGui.GetCursorScreenPos();
         var width = ImGui.GetContentRegionAvail().X;
         var railWidth = RailWidth * scale;
@@ -134,8 +132,8 @@ internal sealed class ChangelogPage
         var x = cardMin.X + padX;
         using (Fonts.PushHeadline())
         {
-            TextDraw.At(versionLabels[index], new Vector2(x, cardMin.Y + padY), isLatest ? Styling.AccentArcSoft : Styling.TextStrong);
-            x += TextDraw.Measure(versionLabels[index]).X + PillGap * scale;
+            TextDraw.At(versionLabel, new Vector2(x, cardMin.Y + padY), isLatest ? Styling.AccentArcSoft : Styling.TextStrong);
+            x += TextDraw.Measure(versionLabel).X + PillGap * scale;
         }
 
         if (isNew || isLatest)
@@ -145,7 +143,7 @@ internal sealed class ChangelogPage
 
         using (Fonts.PushCaption())
         {
-            var meta = metaLabels[index];
+            var meta = metaLabel;
             var metaSize = TextDraw.Measure(meta);
             var metaX = cardMax.X - padX - metaSize.X;
             if (metaX > x)

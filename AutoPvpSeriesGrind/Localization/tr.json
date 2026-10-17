@@ -362,6 +362,16 @@
       "1": "Eklentinin günlüklerini görüntülemek, filtrelemek ve kopyalamak için Konsol sayfası eklendi",
       "2": "Bu değişiklik günlüğü eklendi; bir güncelleme yenilik getirdiğinde rozetle bildirir",
       "3": "Hakkında sayfası baştan yenilendi, Discord bağlantısı güncellendi"
+    },
+    "r21100": {
+      "1": "Değiştirildi: Grind düzeni artık üç mod kartı, kompakt oturum kontrolleri ve savaş profilleriyle özel ayarlara doğrudan erişim sunuyor",
+      "2": "Eklendi: Crystalline Conflict için normal ve dereceli maç kuyruğu seçimi",
+      "3": "Eklendi: Hidden Gorge’da Rival Wings piyade desteği önizlemesi; kuyruğa girme, takımı takip etme ve savaş destekleniyor, mekaların kontrolü ve harita stratejisi manuel kalıyor",
+      "4": "Düzeltildi: Kuyruk yeniden denemeleri ve maç sayımı; farklı bir kuyruk veya tamamlanması doğrulanmamış bir maçtan çıkış oturumu durduruyor, tamamlanan maçlar yalnızca bir kez sayılıyor",
+      "5": "Düzeltildi: Durdurma, zaman aşımı ve hedef değişikliğinde gezinme temizliği; eski rotalar artık hareketi etkilemiyor",
+      "6": "Eklendi: Korumalı hedef filtresi ve isteğe bağlı Chiten’den kaçınma; Guard hedef önceliğini düşürürken Guard kıran eylemlere izin veriliyor",
+      "7": "Değiştirildi: Yeniden gruplanma, müttefikler görüş dışındayken parti ve ittifak konumlarını kullanıyor",
+      "8": "Düzeltildi: Frontline maçı başlamadan başlangıç alanında dolaşma; karakter artık bineğine binip kapıların açılmasını bekliyor"
     }
   },
   "about": {

@@ -362,6 +362,16 @@
       "1": "Añadida la página Consola para ver, filtrar y copiar los registros del plugin",
       "2": "Añadido este registro de cambios, con un aviso cada vez que una actualización trae novedades",
       "3": "Renovada por completo la página Acerca de, con el enlace de Discord actualizado"
+    },
+    "r21100": {
+      "1": "Cambiado el diseño de Grind con tres tarjetas de modo, controles de sesión compactos y acceso directo a perfiles de combate y ajustes personalizados",
+      "2": "Añadida la selección entre partidas casuales y clasificatorias de Crystalline Conflict",
+      "3": "Añadido soporte de infantería para Rival Wings en Hidden Gorge como vista previa, con inscripción, seguimiento del equipo y combate; los mecas y la estrategia del mapa siguen siendo manuales",
+      "4": "Corregidos los reintentos de inscripción y el recuento de partidas: una cola distinta o una salida sin final confirmado detiene la sesión, y cada partida completada se cuenta una sola vez",
+      "5": "Corregida la limpieza de navegación al detenerse, agotarse el tiempo o cambiar de destino, para que las rutas antiguas no sigan afectando al movimiento",
+      "6": "Añadidos el filtrado de objetivos protegidos y la evasión opcional de Chiten; Guard reduce la prioridad del objetivo y permite acciones que lo rompen",
+      "7": "Cambiado el reagrupamiento para usar las posiciones del grupo y la alianza cuando los aliados están fuera de la vista",
+      "8": "Corregido el movimiento por la zona inicial de Frontline antes de comenzar la partida: el personaje ahora monta y espera a que se abran las puertas"
     }
   },
   "about": {
