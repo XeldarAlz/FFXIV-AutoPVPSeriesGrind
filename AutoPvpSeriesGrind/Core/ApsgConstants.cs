@@ -77,6 +77,7 @@ internal static class ApsgConstants
     internal static class IpcGates
     {
         public const string NavPathfind = "vnavmesh.Nav.Pathfind";
+        public const string NavPathfindCancelable = "vnavmesh.Nav.PathfindCancelable";
         public const string NavFollowWaypoints = "vnavmesh.Path.MoveTo";
         public const string NavStop = "vnavmesh.Path.Stop";
         public const string NavIsRunning = "vnavmesh.Path.IsRunning";

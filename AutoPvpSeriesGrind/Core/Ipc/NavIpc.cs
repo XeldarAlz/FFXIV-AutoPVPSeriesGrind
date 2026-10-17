@@ -2,6 +2,7 @@ using ECommons.Automation;
 using ECommons.DalamudServices;
 using Dalamud.Plugin.Ipc;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
 
@@ -16,6 +17,7 @@ internal sealed class NavIpc
     public static NavIpc Instance => instance ??= new NavIpc();
 
     private readonly ICallGateSubscriber<Vector3, Vector3, bool, Task<List<Vector3>>> pathfind;
+    private readonly ICallGateSubscriber<Vector3, Vector3, bool, CancellationToken, Task<List<Vector3>>> pathfindCancelable;
     private readonly ICallGateSubscriber<List<Vector3>, bool, object> followWaypoints;
     private readonly ICallGateSubscriber<object> stop;
     private readonly ICallGateSubscriber<bool> isRunning;
@@ -26,6 +28,7 @@ internal sealed class NavIpc
     private NavIpc()
     {
         pathfind = Svc.PluginInterface.GetIpcSubscriber<Vector3, Vector3, bool, Task<List<Vector3>>>(IpcGates.NavPathfind);
+        pathfindCancelable = Svc.PluginInterface.GetIpcSubscriber<Vector3, Vector3, bool, CancellationToken, Task<List<Vector3>>>(IpcGates.NavPathfindCancelable);
         followWaypoints = Svc.PluginInterface.GetIpcSubscriber<List<Vector3>, bool, object>(IpcGates.NavFollowWaypoints);
         stop = Svc.PluginInterface.GetIpcSubscriber<object>(IpcGates.NavStop);
         isRunning = Svc.PluginInterface.GetIpcSubscriber<bool>(IpcGates.NavIsRunning);
@@ -34,10 +37,12 @@ internal sealed class NavIpc
         buildProgress = Svc.PluginInterface.GetIpcSubscriber<float>(IpcGates.NavBuildProgress);
     }
 
-    public bool IsAvailable => pathfind.HasFunction && followWaypoints.HasAction;
+    public bool IsAvailable => (pathfindCancelable.HasFunction || pathfind.HasFunction) && followWaypoints.HasAction;
 
-    public Task<List<Vector3>>? Pathfind(Vector3 from, Vector3 to)
-        => IpcGate.Invoke<Task<List<Vector3>>?>(pathfind.HasFunction, () => pathfind.InvokeFunc(from, to, false), null, "Nav.Pathfind failed");
+    public Task<List<Vector3>>? Pathfind(Vector3 from, Vector3 to, CancellationToken cancellationToken)
+        => pathfindCancelable.HasFunction
+            ? IpcGate.Invoke<Task<List<Vector3>>?>(true, () => pathfindCancelable.InvokeFunc(from, to, false, cancellationToken), null, "Nav.PathfindCancelable failed")
+            : IpcGate.Invoke<Task<List<Vector3>>?>(pathfind.HasFunction, () => pathfind.InvokeFunc(from, to, false), null, "Nav.Pathfind failed");
 
     public void FollowWaypoints(List<Vector3> waypoints)
         => IpcGate.Run(followWaypoints.HasAction, () => followWaypoints.InvokeAction(waypoints, false), "Path.MoveTo failed");

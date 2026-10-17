@@ -72,6 +72,7 @@ internal sealed class MovementExecutor
 
     private Task<List<Vector3>>? pendingPath;
     private Task<List<Vector3>>? pendingTail;
+    private NavigationRequest? pendingRequest;
     private Vector3? pendingVia;
     private Vector3 pendingDestination;
     private Vector3 pendingTarget;
@@ -79,6 +80,7 @@ internal sealed class MovementExecutor
     private long pendingSinceMs;
     private bool pendingDiscarded;
     private long navmeshWaitStartedAtMs;
+    private bool ownsMovement;
 
     public MovementExecutor()
     {
@@ -97,6 +99,8 @@ internal sealed class MovementExecutor
 
     public void Reset()
     {
+        Stop();
+        ClearPending();
         stuck.Reset();
         unreachable.Clear();
         failedShortcuts.Clear();
@@ -140,9 +144,10 @@ internal sealed class MovementExecutor
     {
         DiscardPendingPath();
         jumps.ClearShortcut();
-        if (Nav.IsFollowingPath())
+        if (ownsMovement)
         {
             Nav.Stop();
+            ownsMovement = false;
         }
     }
 
@@ -150,18 +155,24 @@ internal sealed class MovementExecutor
     {
         jumps.ClearShortcut();
         var discarded = DiscardPendingPath();
-        if (!discarded && !Nav.IsFollowingPath())
+        if (!discarded && !ownsMovement)
         {
             return;
         }
 
-        Nav.Stop();
+        if (ownsMovement) Nav.Stop();
+        ownsMovement = false;
         lastMoveDestination = default;
         destinationCommittedAtMs = 0;
     }
 
     public void Execute(in MovePlan plan)
     {
+        if (HasLivePendingPath && Vector3.Distance(pendingDestination, plan.Destination) > 12f)
+        {
+            DiscardPendingPath();
+            lastMoveAtMs = 0;
+        }
         Pump();
         if (plan.Sprint)
         {
@@ -194,6 +205,11 @@ internal sealed class MovementExecutor
 
     private void MoveTowards(Vector3 destination, Vector3 fallback, float stopRange, bool pursue)
     {
+        if (!VectorMath.IsFinite(destination) || !VectorMath.IsFinite(fallback) || !float.IsFinite(stopRange))
+        {
+            Stop();
+            return;
+        }
         if (!NavmeshReady())
         {
             return;
@@ -255,28 +271,34 @@ internal sealed class MovementExecutor
 
     private bool RequestRoute(Vector3 self, Vector3 target, long now)
     {
+        ClearPending();
+        pendingRequest = new NavigationRequest();
         var via = route.Via(self, target, in persona, snapRoute, out var newTrip);
         if (newTrip)
         {
             jumps.PlanHop(VectorMath.HorizontalDistance(self, target), persona.HopChance, now);
         }
 
-        if (via is { } viaPoint
-            && Nav.Pathfind(self, viaPoint) is { } head
-            && Nav.Pathfind(viaPoint, target) is { } tail)
+        if (via is { } viaPoint)
         {
-            pendingPath = head;
-            pendingTail = tail;
-            pendingVia = viaPoint;
-            return true;
+            pendingPath = pendingRequest.Track(Nav.Pathfind(self, viaPoint, pendingRequest.Token));
+            pendingTail = pendingRequest.Track(Nav.Pathfind(viaPoint, target, pendingRequest.Token));
+            if (pendingPath is not null && pendingTail is not null)
+            {
+                pendingVia = viaPoint;
+                return true;
+            }
+            ClearPending();
+            pendingRequest = new NavigationRequest();
         }
 
         if (via is not null)
         {
             route.Abandon();
         }
-        if (Nav.Pathfind(self, target) is not { } direct)
+        if (pendingRequest.Track(Nav.Pathfind(self, target, pendingRequest.Token)) is not { } direct)
         {
+            ClearPending();
             return false;
         }
 
@@ -345,7 +367,7 @@ internal sealed class MovementExecutor
         var tail = pendingTail;
         var discarded = pendingDiscarded;
         ClearPending();
-        if (discarded)
+        if (discarded || !Nav.IsReady())
         {
             return;
         }
@@ -372,11 +394,13 @@ internal sealed class MovementExecutor
             jumps.TryShortcut(self, waypoints, shortcutRejected, Environment.TickCount64);
         }
         Nav.FollowWaypoints(waypoints);
+        ownsMovement = true;
     }
 
     private List<Vector3>? Assemble(Vector3 self, List<Vector3> head, List<Vector3>? tail)
     {
-        if (head.Count == 0)
+        if (head.Count == 0 || head.Any(point => !VectorMath.IsFinite(point))
+            || (tail is not null && tail.Any(point => !VectorMath.IsFinite(point))))
         {
             return null;
         }
@@ -421,6 +445,8 @@ internal sealed class MovementExecutor
     {
         pendingPath = null;
         pendingTail = null;
+        pendingRequest?.Dispose();
+        pendingRequest = null;
     }
 
     private bool DiscardPendingPath()
@@ -431,6 +457,7 @@ internal sealed class MovementExecutor
         }
 
         pendingDiscarded = true;
+        ClearPending();
         return true;
     }
 
@@ -451,6 +478,7 @@ internal sealed class MovementExecutor
             navmeshWaitStartedAtMs = Environment.TickCount64;
             RunLog.Info($"navmesh still loading (progress {Nav.BuildProgress():F2}) -> holding movement until it is ready");
         }
+        Stop();
         return false;
     }
 

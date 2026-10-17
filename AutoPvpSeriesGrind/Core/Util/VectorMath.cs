@@ -6,6 +6,9 @@ internal static class VectorMath
 {
     private const float MinVectorSq = 0.0001f;
 
+    public static bool IsFinite(Vector3 point)
+        => float.IsFinite(point.X) && float.IsFinite(point.Y) && float.IsFinite(point.Z);
+
     public static float HorizontalDistance(Vector3 positionA, Vector3 positionB)
     {
         var deltaX = positionA.X - positionB.X;
