@@ -51,7 +51,7 @@ internal sealed class PvpRotationDriver
 
     public RotationOutcome Tick(PvpSnapshot snapshot, ulong preferredTargetId, bool underBurst, Posture posture, Vector3 moveDestination, Action holdStill)
     {
-        if (Svc.Objects.LocalPlayer is not { } self || ActionOps.AnimationLocked)
+        if (Svc.Objects.LocalPlayer is not { } self || ActionOps.AnimationLocked || Svc.Condition[ConditionFlag.PilotingMech])
         {
             return RotationOutcome.None;
         }
@@ -127,8 +127,9 @@ internal sealed class PvpRotationDriver
         }
 
         var dead = castTarget.CurrentHp == 0;
-        var immune = MatchState.HasAnyStatus(castTarget, PvpStatuses.DamageImmunities)
-                     && Array.IndexOf(PvpActions.WorthUsingIntoGuard, self.CastActionId) < 0;
+        var immune = MatchState.ShouldAvoidOffense(castTarget)
+                     || (MatchState.HasAnyStatus(castTarget, PvpStatuses.DamageImmunities)
+                         && Array.IndexOf(PvpActions.WorthUsingIntoGuard, self.CastActionId) < 0);
         if (!dead && !immune)
         {
             return;
@@ -370,6 +371,7 @@ internal sealed class PvpRotationDriver
         {
             return false;
         }
+        if (MatchState.ShouldAvoidOffense(enemy)) return true;
         if (Array.IndexOf(PvpActions.WorthUsingIntoGuard, adjustedId) >= 0)
         {
             return false;
@@ -604,7 +606,8 @@ internal sealed class PvpRotationDriver
     private static IBattleChara? ResolveEnemy(ulong preferredTargetId, PvpSnapshot snapshot)
     {
         var targetId = preferredTargetId != 0 ? preferredTargetId : NearestEnemyId(snapshot);
-        return targetId == 0 ? null : Svc.Objects.SearchById(targetId) as IBattleChara;
+        var enemy = targetId == 0 ? null : Svc.Objects.SearchById(targetId) as IBattleChara;
+        return enemy is not null && !MatchState.ShouldAvoidOffense(enemy) && MatchState.IsEnemyPlayer(enemy) ? enemy : null;
     }
 
     private static ulong NearestEnemyId(PvpSnapshot snapshot)
@@ -614,7 +617,7 @@ internal sealed class PvpRotationDriver
         for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
         {
             var enemy = snapshot.Enemies[enemyIndex];
-            if (enemy.DistanceToSelf < nearestDistance)
+            if (enemy.CanAttack && enemy.DistanceToSelf < nearestDistance)
             {
                 nearestDistance = enemy.DistanceToSelf;
                 nearestId = enemy.Id;

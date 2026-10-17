@@ -20,6 +20,7 @@ internal sealed class PvpSnapshot
     public required PvpActor? CurrentTarget { get; init; }
     public required IReadOnlyList<PvpActor> Enemies { get; init; }
     public required IReadOnlyList<PvpActor> Allies { get; init; }
+    public IReadOnlyList<PvpActor>? RegroupAllies { get; init; }
     public required Vector3? EnemyCentroid { get; init; }
     public required int FocusCount { get; init; }
     public required IReadOnlyList<Hazard> Hazards { get; init; }

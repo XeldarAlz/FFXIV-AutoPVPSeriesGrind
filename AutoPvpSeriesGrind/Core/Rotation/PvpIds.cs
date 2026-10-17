@@ -21,6 +21,7 @@ internal static class PvpActions
 internal static class PvpStatuses
 {
     public const uint SpawnProtection = 895;
+    public const uint Chiten = 1240;
     public const uint HallowedGround = 1302;
     public const uint InnerRelease = 1303;
     public const uint Sprint = 1342;
@@ -39,4 +40,5 @@ internal static class PvpStatuses
     public static readonly uint[] PurifyClears = [Stun, Heavy, Bind, Silence, DeepFreeze, MiracleOfNature];
     public static readonly uint[] GuardForbiddenBy = [InnerRelease, UndeadRedemption];
     public static readonly uint[] DamageImmunities = [Guard, WeakenedGuard, HallowedGround, UndeadRedemption];
+    public static readonly uint[] HardImmunities = [SpawnProtection, HallowedGround, UndeadRedemption];
 }

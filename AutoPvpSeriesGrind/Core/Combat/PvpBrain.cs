@@ -430,7 +430,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         {
             return ChooseTarget(snapshot, focal);
         }
-        return snapshot.CurrentTarget ?? ChooseTarget(snapshot, focal);
+        return snapshot.CurrentTarget is { CanAttack: true } current ? current : ChooseTarget(snapshot, focal);
     }
 
     private EngageChoice EngageBackline(PvpSnapshot snapshot, Vector3 focal, bool push, PvpActor? target)
@@ -597,12 +597,12 @@ internal sealed class PvpBrain(PvpStrategy strategy)
         for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
         {
             var enemy = snapshot.Enemies[enemyIndex];
-            if (Vector3.Distance(enemy.Position, focal) <= profile.LeashRadius)
+            if (enemy.CanAttack && Vector3.Distance(enemy.Position, focal) <= profile.LeashRadius)
             {
                 pool.Add(enemy);
             }
         }
-        if (pool.Count == 0 && snapshot.NearestEnemy is { } nearest)
+        if (pool.Count == 0 && TargetScoring.Best(snapshot, profile.EngageRadius, lastTargetId) is { } nearest)
         {
             pool.Add(nearest);
         }

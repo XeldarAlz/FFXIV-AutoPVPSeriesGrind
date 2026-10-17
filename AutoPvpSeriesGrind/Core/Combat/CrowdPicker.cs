@@ -56,12 +56,13 @@ internal sealed class CrowdPicker
 
     private List<AllyCluster> FieldClusters(PvpSnapshot snapshot, out AllyCluster? preferred)
     {
+        var allies = snapshot.RegroupAllies ?? snapshot.Allies;
         if (ownBase is { } basePosition)
         {
             awayFromBase.Clear();
-            for (var allyIndex = 0; allyIndex < snapshot.Allies.Count; allyIndex++)
+            for (var allyIndex = 0; allyIndex < allies.Count; allyIndex++)
             {
-                var ally = snapshot.Allies[allyIndex];
+                var ally = allies[allyIndex];
                 if (Vector3.Distance(ally.Position, basePosition) > BaseRadiusYalms)
                 {
                     awayFromBase.Add(ally);
@@ -77,7 +78,7 @@ internal sealed class CrowdPicker
             }
         }
 
-        var everyone = PvpSnapshot.Clusters(snapshot.Allies);
+        var everyone = PvpSnapshot.Clusters(allies);
         preferred = PvpSnapshot.Largest(everyone, snapshot.Self);
         return everyone;
     }

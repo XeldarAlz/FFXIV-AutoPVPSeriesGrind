@@ -36,6 +36,11 @@ internal static class MatchState
     public static bool HasStatus(uint statusId)
         => Svc.Objects.LocalPlayer is { } localPlayer && HasStatus(localPlayer, statusId);
 
+    public static bool ShouldAvoidOffense(IBattleChara target)
+        => !target.IsTargetable || target.CurrentHp == 0
+        || HasAnyStatus(target, PvpStatuses.HardImmunities)
+        || (Plugin.Cfg.AvoidChiten && HasStatus(target, PvpStatuses.Chiten));
+
     public static bool HasStatus(IBattleChara chara, uint statusId)
     {
         foreach (var status in chara.StatusList)
@@ -252,6 +257,8 @@ internal static class MatchState
             CurrentTarget = players.CurrentTarget,
             Enemies = players.Enemies,
             Allies = players.Allies,
+            RegroupAllies = FrontlineMaps.Contains(Svc.ClientState.TerritoryType)
+                ? AlliancePositions.ForRegrouping(players.Allies, self, selfId) : null,
             EnemyCentroid = players.Enemies.Count > 0 ? players.EnemySum / players.Enemies.Count : null,
             FocusCount = players.FocusCount,
             Hazards = players.Hazards,
@@ -271,7 +278,8 @@ internal static class MatchState
             IsCasting: playerCharacter.IsCasting,
             IsMounted: playerCharacter.CurrentMount is not null,
             TargetId: playerCharacter.TargetObjectId,
-            DistanceToSelf: Vector3.Distance(self, playerCharacter.Position));
+            DistanceToSelf: Vector3.Distance(self, playerCharacter.Position),
+            CanAttack: !ShouldAvoidOffense(playerCharacter));
     }
 
     private static PvpRole RoleFromByte(int roleByte) => roleByte switch

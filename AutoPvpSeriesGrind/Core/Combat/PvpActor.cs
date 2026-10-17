@@ -11,7 +11,8 @@ internal readonly record struct PvpActor(
     bool IsCasting,
     bool IsMounted,
     ulong TargetId,
-    float DistanceToSelf)
+    float DistanceToSelf,
+    bool CanAttack = true)
 {
     public bool IsMelee => Role is PvpRole.Tank or PvpRole.Melee;
 }

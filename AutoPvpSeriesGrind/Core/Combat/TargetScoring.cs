@@ -38,7 +38,7 @@ internal static class TargetScoring
         for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
         {
             var enemy = snapshot.Enemies[enemyIndex];
-            if (enemy.DistanceToSelf > rangeYalms)
+            if (!enemy.CanAttack || enemy.DistanceToSelf > rangeYalms)
             {
                 continue;
             }
@@ -60,7 +60,7 @@ internal static class TargetScoring
         for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
         {
             var enemy = snapshot.Enemies[enemyIndex];
-            if (enemy.DistanceToSelf > rangeYalms)
+            if (!enemy.CanAttack || enemy.DistanceToSelf > rangeYalms)
             {
                 continue;
             }
@@ -76,7 +76,7 @@ internal static class TargetScoring
                 lowestOpen = enemy;
             }
         }
-        return lowestOpen ?? lowestGuarded ?? snapshot.NearestEnemy;
+        return lowestOpen ?? lowestGuarded;
     }
 
     public static PvpStructure? TeamObjective(PvpSnapshot snapshot, Vector3 around, float reachYalms, float rangeYalms)
