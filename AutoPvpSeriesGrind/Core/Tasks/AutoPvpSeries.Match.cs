@@ -1,7 +1,9 @@
+using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Humanize;
 using AutoPvpSeriesGrind.Core.Ipc;
+using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using System.Threading.Tasks;
 using static AutoPvpSeriesGrind.Core.ApsgConstants;
@@ -121,23 +123,7 @@ internal sealed partial class AutoPvpSeries
     {
         if (matchType.IsLargeScale())
         {
-            if (matchType == MatchType.RivalWings && !Svc.DutyState.IsDutyStarted)
-            {
-                if (!matchFlow.FrontlineBaseChecked && MatchState.PlayerPosition() is { } spawn)
-                {
-                    TeamBrain.MarkBase(spawn);
-                    matchFlow.FrontlineBaseChecked = true;
-                }
-                movement.Stop();
-                Status = "Waiting for the Rival Wings match to start";
-                return;
-            }
-            if (!matchFlow.InMatchLive && InDuty())
-            {
-                AnnounceMatchEntryOnce();
-                LogDiagnostic($"{matchType}: following the team");
-                BeginLiveMatch();
-            }
+            RunLargeScaleWaitingPhase();
             return;
         }
 
@@ -170,6 +156,44 @@ internal sealed partial class AutoPvpSeries
         }
     }
 
+    private void RunLargeScaleWaitingPhase()
+    {
+        if (matchFlow.InMatchLive) return;
+
+        AnnounceMatchEntryOnce();
+        var started = Svc.DutyState.IsDutyStarted;
+        var mounted = Svc.Condition[ConditionFlag.Mounted];
+        var canMount = !started && !mounted && !Plugin.Cfg.ManualMovement && !IsDead()
+            && !MatchState.LocalIsCasting() && !Svc.Condition[ConditionFlag.InCombat]
+            && !Svc.Condition[ConditionFlag.Mounting] && !Svc.Condition[ConditionFlag.Mounting71]
+            && ActionOps.IsGeneralActionReady(GeneralActions.MountRoulette);
+        var decision = preMatch.Observe(started, mounted, canMount, Environment.TickCount64);
+        if (decision == PreMatchDecision.Start)
+        {
+            LogDiagnostic($"{matchType}: duty started -> following the team");
+            WarnIfNavmeshNotReady();
+            BeginLiveMatch();
+            return;
+        }
+
+        // Do not run formation, target selection, or movement while the gates are closed.
+        movement.Stop();
+        if (!matchFlow.FrontlineBaseChecked && MatchState.PlayerPosition() is { } spawn)
+        {
+            TeamBrain.MarkBase(spawn);
+            matchFlow.FrontlineBaseChecked = true;
+            LogDiagnostic($"{matchType}: own base marked before the start at {spawn:F0}");
+        }
+        Status = matchType == MatchType.Frontline
+            ? "Waiting for the Frontline gates to open" : "Waiting for the Rival Wings match to start";
+        BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, Status, Posture.Hold);
+        if (decision == PreMatchDecision.Mount)
+        {
+            ActionOps.UseGeneralAction(GeneralActions.MountRoulette);
+            LogDiagnostic($"{matchType}: mounting while waiting for the gates");
+        }
+    }
+
     private void AnnounceMatchEntryOnce()
     {
         if (matchFlow.AnnouncedEntered)
@@ -177,7 +201,9 @@ internal sealed partial class AutoPvpSeries
             return;
         }
 
-        LogDiagnostic("entered PvP match; waiting for portraits + gate (ContentTimeLeft)");
+        LogDiagnostic(matchType.IsLargeScale()
+            ? $"entered {matchType}; waiting for the duty to start"
+            : "entered PvP match; waiting for portraits + gate (ContentTimeLeft)");
         ExecuteGameCommand(GameCommands.NavStop);
         matchFlow.AnnouncedEntered = true;
         SetPhase(AutoPhase.InMatch);

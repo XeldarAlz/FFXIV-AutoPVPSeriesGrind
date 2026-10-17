@@ -15,6 +15,7 @@
   <ItemGroup>
     <Compile Include="../AutoPvpSeriesGrind/MatchType.cs" Link="Source/MatchType.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/MatchCompletion.cs" Link="Source/MatchCompletion.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/PreMatchPreparation.cs" Link="Source/PreMatchPreparation.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/QueueSubmission.cs" Link="Source/QueueSubmission.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/NavigationRequest.cs" Link="Source/NavigationRequest.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Game/PvpDuty.cs" Link="Source/PvpDuty.cs" />

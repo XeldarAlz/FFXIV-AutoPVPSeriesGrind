@@ -19,6 +19,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
     private readonly SessionStats session;
     private readonly MatchCompletion completion = new();
     private readonly QueueSubmission queueSubmission = new();
+    private readonly PreMatchPreparation preMatch = new();
 
     private RunSettings settings;
     private readonly PvpBrain brain = new(PvpStrategy.Moderate);
@@ -249,7 +250,11 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         LogDiagnostic($"reset: {reason}");
     }
 
-    private void ResetMatchFlow() => matchFlow.Reset();
+    private void ResetMatchFlow()
+    {
+        matchFlow.Reset();
+        preMatch.Reset();
+    }
 
     private void RollPersona()
     {
