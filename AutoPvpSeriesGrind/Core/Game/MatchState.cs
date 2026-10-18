@@ -7,6 +7,8 @@ using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using System.Numerics;
+using static AutoPvpSeriesGrind.Core.ApsgConstants;
+using ActionType = FFXIVClientStructs.FFXIV.Client.Game.ActionType;
 
 namespace AutoPvpSeriesGrind.Core.Game;
 
@@ -33,6 +35,12 @@ internal static class MatchState
 
     public static bool LocalIsCasting()
         => Svc.Objects.LocalPlayer is { } me && me.IsCasting;
+
+    // Movement no longer breaks the mount cast. Mount Roulette may report the rolled mount or the roulette itself.
+    public static bool LocalIsCastingMount()
+        => Svc.Objects.LocalPlayer is { IsCasting: true } me
+        && (me.CastActionType == (byte)ActionType.Mount
+            || (me.CastActionType == (byte)ActionType.GeneralAction && me.CastActionId == GeneralActions.MountRoulette));
 
     public static bool HasStatus(uint statusId)
         => Svc.Objects.LocalPlayer is { } localPlayer && HasStatus(localPlayer, statusId);

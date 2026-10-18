@@ -196,8 +196,13 @@ internal sealed partial class AutoPvpSeries
 
         if (MatchState.LocalIsCasting())
         {
-            movement.Stop();
-            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, "wait: casting", Posture.Hold);
+            // The navmesh keeps following its current path while the mount is summoned on the move.
+            var mounting = MatchState.LocalIsCastingMount();
+            if (!mounting)
+            {
+                movement.Stop();
+            }
+            BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, mounting ? "wait: mounting on the move" : "wait: casting", Posture.Hold);
             return;
         }
 
@@ -260,7 +265,6 @@ internal sealed partial class AutoPvpSeries
         switch (decision.Intent)
         {
             case MountIntent.Mount:
-                movement.Stop();
                 ActionOps.UseGeneralAction(GeneralActions.MountRoulette);
                 break;
             case MountIntent.Dismount:
