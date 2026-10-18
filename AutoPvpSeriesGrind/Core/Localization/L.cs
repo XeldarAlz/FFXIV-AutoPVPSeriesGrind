@@ -326,6 +326,11 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release21110 =
+        [
+            new("changelog.r21110.1", "Changed mounting up in Frontline to keep running through the mount cast instead of stopping for it. Contributed by Sojiroh"),
+        ];
+
         public static readonly LocString[] Release21100 =
         [
             new("changelog.r21100.1", "Changed the Grind layout to use three mode cards, compact session controls, and directly accessible combat presets and custom settings"),

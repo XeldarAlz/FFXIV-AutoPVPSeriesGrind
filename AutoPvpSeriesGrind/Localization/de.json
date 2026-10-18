@@ -372,6 +372,9 @@
       "6": "Hinzugefügt: Filter für geschützte Ziele und optionales Meiden von Chiten; Guard senkt die Zielpriorität, Aktionen zum Brechen von Guard bleiben möglich",
       "7": "Geändert: Beim Sammeln werden Gruppen- und Allianzpositionen genutzt, wenn Verbündete außer Sicht sind",
       "8": "Behoben: Herumlaufen im Frontline-Startbereich vor Spielbeginn; der Charakter steigt jetzt auf ein Reittier und wartet, bis sich die Tore öffnen"
+    },
+    "r21110": {
+      "1": "Geändert: Beim Aufsitzen in Frontline läuft der Charakter während des Reittier-Zaubers weiter, statt dafür stehen zu bleiben. Beigetragen von Sojiroh"
     }
   },
   "about": {

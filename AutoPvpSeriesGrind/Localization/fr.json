@@ -372,6 +372,9 @@
       "6": "Ajout du filtrage des cibles protégées et de l’évitement optionnel de Chiten ; Guard réduit la priorité de la cible tout en permettant les actions qui le brisent",
       "7": "Modification du regroupement : les positions de groupe et d’alliance sont utilisées lorsque les alliés sont hors de vue",
       "8": "Correction des déplacements dans la zone de départ de Frontline avant le début du match : le personnage monte désormais sur sa monture et attend l’ouverture des portes"
+    },
+    "r21110": {
+      "1": "Modification de la monte en Frontline : le personnage continue de courir pendant l’incantation de la monture au lieu de s’arrêter. Contribution de Sojiroh"
     }
   },
   "about": {

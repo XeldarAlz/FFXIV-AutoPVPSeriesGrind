@@ -372,6 +372,9 @@
       "6": "Added protected-target filtering and optional Chiten avoidance; Guard lowers target priority while allowing Guard-breaking actions",
       "7": "Changed regrouping to use party and alliance positions when allies are out of view",
       "8": "Fixed moving around the Frontline starting area before the match begins: the character now mounts and waits for the gates to open"
+    },
+    "r21110": {
+      "1": "Changed mounting up in Frontline to keep running through the mount cast instead of stopping for it. Contributed by Sojiroh"
     }
   },
   "about": {

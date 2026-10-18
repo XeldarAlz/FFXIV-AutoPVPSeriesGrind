@@ -372,6 +372,9 @@
       "6": "Eklendi: Korumalı hedef filtresi ve isteğe bağlı Chiten’den kaçınma; Guard hedef önceliğini düşürürken Guard kıran eylemlere izin veriliyor",
       "7": "Değiştirildi: Yeniden gruplanma, müttefikler görüş dışındayken parti ve ittifak konumlarını kullanıyor",
       "8": "Düzeltildi: Frontline maçı başlamadan başlangıç alanında dolaşma; karakter artık bineğine binip kapıların açılmasını bekliyor"
+    },
+    "r21110": {
+      "1": "Değiştirildi: Frontline'da bineğe binerken karakter, binek büyüsü sırasında durmak yerine koşmaya devam ediyor. Katkı: Sojiroh"
     }
   },
   "about": {

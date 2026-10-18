@@ -372,6 +372,9 @@
       "6": "Adicionados o filtro de alvos protegidos e a opção de evitar Chiten; Guard reduz a prioridade do alvo, permitindo ações que o quebram",
       "7": "Alterado o reagrupamento para usar as posições do grupo e da aliança quando os aliados estão fora de vista",
       "8": "Corrigida a movimentação na área inicial de Frontline antes do início da partida: o personagem agora monta e espera os portões abrirem"
+    },
+    "r21110": {
+      "1": "Alterado o uso de montaria em Frontline: o personagem continua correndo durante a conjuração da montaria em vez de parar. Contribuição de Sojiroh"
     }
   },
   "about": {

@@ -372,6 +372,9 @@
       "6": "Añadidos el filtrado de objetivos protegidos y la evasión opcional de Chiten; Guard reduce la prioridad del objetivo y permite acciones que lo rompen",
       "7": "Cambiado el reagrupamiento para usar las posiciones del grupo y la alianza cuando los aliados están fuera de la vista",
       "8": "Corregido el movimiento por la zona inicial de Frontline antes de comenzar la partida: el personaje ahora monta y espera a que se abran las puertas"
+    },
+    "r21110": {
+      "1": "Cambiado el montaje en Frontline: el personaje sigue corriendo durante el lanzamiento de la montura en lugar de detenerse. Contribución de Sojiroh"
     }
   },
   "about": {
