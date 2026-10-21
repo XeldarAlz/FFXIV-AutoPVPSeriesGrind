@@ -33,6 +33,9 @@ internal static class MatchState
     public static Vector3? PlayerPosition()
         => Svc.Objects.LocalPlayer?.Position;
 
+    public static Vector3? PlayerFacing()
+        => Svc.Objects.LocalPlayer is { } me ? new Vector3(MathF.Sin(me.Rotation), 0f, MathF.Cos(me.Rotation)) : null;
+
     public static bool LocalIsCasting()
         => Svc.Objects.LocalPlayer is { } me && me.IsCasting;
 

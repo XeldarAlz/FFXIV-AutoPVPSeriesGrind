@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Tasks;
+using System.Numerics;
 using Xunit;
 
 namespace AutoPvpSeriesGrind.Tests;
@@ -52,5 +53,49 @@ public sealed class NavigationTests
         old.Dispose();
         Assert.True(old.Token.IsCancellationRequested);
         Assert.False(replacement.Token.IsCancellationRequested);
+    }
+
+    [Fact]
+    public void RepeatedStallsAtOneSpotEscalateWhateverTheDestination()
+    {
+        var snags = new SnagTracker();
+        var spot = new Vector3(80f, 0f, 75f);
+        Assert.Equal(1, snags.Strike(spot, 1_000));
+        Assert.Equal(2, snags.Strike(spot + new Vector3(1f, 0f, 0.5f), 4_000));
+        Assert.Equal(3, snags.Strike(spot, 16_000));
+    }
+
+    [Fact]
+    public void AStallSomewhereElseStartsOver()
+    {
+        var snags = new SnagTracker();
+        var spot = new Vector3(80f, 0f, 75f);
+        snags.Strike(spot, 1_000);
+        snags.Strike(spot, 4_000);
+        Assert.Equal(1, snags.Strike(spot + new Vector3(10f, 0f, 0f), 7_000));
+    }
+
+    [Fact]
+    public void AnOldStallDoesNotCount()
+    {
+        var snags = new SnagTracker();
+        var spot = new Vector3(80f, 0f, 75f);
+        snags.Strike(spot, 1_000);
+        Assert.Equal(1, snags.Strike(spot, 40_000));
+    }
+
+    [Fact]
+    public void BackOffStepsAwayFromTheSnagAndAlternatesSides()
+    {
+        var self = new Vector3(80f, 0f, 75f);
+        var facing = Vector3.UnitZ;
+        var left = SnagTracker.BackOffPoint(self, facing, 2, -1);
+        var right = SnagTracker.BackOffPoint(self, facing, 2, 1);
+        var farther = SnagTracker.BackOffPoint(self, facing, 3, 1);
+        var capped = SnagTracker.BackOffPoint(self, facing, 9, 1);
+        Assert.True(left.Z < self.Z && right.Z < self.Z);
+        Assert.True(MathF.Sign(left.X - self.X) == -MathF.Sign(right.X - self.X));
+        Assert.True(Vector3.Distance(self, farther) > Vector3.Distance(self, right));
+        Assert.Equal(SnagTracker.BackOffPoint(self, facing, 4, 1), capped);
     }
 }

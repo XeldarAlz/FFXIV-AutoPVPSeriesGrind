@@ -16,17 +16,19 @@ internal sealed class MovementExecutor
     private const float SameDestinationDriftThreshold = 2.5f;
     private const float PursuitSameDestinationDriftThreshold = 1f;
     private const float HoldRepathSlack = 1.5f;
-    private const float MinJitterDirectionSq = 0.01f;
 
     private const int RepathCooldownMs = 2000;
 
     private const int DestinationCommitMs = 1800;
     private const float CommittedDriftThreshold = 6f;
 
-    private const float StuckJitterYalms = 3f;
-    private const int StuckStrikeWindowMs = 12000;
-    private const float StuckSameDestinationYalms = 4f;
     private const int StuckStrikesBeforeGivingUp = 3;
+    private const float BackOffStopRange = 0.5f;
+    private const float BackOffReachedYalms = BackOffStopRange + SameDestinationDriftThreshold;
+    private const int BackOffTimeoutMs = 5000;
+    private const float BackOffSnapExtentXZ = 2f;
+    private const float BackOffSnapExtentY = 3f;
+    private const float MinBackOffYalms = 2f;
 
     private const int PathfindTimeoutMs = 5000;
     private const float MaxTravelYalmsPerSecond = 20f;
@@ -50,6 +52,7 @@ internal sealed class MovementExecutor
     public bool IsPathing => Nav.IsFollowingPath() || HasLivePendingPath;
 
     private readonly StuckDetector stuck = new();
+    private readonly SnagTracker snags = new();
     private readonly SpotMemory unreachable = new(UnreachableSpotYalms, UnreachableRememberMs);
     private readonly SpotMemory failedShortcuts = new(FailedShortcutSpotYalms, FailedShortcutRememberMs);
     private readonly RoutePlanner route = new();
@@ -64,11 +67,10 @@ internal sealed class MovementExecutor
     private Vector3 lastMoveDestination;
     private long lastMoveAtMs;
     private long destinationCommittedAtMs;
-    private int jitterSign = 1;
+    private int backOffSide = 1;
     private Posture? lastPosture;
-    private Vector3 lastStuckDestination;
-    private long lastStuckAtMs;
-    private int stuckStrikes;
+    private Vector3? backOff;
+    private long backOffUntilMs;
 
     private Task<List<Vector3>>? pendingPath;
     private Task<List<Vector3>>? pendingTail;
@@ -102,6 +104,7 @@ internal sealed class MovementExecutor
         Stop();
         ClearPending();
         stuck.Reset();
+        snags.Reset();
         unreachable.Clear();
         failedShortcuts.Clear();
         route.Reset();
@@ -111,8 +114,6 @@ internal sealed class MovementExecutor
         lastMoveAtMs = 0;
         destinationCommittedAtMs = 0;
         lastPosture = null;
-        stuckStrikes = 0;
-        lastStuckAtMs = 0;
         pendingPath = null;
         pendingTail = null;
         pendingDiscarded = false;
@@ -153,6 +154,7 @@ internal sealed class MovementExecutor
 
     public void Stop()
     {
+        backOff = null;
         jumps.ClearShortcut();
         var discarded = DiscardPendingPath();
         if (!discarded && !ownsMovement)
@@ -168,6 +170,11 @@ internal sealed class MovementExecutor
 
     public void Execute(in MovePlan plan)
     {
+        if (TryContinueBackOff(plan))
+        {
+            return;
+        }
+
         if (HasLivePendingPath && Vector3.Distance(pendingDestination, plan.Destination) > 12f)
         {
             DiscardPendingPath();
@@ -501,47 +508,74 @@ internal sealed class MovementExecutor
             return true;
         }
 
-        var strikes = CountStuckStrike(plan.Destination, now);
+        var strikes = snags.Strike(self, now);
         if (strikes == 1 && JumpOps.TryJump())
         {
             RunLog.Debug("stuck on a snag -> jumping it");
             return true;
         }
+
+        var point = PickBackOff(self, plan.Destination, strikes);
         if (strikes >= StuckStrikesBeforeGivingUp)
         {
-            unreachable.Remember(plan.Destination, self, now);
-            RunLog.Debug($"stuck {strikes} times heading for {plan.Destination:F0} -> leaving it alone for a while");
-            Stop();
-            return true;
+            unreachable.Remember(plan.Destination, point ?? self, now);
+            RunLog.Debug($"stuck {strikes} times at {self:F0} heading for {plan.Destination:F0} -> leaving it alone for a while");
         }
 
         Stop();
         lastMoveAtMs = 0;
-        MoveTowards(JitterPerpendicular(plan.Destination, self), plan.Fallback, plan.StopRange, plan.Pursue);
+        if (point is not { } backOffPoint)
+        {
+            return true;
+        }
+
+        RunLog.Debug($"stuck {strikes}x at {self:F0} -> backing off to {backOffPoint:F0} before re-pathing");
+        backOff = backOffPoint;
+        backOffUntilMs = now + BackOffTimeoutMs;
+        MoveTowards(backOffPoint, backOffPoint, BackOffStopRange, pursue: false);
         return true;
     }
 
-    private int CountStuckStrike(Vector3 destination, long now)
+    // A fresh path from the same spot runs into the same snag, so step away from it before following the plan again.
+    private bool TryContinueBackOff(in MovePlan plan)
     {
-        var repeated = now - lastStuckAtMs < StuckStrikeWindowMs
-                       && Vector3.Distance(destination, lastStuckDestination) <= StuckSameDestinationYalms;
-        stuckStrikes = repeated ? stuckStrikes + 1 : 1;
-        lastStuckDestination = destination;
-        lastStuckAtMs = now;
-        return stuckStrikes;
+        if (backOff is not { } point)
+        {
+            return false;
+        }
+        if (Environment.TickCount64 >= backOffUntilMs || DistanceToSelf(point) <= BackOffReachedYalms)
+        {
+            backOff = null;
+            lastMoveAtMs = 0;
+            return false;
+        }
+
+        Pump();
+        if (!TryRecoverFromStuck(plan))
+        {
+            MoveTowards(point, point, BackOffStopRange, pursue: false);
+        }
+        return true;
     }
 
-    private Vector3 JitterPerpendicular(Vector3 destination, Vector3 self)
+    private Vector3? PickBackOff(Vector3 self, Vector3 destination, int strikes)
     {
-        var direction = destination - self;
-        direction.Y = 0;
-        if (direction.LengthSquared() <= MinJitterDirectionSq)
+        if ((MatchState.PlayerFacing() ?? VectorMath.FlatDirection(destination - self)) is not { } facing)
         {
-            return destination;
+            return null;
         }
-        var perpendicular = Vector3.Normalize(new Vector3(-direction.Z, 0, direction.X));
-        jitterSign = -jitterSign;
-        return destination + perpendicular * (StuckJitterYalms * jitterSign);
+
+        for (var sideIndex = 0; sideIndex < 2; sideIndex++)
+        {
+            backOffSide = -backOffSide;
+            var candidate = SnagTracker.BackOffPoint(self, facing, strikes, backOffSide);
+            if (Nav.NearestPointReachable(candidate, BackOffSnapExtentXZ, BackOffSnapExtentY) is { } snapped
+                && VectorMath.HorizontalDistance(snapped, self) >= MinBackOffYalms)
+            {
+                return snapped;
+            }
+        }
+        return null;
     }
 
     private float DriftThreshold(bool pursue)
