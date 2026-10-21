@@ -387,6 +387,11 @@
     "r21120": {
       "1": "Correction : les jetons de tâche n'étaient pas achetés auprès du Mark Quartermaster ; la tournée d'achats sélectionne désormais la catégorie de la boutique jusqu'à ce que celle-ci l'affiche, puis fouille ses onglets",
       "2": "Correction : le personnage sautait sans fin contre la même falaise en Frontline (par exemple à Worqor Chirteh) et en Crystalline Conflict ; après un saut, il recule désormais à côté de l'obstacle, prend un nouveau chemin et y patiente un moment s'il reste bloqué"
+    },
+    "r21200": {
+      "1": "Ajout de Commandes de chat dans les réglages : listez vos propres commandes, une par ligne (comme /li home ou /ays m), elles se lancent quand une session se termine d'elle-même, avant l'action de fin, jamais après Arrêt ou un échec",
+      "2": "Ajout des textes qui manquaient dans toutes les langues, dont les notes de la 2.10.0.0 et les réglages Rival Wings et Éviter Chiten",
+      "3": "La fenêtre principale ne se déplace plus qu'en faisant glisser sa barre du haut, un glissement à l'intérieur ne la déplace donc plus par accident ; activez Déplacer depuis n'importe où dans les réglages pour retrouver l'ancien comportement"
     }
   },
   "about": {

@@ -387,6 +387,11 @@
     "r21120": {
       "1": "Behoben: Wertmarken wurden beim Mark Quartermaster nicht gekauft; der Einkauf wählt die Shop-Kategorie jetzt so lange, bis der Shop sie anzeigt, und durchsucht erst dann ihre Tabs",
       "2": "Behoben: Die Figur sprang in Frontline (z. B. Worqor Chirteh) und Crystalline Conflict immer wieder gegen dieselbe Klippe; nach einem Sprung weicht sie jetzt neben das Hindernis zurück, sucht einen neuen Weg und wartet dort eine Weile, wenn sie weiter hängen bleibt"
+    },
+    "r21200": {
+      "1": "Chat-Befehle in den Einstellungen hinzugefügt: Trage eigene Befehle ein, einen pro Zeile (etwa /li home oder /ays m); sie laufen, wenn ein Lauf von selbst endet, vor der Aktion nach dem Lauf, und nie nach Stopp oder einem Fehler",
+      "2": "Fehlende Texte in allen Sprachen ergänzt, darunter die Notizen zu 2.10.0.0 und die Einstellungen für Rival Wings und Chiten meiden",
+      "3": "Das Hauptfenster bewegt sich jetzt nur noch beim Ziehen an der oberen Leiste, Ziehen im Fenster verschiebt es also nicht mehr versehentlich; aktiviere Überall ziehen in den Einstellungen für das alte Verhalten"
     }
   },
   "about": {

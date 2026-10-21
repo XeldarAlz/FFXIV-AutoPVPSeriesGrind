@@ -387,6 +387,11 @@
     "r21120": {
       "1": "Fixed Ventures not being bought from the Mark Quartermaster: the shopping trip now keeps selecting the shop category until the shop shows it, then searches its tabs",
       "2": "Fixed jumping into the same cliff over and over in Frontline (seen at Worqor Chirteh) and Crystalline Conflict: after one jump the character now backs off beside the snag and takes a new path, and waits there a while if it keeps getting stuck"
+    },
+    "r21200": {
+      "1": "Added Chat commands to the settings: list your own commands, one per line (such as /li home or /ays m), and they run when a run finishes on its own, before the after-run action, never after Stop or a failure",
+      "2": "Filled in text that was missing from every language, including the 2.10.0.0 notes and the Rival Wings and Avoid Chiten settings",
+      "3": "The main window now moves only when you drag its top bar, so a drag inside it no longer moves it by accident; turn on Drag from anywhere in the settings for the old behaviour"
     }
   },
   "about": {

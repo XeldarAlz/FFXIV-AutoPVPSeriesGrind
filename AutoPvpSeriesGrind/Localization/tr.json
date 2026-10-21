@@ -387,6 +387,11 @@
     "r21120": {
       "1": "Düzeltildi: Ventures, Mark Quartermaster'dan satın alınmıyordu; alışveriş artık mağaza kategoriyi gösterene kadar kategoriyi seçmeye devam ediyor ve sekmelerini ancak sonra arıyor",
       "2": "Düzeltildi: Karakter Frontline'da (ör. Worqor Chirteh) ve Crystalline Conflict'te aynı kayalığa durmadan zıplıyordu; bir zıplamadan sonra artık engelin yanına geri çekilip yeni bir yol buluyor ve takılmaya devam ederse bir süre orada bekliyor"
+    },
+    "r21200": {
+      "1": "Ayarlara Sohbet komutları eklendi: kendi komutlarınızı her satıra bir tane yazın (örneğin /li home veya /ays m); bir çalışma kendiliğinden bittiğinde, bitiş eyleminden önce çalışırlar, Durdur'dan veya bir hatadan sonra asla çalışmazlar",
+      "2": "Tüm dillerde eksik olan metinler eklendi; 2.10.0.0 notları ile Rival Wings ve Chiten'den kaçın ayarları da dahil",
+      "3": "Ana pencere artık yalnızca üst çubuğundan sürüklenince hareket ediyor, böylece içinde sürüklemek onu yanlışlıkla taşımıyor; eski davranış için ayarlardan Her yerden sürükle seçeneğini açın"
     }
   },
   "about": {

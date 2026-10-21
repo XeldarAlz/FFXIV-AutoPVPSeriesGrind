@@ -326,6 +326,13 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release21200 =
+        [
+            new("changelog.r21200.1", "Added Chat commands to the settings: list your own commands, one per line (such as /li home or /ays m), and they run when a run finishes on its own, before the after-run action, never after Stop or a failure"),
+            new("changelog.r21200.2", "Filled in text that was missing from every language, including the 2.10.0.0 notes and the Rival Wings and Avoid Chiten settings"),
+            new("changelog.r21200.3", "The main window now moves only when you drag its top bar, so a drag inside it no longer moves it by accident; turn on Drag from anywhere in the settings for the old behaviour"),
+        ];
+
         public static readonly LocString[] Release21120 =
         [
             new("changelog.r21120.1", "Fixed Ventures not being bought from the Mark Quartermaster: the shopping trip now keeps selecting the shop category until the shop shows it, then searches its tabs"),

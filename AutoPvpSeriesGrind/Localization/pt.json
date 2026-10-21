@@ -387,6 +387,11 @@
     "r21120": {
       "1": "Corrigido: Ventures não eram compradas no Mark Quartermaster; agora a compra continua selecionando a categoria da loja até a loja mostrá-la, e só então procura nas abas",
       "2": "Corrigido: o personagem pulava sem parar contra o mesmo penhasco em Frontline (como em Worqor Chirteh) e em Crystalline Conflict; após um pulo, agora recua para o lado do obstáculo, segue por uma nova rota e espera ali por um tempo se continuar travando"
+    },
+    "r21200": {
+      "1": "Adicionados Comandos de chat às configurações: liste seus próprios comandos, um por linha (como /li home ou /ays m), e eles rodam quando uma sessão termina sozinha, antes da ação final, nunca depois de Parar ou de uma falha",
+      "2": "Textos que faltavam em todos os idiomas foram preenchidos, incluindo as notas da 2.10.0.0 e as configurações de Rival Wings e Evitar Chiten",
+      "3": "A janela principal agora só se move ao arrastar a barra superior, então arrastar dentro dela não a move mais sem querer; ative Arrastar de qualquer lugar nas configurações para o comportamento antigo"
     }
   },
   "about": {
