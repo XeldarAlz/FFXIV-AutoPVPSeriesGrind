@@ -181,7 +181,8 @@ internal sealed class AutoPvpSeriesController
         stats.AfterActionDispatched = true;
 
         var action = Plugin.Cfg.AfterRun;
-        if (action == AfterRunAction.StayLoggedIn)
+        var commandBlock = Plugin.Cfg.PostRunCommands;
+        if (action == AfterRunAction.StayLoggedIn && string.IsNullOrWhiteSpace(commandBlock))
         {
             LogDiagnostic("Goal reached; after-run action = stay where you are (no-op).");
             return;
@@ -189,7 +190,7 @@ internal sealed class AutoPvpSeriesController
 
         LogDiagnostic($"Goal reached; starting after-run action {action}.");
         Phase = AutoPhase.Finishing;
-        Svc.Automation.Start(new AutoAfterRun(action), OnCompleted: () =>
+        Svc.Automation.Start(new AutoAfterRun(action, commandBlock), OnCompleted: () =>
         {
             LogDiagnostic($"After-run action {action} finished.");
             Phase = AutoPhase.Idle;

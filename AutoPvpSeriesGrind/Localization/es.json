@@ -495,6 +495,12 @@
       "breakLength": "Duración del descanso",
       "breakLengthHelp": "Cuánto dura aproximadamente cada descanso, con una variación de ±20 % cada vez."
     },
+    "postRun": {
+      "group": "Comandos de chat",
+      "label": "Ejecutar cuando termine la sesión",
+      "help": "Un comando por línea, cada uno empezando por una barra. Se ejecutan cuando una sesión termina por sí sola, antes de la acción final, y nunca tras Detener o un fallo.",
+      "caption": "Las líneas que no empiezan por barra se omiten, así que nunca se dice nada en el chat. Prueba /li home para volver a casa o /ays m para ceder el paso a AutoRetainer."
+    },
     "combat": {
       "introMovement": "El comportamiento controla solo el movimiento: dónde colocarse y cuándo retroceder. ",
       "introRotation": "La rotación integrada pulsa tus habilidades, Guardia, Purificar, Recuperar y Elixir; el plugin necesario Auto PVP LB lanza el Límite, configurado automáticamente para tu clase.",

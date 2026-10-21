@@ -495,6 +495,12 @@
       "breakLength": "Break length",
       "breakLengthHelp": "Roughly how long each break lasts, varied by ±20% each time."
     },
+    "postRun": {
+      "group": "Chat commands",
+      "label": "Run when the run finishes",
+      "help": "One command per line, each starting with a slash. They run when a run ends on its own, before the after-run action, and never after Stop or a failure.",
+      "caption": "Lines that do not start with a slash are skipped, so nothing is ever said in chat. Try /li home to head home or /ays m to hand off to AutoRetainer."
+    },
     "combat": {
       "introMovement": "Behavior controls movement only: where to stand and when to back off. ",
       "introRotation": "The built-in rotation presses your skills, Guard, Purify, Recuperate and Elixir; the required Auto PVP LB plugin fires the Limit Break, auto-configured for your class.",

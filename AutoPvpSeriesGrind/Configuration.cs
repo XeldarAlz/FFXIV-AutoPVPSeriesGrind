@@ -70,6 +70,7 @@ public sealed class Configuration : IPluginConfiguration
     public int BreakMinutes { get; set; } = 5;
 
     public AfterRunAction AfterRun { get; set; } = AfterRunAction.StayLoggedIn;
+    public string PostRunCommands { get; set; } = string.Empty;
 
     public bool ShopBetweenMatches { get; set; } = false;
     public int ShopMarksThreshold { get; set; } = 18_000;

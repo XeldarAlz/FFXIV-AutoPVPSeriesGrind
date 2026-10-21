@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace AutoPvpSeriesGrind.Core.Tasks;
 
-internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
+internal sealed class AutoAfterRun(AfterRunAction action, string commandBlock) : AutoCommon
 {
     private readonly AfterRunAction action = action;
+    private readonly string commandBlock = commandBlock;
 
     private const int ReadyWaitMs = 20_000;
     private const int YesnoWaitMs = 6_000;
@@ -18,10 +19,19 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
     private const int LifestreamStartMs = 4_000;
     private const int LifestreamCompleteMs = 180_000;
 
+    // Some plugin commands misbehave when several arrive in the same frame, and a logout must not cut the last one off.
+    private const int ChatCommandSpacingMs = 500;
+
     protected override async Task Execute()
     {
         await WaitUntilTimed(IsFreeToAct, ReadyWaitMs, "afterrun-ready");
         if (CancelToken.IsCancellationRequested) return;
+
+        await RunChatCommands();
+        if (CancelToken.IsCancellationRequested)
+        {
+            return;
+        }
 
         switch (action)
         {
@@ -39,6 +49,42 @@ internal sealed class AutoAfterRun(AfterRunAction action) : AutoCommon
                 await DelayMs(PreCommandSettleMs);
                 Chat.ExecuteCommand(ApsgConstants.GameCommands.CloseGame);
                 break;
+        }
+    }
+
+    private async Task RunChatCommands()
+    {
+        var lines = ChatCommandBlock.Lines(commandBlock);
+        for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+        {
+            if (CancelToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            var line = lines[lineIndex];
+            if (!ChatCommandBlock.IsCommand(line))
+            {
+                Warn($"After-run line skipped, commands must start with '/': {line}");
+                continue;
+            }
+
+            Status = "Running your chat commands";
+            SendChatCommand(line);
+            await DelayMs(ChatCommandSpacingMs);
+        }
+    }
+
+    private void SendChatCommand(string command)
+    {
+        try
+        {
+            LogDiagnostic($"After-run command: {command}");
+            Chat.ExecuteCommand(command);
+        }
+        catch (Exception exception)
+        {
+            RunLog.Error($"After-run command '{command}' failed: {exception.Message}");
         }
     }
 

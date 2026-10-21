@@ -495,6 +495,12 @@
       "breakLength": "休息时长",
       "breakLengthHelp": "每次休息大概多久，每次上下浮动 ±20 %。"
     },
+    "postRun": {
+      "group": "聊天命令",
+      "label": "运行结束时执行",
+      "help": "每行一条命令，每条都以斜杠开头。运行自行结束时，在结束后操作之前执行。停止后或失败时不会执行。",
+      "caption": "不以斜杠开头的行会被跳过，因此绝不会在聊天中发言。可以试试 /li home 回家，或 /ays m 交接给 AutoRetainer。"
+    },
     "combat": {
       "introMovement": "行为只控制移动：站在哪里，什么时候后撤。 ",
       "introRotation": "内置循环负责按下你的技能、Guard、Purify、Recuperate 和 Elixir；必需的 Auto PVP LB 插件负责释放极限技，并按你的职业自动配置。",

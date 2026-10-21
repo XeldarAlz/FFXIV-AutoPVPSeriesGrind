@@ -495,6 +495,12 @@
       "breakLength": "Mola süresi",
       "breakLengthHelp": "Her molanın kabaca ne kadar süreceği, her seferinde ±%20 değişerek."
     },
+    "postRun": {
+      "group": "Sohbet komutları",
+      "label": "Koşu bitince çalıştır",
+      "help": "Her satırda bir komut, her biri eğik çizgiyle başlar. Bir koşu kendiliğinden bittiğinde, bitiş eyleminden önce çalışırlar; Durdur'dan veya bir hatadan sonra asla çalışmazlar.",
+      "caption": "Eğik çizgiyle başlamayan satırlar atlanır, yani sohbete hiçbir şey yazılmaz. Eve gitmek için /li home veya AutoRetainer'a devretmek için /ays m deneyebilirsin."
+    },
     "combat": {
       "introMovement": "Davranış yalnızca hareketi yönetir: nerede duracağı ve ne zaman geri çekileceği. ",
       "introRotation": "Yerleşik rotasyon yeteneklerini, Guard, Purify, Recuperate ve Elixir'i basar; gerekli Auto PVP LB eklentisi ise sınıfına göre otomatik ayarlanmış Limit Break'i kullanır.",

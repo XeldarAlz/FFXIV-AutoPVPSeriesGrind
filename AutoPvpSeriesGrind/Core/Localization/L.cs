@@ -511,6 +511,11 @@ internal static class L
         public static readonly LocString BreakLength = new("settings.session.breakLength", "Break length");
         public static readonly LocString BreakLengthHelp = new("settings.session.breakLengthHelp", "Roughly how long each break lasts, varied by ±20% each time.");
 
+        public static readonly LocString PostRunGroup = new("settings.postRun.group", "Chat commands");
+        public static readonly LocString PostRunLabel = new("settings.postRun.label", "Run when the run finishes");
+        public static readonly LocString PostRunHelp = new("settings.postRun.help", "One command per line, each starting with a slash. They run when a run ends on its own, before the after-run action, and never after Stop or a failure.");
+        public static readonly LocString PostRunCaption = new("settings.postRun.caption", "Lines that do not start with a slash are skipped, so nothing is ever said in chat. Try /li home to head home or /ays m to hand off to AutoRetainer.");
+
         public static readonly LocString CombatIntroMovement = new("settings.combat.introMovement", "Behavior controls movement only: where to stand and when to back off. ");
         public static readonly LocString CombatIntroRotation = new("settings.combat.introRotation", "The built-in rotation presses your skills, Guard, Purify, Recuperate and Elixir; the required Auto PVP LB plugin fires the Limit Break, auto-configured for your class.");
         public static readonly LocString GroupCombat = new("settings.combat.group", "Combat");

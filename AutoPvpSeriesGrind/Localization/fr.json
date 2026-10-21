@@ -495,6 +495,12 @@
       "breakLength": "Durée de la pause",
       "breakLengthHelp": "La durée approximative de chaque pause, variée de ±20 % à chaque fois."
     },
+    "postRun": {
+      "group": "Commandes de chat",
+      "label": "Lancer à la fin de la session",
+      "help": "Une commande par ligne, chacune commençant par une barre oblique. Elles se lancent quand une session se termine d'elle-même, avant l'action de fin, et jamais après Arrêt ou un échec.",
+      "caption": "Les lignes qui ne commencent pas par une barre oblique sont ignorées, rien n'est donc jamais dit dans le chat. Essaie /li home pour rentrer ou /ays m pour passer la main à AutoRetainer."
+    },
     "combat": {
       "introMovement": "Le comportement ne contrôle que les déplacements : où se placer et quand reculer. ",
       "introRotation": "La rotation intégrée appuie sur vos compétences, Garde, Purification, Récupération et Élixir ; le plugin requis Auto PVP LB déclenche la Transcendance, configurée automatiquement pour votre classe.",

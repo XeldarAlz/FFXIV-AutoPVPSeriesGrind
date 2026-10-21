@@ -495,6 +495,12 @@
       "breakLength": "Pausenlänge",
       "breakLengthHelp": "Wie lange eine Pause ungefähr dauert, jedes Mal um ±20 % variiert."
     },
+    "postRun": {
+      "group": "Chat-Befehle",
+      "label": "Ausführen, wenn der Lauf endet",
+      "help": "Ein Befehl pro Zeile, jeder beginnt mit einem Schrägstrich. Sie laufen, wenn ein Lauf von selbst endet, vor der Aktion nach dem Lauf, und nie nach Stopp oder einem Fehler.",
+      "caption": "Zeilen ohne führenden Schrägstrich werden übersprungen, es wird also nie etwas im Chat gesagt. Probiere /li home für den Heimweg oder /ays m zur Übergabe an AutoRetainer."
+    },
     "combat": {
       "introMovement": "Das Verhalten steuert nur die Bewegung: wo gestanden und wann zurückgewichen wird. ",
       "introRotation": "Die eingebaute Rotation drückt deine Fähigkeiten, Guard, Purify, Recuperate und Elixir; das benötigte Auto PVP LB Plugin zündet den Limitrausch, automatisch auf deine Klasse eingestellt.",

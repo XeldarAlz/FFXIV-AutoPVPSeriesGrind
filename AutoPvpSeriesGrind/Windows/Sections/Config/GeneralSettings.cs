@@ -11,6 +11,7 @@ internal static class GeneralSettings
         DrawWindowGroup(cfg);
         DrawPacingGroup(cfg);
         DrawBreaksGroup(cfg);
+        PostRunSettings.Draw(cfg);
         SettingsGroup.Footnote(Loc.T(L.Settings.SessionFootnote));
     }
 
