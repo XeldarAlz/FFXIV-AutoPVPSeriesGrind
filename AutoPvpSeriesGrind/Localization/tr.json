@@ -375,6 +375,10 @@
     },
     "r21110": {
       "1": "Değiştirildi: Frontline'da bineğe binerken karakter, binek büyüsü sırasında durmak yerine koşmaya devam ediyor. Katkı: Sojiroh"
+    },
+    "r21120": {
+      "1": "Düzeltildi: Ventures, Mark Quartermaster'dan satın alınmıyordu; alışveriş artık mağaza kategoriyi gösterene kadar kategoriyi seçmeye devam ediyor ve sekmelerini ancak sonra arıyor",
+      "2": "Düzeltildi: Karakter Frontline'da (ör. Worqor Chirteh) ve Crystalline Conflict'te aynı kayalığa durmadan zıplıyordu; bir zıplamadan sonra artık engelin yanına geri çekilip yeni bir yol buluyor ve takılmaya devam ederse bir süre orada bekliyor"
     }
   },
   "about": {

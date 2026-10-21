@@ -326,6 +326,12 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release21120 =
+        [
+            new("changelog.r21120.1", "Fixed Ventures not being bought from the Mark Quartermaster: the shopping trip now keeps selecting the shop category until the shop shows it, then searches its tabs"),
+            new("changelog.r21120.2", "Fixed jumping into the same cliff over and over in Frontline (seen at Worqor Chirteh) and Crystalline Conflict: after one jump the character now backs off beside the snag and takes a new path, and waits there a while if it keeps getting stuck"),
+        ];
+
         public static readonly LocString[] Release21110 =
         [
             new("changelog.r21110.1", "Changed mounting up in Frontline to keep running through the mount cast instead of stopping for it. Contributed by Sojiroh"),

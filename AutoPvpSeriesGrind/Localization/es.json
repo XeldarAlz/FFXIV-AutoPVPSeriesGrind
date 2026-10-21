@@ -375,6 +375,10 @@
     },
     "r21110": {
       "1": "Cambiado el montaje en Frontline: el personaje sigue corriendo durante el lanzamiento de la montura en lugar de detenerse. Contribución de Sojiroh"
+    },
+    "r21120": {
+      "1": "Corregido: no se compraban Ventures al Mark Quartermaster; ahora la compra sigue eligiendo la categoría de la tienda hasta que la tienda la muestra, y solo entonces busca en sus pestañas",
+      "2": "Corregido: el personaje saltaba una y otra vez contra el mismo acantilado en Frontline (como en Worqor Chirteh) y en Crystalline Conflict; tras un salto ahora retrocede junto al obstáculo, toma una nueva ruta y espera allí un rato si sigue atascándose"
     }
   },
   "about": {

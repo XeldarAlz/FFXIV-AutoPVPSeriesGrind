@@ -375,6 +375,10 @@
     },
     "r21110": {
       "1": "Modification de la monte en Frontline : le personnage continue de courir pendant l’incantation de la monture au lieu de s’arrêter. Contribution de Sojiroh"
+    },
+    "r21120": {
+      "1": "Correction : les jetons de tâche n'étaient pas achetés auprès du Mark Quartermaster ; la tournée d'achats sélectionne désormais la catégorie de la boutique jusqu'à ce que celle-ci l'affiche, puis fouille ses onglets",
+      "2": "Correction : le personnage sautait sans fin contre la même falaise en Frontline (par exemple à Worqor Chirteh) et en Crystalline Conflict ; après un saut, il recule désormais à côté de l'obstacle, prend un nouveau chemin et y patiente un moment s'il reste bloqué"
     }
   },
   "about": {

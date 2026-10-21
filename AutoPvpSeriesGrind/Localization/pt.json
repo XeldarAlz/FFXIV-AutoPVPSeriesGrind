@@ -375,6 +375,10 @@
     },
     "r21110": {
       "1": "Alterado o uso de montaria em Frontline: o personagem continua correndo durante a conjuração da montaria em vez de parar. Contribuição de Sojiroh"
+    },
+    "r21120": {
+      "1": "Corrigido: Ventures não eram compradas no Mark Quartermaster; agora a compra continua selecionando a categoria da loja até a loja mostrá-la, e só então procura nas abas",
+      "2": "Corrigido: o personagem pulava sem parar contra o mesmo penhasco em Frontline (como em Worqor Chirteh) e em Crystalline Conflict; após um pulo, agora recua para o lado do obstáculo, segue por uma nova rota e espera ali por um tempo se continuar travando"
     }
   },
   "about": {
