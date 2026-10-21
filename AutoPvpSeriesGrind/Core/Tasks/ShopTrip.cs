@@ -21,7 +21,8 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
     private const int BuyClickWaitMs = 2_000;
     private const int SpendWaitMs = 8_000;
     private const int ConfirmCloseWaitMs = 2_000;
-    private const int CategoryWaitMs = 3_000;
+    private const int CategoryWaitMs = 4_000;
+    private const int CategoryRetryMs = 1_000;
     private const int CategorySettleMs = 500;
     private const int SettleMs = 400;
     private const int PollMs = 100;
@@ -239,16 +240,10 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
     private async Task<bool> TryInclusionTab(ShopItem item, int category, int tab)
     {
         Status = $"Looking for {item.Name}";
-        if (category != selectedInclusionCategory)
+        if (!await ShowInclusionCategory(category))
         {
-            if (!ShopWindows.SelectInclusionCategory(category))
-            {
-                return false;
-            }
-
-            selectedInclusionCategory = category;
-            await WaitUntilTimed(() => ShopWindows.InclusionCategoryReady(category), CategoryWaitMs, $"shop-category-{category}");
-            await DelayMs(CategorySettleMs);
+            LogDiagnostic($"Shopping: category {category} did not open; {ShopWindows.DescribeInclusionShop()}");
+            return false;
         }
 
         if (!ShopWindows.SelectInclusionSubCategory(tab))
@@ -263,6 +258,43 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
 
         LogDiagnostic($"Shopping: no {item.Name} in category {category}, tab {tab}; {ShopWindows.DescribeInclusionShop()}");
         return false;
+    }
+
+    // The shop can drop a category pick made while it is still loading, so keep asking until it reports that category.
+    private async Task<bool> ShowInclusionCategory(int category)
+    {
+        if (category == selectedInclusionCategory && ShopWindows.InclusionCategoryReady(category))
+        {
+            return true;
+        }
+
+        selectedInclusionCategory = -1;
+        var requested = false;
+        var nextSelectAtMs = 0L;
+        var shown = await WaitUntilTimed(() =>
+        {
+            if (requested && ShopWindows.InclusionCategoryReady(category))
+            {
+                return true;
+            }
+
+            var now = Environment.TickCount64;
+            if (now >= nextSelectAtMs && ShopWindows.SelectInclusionCategory(category))
+            {
+                requested = true;
+                nextSelectAtMs = now + CategoryRetryMs;
+            }
+
+            return false;
+        }, CategoryWaitMs, $"shop-category-{category}");
+        if (!shown)
+        {
+            return false;
+        }
+
+        selectedInclusionCategory = category;
+        await DelayMs(CategorySettleMs);
+        return true;
     }
 
     private static bool CanTravel() => IsFreeToAct() && !DutyOps.HasDutyInFlight();
