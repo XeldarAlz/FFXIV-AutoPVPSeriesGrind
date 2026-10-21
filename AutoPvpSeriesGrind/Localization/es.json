@@ -457,6 +457,9 @@
     "title": "Ajustes",
     "language": "Idioma",
     "languageHelp": "El idioma de las ventanas de este plugin. Los nombres de job y de mapa siempre siguen al cliente del juego.",
+    "window": "Ventana",
+    "dragAnywhere": "Arrastrar desde cualquier punto",
+    "dragAnywhereHelp": "Mueve la ventana arrastrando desde cualquier punto de su interior. Si está desactivado, solo la barra superior la mueve.",
     "cat": {
       "session": "Sesión",
       "sessionSub": "El ritmo entre partidas y los descansos que tomaría una persona.",

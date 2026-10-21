@@ -457,6 +457,9 @@
     "title": "Settings",
     "language": "Language",
     "languageHelp": "The language of this plugin's windows. Job and map names always follow the game client.",
+    "window": "Window",
+    "dragAnywhere": "Drag from anywhere",
+    "dragAnywhereHelp": "Move the window by dragging anywhere inside it. When off, only the top bar moves it.",
     "cat": {
       "session": "Session",
       "sessionSub": "Pacing between matches, and the breaks a person would take.",

@@ -457,6 +457,9 @@
     "title": "设置",
     "language": "语言",
     "languageHelp": "本插件窗口使用的语言。职业名和地图名始终跟随游戏客户端。",
+    "window": "窗口",
+    "dragAnywhere": "任意位置拖动",
+    "dragAnywhereHelp": "在窗口内任意位置拖动即可移动窗口。关闭后只能通过顶部栏移动。",
     "cat": {
       "session": "会话",
       "sessionSub": "比赛之间的节奏，以及真人会有的休息。",

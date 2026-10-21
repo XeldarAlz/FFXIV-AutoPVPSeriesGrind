@@ -457,6 +457,9 @@
     "title": "Einstellungen",
     "language": "Sprache",
     "languageHelp": "Die Sprache der Fenster dieses Plugins. Job- und Kartennamen folgen immer dem Spielclient.",
+    "window": "Fenster",
+    "dragAnywhere": "Überall ziehen",
+    "dragAnywhereHelp": "Verschiebt das Fenster beim Ziehen an einer beliebigen Stelle. Ist das aus, verschiebt nur die obere Leiste das Fenster.",
     "cat": {
       "session": "Sitzung",
       "sessionSub": "Das Tempo zwischen Matches und die Pausen, die ein Mensch machen würde.",

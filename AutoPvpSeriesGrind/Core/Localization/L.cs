@@ -484,6 +484,9 @@ internal static class L
         public static readonly LocString Title = new("settings.title", "Settings");
         public static readonly LocString Language = new("settings.language", "Language");
         public static readonly LocString LanguageHelp = new("settings.languageHelp", "The language of this plugin's windows. Job and map names always follow the game client.");
+        public static readonly LocString GroupWindow = new("settings.window", "Window");
+        public static readonly LocString DragAnywhere = new("settings.dragAnywhere", "Drag from anywhere");
+        public static readonly LocString DragAnywhereHelp = new("settings.dragAnywhereHelp", "Move the window by dragging anywhere inside it. When off, only the top bar moves it.");
 
         public static readonly LocString CatSession = new("settings.cat.session", "Session");
         public static readonly LocString CatSessionSub = new("settings.cat.sessionSub", "Pacing between matches, and the breaks a person would take.");

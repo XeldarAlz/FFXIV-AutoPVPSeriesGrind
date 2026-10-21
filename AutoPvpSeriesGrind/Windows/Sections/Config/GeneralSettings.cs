@@ -8,6 +8,7 @@ internal static class GeneralSettings
     public static void Draw(Configuration cfg)
     {
         DrawLanguageGroup(cfg);
+        DrawWindowGroup(cfg);
         DrawPacingGroup(cfg);
         DrawBreaksGroup(cfg);
         SettingsGroup.Footnote(Loc.T(L.Settings.SessionFootnote));
@@ -21,6 +22,17 @@ internal static class GeneralSettings
             Loc.T(L.Settings.LanguageHelp),
             SettingsControls.RowComboWidth,
             () => SettingsControls.DrawLanguageCombo(cfg));
+    }
+
+    private static void DrawWindowGroup(Configuration cfg)
+    {
+        using var group = SettingsGroup.Begin(Loc.T(L.Settings.GroupWindow));
+
+        SettingsRow.Draw(Loc.T(L.Settings.DragAnywhere),
+            Loc.T(L.Settings.DragAnywhereHelp),
+            SettingsControls.ToggleWidth,
+            () => SettingsControls.DrawToggle(cfg, () => cfg.DragWindowFromAnywhere, value => cfg.DragWindowFromAnywhere = value, "##draganywhere"),
+            SettingsRow.ToggleHeight);
     }
 
     private static void DrawPacingGroup(Configuration cfg)

@@ -457,6 +457,9 @@
     "title": "Configurações",
     "language": "Idioma",
     "languageHelp": "O idioma das janelas deste plugin. Nomes de job e de mapa sempre seguem o cliente do jogo.",
+    "window": "Janela",
+    "dragAnywhere": "Arrastar de qualquer lugar",
+    "dragAnywhereHelp": "Move a janela ao arrastar de qualquer ponto dentro dela. Desativado, só a barra superior a move.",
     "cat": {
       "session": "Sessão",
       "sessionSub": "O ritmo entre partidas e as pausas que uma pessoa faria.",

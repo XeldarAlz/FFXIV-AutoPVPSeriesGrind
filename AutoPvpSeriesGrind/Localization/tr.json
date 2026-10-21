@@ -457,6 +457,9 @@
     "title": "Ayarlar",
     "language": "Dil",
     "languageHelp": "Bu eklentinin pencerelerinin dili. Job ve harita adları her zaman oyun istemcisini izler.",
+    "window": "Pencere",
+    "dragAnywhere": "Her yerden sürükle",
+    "dragAnywhereHelp": "Pencereyi içinde herhangi bir yerden sürükleyerek taşır. Kapalıyken yalnızca üst çubuk taşır.",
     "cat": {
       "session": "Seans",
       "sessionSub": "Maçlar arasındaki tempo ve bir insanın vereceği molalar.",

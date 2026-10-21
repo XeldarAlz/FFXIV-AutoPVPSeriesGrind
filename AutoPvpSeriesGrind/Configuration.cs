@@ -15,6 +15,8 @@ public sealed class Configuration : IPluginConfiguration
 
     public string Language { get; set; } = "";
 
+    public bool DragWindowFromAnywhere { get; set; } = false;
+
     public string ModeId { get; set; } = MatchCountMode.ModeId;
     public MatchType MatchType { get; set; } = MatchType.CrystallineConflict;
     public bool RankedCrystallineConflict { get; set; } = false;
