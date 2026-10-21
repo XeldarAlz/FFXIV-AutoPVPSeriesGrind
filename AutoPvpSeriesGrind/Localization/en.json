@@ -193,7 +193,9 @@
     "whatToQueue": "What to queue",
     "queue": {
       "casualHelp": "Casual matches, the fastest way to move the Series bar.",
-      "frontlineHelp": "The daily Frontline roulette: 72-player battles with the biggest Series EXP per match. The bot stays with its team and never runs off alone."
+      "frontlineHelp": "The daily Frontline roulette: 72-player battles with the biggest Series EXP per match. The bot stays with its team and never runs off alone.",
+      "rivalWingsHelp": "Hidden Gorge: follow allied groups and fight on foot. Mech piloting remains manual.",
+      "rivalWingsWaiting": "Waiting for a Hidden Gorge match."
     },
     "endlessHelp": "Queues match after match until you press Stop.",
     "stopAfter": "Stop after",
@@ -201,7 +203,8 @@
     "reachRank": "Reach rank",
     "reachRankHelp": "You are rank {0} now. The run finishes the match it is in before stopping.",
     "stopAfterTimeHelp": "The timer stops queueing new matches; the one in progress still plays out.",
-    "modeFrontline": "Frontline"
+    "modeFrontline": "Frontline",
+    "modeRivalWings": "Rival Wings"
   },
   "run": {
     "running": "Running",
@@ -363,6 +366,11 @@
       "2": "Added this changelog, with a badge whenever an update brings something new",
       "3": "Overhauled the About page, with the updated Discord link"
     },
+    "r21000": {
+      "1": "Fixed mounting, taking two steps and dismounting over and over in Frontline when an enemy is close: after an enemy forces a dismount, riding again waits for more room and a longer pause",
+      "2": "Fixed Frontline matches idling at a Shatter tomelith with nothing targeted: with no enemy player in reach, the nearest structure within engage range is now attacked, in the team brain and in steer-yourself mode alike",
+      "3": "Fixed Black Mage never using Flare Star or Frost Star after Soul Resonance: the rotation now follows the swapped limit break button, and uses the stars directly while Elemental Star is up"
+    },
     "r21100": {
       "1": "Changed the Grind layout to use three mode cards, compact session controls, and directly accessible combat presets and custom settings",
       "2": "Added Casual and Ranked queue selection for Crystalline Conflict",
@@ -384,9 +392,11 @@
   "about": {
     "support": {
       "title": "Made with love and care",
-      "body": "This plugin is a one-person project, built in my free time because I love this game and its community. Keeping it updated takes a lot of those hours. If it has helped you, supporting me on Patreon means I can keep giving it that time. Thank you for being here.",
+      "body": "This plugin is a one-person project, built in my free time because I love this game and its community. Keeping it updated takes a lot of those hours. If it has helped you, supporting me on Patreon or buying me a coffee means I can keep giving it that time. Thank you for being here.",
       "button": "Support on Patreon",
-      "hint": "Open Patreon, right-click to copy the link."
+      "hint": "Open Patreon, right-click to copy the link.",
+      "coffeeButton": "Buy me a coffee",
+      "coffeeHint": "Open Buy Me a Coffee, right-click to copy the link."
     },
     "linkHint": "Click to open, right-click to copy the link.",
     "madeBy": "Made by {0}",
@@ -629,7 +639,9 @@
       "lowestHp": "Lowest HP",
       "lowestHpHelp": "The enemy with the least HP within 25 yards, skipping anyone with Guard up while someone else is available.",
       "current": "Your current target",
-      "currentHelp": "Attacks whatever you have targeted and only picks for itself when you have nothing targeted."
+      "currentHelp": "Attacks whatever you have targeted and only picks for itself when you have nothing targeted.",
+      "avoidChiten": "Avoid Chiten",
+      "avoidChitenHelp": "Skip enemies protected by Chiten when selecting targets, chasing, or using offensive actions."
     },
     "frontline": {
       "behavior": "Frontline behavior",
@@ -642,6 +654,10 @@
       "aggressiveHelp": "Stands at the very front of the group, shrugs off focus longer and falls back only below ~30% HP.",
       "custom": "Custom",
       "customHelp": "Hand-tuned: every Frontline distance and threshold below is yours to set. Starts from the Moderate baseline."
+    },
+    "rivalWings": {
+      "behavior": "Rival Wings behavior",
+      "behaviorHelp": "Infantry formation, retreat and mounting. Shares your large-scale PvP behavior settings."
     },
     "frontlineCustom": {
       "position": "Where to stand in the group",

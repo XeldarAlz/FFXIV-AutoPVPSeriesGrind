@@ -193,7 +193,9 @@
     "whatToQueue": "Neye sıraya girilecek",
     "queue": {
       "casualHelp": "Casual maçlar, Seri çubuğunu ilerletmenin en hızlı yolu.",
-      "frontlineHelp": "Günlük Frontline ruleti: 72 oyunculu savaşlar, maç başına en yüksek Seri EXP'si. Bot takımının yanında kalır, asla tek başına gitmez."
+      "frontlineHelp": "Günlük Frontline ruleti: 72 oyunculu savaşlar, maç başına en yüksek Seri EXP'si. Bot takımının yanında kalır, asla tek başına gitmez.",
+      "rivalWingsHelp": "Hidden Gorge: müttefik gruplarını takip eder ve yaya savaşır. Mekaların kontrolü manuel kalır.",
+      "rivalWingsWaiting": "Hidden Gorge maçı bekleniyor."
     },
     "endlessHelp": "Sen Durdur'a basana kadar maç üstüne maç sıraya girer.",
     "stopAfter": "Şundan sonra dur",
@@ -201,7 +203,8 @@
     "reachRank": "Şu rütbeye ulaş",
     "reachRankHelp": "Şu an {0}. rütbedesin. Koşu, durmadan önce içinde bulunduğu maçı bitirir.",
     "stopAfterTimeHelp": "Sayaç yeni maçlara sıraya girmeyi durdurur; devam eden maç sonuna kadar oynanır.",
-    "modeFrontline": "Frontline"
+    "modeFrontline": "Frontline",
+    "modeRivalWings": "Rival Wings"
   },
   "run": {
     "running": "Çalışıyor",
@@ -363,6 +366,11 @@
       "2": "Bu değişiklik günlüğü eklendi; bir güncelleme yenilik getirdiğinde rozetle bildirir",
       "3": "Hakkında sayfası baştan yenilendi, Discord bağlantısı güncellendi"
     },
+    "r21000": {
+      "1": "Düzeltildi: Frontline'da yakında düşman varken sürekli bineğe binme, iki adım gidip inme; bir düşman yüzünden inildikten sonra tekrar binmek için artık daha fazla alan ve daha uzun bir ara bekleniyor",
+      "2": "Düzeltildi: Frontline maçlarında karakter hiçbir şeyi hedeflemeden bir Shatter tomelith'inin başında boşta bekliyordu; menzilde düşman oyuncu yoksa artık çatışma menzilindeki en yakın yapıya saldırıyor, hem takım beyninde hem \"Kendin yönet\" modunda",
+      "3": "Düzeltildi: Black Mage, Soul Resonance'tan sonra Flare Star veya Frost Star'ı hiç kullanmıyordu; rotasyon artık değişen Limit Break düğmesini takip ediyor ve Elemental Star aktifken yıldızları doğrudan kullanıyor"
+    },
     "r21100": {
       "1": "Değiştirildi: Grind düzeni artık üç mod kartı, kompakt oturum kontrolleri ve savaş profilleriyle özel ayarlara doğrudan erişim sunuyor",
       "2": "Eklendi: Crystalline Conflict için normal ve dereceli maç kuyruğu seçimi",
@@ -384,9 +392,11 @@
   "about": {
     "support": {
       "title": "Sevgi ve özenle yapıldı",
-      "body": "Bu eklenti, bu oyunu ve topluluğunu sevdiğim için boş zamanlarımda tek başıma geliştirdiğim bir proje. Onu güncel tutmak o saatlerin çoğunu alıyor. Size yardımcı olduysa, Patreon'da destek olmanız ona bu zamanı ayırmaya devam etmemi sağlar. Burada olduğunuz için teşekkürler.",
+      "body": "Bu eklenti, bu oyunu ve topluluğunu sevdiğim için boş zamanlarımda tek başıma geliştirdiğim bir proje. Onu güncel tutmak o saatlerin çoğunu alıyor. Size yardımcı olduysa, Patreon'da destek olmanız ya da bana bir kahve ısmarlamanız ona bu zamanı ayırmaya devam etmemi sağlar. Burada olduğunuz için teşekkürler.",
       "button": "Patreon'da destekle",
-      "hint": "Patreon'u aç, bağlantıyı kopyalamak için sağ tıkla."
+      "hint": "Patreon'u aç, bağlantıyı kopyalamak için sağ tıkla.",
+      "coffeeButton": "Bana bir kahve ısmarla",
+      "coffeeHint": "Buy Me a Coffee'yi aç, bağlantıyı kopyalamak için sağ tıkla."
     },
     "linkHint": "Açmak için tıkla, bağlantıyı kopyalamak için sağ tıkla.",
     "madeBy": "{0} tarafından yapıldı",
@@ -629,7 +639,9 @@
       "lowestHp": "En düşük can",
       "lowestHpHelp": "25 metre içindeki en az canlı düşman; başka biri varken Guard'ı açık olanlar atlanır.",
       "current": "Mevcut hedefin",
-      "currentHelp": "Hedeflediğin şeye saldırır; yalnızca hedefin yokken kendi seçer."
+      "currentHelp": "Hedeflediğin şeye saldırır; yalnızca hedefin yokken kendi seçer.",
+      "avoidChiten": "Chiten'den kaçın",
+      "avoidChitenHelp": "Hedef seçerken, kovalarken veya saldırı eylemleri kullanırken Chiten ile korunan düşmanları atlar."
     },
     "frontline": {
       "behavior": "Frontline davranışı",
@@ -642,6 +654,10 @@
       "aggressiveHelp": "Grubun en önünde durur, odağa daha uzun dayanır ve yalnızca ~%30 canın altında geri çekilir.",
       "custom": "Özel",
       "customHelp": "Elle ayar: aşağıdaki her Frontline mesafesi ve eşiği sana ait. Dengeli tabandan başlar."
+    },
+    "rivalWings": {
+      "behavior": "Rival Wings davranışı",
+      "behaviorHelp": "Piyade düzeni, geri çekilme ve bineğe binme. Büyük ölçekli PvP davranış ayarlarını paylaşır."
     },
     "frontlineCustom": {
       "position": "Grupta nerede durulacağı",

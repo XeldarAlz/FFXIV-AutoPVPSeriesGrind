@@ -193,7 +193,9 @@
     "whatToQueue": "Qué encolar",
     "queue": {
       "casualHelp": "Partidas casuales, la forma más rápida de subir la barra de serie.",
-      "frontlineHelp": "La ruleta diaria de Frontline: batallas de 72 jugadores con la mayor EXP de serie por partida. El bot se queda con su equipo y nunca se va solo."
+      "frontlineHelp": "La ruleta diaria de Frontline: batallas de 72 jugadores con la mayor EXP de serie por partida. El bot se queda con su equipo y nunca se va solo.",
+      "rivalWingsHelp": "Hidden Gorge: sigue a los grupos aliados y combate a pie. El pilotaje de los mecas sigue siendo manual.",
+      "rivalWingsWaiting": "Esperando una partida de Hidden Gorge."
     },
     "endlessHelp": "Encola partida tras partida hasta que pulses Detener.",
     "stopAfter": "Detener tras",
@@ -201,7 +203,8 @@
     "reachRank": "Alcanzar rango",
     "reachRankHelp": "Ahora estás en el rango {0}. La sesión termina la partida en curso antes de parar.",
     "stopAfterTimeHelp": "El temporizador deja de encolar partidas nuevas; la que está en curso se juega hasta el final.",
-    "modeFrontline": "Frontline"
+    "modeFrontline": "Frontline",
+    "modeRivalWings": "Rival Wings"
   },
   "run": {
     "running": "En marcha",
@@ -363,6 +366,11 @@
       "2": "Añadido este registro de cambios, con un aviso cada vez que una actualización trae novedades",
       "3": "Renovada por completo la página Acerca de, con el enlace de Discord actualizado"
     },
+    "r21000": {
+      "1": "Corregido: montar, dar dos pasos y desmontar una y otra vez en Frontline con un enemigo cerca; tras un desmontaje forzado por un enemigo, volver a montar ahora espera a tener más espacio y una pausa más larga",
+      "2": "Corregido: en las partidas de Frontline el personaje se quedaba parado junto a un tomelith de Shatter sin nada seleccionado; si no hay ningún jugador enemigo al alcance, ahora ataca la estructura más cercana dentro del alcance de combate, tanto con el cerebro de equipo como en el modo «Moverte tú»",
+      "3": "Corregido: el Mago Negro nunca usaba Flare Star ni Frost Star tras Soul Resonance; la rotación ahora sigue el botón de Límite cambiado y usa las estrellas directamente mientras Elemental Star está activo"
+    },
     "r21100": {
       "1": "Cambiado el diseño de Grind con tres tarjetas de modo, controles de sesión compactos y acceso directo a perfiles de combate y ajustes personalizados",
       "2": "Añadida la selección entre partidas casuales y clasificatorias de Crystalline Conflict",
@@ -384,9 +392,11 @@
   "about": {
     "support": {
       "title": "Hecho con amor y cariño",
-      "body": "Este plugin es un proyecto de una sola persona, hecho en mi tiempo libre porque me encantan este juego y su comunidad. Mantenerlo al día me lleva muchas de esas horas. Si te ha ayudado, apoyarme en Patreon me permite seguir dedicándole ese tiempo. Gracias por estar aquí.",
+      "body": "Este plugin es un proyecto de una sola persona, hecho en mi tiempo libre porque me encantan este juego y su comunidad. Mantenerlo al día me lleva muchas de esas horas. Si te ha ayudado, apoyarme en Patreon o invitarme a un café me permite seguir dedicándole ese tiempo. Gracias por estar aquí.",
       "button": "Apoyar en Patreon",
-      "hint": "Abrir Patreon, clic derecho para copiar el enlace."
+      "hint": "Abrir Patreon, clic derecho para copiar el enlace.",
+      "coffeeButton": "Invitarme a un café",
+      "coffeeHint": "Abrir Buy Me a Coffee, clic derecho para copiar el enlace."
     },
     "linkHint": "Clic para abrir, clic derecho para copiar el enlace.",
     "madeBy": "Creado por {0}",
@@ -629,7 +639,9 @@
       "lowestHp": "Menos vida",
       "lowestHpHelp": "El enemigo con menos vida a 25 metros; se salta a quien tenga Guardia activa mientras haya otro disponible.",
       "current": "Tu objetivo actual",
-      "currentHelp": "Ataca lo que tengas seleccionado y solo elige por su cuenta cuando no tienes objetivo."
+      "currentHelp": "Ataca lo que tengas seleccionado y solo elige por su cuenta cuando no tienes objetivo.",
+      "avoidChiten": "Evitar Chiten",
+      "avoidChitenHelp": "Ignora a los enemigos protegidos por Chiten al elegir objetivos, perseguir o usar acciones ofensivas."
     },
     "frontline": {
       "behavior": "Comportamiento en Frontline",
@@ -642,6 +654,10 @@
       "aggressiveHelp": "Se pone al frente del grupo, aguanta más el enfoque y solo retrocede por debajo de ~30 % de vida.",
       "custom": "Personalizado",
       "customHelp": "Ajustado a mano: cada distancia y umbral de Frontline de abajo es tuyo. Parte de la base Moderado."
+    },
+    "rivalWings": {
+      "behavior": "Comportamiento en Rival Wings",
+      "behaviorHelp": "Formación de infantería, retirada y montura. Comparte tus ajustes de comportamiento de JcJ a gran escala."
     },
     "frontlineCustom": {
       "position": "Dónde colocarse en el grupo",

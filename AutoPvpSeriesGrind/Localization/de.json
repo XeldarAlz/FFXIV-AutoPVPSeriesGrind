@@ -193,7 +193,9 @@
     "whatToQueue": "Was anmelden",
     "queue": {
       "casualHelp": "Casual Matches, der schnellste Weg, die Serienleiste zu füllen.",
-      "frontlineHelp": "Die tägliche Frontline-Roulette: Schlachten mit 72 Spielern und den meisten Serien-EXP pro Match. Der Bot bleibt bei seinem Team und läuft nie allein los."
+      "frontlineHelp": "Die tägliche Frontline-Roulette: Schlachten mit 72 Spielern und den meisten Serien-EXP pro Match. Der Bot bleibt bei seinem Team und läuft nie allein los.",
+      "rivalWingsHelp": "Hidden Gorge: Folgt verbündeten Gruppen und kämpft zu Fuß. Das Steuern der Mechs bleibt manuell.",
+      "rivalWingsWaiting": "Wartet auf ein Hidden-Gorge-Match."
     },
     "endlessHelp": "Meldet Match für Match an, bis du Stopp drückst.",
     "stopAfter": "Stoppen nach",
@@ -201,7 +203,8 @@
     "reachRank": "Rang erreichen",
     "reachRankHelp": "Du bist jetzt Rang {0}. Der Lauf beendet erst das laufende Match, bevor er stoppt.",
     "stopAfterTimeHelp": "Der Timer stoppt neue Anmeldungen; das laufende Match wird noch zu Ende gespielt.",
-    "modeFrontline": "Frontline"
+    "modeFrontline": "Frontline",
+    "modeRivalWings": "Rival Wings"
   },
   "run": {
     "running": "Läuft",
@@ -363,6 +366,11 @@
       "2": "Dieses Änderungsprotokoll hinzugefügt, mit einem Hinweis, sobald ein Update Neues bringt",
       "3": "Die Info-Seite komplett überarbeitet, mit dem neuen Discord-Link"
     },
+    "r21000": {
+      "1": "Behoben: Ständiges Aufsitzen, zwei Schritte Laufen und wieder Absteigen in Frontline, wenn ein Gegner nah ist; nachdem ein Gegner das Absteigen erzwungen hat, wartet das erneute Aufsitzen jetzt auf mehr Platz und eine längere Pause",
+      "2": "Behoben: In Frontline-Matches stand die Figur ohne Ziel an einem Tomelith in Shatter herum; ist kein gegnerischer Spieler in Reichweite, wird jetzt die nächste Struktur innerhalb der Kampfreichweite angegriffen, im Team-Brain wie im Modus „Selbst steuern“",
+      "3": "Behoben: Der Schwarzmagier setzte nach Soul Resonance nie Flare Star oder Frost Star ein; die Rotation folgt jetzt der getauschten Limitrausch-Taste und nutzt die Sterne direkt, solange Elemental Star aktiv ist"
+    },
     "r21100": {
       "1": "Geändert: Grind bietet jetzt drei Moduskarten, kompakte Sitzungsoptionen und direkt zugängliche Kampfvoreinstellungen und benutzerdefinierte Einstellungen",
       "2": "Hinzugefügt: Auswahl zwischen gewerteten und ungewerteten Spielen für Crystalline Conflict",
@@ -384,9 +392,11 @@
   "about": {
     "support": {
       "title": "Mit Liebe und Sorgfalt gemacht",
-      "body": "Dieses Plugin ist ein Ein-Personen-Projekt, entstanden in meiner Freizeit, weil ich dieses Spiel und seine Community liebe. Es aktuell zu halten, kostet viele dieser Stunden. Wenn es dir geholfen hat, sorgt deine Unterstützung auf Patreon dafür, dass ich ihm diese Zeit weiter schenken kann. Danke, dass du hier bist.",
+      "body": "Dieses Plugin ist ein Ein-Personen-Projekt, entstanden in meiner Freizeit, weil ich dieses Spiel und seine Community liebe. Es aktuell zu halten, kostet viele dieser Stunden. Wenn es dir geholfen hat, sorgt deine Unterstützung auf Patreon oder ein spendierter Kaffee dafür, dass ich ihm diese Zeit weiter schenken kann. Danke, dass du hier bist.",
       "button": "Auf Patreon unterstützen",
-      "hint": "Patreon öffnen, Rechtsklick kopiert den Link."
+      "hint": "Patreon öffnen, Rechtsklick kopiert den Link.",
+      "coffeeButton": "Einen Kaffee spendieren",
+      "coffeeHint": "Buy Me a Coffee öffnen, Rechtsklick kopiert den Link."
     },
     "linkHint": "Klicken zum Öffnen, Rechtsklick kopiert den Link.",
     "madeBy": "Erstellt von {0}",
@@ -629,7 +639,9 @@
       "lowestHp": "Wenigste HP",
       "lowestHpHelp": "Der Gegner mit den wenigsten HP in 25 Metern; wer Guard aktiv hat, wird übersprungen, solange jemand anderes verfügbar ist.",
       "current": "Dein aktuelles Ziel",
-      "currentHelp": "Greift an, was du gerade anvisierst, und wählt nur selbst, wenn du kein Ziel hast."
+      "currentHelp": "Greift an, was du gerade anvisierst, und wählt nur selbst, wenn du kein Ziel hast.",
+      "avoidChiten": "Chiten meiden",
+      "avoidChitenHelp": "Überspringt durch Chiten geschützte Gegner bei der Zielwahl, beim Verfolgen und bei offensiven Aktionen."
     },
     "frontline": {
       "behavior": "Frontline-Verhalten",
@@ -642,6 +654,10 @@
       "aggressiveHelp": "Steht ganz vorne in der Gruppe, hält Fokus länger aus und weicht erst unter ~30 % HP zurück.",
       "custom": "Benutzerdefiniert",
       "customHelp": "Handabgestimmt: jede Frontline-Distanz und -Schwelle unten legst du selbst fest. Startet von der moderaten Basis."
+    },
+    "rivalWings": {
+      "behavior": "Rival-Wings-Verhalten",
+      "behaviorHelp": "Infanterie-Formation, Rückzug und Aufsitzen. Teilt sich deine Verhaltenseinstellungen für PvP-Großschlachten."
     },
     "frontlineCustom": {
       "position": "Position in der Gruppe",
