@@ -33,6 +33,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
     private MatchType matchType;
     private PvpQueueRoute queueRoute;
     private string queueLabel = string.Empty;
+    private string modeLabel = string.Empty;
     private readonly MovementExecutor movement = new();
     private readonly RotationController rotation;
     private readonly GreetingDirector greeting = new();
@@ -165,6 +166,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         queueRoute = PvpQueueRoute.For(matchType, cfg.RankedCrystallineConflict);
         queueLabel = matchType == MatchType.CrystallineConflict
             ? $"Crystalline Conflict ({(cfg.RankedCrystallineConflict ? "Ranked" : "Casual")})" : matchType.ToString();
+        modeLabel = Loc.T(PlanText.ModeName(cfg));
         brain.SetStrategy(cfg.Strategy, cfg.CustomStrategy);
         frontline.SetStrategy(cfg.FrontlineStrategy, cfg.CustomFrontline);
         rivalWings.SetStrategy(cfg.FrontlineStrategy, cfg.CustomFrontline);
@@ -172,7 +174,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         brain.Targeting = cfg.Targeting;
         rotation.Configure(cfg.RotationProvider == RotationProvider.Internal, RotationSettings.From(cfg));
 
-        ApsgChat.Print($"Starting PvP Series grind ({queueLabel}, {cfg.ActiveMode.DisplayName}).");
+        ApsgChat.Print(Loc.T(L.Notice.Starting, modeLabel, PlanText.StopSummary(cfg)));
 
         await Startup();
 
@@ -180,7 +182,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         {
             if (!Svc.ClientState.IsLoggedIn)
             {
-                session.StopReason = "Character logged out; run stopped.";
+                session.StopReason = Loc.T(L.Stop.LoggedOut);
                 return;
             }
             if (PluginConflicts.Read() is { Blocked: true } conflict)
@@ -216,7 +218,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
             }
 
             if (!InExpectedDuty() || (completion.Active && completion.Territory != Svc.ClientState.TerritoryType))
-                throw new InvalidOperationException("The entered duty does not match the selected PvP mode. Run stopped.");
+                throw new InvalidOperationException(Loc.T(L.Stop.WrongDuty));
 
             await RunWaitingPhase();
 

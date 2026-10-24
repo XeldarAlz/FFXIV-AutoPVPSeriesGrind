@@ -438,7 +438,8 @@
     },
     "r21310": {
       "1": "Behoben: Die Schalter LB-Modus und Schwellenwerttyp in den Limitrausch-Einstellungen schnitten in längeren Sprachen ihre Beschriftung ab; sie werden jetzt breit genug für den Text",
-      "2": "/apsg reset hinzugefügt: Holt das Fenster in Standardgröße zurück auf den Bildschirm, falls es außerhalb gelandet oder zu groß zum Greifen ist"
+      "2": "/apsg reset hinzugefügt: Holt das Fenster in Standardgröße zurück auf den Bildschirm, falls es außerhalb gelandet oder zu groß zum Greifen ist",
+      "3": "Übersetzungen verbessert: Statuszeile, Stoppgründe und die Chat-Meldungen eines Laufs folgen jetzt der Plugin-Sprache, statt immer Englisch zu sein"
     }
   },
   "about": {
@@ -960,5 +961,45 @@
     "openPlugins": "Dalamud Plugins öffnen",
     "startRefused": "Start nicht möglich: {0}",
     "runStopped": "Automatisierung gestoppt: {0}"
+  },
+  "status": {
+    "closingGame": "Spiel wird geschlossen",
+    "runningCommands": "Deine Chat-Befehle werden ausgeführt",
+    "loggingOut": "Wird zum Titelbildschirm ausgeloggt",
+    "returningToInn": "Kehrt ins Gasthaus zurück",
+    "matchCompleted": "Match beendet; warte auf die Ergebnisse",
+    "manualLeave": "Verlasse den beendeten Inhalt manuell",
+    "frontlineGates": "Warte darauf, dass die Tore in Frontline öffnen",
+    "rivalWingsStart": "Warte auf den Start des Rival-Wings-Matches",
+    "readingQueue": "Warte, bis der Anmeldestatus lesbar ist",
+    "verifyingQueue": "Anmeldung wird geprüft",
+    "queueRetry": "Anmeldung ging nicht durch; neuer Versuch in {0}",
+    "queued": "Angemeldet für {0}",
+    "onBreak": "In der Pause, noch {0}",
+    "nextMatch": "Nächstes Match in {0}",
+    "queuePenalty": "Anmeldesperre, noch {0} Min.",
+    "submitFailed": "Anmeldung fehlgeschlagen; warte vor dem nächsten Versuch",
+    "leavingQueue": "Anmeldung wird zurückgezogen",
+    "teleporting": "Teleport zum Wolfshöhlen-Pier",
+    "walkingToVendor": "Geht zum Händler",
+    "buying": "Kauft {0} x {1}",
+    "lookingFor": "Suche nach {0}",
+    "talkingToVendor": "Spricht mit dem Händler"
+  },
+  "stop": {
+    "loggedOut": "Charakter ausgeloggt; Lauf gestoppt.",
+    "wrongDuty": "Der betretene Inhalt passt nicht zum gewählten PvP-Modus. Lauf gestoppt.",
+    "dutyNotRecognized": "Der gewählte PvP-Inhalt wurde nicht erkannt. Lauf gestoppt.",
+    "unconfirmedDeparture": "Inhalt ohne Abschlussnachweis verlassen; dieses Match wird nicht gezählt.",
+    "queueUnreadable": "Der Anmeldestatus blieb unlesbar; Lauf gestoppt.",
+    "queueFailed": "Die Anmeldung schlug wiederholt fehl oder lief ab; Lauf gestoppt.",
+    "foreignQueue": "Eine andere Anmeldung oder ein anderer Inhalt läuft; Lauf gestoppt, ohne daran etwas zu ändern."
+  },
+  "notice": {
+    "starting": "Grind startet: {0}, {1}.",
+    "leaveFailed": "Der beendete Inhalt wurde nicht verlassen. Verlasse ihn manuell; der Lauf geht weiter, sobald du draußen bist.",
+    "lifestreamMissing": "Installiere Lifestream, um „Ins Gasthaus zurückkehren“ zu nutzen.",
+    "retiringToInn": "Lauf abgeschlossen. Zurück ins Gasthaus.",
+    "missingPlugins": "Start nicht möglich. Installiere zuerst alle benötigten Plugins: {0}."
   }
 }

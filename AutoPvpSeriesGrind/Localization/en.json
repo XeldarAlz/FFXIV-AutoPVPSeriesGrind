@@ -438,7 +438,8 @@
     },
     "r21310": {
       "1": "Fixed the LB mode and Threshold type buttons in the Limit Break settings cutting off their labels in longer languages: they now widen to fit",
-      "2": "Added /apsg reset, which brings the window back on screen at its default size if it ended up off screen or too large to grab"
+      "2": "Added /apsg reset, which brings the window back on screen at its default size if it ended up off screen or too large to grab",
+      "3": "Improved translations: the status line, stop reasons and the chat messages a run prints now follow the plugin language instead of always being in English"
     }
   },
   "about": {
@@ -960,5 +961,45 @@
     "openPlugins": "Open Dalamud Plugins",
     "startRefused": "Cannot start: {0}",
     "runStopped": "Automation stopped: {0}"
+  },
+  "status": {
+    "closingGame": "Closing the game",
+    "runningCommands": "Running your chat commands",
+    "loggingOut": "Logging out",
+    "returningToInn": "Returning to the inn",
+    "matchCompleted": "Match completed; waiting for results",
+    "manualLeave": "Leave the finished duty manually",
+    "frontlineGates": "Waiting for the Frontline gates to open",
+    "rivalWingsStart": "Waiting for the Rival Wings match to start",
+    "readingQueue": "Waiting for readable queue state",
+    "verifyingQueue": "Verifying queue registration",
+    "queueRetry": "Queue did not register; retrying in {0}",
+    "queued": "Queued for {0}",
+    "onBreak": "On a break, {0} left",
+    "nextMatch": "Next match in {0}",
+    "queuePenalty": "Queue penalty, {0}m left",
+    "submitFailed": "Queue submission failed; waiting before retry",
+    "leavingQueue": "Leaving the queue",
+    "teleporting": "Teleporting to Wolves' Den Pier",
+    "walkingToVendor": "Walking to the vendor",
+    "buying": "Buying {0} x {1}",
+    "lookingFor": "Looking for {0}",
+    "talkingToVendor": "Talking to the vendor"
+  },
+  "stop": {
+    "loggedOut": "Character logged out; run stopped.",
+    "wrongDuty": "The entered duty does not match the selected PvP mode. Run stopped.",
+    "dutyNotRecognized": "The selected PvP duty was not recognized. Run stopped.",
+    "unconfirmedDeparture": "Left the duty without completion evidence; this match is not counted.",
+    "queueUnreadable": "Queue state remained unavailable; run stopped.",
+    "queueFailed": "Queue registration kept failing or timed out; run stopped.",
+    "foreignQueue": "Another queue or duty is in flight; run stopped without changing it."
+  },
+  "notice": {
+    "starting": "Starting the grind: {0}, {1}.",
+    "leaveFailed": "The finished duty did not exit. Leave it manually; the run carries on once you are out.",
+    "lifestreamMissing": "Install Lifestream to use \"Return to the inn\".",
+    "retiringToInn": "Run complete. Retiring to the inn.",
+    "missingPlugins": "Cannot start. Install all required plugins first: {0}."
   }
 }

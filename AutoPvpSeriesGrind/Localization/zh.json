@@ -438,7 +438,8 @@
     },
     "r21310": {
       "1": "修复：极限技设置中的“极限技模式”和“阈值类型”按钮在文字较长的语言下会截断标签的问题，现在会加宽以容纳文字",
-      "2": "新增 /apsg reset：窗口跑到屏幕外或大到无法拖动时，以默认大小把它放回屏幕内"
+      "2": "新增 /apsg reset：窗口跑到屏幕外或大到无法拖动时，以默认大小把它放回屏幕内",
+      "3": "改进翻译：运行时的状态栏、停止原因和聊天消息现在会使用插件语言，而不再总是英文"
     }
   },
   "about": {
@@ -960,5 +961,45 @@
     "openPlugins": "打开Dalamud插件",
     "startRefused": "无法开始：{0}",
     "runStopped": "自动化已停止：{0}"
+  },
+  "status": {
+    "closingGame": "正在关闭游戏",
+    "runningCommands": "正在执行你的聊天命令",
+    "loggingOut": "正在登出到标题画面",
+    "returningToInn": "正在返回旅馆",
+    "matchCompleted": "比赛结束，正在等待结果",
+    "manualLeave": "请手动离开已结束的任务",
+    "frontlineGates": "正在等待纷争前线开门",
+    "rivalWingsStart": "正在等待群翼纷争比赛开始",
+    "readingQueue": "正在等待可读取的排队状态",
+    "verifyingQueue": "正在确认排队登记",
+    "queueRetry": "排队未登记成功，{0} 后重试",
+    "queued": "正在排队：{0}",
+    "onBreak": "休息中，还剩 {0}",
+    "nextMatch": "{0} 后开始下一场",
+    "queuePenalty": "排队惩罚，还剩 {0} 分钟",
+    "submitFailed": "排队提交失败，稍后重试",
+    "leavingQueue": "正在退出排队",
+    "teleporting": "正在传送到狼狱停船场",
+    "walkingToVendor": "正在走向商人",
+    "buying": "正在购买 {0} 个 {1}",
+    "lookingFor": "正在寻找 {0}",
+    "talkingToVendor": "正在与商人对话"
+  },
+  "stop": {
+    "loggedOut": "角色已登出，运行已停止。",
+    "wrongDuty": "进入的任务与所选 PvP 模式不符，运行已停止。",
+    "dutyNotRecognized": "无法识别所选的 PvP 任务，运行已停止。",
+    "unconfirmedDeparture": "未确认完成就离开了任务，本场不计入。",
+    "queueUnreadable": "排队状态一直无法读取，运行已停止。",
+    "queueFailed": "排队登记反复失败或超时，运行已停止。",
+    "foreignQueue": "另有排队或任务正在进行，已停止运行且未做改动。"
+  },
+  "notice": {
+    "starting": "开始刷取：{0}，{1}。",
+    "leaveFailed": "未能离开已结束的任务。请手动离开，离开后会继续运行。",
+    "lifestreamMissing": "安装 Lifestream 才能使用“返回旅馆”。",
+    "retiringToInn": "运行完成，返回旅馆。",
+    "missingPlugins": "无法开始。请先安装所有必需插件：{0}。"
   }
 }

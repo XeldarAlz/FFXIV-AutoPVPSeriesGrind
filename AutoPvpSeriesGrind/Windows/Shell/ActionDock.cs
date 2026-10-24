@@ -88,7 +88,7 @@ internal static class ActionDock
         var enabled = depsOk && blocker == StartBlocker.None;
         var reason = !depsOk ? Loc.T(L.Shell.InstallRequired)
             : blocker != StartBlocker.None ? Loc.T(StartBlockerText.Title(blocker)) : null;
-        var sub = Loc.T(L.Shell.ModeSummaryDot, Loc.T(ReadyState.ModeName(cfg)), ReadyState.StopSummary(cfg));
+        var sub = Loc.T(L.Shell.ModeSummaryDot, Loc.T(PlanText.ModeName(cfg)), PlanText.StopSummary(cfg));
 
         if (StartButton.Draw(sub, enabled, reason, innerWidth)) ctrl.Start();
     }

@@ -98,12 +98,12 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
     {
         if (Svc.ClientState.TerritoryType != PvpVendors.WolvesDenPierTerritoryId)
         {
-            Status = "Teleporting to Wolves' Den Pier";
+            Status = Loc.T(L.Status.Teleporting);
             LogDiagnostic("Shopping: teleporting to Wolves' Den Pier.");
             await TeleportTo(PvpVendors.WolvesDenPierTerritoryId, vendor.Position);
         }
 
-        Status = "Walking to the vendor";
+        Status = Loc.T(L.Status.WalkingToVendor);
         if (!await TryMoveTo(vendor.Position, MovementConfig.InteractRange, allowTeleportIfFaster: false, allowAethernet: false))
         {
             LogDiagnostic($"Shopping: no path to vendor {vendor.EnpcBaseId}; trying to talk from here.");
@@ -140,7 +140,7 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
     private async Task<bool> Purchase(ShopItem item, int quantity)
     {
         var before = PvpWallet.Held(item.Currency);
-        Status = $"Buying {quantity} x {item.Name}";
+        Status = Loc.T(L.Status.Buying, quantity, item.Name);
         LogDiagnostic($"Shopping: buying {quantity} x {item.Name} ({item.Cost} each, wallet {before}).");
         if (!await WaitUntilTimed(() => ShopWindows.Buy(item, quantity), BuyClickWaitMs, "shop-buy"))
         {
@@ -239,7 +239,7 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
 
     private async Task<bool> TryInclusionTab(ShopItem item, int category, int tab)
     {
-        Status = $"Looking for {item.Name}";
+        Status = Loc.T(L.Status.LookingFor, item.Name);
         if (!await ShowInclusionCategory(category))
         {
             LogDiagnostic($"Shopping: category {category} did not open; {ShopWindows.DescribeInclusionShop()}");
@@ -341,7 +341,7 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
 
         if (!ShopWindows.CurrencyShopOpen())
         {
-            Status = $"Looking for {item.Name}";
+            Status = Loc.T(L.Status.LookingFor, item.Name);
             if (entry >= ShopWindows.MenuEntryCount() || !await WaitUntilTimed(() => ShopWindows.PickMenuEntry(entry), MenuReturnWaitMs, $"shop-menu-{entry}"))
             {
                 return false;
@@ -365,7 +365,7 @@ internal sealed class ShopTrip(ShoppingPlan plan, HashSet<uint> skippedItemIds) 
 
     private async Task<bool> TalkTo(PvpVendor vendor, Func<bool> opened)
     {
-        Status = "Talking to the vendor";
+        Status = Loc.T(L.Status.TalkingToVendor);
         var deadline = Environment.TickCount64 + InteractWaitMs;
         var nextInteractAt = 0L;
         while (Environment.TickCount64 < deadline)

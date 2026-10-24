@@ -52,7 +52,7 @@ internal static class RunningPanel
         TextDraw.SmallCaps(status, new Vector2(origin.X + radius * 2f + 12f * scale, midY - statusSize.Y * 0.5f), Styling.TextSecondary);
 
         var footer = stage is ReadyState.Stage.Preparing or ReadyState.Stage.Queueing
-            ? Loc.T(ReadyState.ModeName(cfg))
+            ? Loc.T(PlanText.ModeName(cfg))
             : MiniPlayer.CurrentMapName();
         using (Fonts.PushCaption())
         {
@@ -256,6 +256,6 @@ internal static class RunningPanel
         ImGui.SameLine(0, gap);
         StatTile.Draw(Loc.T(L.Run.TileMatchesPerHour), perHour > 0 ? perHour.ToString("F1") : "–", null, Styling.AccentMint, tileWidth);
         ImGui.SameLine(0, gap);
-        StatTile.Draw(Loc.T(L.Run.TileElapsed), Formatting.Elapsed(elapsed), ReadyState.StopSummary(cfg), Styling.AccentArc, tileWidth);
+        StatTile.Draw(Loc.T(L.Run.TileElapsed), Formatting.Elapsed(elapsed), PlanText.StopSummary(cfg), Styling.AccentArc, tileWidth);
     }
 }

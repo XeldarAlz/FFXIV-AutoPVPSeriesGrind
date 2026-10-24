@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Game;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Util;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
@@ -29,7 +30,7 @@ internal sealed partial class AutoPvpSeries
             else
             {
                 session.UnconfirmedDepartures++;
-                session.StopReason = "Left the duty without completion evidence; this match is not counted.";
+                session.StopReason = Loc.T(L.Stop.UnconfirmedDeparture);
                 Warn(session.StopReason);
                 ResetDutyState("unconfirmed duty departure");
                 return true;
@@ -54,14 +55,14 @@ internal sealed partial class AutoPvpSeries
 
         if (decision == QueueDecision.Failed)
         {
-            session.StopReason = state == QueueState.Unknown ? "Queue state remained unavailable; run stopped."
-                : "Queue registration kept failing or timed out; run stopped.";
+            session.StopReason = state == QueueState.Unknown ? Loc.T(L.Stop.QueueUnreadable)
+                : Loc.T(L.Stop.QueueFailed);
             Warn(session.StopReason);
             return true;
         }
         if (decision == QueueDecision.Wait)
         {
-            Status = state == QueueState.Unknown ? "Waiting for readable queue state" : "Verifying queue registration";
+            Status = Loc.T(state == QueueState.Unknown ? L.Status.ReadingQueue : L.Status.VerifyingQueue);
             await DelayMs(MainLoopIdleMs);
             return false;
         }
@@ -73,14 +74,14 @@ internal sealed partial class AutoPvpSeries
                 queueBackoffAnnounced = true;
                 Warn($"queue did not register after {QueueSubmission.MaxAttempts} attempts -> retrying in {FormatRemaining(remainingMs)}");
             }
-            Status = $"Queue did not register; retrying in {FormatRemaining(remainingMs)}";
+            Status = Loc.T(L.Status.QueueRetry, FormatRemaining(remainingMs));
             await DelayMs(MainLoopIdleMs);
             return false;
         }
         queueBackoffAnnounced = false;
         if (queued && !OwnsQueue())
         {
-            session.StopReason = "Another queue or duty is in flight; run stopped without changing it.";
+            session.StopReason = Loc.T(L.Stop.ForeignQueue);
             Warn(session.StopReason);
             return true;
         }
@@ -89,7 +90,7 @@ internal sealed partial class AutoPvpSeries
             return false;
         }
 
-        if (queued) Status = $"Queued for {queueLabel}";
+        if (queued) Status = Loc.T(L.Status.Queued, modeLabel);
 
         if (!queued)
         {
@@ -101,7 +102,7 @@ internal sealed partial class AutoPvpSeries
             var waitMs = nextQueueAllowedAtMs - Environment.TickCount64;
             if (waitMs > 0)
             {
-                Status = onBreak ? $"On a break, {FormatRemaining(waitMs)} left" : $"Next match in {FormatRemaining(waitMs)}";
+                Status = Loc.T(onBreak ? L.Status.OnBreak : L.Status.NextMatch, FormatRemaining(waitMs));
                 await DelayMs(MainLoopIdleMs);
                 return false;
             }
@@ -115,7 +116,7 @@ internal sealed partial class AutoPvpSeries
                     LogDiagnostic($"queue penalty active (~{penaltyMinutes} min) -> waiting it out");
                 }
 
-                Status = $"Queue penalty, {penaltyMinutes}m left";
+                Status = Loc.T(L.Status.QueuePenalty, penaltyMinutes);
                 await DelayMs(MainLoopIdleMs);
                 return false;
             }
@@ -124,7 +125,7 @@ internal sealed partial class AutoPvpSeries
             LogDiagnostic($"submitting {queueLabel}, attempt {queueSubmission.Attempts + 1}/{QueueSubmission.MaxAttempts}");
             var dispatched = DutyOps.QueueMatch(queueRoute);
             queueSubmission.Submitted(Environment.TickCount64, dispatched);
-            Status = dispatched ? "Verifying queue registration" : "Queue submission failed; waiting before retry";
+            Status = Loc.T(dispatched ? L.Status.VerifyingQueue : L.Status.SubmitFailed);
         }
 
         await DelayMs(MainLoopIdleMs);
@@ -144,7 +145,7 @@ internal sealed partial class AutoPvpSeries
             return false;
         }
 
-        Status = "Leaving the queue";
+        Status = Loc.T(L.Status.LeavingQueue);
         var now = Environment.TickCount64;
         if (CanWithdraw(state) && now >= nextWithdrawAtMs)
         {

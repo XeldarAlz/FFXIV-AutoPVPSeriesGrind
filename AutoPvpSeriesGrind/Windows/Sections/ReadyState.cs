@@ -1,7 +1,6 @@
 using AutoPvpSeriesGrind.Core.External;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Localization;
-using AutoPvpSeriesGrind.Core.Modes;
 using AutoPvpSeriesGrind.Core.Tasks;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Conditions;
@@ -137,14 +136,6 @@ internal static class ReadyState
         _               => (Styling.AccentBlue,   Styling.AccentBlueSoft,   Loc.T(L.Grind.StageInMatch)),
     };
 
-    public static LocString ModeName(Configuration cfg)
-        => cfg.MatchType switch
-        {
-            MatchType.Frontline => L.Plan.ModeFrontline,
-            MatchType.RivalWings => L.Plan.ModeRivalWings,
-            _ => cfg.RankedCrystallineConflict ? L.Setup.ConflictRanked : L.Run.ModeCasual,
-        };
-
     public static LocString FinishDetail(AutoPvpSeriesController ctrl)
     {
         if (ctrl.StopAfterMatchRequested)
@@ -191,13 +182,5 @@ internal static class ReadyState
         Kind.SetupNeeded => Loc.T(L.Grind.StatusSetupNeeded),
         Kind.Waiting     => Loc.T(L.Grind.StatusWaiting),
         _                => Loc.T(L.Grind.StatusIdle),
-    };
-
-    public static string StopSummary(Configuration cfg) => cfg.ActiveMode.Id switch
-    {
-        MatchCountMode.ModeId => Loc.T(L.Grind.StopsAfterMatches, cfg.TargetMatchCount),
-        SeriesRankMode.ModeId => Loc.T(L.Grind.StopsAtRank, cfg.TargetSeriesRank),
-        TimeBoxedMode.ModeId  => Loc.T(L.Grind.StopsAfterMinutes, cfg.TargetMinutes),
-        _                     => Loc.T(L.Grind.StopsOnCommand),
     };
 }

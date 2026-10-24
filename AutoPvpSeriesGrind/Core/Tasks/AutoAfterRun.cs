@@ -1,5 +1,6 @@
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Ipc;
+using AutoPvpSeriesGrind.Core.Localization;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.Automation;
 using ECommons.DalamudServices;
@@ -44,7 +45,7 @@ internal sealed class AutoAfterRun(AfterRunAction action, string commandBlock) :
                 break;
 
             case AfterRunAction.CloseGame:
-                Status = "Closing the game";
+                Status = Loc.T(L.Status.ClosingGame);
                 LogDiagnostic("After-run: closing the game (/xlkill).");
                 await DelayMs(PreCommandSettleMs);
                 Chat.ExecuteCommand(ApsgConstants.GameCommands.CloseGame);
@@ -69,7 +70,7 @@ internal sealed class AutoAfterRun(AfterRunAction action, string commandBlock) :
                 continue;
             }
 
-            Status = "Running your chat commands";
+            Status = Loc.T(L.Status.RunningCommands);
             SendChatCommand(line);
             await DelayMs(ChatCommandSpacingMs);
         }
@@ -90,7 +91,7 @@ internal sealed class AutoAfterRun(AfterRunAction action, string commandBlock) :
 
     private async Task LogoutWithConfirmation()
     {
-        Status = "Logging out";
+        Status = Loc.T(L.Status.LoggingOut);
         LogDiagnostic("After-run: logging out.");
         if (await IssueLogoutAndAcceptYesno("logout-yesno"))
         {
@@ -120,16 +121,16 @@ internal sealed class AutoAfterRun(AfterRunAction action, string commandBlock) :
 
     private async Task ReturnToInn()
     {
-        Status = "Returning to the inn";
+        Status = Loc.T(L.Status.ReturningToInn);
         if (!LifestreamIpc.Instance.IsAvailable)
         {
             Warn("Return to inn requested but Lifestream is not installed; staying put.");
-            ApsgChat.PrintError("Install Lifestream to use \"Return to the inn\".");
+            ApsgChat.PrintError(Loc.T(L.Notice.LifestreamMissing));
             return;
         }
 
         LogDiagnostic("After-run: returning to the inn via Lifestream.");
-        ApsgChat.Print("Run complete. Retiring to the inn.");
+        ApsgChat.Print(Loc.T(L.Notice.RetiringToInn));
         await DelayMs(PreCommandSettleMs);
         LifestreamIpc.Instance.ExecuteCommand(ApsgConstants.LifestreamCommands.ReturnToInn);
 

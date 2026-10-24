@@ -438,7 +438,8 @@
     },
     "r21310": {
       "1": "Correction : les boutons Mode de LB et Type de seuil des réglages de la Transcendance coupaient leurs libellés dans les langues plus longues ; ils s'élargissent désormais pour que le texte tienne",
-      "2": "Ajout de /apsg reset, qui ramène la fenêtre à l'écran à sa taille par défaut si elle s'est retrouvée hors de l'écran ou trop grande pour être saisie"
+      "2": "Ajout de /apsg reset, qui ramène la fenêtre à l'écran à sa taille par défaut si elle s'est retrouvée hors de l'écran ou trop grande pour être saisie",
+      "3": "Amélioration des traductions : la ligne d'état, les raisons d'arrêt et les messages de chat d'une session suivent désormais la langue du plugin au lieu d'être toujours en anglais"
     }
   },
   "about": {
@@ -960,5 +961,45 @@
     "openPlugins": "Ouvrir les plugins Dalamud",
     "startRefused": "Démarrage impossible : {0}",
     "runStopped": "Automatisation arrêtée : {0}"
+  },
+  "status": {
+    "closingGame": "Fermeture du jeu",
+    "runningCommands": "Exécution de vos commandes de chat",
+    "loggingOut": "Retour à l'écran titre",
+    "returningToInn": "Retour à l'auberge",
+    "matchCompleted": "Match terminé ; en attente des résultats",
+    "manualLeave": "Quittez manuellement la mission terminée",
+    "frontlineGates": "En attente de l'ouverture des portes de Frontline",
+    "rivalWingsStart": "En attente du début du match de Rival Wings",
+    "readingQueue": "En attente d'un état de file lisible",
+    "verifyingQueue": "Vérification de l'inscription",
+    "queueRetry": "L'inscription n'a pas abouti ; nouvel essai dans {0}",
+    "queued": "Inscrit pour {0}",
+    "onBreak": "En pause, encore {0}",
+    "nextMatch": "Prochain match dans {0}",
+    "queuePenalty": "Pénalité d'inscription, encore {0} min",
+    "submitFailed": "L'inscription a échoué ; attente avant un nouvel essai",
+    "leavingQueue": "Annulation de l'inscription",
+    "teleporting": "Téléportation vers la Jetée de l'Antre des loups",
+    "walkingToVendor": "Marche vers le marchand",
+    "buying": "Achat de {0} x {1}",
+    "lookingFor": "Recherche de {0}",
+    "talkingToVendor": "Discussion avec le marchand"
+  },
+  "stop": {
+    "loggedOut": "Personnage déconnecté ; session arrêtée.",
+    "wrongDuty": "La mission rejointe ne correspond pas au mode JcJ choisi. Session arrêtée.",
+    "dutyNotRecognized": "La mission JcJ choisie n'a pas été reconnue. Session arrêtée.",
+    "unconfirmedDeparture": "Mission quittée sans preuve de fin ; ce match n'est pas compté.",
+    "queueUnreadable": "L'état de la file est resté illisible ; session arrêtée.",
+    "queueFailed": "L'inscription a échoué à répétition ou a expiré ; session arrêtée.",
+    "foreignQueue": "Une autre inscription ou mission est en cours ; session arrêtée sans y toucher."
+  },
+  "notice": {
+    "starting": "Début du grind : {0}, {1}.",
+    "leaveFailed": "La mission terminée n'a pas été quittée. Quittez-la manuellement ; la session reprend dès que vous êtes dehors.",
+    "lifestreamMissing": "Installez Lifestream pour utiliser « Rentrer à l'auberge ».",
+    "retiringToInn": "Session terminée. Retour à l'auberge.",
+    "missingPlugins": "Démarrage impossible. Installez d'abord tous les plugins requis : {0}."
   }
 }

@@ -16,7 +16,7 @@ internal sealed class AutoPvpSeriesController
 {
     public bool Running => Svc.Automation.Running;
     private string lastStopReason = string.Empty;
-    public string Status => Svc.Automation.CurrentTask?.Status ?? (lastStopReason.Length > 0 ? lastStopReason : "Idle");
+    public string Status => Svc.Automation.CurrentTask?.Status ?? (lastStopReason.Length > 0 ? lastStopReason : Loc.T(L.Grind.StatusIdle));
     public AutoPhase Phase { get; set; } = AutoPhase.Idle;
 
     private SessionStats? session;
@@ -65,7 +65,7 @@ internal sealed class AutoPvpSeriesController
         {
             var missing = MissingRequiredPluginNames();
             LogDiagnostic($"Start aborted: required plugins missing ({missing}).");
-            ApsgChat.PrintError($"Cannot start. Install all required plugins first: {missing}.");
+            ApsgChat.PrintError(Loc.T(L.Notice.MissingPlugins, missing));
             return;
         }
 

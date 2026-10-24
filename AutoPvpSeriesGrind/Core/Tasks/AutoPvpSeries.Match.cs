@@ -3,6 +3,7 @@ using AutoPvpSeriesGrind.Core.Debug;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Humanize;
 using AutoPvpSeriesGrind.Core.Ipc;
+using AutoPvpSeriesGrind.Core.Localization;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using System.Threading.Tasks;
@@ -21,7 +22,6 @@ internal sealed partial class AutoPvpSeries
     private const int LeaveRetryIntervalMs = 15_000;
     private const int ResultsLeaveStepMs = 800;
     private const int LeavePromptWaitMs = 3_000;
-    private const string ManualLeaveStatus = "Leave the finished duty manually";
     private const int UnreadableTimerFallbackMs = 60_000;
     private const int PortraitPhasePollMs = 250;
     private const int GateApproachJitterReactions = 2;
@@ -42,7 +42,7 @@ internal sealed partial class AutoPvpSeries
         CompleteMatch(resultsVisible ? "results screen visible" : "duty completion event");
         if (!resultsVisible && Environment.TickCount64 - completionObservedAt.Value < 15_000)
         {
-            Status = "Match completed; waiting for results";
+            Status = Loc.T(L.Status.MatchCompleted);
             await DelayMs(MainLoopIdleMs);
             return true;
         }
@@ -111,9 +111,9 @@ internal sealed partial class AutoPvpSeries
             return;
         }
 
-        Status = ManualLeaveStatus;
+        Status = Loc.T(L.Status.ManualLeave);
         matchFlow.NextLeaveRetryAtMs = Environment.TickCount64 + LeaveRetryIntervalMs;
-        ApsgChat.PrintError("The finished duty did not exit. Leave it manually; the run carries on once you are out.");
+        ApsgChat.PrintError(Loc.T(L.Notice.LeaveFailed));
     }
 
     private async Task<bool> LeaveThroughResultsScreen()
@@ -135,7 +135,7 @@ internal sealed partial class AutoPvpSeries
 
     private async Task AwaitManualLeave()
     {
-        Status = ManualLeaveStatus;
+        Status = Loc.T(L.Status.ManualLeave);
         var now = Environment.TickCount64;
         if (now >= matchFlow.NextLeaveRetryAtMs)
         {
@@ -177,7 +177,7 @@ internal sealed partial class AutoPvpSeries
         ExecuteGameCommand(GameCommands.NavStop);
         LogDiagnostic("in duty -> waiting for PvP area before baseline capture");
         if (!await WaitUntilTimed(InExpectedDuty, PvpAreaWaitMs, "selected-pvp-duty", checkMs: PollMs))
-            throw new InvalidOperationException("The selected PvP duty was not recognized. Run stopped.");
+            throw new InvalidOperationException(Loc.T(L.Stop.DutyNotRecognized));
 
         ResetMatchFlow();
         completion.Begin(Svc.ClientState.TerritoryType);
@@ -257,7 +257,7 @@ internal sealed partial class AutoPvpSeries
             LogDiagnostic($"{matchType}: own base marked before the start at {spawn:F0}");
         }
         Status = matchType == MatchType.Frontline
-            ? "Waiting for the Frontline gates to open" : "Waiting for the Rival Wings match to start";
+            ? Loc.T(L.Status.FrontlineGates) : Loc.T(L.Status.RivalWingsStart);
         BrainTelemetry.RecordStatus(MatchState.Capture(), MoveKind.Hold, Status, Posture.Hold);
         if (decision == PreMatchDecision.Mount)
         {

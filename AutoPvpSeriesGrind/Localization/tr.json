@@ -438,7 +438,8 @@
     },
     "r21310": {
       "1": "Düzeltildi: Limit Break ayarlarındaki LB modu ve Eşik türü düğmeleri uzun dillerde etiketlerini kesiyordu; artık metne sığacak kadar genişliyorlar",
-      "2": "/apsg reset eklendi: pencere ekran dışına çıkarsa ya da tutulamayacak kadar büyürse onu varsayılan boyutunda ekrana geri getiriyor"
+      "2": "/apsg reset eklendi: pencere ekran dışına çıkarsa ya da tutulamayacak kadar büyürse onu varsayılan boyutunda ekrana geri getiriyor",
+      "3": "Çeviriler iyileştirildi: durum satırı, durma nedenleri ve çalışmanın sohbete yazdığı mesajlar artık hep İngilizce yerine eklentinin dilini izliyor"
     }
   },
   "about": {
@@ -960,5 +961,45 @@
     "openPlugins": "Dalamud eklentilerini aç",
     "startRefused": "Başlatılamıyor: {0}",
     "runStopped": "Otomasyon durduruldu: {0}"
+  },
+  "status": {
+    "closingGame": "Oyun kapatılıyor",
+    "runningCommands": "Sohbet komutların çalıştırılıyor",
+    "loggingOut": "Başlık ekranına çıkılıyor",
+    "returningToInn": "Hana dönülüyor",
+    "matchCompleted": "Maç bitti; sonuçlar bekleniyor",
+    "manualLeave": "Biten içerikten elle çık",
+    "frontlineGates": "Frontline kapılarının açılması bekleniyor",
+    "rivalWingsStart": "Rival Wings maçının başlaması bekleniyor",
+    "readingQueue": "Sıra durumunun okunabilmesi bekleniyor",
+    "verifyingQueue": "Sıra kaydı doğrulanıyor",
+    "queueRetry": "Sıra kaydolmadı; {0} sonra yeniden denenecek",
+    "queued": "{0} için sırada",
+    "onBreak": "Molada, {0} kaldı",
+    "nextMatch": "Sonraki maç {0} sonra",
+    "queuePenalty": "Sıra cezası, {0} dk kaldı",
+    "submitFailed": "Sıraya girilemedi; yeniden denemeden önce bekleniyor",
+    "leavingQueue": "Sıradan çıkılıyor",
+    "teleporting": "Wolves' Den Pier'a ışınlanılıyor",
+    "walkingToVendor": "Satıcıya yürünüyor",
+    "buying": "{1} satın alınıyor: {0} adet",
+    "lookingFor": "{0} aranıyor",
+    "talkingToVendor": "Satıcıyla konuşuluyor"
+  },
+  "stop": {
+    "loggedOut": "Karakter çıkış yaptı; çalışma durduruldu.",
+    "wrongDuty": "Girilen içerik seçilen PvP moduyla eşleşmiyor. Çalışma durduruldu.",
+    "dutyNotRecognized": "Seçilen PvP içeriği tanınmadı. Çalışma durduruldu.",
+    "unconfirmedDeparture": "İçerikten tamamlandığı doğrulanmadan çıkıldı; bu maç sayılmadı.",
+    "queueUnreadable": "Sıra durumu okunamaz kaldı; çalışma durduruldu.",
+    "queueFailed": "Sıra kaydı sürekli başarısız oldu ya da zaman aşımına uğradı; çalışma durduruldu.",
+    "foreignQueue": "Başka bir sıra ya da içerik sürüyor; ona dokunmadan çalışma durduruldu."
+  },
+  "notice": {
+    "starting": "Grind başlıyor: {0}, {1}.",
+    "leaveFailed": "Biten içerikten çıkılamadı. Elle çık; dışarı çıktığında çalışma devam eder.",
+    "lifestreamMissing": "\"Hana dön\" seçeneğini kullanmak için Lifestream kur.",
+    "retiringToInn": "Çalışma tamamlandı. Hana dönülüyor.",
+    "missingPlugins": "Başlatılamıyor. Önce gerekli tüm eklentileri kur: {0}."
   }
 }

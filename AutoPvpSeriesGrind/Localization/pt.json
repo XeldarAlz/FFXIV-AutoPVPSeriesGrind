@@ -438,7 +438,8 @@
     },
     "r21310": {
       "1": "Corrigido: os botões Modo do LB e Tipo de limite nas configurações do Limit Break cortavam os rótulos em idiomas mais longos; agora eles se alargam para caber o texto",
-      "2": "Adicionado /apsg reset, que traz a janela de volta à tela no tamanho padrão se ela tiver ido para fora da tela ou ficado grande demais para arrastar"
+      "2": "Adicionado /apsg reset, que traz a janela de volta à tela no tamanho padrão se ela tiver ido para fora da tela ou ficado grande demais para arrastar",
+      "3": "Traduções melhoradas: a linha de status, os motivos de parada e as mensagens de chat de uma sessão agora seguem o idioma do plugin em vez de ficarem sempre em inglês"
     }
   },
   "about": {
@@ -960,5 +961,45 @@
     "openPlugins": "Abrir plugins do Dalamud",
     "startRefused": "Não é possível iniciar: {0}",
     "runStopped": "Automação interrompida: {0}"
+  },
+  "status": {
+    "closingGame": "Fechando o jogo",
+    "runningCommands": "Executando seus comandos de chat",
+    "loggingOut": "Deslogando para a tela inicial",
+    "returningToInn": "Voltando para a estalagem",
+    "matchCompleted": "Partida concluída; aguardando os resultados",
+    "manualLeave": "Saia manualmente do conteúdo concluído",
+    "frontlineGates": "Aguardando os portões do Frontline abrirem",
+    "rivalWingsStart": "Aguardando a partida de Rival Wings começar",
+    "readingQueue": "Aguardando o estado da fila ficar legível",
+    "verifyingQueue": "Verificando o registro na fila",
+    "queueRetry": "A fila não foi registrada; nova tentativa em {0}",
+    "queued": "Na fila para {0}",
+    "onBreak": "Em pausa, faltam {0}",
+    "nextMatch": "Próxima partida em {0}",
+    "queuePenalty": "Penalidade de fila, faltam {0} min",
+    "submitFailed": "Falha ao entrar na fila; aguardando para tentar de novo",
+    "leavingQueue": "Saindo da fila",
+    "teleporting": "Teleportando para Wolves' Den Pier",
+    "walkingToVendor": "Andando até o vendedor",
+    "buying": "Comprando {0} x {1}",
+    "lookingFor": "Procurando {0}",
+    "talkingToVendor": "Falando com o vendedor"
+  },
+  "stop": {
+    "loggedOut": "O personagem deslogou; sessão parada.",
+    "wrongDuty": "O conteúdo em que você entrou não corresponde ao modo de PvP escolhido. Sessão parada.",
+    "dutyNotRecognized": "O conteúdo de PvP escolhido não foi reconhecido. Sessão parada.",
+    "unconfirmedDeparture": "Saiu do conteúdo sem prova de conclusão; esta partida não conta.",
+    "queueUnreadable": "O estado da fila continuou indisponível; sessão parada.",
+    "queueFailed": "O registro na fila continuou falhando ou expirou; sessão parada.",
+    "foreignQueue": "Há outra fila ou conteúdo em andamento; sessão parada sem mexer nele."
+  },
+  "notice": {
+    "starting": "Começando o grind: {0}, {1}.",
+    "leaveFailed": "Não foi possível sair do conteúdo concluído. Saia manualmente; a sessão continua assim que você sair.",
+    "lifestreamMissing": "Instale o Lifestream para usar \"Voltar para a estalagem\".",
+    "retiringToInn": "Sessão concluída. Voltando para a estalagem.",
+    "missingPlugins": "Não é possível iniciar. Instale antes todos os plugins necessários: {0}."
   }
 }

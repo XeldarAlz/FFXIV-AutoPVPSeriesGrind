@@ -438,7 +438,8 @@
     },
     "r21310": {
       "1": "Corregido: los botones Modo del LB y Tipo de umbral de los ajustes del Límite cortaban sus etiquetas en idiomas más largos; ahora se ensanchan para que quepa el texto",
-      "2": "Se añadió /apsg reset, que devuelve la ventana a la pantalla con su tamaño por defecto si quedó fuera de la pantalla o demasiado grande para agarrarla"
+      "2": "Se añadió /apsg reset, que devuelve la ventana a la pantalla con su tamaño por defecto si quedó fuera de la pantalla o demasiado grande para agarrarla",
+      "3": "Mejoradas las traducciones: la línea de estado, los motivos de parada y los mensajes de chat de una sesión siguen ahora el idioma del plugin en lugar de salir siempre en inglés"
     }
   },
   "about": {
@@ -960,5 +961,45 @@
     "openPlugins": "Abrir plugins de Dalamud",
     "startRefused": "No se puede iniciar: {0}",
     "runStopped": "Automatización detenida: {0}"
+  },
+  "status": {
+    "closingGame": "Cerrando el juego",
+    "runningCommands": "Ejecutando tus comandos de chat",
+    "loggingOut": "Cerrando sesión",
+    "returningToInn": "Volviendo a la posada",
+    "matchCompleted": "Partida terminada; esperando los resultados",
+    "manualLeave": "Sal a mano del contenido terminado",
+    "frontlineGates": "Esperando a que se abran las puertas de Frontline",
+    "rivalWingsStart": "Esperando a que empiece la partida de Rival Wings",
+    "readingQueue": "Esperando a poder leer el estado de la cola",
+    "verifyingQueue": "Comprobando el registro en la cola",
+    "queueRetry": "La cola no se registró; reintento en {0}",
+    "queued": "En cola para {0}",
+    "onBreak": "En descanso, quedan {0}",
+    "nextMatch": "Próxima partida en {0}",
+    "queuePenalty": "Penalización de cola, quedan {0} min",
+    "submitFailed": "Falló el intento de entrar en cola; esperando para reintentar",
+    "leavingQueue": "Saliendo de la cola",
+    "teleporting": "Teletransportando a Wolves' Den Pier",
+    "walkingToVendor": "Caminando hacia el vendedor",
+    "buying": "Comprando {0} x {1}",
+    "lookingFor": "Buscando {0}",
+    "talkingToVendor": "Hablando con el vendedor"
+  },
+  "stop": {
+    "loggedOut": "El personaje cerró sesión; sesión detenida.",
+    "wrongDuty": "El contenido al que entraste no coincide con el modo JcJ elegido. Sesión detenida.",
+    "dutyNotRecognized": "No se reconoció el contenido JcJ elegido. Sesión detenida.",
+    "unconfirmedDeparture": "Se salió del contenido sin prueba de que terminara; esta partida no cuenta.",
+    "queueUnreadable": "El estado de la cola siguió sin poder leerse; sesión detenida.",
+    "queueFailed": "El registro en la cola siguió fallando o caducó; sesión detenida.",
+    "foreignQueue": "Hay otra cola u otro contenido en curso; sesión detenida sin tocarlo."
+  },
+  "notice": {
+    "starting": "Empieza el grind: {0}, {1}.",
+    "leaveFailed": "No se salió del contenido terminado. Sal a mano; la sesión sigue en cuanto estés fuera.",
+    "lifestreamMissing": "Instala Lifestream para usar «Volver a la posada».",
+    "retiringToInn": "Sesión completada. Volviendo a la posada.",
+    "missingPlugins": "No se puede iniciar. Instala antes todos los plugins necesarios: {0}."
   }
 }

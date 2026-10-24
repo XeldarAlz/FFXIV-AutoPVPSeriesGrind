@@ -235,6 +235,52 @@ internal static class L
         public static readonly LocString TileElapsed = new("run.tile.elapsed", "Elapsed");
     }
 
+    internal static class Status
+    {
+        public static readonly LocString ClosingGame = new("status.closingGame", "Closing the game");
+        public static readonly LocString RunningCommands = new("status.runningCommands", "Running your chat commands");
+        public static readonly LocString LoggingOut = new("status.loggingOut", "Logging out");
+        public static readonly LocString ReturningToInn = new("status.returningToInn", "Returning to the inn");
+        public static readonly LocString MatchCompleted = new("status.matchCompleted", "Match completed; waiting for results");
+        public static readonly LocString ManualLeave = new("status.manualLeave", "Leave the finished duty manually");
+        public static readonly LocString FrontlineGates = new("status.frontlineGates", "Waiting for the Frontline gates to open");
+        public static readonly LocString RivalWingsStart = new("status.rivalWingsStart", "Waiting for the Rival Wings match to start");
+        public static readonly LocString ReadingQueue = new("status.readingQueue", "Waiting for readable queue state");
+        public static readonly LocString VerifyingQueue = new("status.verifyingQueue", "Verifying queue registration");
+        public static readonly LocString QueueRetry = new("status.queueRetry", "Queue did not register; retrying in {0}");
+        public static readonly LocString Queued = new("status.queued", "Queued for {0}");
+        public static readonly LocString OnBreak = new("status.onBreak", "On a break, {0} left");
+        public static readonly LocString NextMatch = new("status.nextMatch", "Next match in {0}");
+        public static readonly LocString QueuePenalty = new("status.queuePenalty", "Queue penalty, {0}m left");
+        public static readonly LocString SubmitFailed = new("status.submitFailed", "Queue submission failed; waiting before retry");
+        public static readonly LocString LeavingQueue = new("status.leavingQueue", "Leaving the queue");
+        public static readonly LocString Teleporting = new("status.teleporting", "Teleporting to Wolves' Den Pier");
+        public static readonly LocString WalkingToVendor = new("status.walkingToVendor", "Walking to the vendor");
+        public static readonly LocString Buying = new("status.buying", "Buying {0} x {1}");
+        public static readonly LocString LookingFor = new("status.lookingFor", "Looking for {0}");
+        public static readonly LocString TalkingToVendor = new("status.talkingToVendor", "Talking to the vendor");
+    }
+
+    internal static class Stop
+    {
+        public static readonly LocString LoggedOut = new("stop.loggedOut", "Character logged out; run stopped.");
+        public static readonly LocString WrongDuty = new("stop.wrongDuty", "The entered duty does not match the selected PvP mode. Run stopped.");
+        public static readonly LocString DutyNotRecognized = new("stop.dutyNotRecognized", "The selected PvP duty was not recognized. Run stopped.");
+        public static readonly LocString UnconfirmedDeparture = new("stop.unconfirmedDeparture", "Left the duty without completion evidence; this match is not counted.");
+        public static readonly LocString QueueUnreadable = new("stop.queueUnreadable", "Queue state remained unavailable; run stopped.");
+        public static readonly LocString QueueFailed = new("stop.queueFailed", "Queue registration kept failing or timed out; run stopped.");
+        public static readonly LocString ForeignQueue = new("stop.foreignQueue", "Another queue or duty is in flight; run stopped without changing it.");
+    }
+
+    internal static class Notice
+    {
+        public static readonly LocString Starting = new("notice.starting", "Starting the grind: {0}, {1}.");
+        public static readonly LocString LeaveFailed = new("notice.leaveFailed", "The finished duty did not exit. Leave it manually; the run carries on once you are out.");
+        public static readonly LocString LifestreamMissing = new("notice.lifestreamMissing", "Install Lifestream to use \"Return to the inn\".");
+        public static readonly LocString RetiringToInn = new("notice.retiringToInn", "Run complete. Retiring to the inn.");
+        public static readonly LocString MissingPlugins = new("notice.missingPlugins", "Cannot start. Install all required plugins first: {0}.");
+    }
+
     internal static class History
     {
         public static readonly LocString Title = new("history.title", "History");
@@ -339,6 +385,7 @@ internal static class L
         [
             new("changelog.r21310.1", "Fixed the LB mode and Threshold type buttons in the Limit Break settings cutting off their labels in longer languages: they now widen to fit"),
             new("changelog.r21310.2", "Added /apsg reset, which brings the window back on screen at its default size if it ended up off screen or too large to grab"),
+            new("changelog.r21310.3", "Improved translations: the status line, stop reasons and the chat messages a run prints now follow the plugin language instead of always being in English"),
         ];
 
         public static readonly LocString[] Release21300 =
