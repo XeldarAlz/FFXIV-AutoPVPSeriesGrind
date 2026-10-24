@@ -357,6 +357,7 @@ internal static class L
             new("changelog.r21300.18", "Added /apsg start, stop, finish and status, so a macro can start a run, end it, finish after the current match or print where it stands"),
             new("changelog.r21300.19", "Fixed the bot standing in spawn for a whole Crystalline Conflict match when the match timer could not be read, for example right after a game patch: after a minute without a readable timer it starts the match anyway"),
             new("changelog.r21300.20", "Fixed Series EXP gained showing your entire Series total when a run started before your PvP profile had loaded"),
+            new("changelog.r21300.21", "Improved Bloodbath and Swift: Bloodbath now waits for an enemy in melee range, since its healing comes from your hits, and Swift is used to close the gap to your target instead of while already next to it"),
         ];
 
         public static readonly LocString[] Release21200 =

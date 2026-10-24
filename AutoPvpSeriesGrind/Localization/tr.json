@@ -431,7 +431,8 @@
       "17": "Düzeltildi: Geçmiş dosyası, örneğin kayıt sırasında bir çökmeyle bozulduğunda toplam istatistikler siliniyordu; geçmiş artık güvenli şekilde kaydediliyor ve okunamayan dosya üzerine yazılmak yerine run-history.corrupt.json olarak saklanıyor",
       "18": "/apsg start, stop, finish ve status eklendi: bir makro artık çalışmayı başlatabilir, durdurabilir, mevcut maçtan sonra bitirebilir ya da durumunu yazdırabilir",
       "19": "Düzeltildi: Maç sayacı okunamadığında, örneğin bir oyun yamasından hemen sonra, bot bütün bir Crystalline Conflict maçı boyunca başlangıç noktasında bekliyordu; bir dakika boyunca sayaç okunamazsa artık maça yine de başlıyor",
-      "20": "Düzeltildi: PvP profiliniz yüklenmeden başlayan bir çalışmada kazanılan Seri EXP'si toplam Seri EXP'nizin tamamını gösteriyordu"
+      "20": "Düzeltildi: PvP profiliniz yüklenmeden başlayan bir çalışmada kazanılan Seri EXP'si toplam Seri EXP'nizin tamamını gösteriyordu",
+      "21": "Bloodbath ve Swift iyileştirildi: Bloodbath iyileştirmesi vuruşlarından geldiği için artık yakın mesafede bir düşman bekliyor, Swift ise hedefin yanındayken değil, hedefle aradaki mesafeyi kapatmak için kullanılıyor"
     }
   },
   "about": {

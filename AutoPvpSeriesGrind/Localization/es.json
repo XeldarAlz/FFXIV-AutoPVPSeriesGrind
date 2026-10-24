@@ -431,7 +431,8 @@
       "17": "Corregido: las estadísticas totales se borraban cuando el archivo de historial se dañaba, por ejemplo por un cierre inesperado al guardar; ahora el historial se guarda de forma segura y un archivo ilegible se conserva como run-history.corrupt.json en lugar de sobrescribirse",
       "18": "Se añadieron /apsg start, stop, finish y status, para que una macro pueda iniciar una sesión, detenerla, terminar tras la partida actual o mostrar cómo va",
       "19": "Corregido: el bot se quedaba en la zona de salida toda la partida de Crystalline Conflict cuando no podía leer el temporizador, por ejemplo justo después de un parche del juego; tras un minuto sin temporizador legible empieza la partida igualmente",
-      "20": "Corregido: la EXP de serie ganada mostraba toda tu EXP de serie cuando una sesión empezaba antes de que se cargara tu perfil JcJ"
+      "20": "Corregido: la EXP de serie ganada mostraba toda tu EXP de serie cuando una sesión empezaba antes de que se cargara tu perfil JcJ",
+      "21": "Mejorados Bloodbath y Swift: Bloodbath espera ahora a tener un enemigo a distancia cuerpo a cuerpo, porque su curación sale de tus golpes, y Swift se usa para acortar distancia con tu objetivo en lugar de cuando ya estás a su lado"
     }
   },
   "about": {

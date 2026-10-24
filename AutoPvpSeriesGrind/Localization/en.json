@@ -431,7 +431,8 @@
       "17": "Fixed lifetime stats being wiped when the history file got damaged, for example by a crash mid-save: history is now saved safely, and an unreadable file is kept as run-history.corrupt.json instead of being overwritten",
       "18": "Added /apsg start, stop, finish and status, so a macro can start a run, end it, finish after the current match or print where it stands",
       "19": "Fixed the bot standing in spawn for a whole Crystalline Conflict match when the match timer could not be read, for example right after a game patch: after a minute without a readable timer it starts the match anyway",
-      "20": "Fixed Series EXP gained showing your entire Series total when a run started before your PvP profile had loaded"
+      "20": "Fixed Series EXP gained showing your entire Series total when a run started before your PvP profile had loaded",
+      "21": "Improved Bloodbath and Swift: Bloodbath now waits for an enemy in melee range, since its healing comes from your hits, and Swift is used to close the gap to your target instead of while already next to it"
     }
   },
   "about": {

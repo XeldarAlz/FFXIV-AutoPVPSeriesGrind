@@ -431,7 +431,8 @@
       "17": "Behoben: Die Gesamtstatistik wurde gelöscht, wenn die Verlaufsdatei beschädigt war, etwa durch einen Absturz beim Speichern; der Verlauf wird jetzt sicher gespeichert, und eine unlesbare Datei bleibt als run-history.corrupt.json erhalten, statt überschrieben zu werden",
       "18": "/apsg start, stop, finish und status hinzugefügt: Ein Makro kann damit einen Lauf starten, beenden, nach dem aktuellen Match beenden oder den Stand ausgeben",
       "19": "Behoben: Der Bot stand ein ganzes Crystalline-Conflict-Match lang im Startbereich, wenn der Match-Timer nicht lesbar war, etwa direkt nach einem Spiel-Patch; nach einer Minute ohne lesbaren Timer startet er das Match jetzt trotzdem",
-      "20": "Behoben: Die gewonnene Serien-EP zeigte deine gesamte Serien-EP an, wenn ein Lauf startete, bevor dein PvP-Profil geladen war"
+      "20": "Behoben: Die gewonnene Serien-EP zeigte deine gesamte Serien-EP an, wenn ein Lauf startete, bevor dein PvP-Profil geladen war",
+      "21": "Bloodbath und Swift verbessert: Bloodbath wartet jetzt auf einen Gegner in Nahkampfreichweite, weil die Heilung aus deinen Treffern kommt, und Swift wird eingesetzt, um zum Ziel aufzuschließen, statt wenn du schon daneben stehst"
     }
   },
   "about": {

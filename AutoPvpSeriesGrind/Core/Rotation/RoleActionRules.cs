@@ -26,6 +26,7 @@ internal static class RoleActionRules
     private const float RampageRadiusYalms = 10f;
     private const float StoneskinRadiusYalms = 15f;
     private const float BuffEngageYalms = 25f;
+    private const float MeleeReachYalms = 5f;
 
     private static readonly RotationRule[] Unknown = [Use(PvpActions.RoleAction, InCombat)];
 
@@ -34,8 +35,8 @@ internal static class RoleActionRules
         [Rampage] = [UseAsOnSelf(PvpActions.RoleAction, Rampage, EnemiesWithin(RampageRadiusYalms))],
         [Rampart] = [UseAsOnSelf(PvpActions.RoleAction, Rampart, InCombat, SelfHpBelow(0.7f))],
         [FullSwing] = [UseAs(PvpActions.RoleAction, FullSwing)],
-        [Bloodbath] = [UseAsOnSelf(PvpActions.RoleAction, Bloodbath, InCombat, SelfHpBelow(0.75f))],
-        [Swift] = [UseAsOnSelf(PvpActions.RoleAction, Swift, InCombat, EnemiesWithin(BuffEngageYalms))],
+        [Bloodbath] = [UseAsOnSelf(PvpActions.RoleAction, Bloodbath, InCombat, SelfHpBelow(0.75f), EnemiesWithin(MeleeReachYalms))],
+        [Swift] = [UseAsOnSelf(PvpActions.RoleAction, Swift, InCombat, TargetBeyond(MeleeReachYalms), TargetWithin(BuffEngageYalms))],
         [Smite] = [UseAsOnWeakest(PvpActions.RoleAction, Smite, EnemyInReachBelow(0.25f))],
         [Dervish] = [UseAsOnSelf(PvpActions.RoleAction, Dervish, InCombat, EnemiesWithin(BuffEngageYalms))],
         [Bravery] = [UseAsOnSelf(PvpActions.RoleAction, Bravery, InCombat, EnemiesWithin(BuffEngageYalms))],
