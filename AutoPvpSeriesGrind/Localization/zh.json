@@ -396,7 +396,11 @@
       "1": "极限技现已内置于插件本身，不再需要 Auto PVP LB：首次加载此版本时会沿用你的 Auto PVP LB 设置，设置中新的“极限技”标签页包含按职业的规则、跳过条件、允许的任务、屏蔽列表和释放音效",
       "2": "改进极限技的释放时机：释放期间循环会等待，技能按键不会再把它顶掉。无论是否正在运行，它仍会在任何 PvP 对战中释放",
       "3": "修复：Crystalline Conflict、Frontline 和 Rival Wings 都被识别为“其他PvP”，导致极限技的“允许的任务”开关不起作用的问题",
-      "4": "修复：屏蔽的玩家会导致极限技完全不释放的问题，现在会改为对下一个敌人释放"
+      "4": "修复：屏蔽的玩家会导致极限技完全不释放的问题，现在会改为对下一个敌人释放",
+      "5": "改进职能技能：现在只在划算时使用（对 HP 25% 及以下的敌人使用 Smite，HP 低于 75% 时使用 Bloodbath，受伤时使用 Rampart 和 Stoneskin II），并且终于会使用法系的 Comet 以及治疗的 Haelan 和 Stoneskin II",
+      "6": "修复：Purify 可用时，诗人的 Warden's Paean、白魔法师的 Aquaveil 和武士的 Meikyo Shisui 从不用于净化的问题。现在优先使用它们，Purify 留给眩晕、沉默、冰冻和 Miracle of Nature",
+      "7": "修复：蝰蛇剑士在 Uncoiled Fury 和 Snake Scales 仍可用时使用 Rattling Coil、浪费重置效果的问题",
+      "8": "修复：绘灵法师移动时仍保持 Subtractive Palette、而其魔法需要咏唱的问题。现在移动时会解除，需要咏唱时再开启"
     }
   },
   "about": {
@@ -550,7 +554,7 @@
       "allySupport": "帮助低于此血量的队友",
       "allySupportHelp": "治疗、护盾和其他友方技能会用在低于此值且血量最低的队友身上；若没有，则在你自己低于此值时用于自己。",
       "purify": "Purify",
-      "purifyHelp": "一旦受到眩晕、加重、止步、沉默、冰冻或 Miracle of Nature，立即解除。"
+      "purifyHelp": "一旦受到眩晕、沉默、冰冻或 Miracle of Nature，立即解除。加重和止步交给职业自身的净化技能处理，让 Purify 留给下一次眩晕。"
     },
     "strategy": {
       "rush": "直冲水晶",

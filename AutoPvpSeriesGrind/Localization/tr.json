@@ -396,7 +396,11 @@
       "1": "Limit Break doğrudan eklentiye eklendi, artık Auto PVP LB gerekmiyor: Auto PVP LB ayarların bu sürüm ilk yüklendiğinde aktarılır ve ayarlardaki yeni Limit Break sekmesi job başına kuralları, filtreleri, izin verilen içerikleri, engel listesini ve kullanım sesini içerir",
       "2": "Limit Break zamanlaması iyileştirildi: rotasyon artık o kullanılırken bekliyor, böylece bir yetenek basışı onun yerine geçemiyor. Bir çalışma sürsün ya da sürmesin her PvP maçında kullanılmaya devam ediyor",
       "3": "Düzeltildi: Crystalline Conflict, Frontline ve Rival Wings'in hepsi Diğer PvP olarak okunduğu için Limit Break'in İzin verilen içerikler anahtarları işe yaramıyordu",
-      "4": "Düzeltildi: Engellenen bir oyuncu Limit Break'i tamamen durduruyordu; artık bir sonraki düşmana kullanılıyor"
+      "4": "Düzeltildi: Engellenen bir oyuncu Limit Break'i tamamen durduruyordu; artık bir sonraki düşmana kullanılıyor",
+      "5": "Rol aksiyonları iyileştirildi: her biri artık yalnızca işe yaradığında kullanılıyor (HP'si %25 veya altındaki düşmana Smite, %75 HP'nin altında Bloodbath, hasar alırken Rampart ve Stoneskin II) ve büyücülerin Comet'i ile şifacıların Haelan ve Stoneskin II'si artık kullanılıyor",
+      "6": "Düzeltildi: Purify hazırken Bard'ın Warden's Paean'ı, White Mage'in Aquaveil'i ve Samurai'nin Meikyo Shisui'si hiç temizlemiyordu; artık önce onlar kullanılıyor ve Purify, Stun, Silence, Deep Freeze ve Miracle of Nature için saklanıyor",
+      "7": "Düzeltildi: Viper, Uncoiled Fury ve Snake Scales hâlâ hazırken Rattling Coil kullanıp sıfırlamayı boşa harcıyordu",
+      "8": "Düzeltildi: Pictomancer, büyüleri döküm süresi istediği halde hareket ederken Subtractive Palette'i açık tutuyordu; artık hareket ederken paleti bırakıyor ve büyü yapmak için geri alıyor"
     }
   },
   "about": {
@@ -550,7 +554,7 @@
       "allySupport": "Müttefiklere yardım, can şunun altındayken",
       "allySupportHelp": "İyileştirmeler, kalkanlar ve diğer dost yetenekler bu değerin altındaki en düşük canlı müttefike gider; yoksa sen altındaysan sana.",
       "purify": "Purify",
-      "purifyHelp": "Stun, Heavy, Bind, Silence, Deep Freeze ve Miracle of Nature'ı gelir gelmez temizler."
+      "purifyHelp": "Stun, Silence, Deep Freeze ve Miracle of Nature'ı gelir gelmez temizler. Heavy ve Bind, job'unun kendi temizleme yeteneğine bırakılır; böylece Purify bir sonraki stun için hazır kalır."
     },
     "strategy": {
       "rush": "Kristale koş",

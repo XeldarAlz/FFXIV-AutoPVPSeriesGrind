@@ -248,7 +248,6 @@ internal static class JobRotationTables
 
         public static readonly RotationTable Table = new(0,
         [
-            UseAsOnSelf(MeikyoShisui, MeikyoShisui, SelfHasAny(PvpStatuses.PurifyClears)),
             UseAs(MeikyoShisui, TendoKaeshiSetsugekka),
             UseAs(MeikyoShisui, TendoSetsugekka),
             UseAs(OgiNamikiri, KaeshiNamikiri),
@@ -259,7 +258,7 @@ internal static class JobRotationTables
             Use(Mineuchi, TargetHas(Kuzushi)),
             UseAsOnSelf(Chiten, Chiten, EnemiesWithin(MeleeYalms)),
             UseAsOnSelf(MeikyoShisui, MeikyoShisui, EnemiesWithin(MeleeYalms)),
-        ]);
+        ], cleanse: UseAsOnSelf(MeikyoShisui, MeikyoShisui));
     }
 
     private static class Reaper
@@ -312,13 +311,15 @@ internal static class JobRotationTables
         private const uint FourthGeneration = 39172;
         private const uint Ouroboros = 39173;
         private const uint SerpentsTail = 39183;
+        private const uint SnakeScales = 39185;
         private const uint RattlingCoil = 39189;
         private const uint HardenedScales = 4096;
 
         public static readonly RotationTable Table = new(HardenedScales,
         [
             Use(SerpentsTail),
-            UseOnSelf(RattlingCoil, InCombat),
+            // Rattling Coil only resets Uncoiled Fury and Snake Scales, so it waits until both have been spent.
+            UseOnSelf(RattlingCoil, InCombat, Recasting(UncoiledFury), Recasting(SnakeScales)),
             UseAs(Combo, FourthGeneration),
             UseAs(Combo, ThirdGeneration),
             UseAs(Combo, SecondGeneration),
@@ -346,7 +347,6 @@ internal static class JobRotationTables
 
         public static readonly RotationTable Table = new(0,
         [
-            UseOnSelf(WardensPaean, SelfHasAny(PvpStatuses.PurifyClears)),
             UseAs(ApexArrow, ApexArrow, SelfLacks(FrontlinersMarch)),
             Use(HarmonicArrow),
             UseAs(PowerfulShot, PitchPerfect),
@@ -354,7 +354,7 @@ internal static class JobRotationTables
             Use(ApexArrow),
             Use(PowerfulShot),
             Use(SilentNocturne, SelfLacks(Repertoire), TargetLacks(PvpStatuses.Silence)),
-        ]);
+        ], cleanse: UseOnSelf(WardensPaean));
     }
 
     private static class Machinist
@@ -517,6 +517,7 @@ internal static class JobRotationTables
         private const uint LivingMuse = 39209;
         private const uint TemperaCoat = 39211;
         private const uint SubtractivePalette = 39213;
+        private const uint ReleaseSubtractivePalette = 39214;
         private const uint StarPrism = 39216;
         private const uint MogOfTheAges = 39782;
         private const uint RetributionOfTheMadeen = 39783;
@@ -530,7 +531,10 @@ internal static class JobRotationTables
             UseOnSelf(CreatureMotif),
             Use(FireInRed),
             Use(LivingMuse),
-            UseAsOnSelf(SubtractivePalette, SubtractivePalette),
+            // The subtractive spells take a 1.5 s cast and the additive ones are instant, so the palette is dropped
+            // on the move and picked back up when the brain lets the character stand and cast.
+            UseAsOnSelf(SubtractivePalette, ReleaseSubtractivePalette, OnTheMove),
+            UseAsOnSelf(SubtractivePalette, SubtractivePalette, StandingStill),
             UseOnSelf(TemperaCoat, SelfHpBelow(0.8f)),
         ]);
     }
@@ -547,14 +551,13 @@ internal static class JobRotationTables
 
         public static readonly RotationTable Table = new(0,
         [
-            UseOnSelf(Aquaveil, SelfHasAny(PvpStatuses.PurifyClears)),
             UseAs(CureII, CureIII),
             Use(CureII),
             Use(AfflatusMisery),
             Use(GlareIII),
             Use(SeraphStrike),
             Use(MiracleOfNature),
-        ]);
+        ], cleanse: UseOnSelf(Aquaveil));
     }
 
     private static class Scholar

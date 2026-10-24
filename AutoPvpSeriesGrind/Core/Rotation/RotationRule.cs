@@ -21,6 +21,10 @@ internal enum RuleWhen : byte
     TargetBeyond,
     AllyBelow,
     CanFollowWith,
+    Recasting,
+    StandingStill,
+    OnTheMove,
+    EnemyInReachBelow,
 }
 
 internal readonly record struct RuleCondition(RuleWhen Kind, uint Status = 0, float Value = 0f, uint[]? Statuses = null, float Range = 0f, uint Button = 0);
@@ -30,14 +34,17 @@ internal enum RuleTarget : byte
     Auto,
     Self,
     NearestAlly,
+    WeakestEnemy,
 }
 
 internal readonly record struct RotationRule(uint Button, uint Adjusted, RuleTarget Target, RuleCondition[] Conditions);
 
-internal sealed class RotationTable(uint pauseWhileSelfHas, RotationRule[] rules)
+// Cleanse is the job's own debuff removal, tried before Purify so Purify stays ready for the next stun.
+internal sealed class RotationTable(uint pauseWhileSelfHas, RotationRule[] rules, RotationRule cleanse = default)
 {
     public uint PauseWhileSelfHas { get; } = pauseWhileSelfHas;
     public RotationRule[] Rules { get; } = rules;
+    public RotationRule Cleanse { get; } = cleanse;
 }
 
 internal static class Rule
@@ -51,12 +58,16 @@ internal static class Rule
     public static RotationRule UseAsOnSelf(uint button, uint adjusted, params RuleCondition[] when) => new(button, adjusted, RuleTarget.Self, when);
 
     public static RotationRule UseOnAlly(uint button, params RuleCondition[] when) => new(button, 0, RuleTarget.NearestAlly, when);
+
+    public static RotationRule UseAsOnWeakest(uint button, uint adjusted, params RuleCondition[] when) => new(button, adjusted, RuleTarget.WeakestEnemy, when);
 }
 
 internal static class When
 {
     public static readonly RuleCondition InCombat = new(RuleWhen.InCombat);
     public static readonly RuleCondition NotLastUsed = new(RuleWhen.NotLastUsed);
+    public static readonly RuleCondition StandingStill = new(RuleWhen.StandingStill);
+    public static readonly RuleCondition OnTheMove = new(RuleWhen.OnTheMove);
 
     public static RuleCondition SelfHas(uint status) => new(RuleWhen.SelfHasStatus, status);
     public static RuleCondition SelfLacks(uint status) => new(RuleWhen.SelfLacksStatus, status);
@@ -75,4 +86,6 @@ internal static class When
     public static RuleCondition TargetBeyond(float yalms) => new(RuleWhen.TargetBeyond, Value: yalms);
     public static RuleCondition AllyBelow(float fraction, float withinYalms) => new(RuleWhen.AllyBelow, Value: fraction, Range: withinYalms);
     public static RuleCondition CanFollowWith(uint button) => new(RuleWhen.CanFollowWith, Button: button);
+    public static RuleCondition Recasting(uint action) => new(RuleWhen.Recasting, Button: action);
+    public static RuleCondition EnemyInReachBelow(float fraction) => new(RuleWhen.EnemyInReachBelow, Value: fraction);
 }

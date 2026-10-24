@@ -15,6 +15,7 @@ internal static class PvpActions
     [
         29490, 29503, 29405, 41457, 41458, 41488, 41489, 41490, 29716,
         39174, 39175, 39176, 39177, 39178, 39179, 39180, 39181, 39182,
+        RoleActionRules.FullSwing, RoleActionRules.Smite, RoleActionRules.EagleEyeShot,
     ];
 }
 
@@ -38,6 +39,8 @@ internal static class PvpStatuses
     public const uint Lethargy = 4333;
 
     public static readonly uint[] PurifyClears = [Stun, Heavy, Bind, Silence, DeepFreeze, MiracleOfNature];
+    // Heavy and Bind only slow or root; Purify is kept for the crowd control that stops you acting.
+    public static readonly uint[] PurifyWorthy = [Stun, Silence, DeepFreeze, MiracleOfNature];
     public static readonly uint[] GuardForbiddenBy = [InnerRelease, UndeadRedemption];
     public static readonly uint[] DamageImmunities = [Guard, WeakenedGuard, HallowedGround, UndeadRedemption];
     public static readonly uint[] HardImmunities = [SpawnProtection, HallowedGround, UndeadRedemption];

@@ -69,7 +69,7 @@ internal sealed class PvpRotationDriver
         var currentKit = KitFor(self);
         var aliveMs = Environment.TickCount64 - aliveSinceMs;
 
-        if (settings.Purify && TryPurify(self))
+        if (TryCleanse(self))
         {
             return RotationOutcome.Instant;
         }
@@ -106,15 +106,7 @@ internal sealed class PvpRotationDriver
             return RotationOutcome.Instant;
         }
 
-        var outcome = table is not null
-            ? RunTable(table, in context, gcdReady)
-            : RunGeneric(currentKit, in context, gcdReady);
-        if (outcome == RotationOutcome.None && Svc.Condition[ConditionFlag.InCombat]
-            && TryButton(PvpActions.RoleAction, 0, RuleTarget.Auto, NoConditions, in context, wantGcd: false, out var roleOutcome))
-        {
-            return roleOutcome;
-        }
-        return outcome;
+        return RunRotation(currentKit, in context, gcdReady);
     }
 
     private static void CancelWastedCast(IPlayerCharacter self)
@@ -248,28 +240,29 @@ internal sealed class PvpRotationDriver
         return kit;
     }
 
-    private RotationOutcome RunTable(RotationTable rotationTable, in RuleContext context, bool gcdReady)
+    // The role action goes first in each phase: its rules only let it through when it pays off (Smite on a low enemy,
+    // Bloodbath when hurt), and Comet is a caster's strongest GCD.
+    private RotationOutcome RunRotation(PvpJobKit currentKit, in RuleContext context, bool gcdReady)
     {
-        if (rotationTable.PauseWhileSelfHas != 0 && MatchState.HasStatus(context.Self, rotationTable.PauseWhileSelfHas))
+        if (table is { PauseWhileSelfHas: not 0 } && MatchState.HasStatus(context.Self, table.PauseWhileSelfHas))
         {
             return RotationOutcome.None;
         }
 
-        if (gcdReady && TryRules(rotationTable.Rules, in context, wantGcd: true, out var outcome))
+        var roleRules = RoleActionRules.For(ActionOps.Adjusted(PvpActions.RoleAction));
+        if (gcdReady && (TryRules(roleRules, in context, wantGcd: true, out var outcome) || TryJob(currentKit, in context, wantGcd: true, out outcome)))
         {
             return outcome;
         }
-        return TryRules(rotationTable.Rules, in context, wantGcd: false, out outcome) ? outcome : RotationOutcome.None;
+        return TryRules(roleRules, in context, wantGcd: false, out outcome) || TryJob(currentKit, in context, wantGcd: false, out outcome)
+            ? outcome
+            : RotationOutcome.None;
     }
 
-    private RotationOutcome RunGeneric(PvpJobKit currentKit, in RuleContext context, bool gcdReady)
-    {
-        if (gcdReady && TryButtons(currentKit.Buttons, in context, wantGcd: true, out var outcome))
-        {
-            return outcome;
-        }
-        return TryButtons(currentKit.Buttons, in context, wantGcd: false, out outcome) ? outcome : RotationOutcome.None;
-    }
+    private bool TryJob(PvpJobKit currentKit, in RuleContext context, bool wantGcd, out RotationOutcome outcome)
+        => table is not null
+            ? TryRules(table.Rules, in context, wantGcd, out outcome)
+            : TryButtons(currentKit.Buttons, in context, wantGcd, out outcome);
 
     private bool TryRules(RotationRule[] rules, in RuleContext context, bool wantGcd, out RotationOutcome outcome)
     {
@@ -323,7 +316,7 @@ internal sealed class PvpRotationDriver
         }
 
         var target = PickTarget(in info, targetRule, in context);
-        if (target is null || WastedOnImmunity(in info, adjustedId, target, in context))
+        if (target is null || WastedOnImmunity(in info, adjustedId, target, context.Self))
         {
             return false;
         }
@@ -365,9 +358,9 @@ internal sealed class PvpRotationDriver
         return plainGcdInWindow && ActionOps.IsReadyIgnoringRecast(adjustedId);
     }
 
-    private static bool WastedOnImmunity(in PvpActionInfo info, uint adjustedId, IGameObject target, in RuleContext context)
+    private static bool WastedOnImmunity(in PvpActionInfo info, uint adjustedId, IGameObject target, IPlayerCharacter self)
     {
-        if (!info.TargetsHostile || context.Enemy is not { } enemy || target.GameObjectId != enemy.GameObjectId)
+        if (!info.TargetsHostile || target is not IBattleChara enemy || enemy.GameObjectId == self.GameObjectId)
         {
             return false;
         }
@@ -451,6 +444,14 @@ internal sealed class PvpRotationDriver
                 return LowestAllyIdWithin(snapshot, condition.Value, condition.Range) != 0;
             case RuleWhen.CanFollowWith:
                 return enemy is not null && CanFollowWith(condition.Button, enemy, self);
+            case RuleWhen.Recasting:
+                return PvpActionCatalog.TryGetInfo(condition.Button, out var recastInfo) && ActionOps.RecastRemainingSeconds(recastInfo.CooldownGroup) > 0f;
+            case RuleWhen.StandingStill:
+                return context.MayStandStill;
+            case RuleWhen.OnTheMove:
+                return !context.MayStandStill;
+            case RuleWhen.EnemyInReachBelow:
+                return WeakestEnemyIdWithin(snapshot, condition.Value, ReachOf(adjustedId)) != 0;
             default:
                 return true;
         }
@@ -473,6 +474,11 @@ internal sealed class PvpRotationDriver
                 return context.Self;
             case RuleTarget.NearestAlly:
                 return NearestAlly(context.Snapshot);
+            case RuleTarget.WeakestEnemy:
+            {
+                var weakestId = WeakestEnemyIdWithin(context.Snapshot, 1f, ReachOf(info.Id));
+                return weakestId == 0 ? null : Svc.Objects.SearchById(weakestId);
+            }
         }
 
         if (info.TargetsHostile)
@@ -500,8 +506,32 @@ internal sealed class PvpRotationDriver
         return null;
     }
 
-    private bool TryPurify(IPlayerCharacter self)
-        => MatchState.HasAnyStatus(self, PvpStatuses.PurifyClears) && UseOnSelf(self, PvpActions.Purify, "Purify");
+    // The job's own cleanse (Warden's Paean, Aquaveil, Meikyo Shisui) goes first and covers slows and roots too;
+    // Purify is the fallback and only for crowd control that stops you acting.
+    private bool TryCleanse(IPlayerCharacter self)
+    {
+        if (!MatchState.HasAnyStatus(self, PvpStatuses.PurifyClears))
+        {
+            return false;
+        }
+        if (table is { Cleanse.Button: not 0 } && TryOwnCleanse(self, table.Cleanse))
+        {
+            return true;
+        }
+
+        return settings.Purify && MatchState.HasAnyStatus(self, PvpStatuses.PurifyWorthy) && UseOnSelf(self, PvpActions.Purify, "Purify");
+    }
+
+    private bool TryOwnCleanse(IPlayerCharacter self, in RotationRule cleanse)
+    {
+        var adjustedId = ActionOps.Adjusted(cleanse.Button);
+        if (cleanse.Adjusted != 0 && adjustedId != cleanse.Adjusted)
+        {
+            return false;
+        }
+
+        return UseOnSelf(self, adjustedId, PvpActionCatalog.TryGetInfo(adjustedId, out var info) ? info.Name : "cleanse");
+    }
 
     private bool TryGuard(IPlayerCharacter self, PvpSnapshot snapshot, bool underBurst, long aliveMs)
     {
@@ -585,6 +615,25 @@ internal sealed class PvpRotationDriver
             }
         }
         return lowestId;
+    }
+
+    private static float ReachOf(uint actionId)
+        => PvpActionCatalog.TryGetInfo(actionId, out var info) && info.Range > 0 ? info.Range : float.MaxValue;
+
+    private static ulong WeakestEnemyIdWithin(PvpSnapshot snapshot, float hpFraction, float withinYalms)
+    {
+        var weakestId = 0UL;
+        var weakestHp = float.MaxValue;
+        for (var enemyIndex = 0; enemyIndex < snapshot.Enemies.Count; enemyIndex++)
+        {
+            var enemy = snapshot.Enemies[enemyIndex];
+            if (enemy.CanAttack && enemy.Hp <= hpFraction && enemy.Hp < weakestHp && enemy.DistanceToSelf <= withinYalms)
+            {
+                weakestHp = enemy.Hp;
+                weakestId = enemy.Id;
+            }
+        }
+        return weakestId;
     }
 
     private static IGameObject? NearestAlly(PvpSnapshot snapshot)

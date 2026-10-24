@@ -396,7 +396,11 @@
       "1": "Intégration de la Transcendance dans le plugin lui-même, Auto PVP LB n'est plus nécessaire : vos réglages d'Auto PVP LB sont repris au premier chargement de cette version, et le nouvel onglet Transcendance des réglages regroupe les règles par job, les filtres, les missions autorisées, la liste de blocage et le son de déclenchement",
       "2": "Meilleur timing de la Transcendance : la rotation attend maintenant pendant qu'elle part, pour qu'une compétence ne puisse plus la remplacer. Elle se déclenche toujours dans chaque match JcJ, qu'une session tourne ou non",
       "3": "Correction : les interrupteurs Missions autorisées de la Transcendance n'avaient aucun effet, car Crystalline Conflict, Frontline et Rival Wings étaient tous lus comme Autre JcJ",
-      "4": "Correction : un joueur bloqué empêchait complètement la Transcendance ; elle vise désormais l'ennemi suivant"
+      "4": "Correction : un joueur bloqué empêchait complètement la Transcendance ; elle vise désormais l'ennemi suivant",
+      "5": "Amélioration des actions de rôle : chacune n'est lancée que quand elle vaut le coup (Smite sur un ennemi à 25 % de PV ou moins, Bloodbath sous 75 % de PV, Rampart et Stoneskin II quand vous êtes blessé), et Comet des lanceurs de sorts ainsi que Haelan et Stoneskin II des soigneurs sont enfin utilisés",
+      "6": "Correction : Warden's Paean du barde, Aquaveil du mage blanc et Meikyo Shisui du samouraï ne purifiaient jamais tant que Purification était prête ; ils passent maintenant en premier, et Purification est gardée pour Étourdissement, Silence, Gel et Miracle de la nature",
+      "7": "Correction : Viper utilisait Rattling Coil alors qu'Uncoiled Fury et Snake Scales étaient encore prêts, gaspillant la réinitialisation",
+      "8": "Correction : Pictomancien gardait Subtractive Palette en mouvement alors que ses sorts demandent une incantation ; la palette est maintenant relâchée en mouvement et reprise pour incanter"
     }
   },
   "about": {
@@ -550,7 +554,7 @@
       "allySupport": "Aider les alliés sous",
       "allySupportHelp": "Soins, boucliers et autres compétences amicales vont à l'allié le plus bas sous ce seuil ; sinon à vous quand vous êtes en dessous.",
       "purify": "Purification",
-      "purifyHelp": "Dissipe Étourdissement, Pesanteur, Entrave, Silence, Gel et Miracle de la nature dès qu'ils tombent."
+      "purifyHelp": "Dissipe Étourdissement, Silence, Gel et Miracle de la nature dès qu'ils tombent. Pesanteur et Entrave sont laissées à la purification propre de votre job, pour que Purification reste prête pour le prochain étourdissement."
     },
     "strategy": {
       "rush": "Foncer sur le cristal",

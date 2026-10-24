@@ -396,7 +396,11 @@
       "1": "Added the Limit Break to the plugin itself, so Auto PVP LB is no longer needed: your Auto PVP LB settings carry over the first time this version loads, and the new Limit Break tab in the settings holds the per-job rules, skip filters, allowed duties, blocklist and fire sound",
       "2": "Improved Limit Break timing: the rotation now waits while it goes off, so a skill press can no longer replace it. It still fires in any PvP match, run or not",
       "3": "Fixed the Limit Break's Allowed duties switches doing nothing: Crystalline Conflict, Frontline and Rival Wings were all read as Other PvP",
-      "4": "Fixed a blocked player stopping the Limit Break altogether: it now goes to the next enemy instead"
+      "4": "Fixed a blocked player stopping the Limit Break altogether: it now goes to the next enemy instead",
+      "5": "Improved role actions: each now fires only when it pays off (Smite on an enemy at 25% HP or lower, Bloodbath below 75% HP, Rampart and Stoneskin II when hurt), and casters' Comet and healers' Haelan and Stoneskin II are used at all",
+      "6": "Fixed Bard's Warden's Paean, White Mage's Aquaveil and Samurai's Meikyo Shisui never cleansing while Purify was ready; they now go first, and Purify is kept for Stun, Silence, Deep Freeze and Miracle of Nature",
+      "7": "Fixed Viper spending Rattling Coil while Uncoiled Fury and Snake Scales were still ready, which wasted the reset",
+      "8": "Fixed Pictomancer keeping Subtractive Palette on while moving, where its spells need a cast; it now drops the palette on the move and picks it back up to cast"
     }
   },
   "about": {
@@ -550,7 +554,7 @@
       "allySupport": "Help allies below",
       "allySupportHelp": "Heals, shields and other friendly skills go to the lowest ally under this HP; otherwise to you when you are under it.",
       "purify": "Purify",
-      "purifyHelp": "Clear Stun, Heavy, Bind, Silence, Deep Freeze and Miracle of Nature as soon as they land."
+      "purifyHelp": "Clear Stun, Silence, Deep Freeze and Miracle of Nature as soon as they land. Heavy and Bind are left to your job's own cleanse, so Purify stays ready for the next stun."
     },
     "strategy": {
       "rush": "Rush the crystal",

@@ -331,6 +331,10 @@ internal static class L
             new("changelog.r21300.2", "Improved Limit Break timing: the rotation now waits while it goes off, so a skill press can no longer replace it. It still fires in any PvP match, run or not"),
             new("changelog.r21300.3", "Fixed the Limit Break's Allowed duties switches doing nothing: Crystalline Conflict, Frontline and Rival Wings were all read as Other PvP"),
             new("changelog.r21300.4", "Fixed a blocked player stopping the Limit Break altogether: it now goes to the next enemy instead"),
+            new("changelog.r21300.5", "Improved role actions: each now fires only when it pays off (Smite on an enemy at 25% HP or lower, Bloodbath below 75% HP, Rampart and Stoneskin II when hurt), and casters' Comet and healers' Haelan and Stoneskin II are used at all"),
+            new("changelog.r21300.6", "Fixed Bard's Warden's Paean, White Mage's Aquaveil and Samurai's Meikyo Shisui never cleansing while Purify was ready; they now go first, and Purify is kept for Stun, Silence, Deep Freeze and Miracle of Nature"),
+            new("changelog.r21300.7", "Fixed Viper spending Rattling Coil while Uncoiled Fury and Snake Scales were still ready, which wasted the reset"),
+            new("changelog.r21300.8", "Fixed Pictomancer keeping Subtractive Palette on while moving, where its spells need a cast; it now drops the palette on the move and picks it back up to cast"),
         ];
 
         public static readonly LocString[] Release21200 =
@@ -573,7 +577,7 @@ internal static class L
         public static readonly LocString RotationAllySupport = new("settings.rotation.allySupport", "Help allies below");
         public static readonly LocString RotationAllySupportHelp = new("settings.rotation.allySupportHelp", "Heals, shields and other friendly skills go to the lowest ally under this HP; otherwise to you when you are under it.");
         public static readonly LocString RotationPurify = new("settings.rotation.purify", "Purify");
-        public static readonly LocString RotationPurifyHelp = new("settings.rotation.purifyHelp", "Clear Stun, Heavy, Bind, Silence, Deep Freeze and Miracle of Nature as soon as they land.");
+        public static readonly LocString RotationPurifyHelp = new("settings.rotation.purifyHelp", "Clear Stun, Silence, Deep Freeze and Miracle of Nature as soon as they land. Heavy and Bind are left to your job's own cleanse, so Purify stays ready for the next stun.");
 
         public static readonly LocString StrategyRush = new("settings.strategy.rush", "Rush the crystal");
         public static readonly LocString StrategyRushHelp = new("settings.strategy.rushHelp", "No tactics: runs to the objective and stands on it. Never retreats; will feed when outnumbered.");

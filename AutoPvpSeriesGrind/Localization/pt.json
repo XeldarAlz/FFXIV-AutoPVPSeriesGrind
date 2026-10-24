@@ -396,7 +396,11 @@
       "1": "Limit Break integrado ao próprio plugin, então o Auto PVP LB não é mais necessário: suas configurações do Auto PVP LB são trazidas na primeira vez que esta versão carrega, e a nova aba Limit Break nas configurações reúne as regras por job, os filtros, os conteúdos permitidos, a lista de bloqueio e o som ao disparar",
       "2": "Melhor sincronia do Limit Break: a rotação agora espera enquanto ele sai, para que apertar uma habilidade não o substitua mais. Ele continua disparando em qualquer partida de PvP, com ou sem uma sessão ativa",
       "3": "Corrigido: os interruptores de Conteúdos permitidos do Limit Break não faziam nada, porque Crystalline Conflict, Frontline e Rival Wings eram lidos como Outro PvP",
-      "4": "Corrigido: um jogador bloqueado impedia o Limit Break por completo; agora ele vai para o próximo inimigo"
+      "4": "Corrigido: um jogador bloqueado impedia o Limit Break por completo; agora ele vai para o próximo inimigo",
+      "5": "Ações de função melhoradas: cada uma agora só é usada quando vale a pena (Smite num inimigo com 25% de HP ou menos, Bloodbath abaixo de 75% de HP, Rampart e Stoneskin II quando ferido), e o Comet dos conjuradores e o Haelan e o Stoneskin II dos curandeiros passam a ser usados",
+      "6": "Corrigido: Warden's Paean do bardo, Aquaveil do mago branco e Meikyo Shisui do samurai nunca limpavam enquanto o Purify estava pronto; agora eles vêm primeiro, e o Purify fica guardado para Stun, Silence, Deep Freeze e Miracle of Nature",
+      "7": "Corrigido: Viper usava Rattling Coil com Uncoiled Fury e Snake Scales ainda prontos, desperdiçando o reset",
+      "8": "Corrigido: Pictomante mantinha a Subtractive Palette em movimento, embora seus feitiços precisem de conjuração; agora ele solta a paleta ao se mover e a retoma para conjurar"
     }
   },
   "about": {
@@ -550,7 +554,7 @@
       "allySupport": "Ajudar aliados abaixo de",
       "allySupportHelp": "Curas, escudos e outras habilidades amigas vão para o aliado com menos vida abaixo disto; senão para você, quando estiver abaixo.",
       "purify": "Purify",
-      "purifyHelp": "Remove Stun, Heavy, Bind, Silence, Deep Freeze e Miracle of Nature assim que acertam."
+      "purifyHelp": "Remove Stun, Silence, Deep Freeze e Miracle of Nature assim que acertam. Heavy e Bind ficam para a limpeza própria do seu job, para que o Purify fique pronto para o próximo stun."
     },
     "strategy": {
       "rush": "Correr para o cristal",

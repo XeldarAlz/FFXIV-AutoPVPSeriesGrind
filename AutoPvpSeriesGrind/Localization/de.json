@@ -396,7 +396,11 @@
       "1": "Limitrausch direkt ins Plugin eingebaut, Auto PVP LB wird nicht mehr gebraucht: Deine Auto PVP LB Einstellungen werden beim ersten Laden dieser Version übernommen, und der neue Tab Limitrausch in den Einstellungen enthält die Regeln pro Job, die Filter, die erlaubten Inhalte, die Sperrliste und den Auslöse-Sound",
       "2": "Verbessertes Timing des Limitrauschs: Die Rotation wartet jetzt, während er ausgelöst wird, damit ein Tastendruck ihn nicht mehr ersetzen kann. Er zündet weiterhin in jedem PvP-Match, ob ein Lauf aktiv ist oder nicht",
       "3": "Behoben: Die Schalter unter Erlaubte Inhalte hatten beim Limitrausch keine Wirkung, weil Crystalline Conflict, Frontline und Rival Wings alle als Anderes PvP erkannt wurden",
-      "4": "Behoben: Ein gesperrter Spieler hat den Limitrausch ganz verhindert; jetzt geht er stattdessen an den nächsten Gegner"
+      "4": "Behoben: Ein gesperrter Spieler hat den Limitrausch ganz verhindert; jetzt geht er stattdessen an den nächsten Gegner",
+      "5": "Rollenaktionen verbessert: Jede wird jetzt nur eingesetzt, wenn sie sich lohnt (Smite auf einen Gegner mit 25 % LP oder weniger, Bloodbath unter 75 % LP, Rampart und Stoneskin II wenn du verletzt bist), und Comet der Zauberer sowie Haelan und Stoneskin II der Heiler werden überhaupt erst benutzt",
+      "6": "Behoben: Warden's Paean des Barden, Aquaveil des Weißmagiers und Meikyo Shisui des Samurai reinigten nie, solange Purify bereit war; sie kommen jetzt zuerst, und Purify wird für Stun, Silence, Deep Freeze und Miracle of Nature aufgehoben",
+      "7": "Behoben: Viper setzte Rattling Coil ein, während Uncoiled Fury und Snake Scales noch bereit waren, und verschenkte so das Zurücksetzen",
+      "8": "Behoben: Piktomant behielt Subtractive Palette in der Bewegung bei, obwohl deren Zauber gewirkt werden müssen; die Palette wird jetzt in der Bewegung abgelegt und zum Wirken wieder aufgenommen"
     }
   },
   "about": {
@@ -550,7 +554,7 @@
       "allySupport": "Verbündeten helfen unter",
       "allySupportHelp": "Heilungen, Schilde und andere freundliche Fähigkeiten gehen an den Verbündeten mit den wenigsten HP unter diesem Wert; sonst an dich, wenn du darunter bist.",
       "purify": "Purify",
-      "purifyHelp": "Entfernt Stun, Heavy, Bind, Silence, Deep Freeze und Miracle of Nature, sobald sie treffen."
+      "purifyHelp": "Entfernt Stun, Silence, Deep Freeze und Miracle of Nature, sobald sie treffen. Heavy und Bind bleiben der eigenen Reinigung deines Jobs überlassen, damit Purify für den nächsten Stun bereit ist."
     },
     "strategy": {
       "rush": "Auf den Kristall stürmen",

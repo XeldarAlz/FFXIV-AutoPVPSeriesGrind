@@ -396,7 +396,11 @@
       "1": "Se integró el Límite en el propio plugin, así que Auto PVP LB ya no hace falta: tus ajustes de Auto PVP LB se trasladan la primera vez que carga esta versión, y la nueva pestaña Límite de los ajustes reúne las reglas por job, los filtros, los contenidos permitidos, la lista de bloqueo y el sonido al lanzar",
       "2": "Mejor sincronización del Límite: la rotación ahora espera mientras sale, para que pulsar una habilidad ya no lo sustituya. Sigue lanzándose en cualquier partida de PvP, haya una sesión activa o no",
       "3": "Corregido: los interruptores de Contenidos permitidos del Límite no hacían nada, porque Crystalline Conflict, Frontline y Rival Wings se leían como Otro PvP",
-      "4": "Corregido: un jugador bloqueado impedía lanzar el Límite; ahora va al siguiente enemigo"
+      "4": "Corregido: un jugador bloqueado impedía lanzar el Límite; ahora va al siguiente enemigo",
+      "5": "Mejoradas las acciones de rol: cada una se usa solo cuando compensa (Smite sobre un enemigo con el 25 % de PV o menos, Bloodbath por debajo del 75 % de PV, Rampart y Stoneskin II al recibir daño), y por fin se usan Comet de los lanzadores y Haelan y Stoneskin II de los sanadores",
+      "6": "Corregido: Warden's Paean del bardo, Aquaveil del mago blanco y Meikyo Shisui del samurái nunca purificaban mientras Purificar estaba listo; ahora van primero, y Purificar se guarda para Aturdimiento, Silencio, Congelación y Milagro de la naturaleza",
+      "7": "Corregido: Viper usaba Rattling Coil con Uncoiled Fury y Snake Scales todavía listos, desperdiciando el reinicio",
+      "8": "Corregido: Pictomante mantenía Subtractive Palette en movimiento, aunque sus hechizos necesitan lanzamiento; ahora suelta la paleta al moverse y la recupera para lanzar"
     }
   },
   "about": {
@@ -550,7 +554,7 @@
       "allySupport": "Ayudar a aliados por debajo de",
       "allySupportHelp": "Curas, escudos y otras habilidades amistosas van al aliado con menos vida bajo este valor; si no, a ti cuando estés por debajo.",
       "purify": "Purificar",
-      "purifyHelp": "Elimina Aturdimiento, Pesadez, Inmovilización, Silencio, Congelación y Milagro de la naturaleza en cuanto aparecen."
+      "purifyHelp": "Elimina Aturdimiento, Silencio, Congelación y Milagro de la naturaleza en cuanto aparecen. Pesadez e Inmovilización se dejan a la purificación propia de tu job, para que Purificar siga listo para el siguiente aturdimiento."
     },
     "strategy": {
       "rush": "Ir a por el cristal",
