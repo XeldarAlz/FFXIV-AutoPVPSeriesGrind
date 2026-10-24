@@ -147,7 +147,7 @@ internal static class MatchState
 
     public static bool IsEnemyPlayer(IGameObject gameObject) => IsHostile(gameObject);
 
-    private static bool IsHostile(IGameObject gameObject)
+    public static bool IsHostile(IGameObject gameObject)
     {
         try { return gameObject.IsHostile(); }
         catch { return false; }

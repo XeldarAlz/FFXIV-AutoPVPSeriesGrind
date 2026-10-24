@@ -69,6 +69,12 @@ internal class FrontlineBrain
 
     public MovePlan Decide(PvpSnapshot snapshot)
     {
+        var plan = ChoosePlan(snapshot);
+        return HazardAvoidance.Apply(snapshot, in plan);
+    }
+
+    private MovePlan ChoosePlan(PvpSnapshot snapshot)
+    {
         UnderBurst = burst.DropPerSecond(snapshot.SelfHp) >= profile.BurstDropPerSec;
         UpdateHurt(snapshot);
 

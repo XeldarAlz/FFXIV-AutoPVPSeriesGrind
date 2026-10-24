@@ -79,7 +79,24 @@ internal static class HazardAvoidance
     private const float ClearanceYalms = 3f;
     private const int RingCandidates = 16;
     private const float PreferenceWeight = 0.5f;
+    private const float DodgeStopRange = 1.5f;
     private static readonly float[] RingDistances = [6f, 10f, 15f, 22f];
+
+    public static MovePlan Apply(PvpSnapshot snapshot, in MovePlan plan)
+    {
+        if (TryDodge(snapshot, plan.Destination, out var exit, out var standingIn))
+        {
+            return new MovePlan(MoveKind.Retreat, exit, exit, DodgeStopRange, Sprint: true, $"dodge {standingIn.Source}",
+                Pursue: false, Posture.Reposition, plan.TargetId);
+        }
+
+        var destination = KeepClear(snapshot, plan.Destination, out var skirted);
+        if (skirted is not { } hazard)
+        {
+            return plan;
+        }
+        return plan with { Destination = destination, Fallback = destination, Reason = $"{plan.Reason}, skirting {hazard.Source}" };
+    }
 
     public static bool TryDodge(PvpSnapshot snapshot, Vector3 preferTowards, out Vector3 exit, out Hazard hazard)
     {
@@ -93,7 +110,7 @@ internal static class HazardAvoidance
         return true;
     }
 
-    public static Vector3 KeepClear(PvpSnapshot snapshot, Vector3 destination, out Hazard? skirted)
+    private static Vector3 KeepClear(PvpSnapshot snapshot, Vector3 destination, out Hazard? skirted)
     {
         if (!snapshot.InHazard(destination, MarginYalms, out var hazard))
         {

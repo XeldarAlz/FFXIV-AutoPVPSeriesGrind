@@ -424,7 +424,8 @@
       "10": "Düzeltildi: Bitir, sonra dur ve dolan süre sınırı sıradaki eşleşmeyi yine kabul edip bir maç daha oynatıyordu; artık henüz eşleşmemiş sıra iptal ediliyor ve çalışma hemen bitiyor, Durdur da çalışmanın sırasını iptal ediyor",
       "11": "Düzeltildi: Eklentinin henüz listesinde olmayan bir Crystalline Conflict, Frontline veya Rival Wings haritası çalışmayı tanınmayan içerik olarak bitiriyordu; arenalar artık oyunun kendi içerik türünden de tanınıyor, böylece yama günü gelen yeni bir harita grind'i durdurmuyor",
       "12": "Düzeltildi: Oyun maçtan sonra çıkış komutunu almadığında çalışma duruyordu; eklenti artık yeniden deniyor, Crystalline Conflict'te sonuç ekranının kendi çıkışını kullanıyor ve hiçbiri işe yaramazsa elle çıkmanızı isteyip çıktıktan sonra devam ediyor",
-      "13": "Başlat iyileştirildi: çalışma henüz başlayamıyorsa (giriş yapılmamış, başka bir içerikte ya da zaten sırada), durum kartı ve Başlat düğmesi nedenini sonradan sohbette genel bir hata yerine tıklamadan önce gösteriyor"
+      "13": "Başlat iyileştirildi: çalışma henüz başlayamıyorsa (giriş yapılmamış, başka bir içerikte ya da zaten sırada), durum kartı ve Başlat düğmesi nedenini sonradan sohbette genel bir hata yerine tıklamadan önce gösteriyor",
+      "14": "Frontline ve Rival Wings için AoE'den kaçma eklendi: bot artık işaretli düşman saldırılarından çıkıyor ve formasyondaki yerini onların dışında tutuyor, tıpkı Crystalline Conflict'te yaptığı gibi; kendi tarafının NPC büyüleri artık tehlike sayılmıyor"
     }
   },
   "about": {

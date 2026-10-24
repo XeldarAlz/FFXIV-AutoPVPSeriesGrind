@@ -165,23 +165,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
             Stance.Stage => Stage(snapshot, focal, $"staging {1 + alliesNear}v{enemiesNear}, wait for team{advantageTag}"),
             _ => Engage(snapshot, focal, alliesNear, enemiesNear, effectiveForce, advantageTag),
         };
-        return AvoidHazards(snapshot, in plan);
-    }
-
-    private static MovePlan AvoidHazards(PvpSnapshot snapshot, in MovePlan plan)
-    {
-        if (HazardAvoidance.TryDodge(snapshot, plan.Destination, out var exit, out var standingIn))
-        {
-            return new MovePlan(MoveKind.Retreat, exit, exit, RepositionStopRange, Sprint: true, $"dodge {standingIn.Source}",
-                Pursue: false, Posture.Reposition, plan.TargetId);
-        }
-
-        var destination = HazardAvoidance.KeepClear(snapshot, plan.Destination, out var skirted);
-        if (skirted is not { } hazard)
-        {
-            return plan;
-        }
-        return plan with { Destination = destination, Fallback = destination, Reason = $"{plan.Reason}, skirting {hazard.Source}" };
+        return HazardAvoidance.Apply(snapshot, in plan);
     }
 
     private float WeightedForce(PvpSnapshot snapshot)

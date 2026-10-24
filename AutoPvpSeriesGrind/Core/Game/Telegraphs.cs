@@ -61,7 +61,7 @@ internal static class Telegraphs
 
     public static void CollectNonPlayerCast(IGameObject gameObject, List<Hazard> hazards)
     {
-        if (gameObject is not IBattleChara caster || gameObject is IPlayerCharacter || !caster.IsCasting || OwnedByFriend(gameObject))
+        if (gameObject is not IBattleChara caster || gameObject is IPlayerCharacter || !caster.IsCasting || !MatchState.IsHostile(gameObject))
         {
             return;
         }

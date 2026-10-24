@@ -350,6 +350,7 @@ internal static class L
             new("changelog.r21300.11", "Fixed a Crystalline Conflict, Frontline or Rival Wings map the plugin did not list yet ending the run as an unrecognized duty: arenas are now also recognized by the game's own content type, so a new map on patch day keeps the grind going"),
             new("changelog.r21300.12", "Fixed the run stopping when the game ignored the leave command after a match: the plugin now retries, falls back to the results screen's own leave flow in Crystalline Conflict, and if nothing works asks you to leave by hand and carries on once you are out"),
             new("changelog.r21300.13", "Improved Start: when a run cannot start yet (logged out, inside another duty or already in a queue), the ready card and the Start button now say why before you click, instead of one generic chat error afterwards"),
+            new("changelog.r21300.14", "Added AoE dodging to Frontline and Rival Wings: the bot now steps out of telegraphed enemy attacks and keeps its spot in the formation clear of them, as it already did in Crystalline Conflict; casts from your own side's NPCs no longer count as danger"),
         ];
 
         public static readonly LocString[] Release21200 =

@@ -35,6 +35,7 @@
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/PvpSnapshot.cs" Link="Source/PvpSnapshot.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/PvpStructure.cs" Link="Source/PvpStructure.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/Hazard.cs" Link="Source/Hazard.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Combat/MovePlan.cs" Link="Source/MovePlan.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/TargetScoring.cs" Link="Source/TargetScoring.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/CrowdPicker.cs" Link="Source/CrowdPicker.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Util/VectorMath.cs" Link="Source/VectorMath.cs" />
