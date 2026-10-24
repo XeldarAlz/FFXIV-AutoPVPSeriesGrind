@@ -47,6 +47,21 @@ internal static class SettingsControls
         }
     }
 
+    public static void DrawFloatSlider(Configuration cfg, string id, Func<float> getter, Action<float> setter,
+        float minimum, float maximum, string format, float width = RowSliderWidth)
+    {
+        var value = getter();
+        ImGui.SetNextItemWidth(width * ImGuiHelpers.GlobalScale);
+        using (PushFrameColors())
+        {
+            if (ImGui.SliderFloat(id, ref value, minimum, maximum, format))
+            {
+                setter(Math.Clamp(value, minimum, maximum));
+                cfg.SaveDebounced();
+            }
+        }
+    }
+
     public static void DrawRangeInline(Configuration cfg, string minId, string maxId,
         Func<int> getMin, Action<int> setMin, Func<int> getMax, Action<int> setMax,
         int maxValue, string? format = null)

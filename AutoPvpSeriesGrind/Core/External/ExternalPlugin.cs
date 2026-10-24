@@ -4,5 +4,4 @@ internal enum ExternalPlugin
 {
     Vnavmesh,
     Lifestream,
-    PvpAutoLb,
 }

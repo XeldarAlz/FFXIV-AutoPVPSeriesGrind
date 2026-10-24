@@ -20,8 +20,8 @@ Load the built plugin via `/xlsettings` -> **Experimental** -> **Dev Plugin Loca
 - `AutoPvpSeriesGrind/Core/Combat/`: the movement brains for Crystalline Conflict and Frontline, strategy profiles, targeting.
 - `AutoPvpSeriesGrind/Core/Rotation/`: the built-in PvP rotation: per-job tables, rule engine, action catalog.
 - `AutoPvpSeriesGrind/Core/Game/`: duty, action and map operations, spawn anchors, telegraph reading.
-- `AutoPvpSeriesGrind/Core/Ipc/`: adapters for vnavmesh, Auto PVP LB and Lifestream.
-- `AutoPvpSeriesGrind/Core/Lb/`: the Limit Break presets pushed to Auto PVP LB.
+- `AutoPvpSeriesGrind/Core/Ipc/`: adapters for vnavmesh and Lifestream.
+- `AutoPvpSeriesGrind/Core/LimitBreak/`: the built-in PvP Limit Break: per-job presets, target choice and firing.
 - `AutoPvpSeriesGrind/Core/Modes/`: the stop goals (match count, Series rank, time, endless).
 - `AutoPvpSeriesGrind/Core/Localization/`: string catalog and language resolution; the JSON catalogs live in `AutoPvpSeriesGrind/Localization/`.
 - `AutoPvpSeriesGrind/Windows/`: ImGui shell, pages (grind, settings, plugins, history, about), sections and components.

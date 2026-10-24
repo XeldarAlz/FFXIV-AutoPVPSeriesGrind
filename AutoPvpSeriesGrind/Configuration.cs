@@ -1,6 +1,7 @@
 using AutoPvpSeriesGrind.Core;
 using AutoPvpSeriesGrind.Core.Changelog;
 using AutoPvpSeriesGrind.Core.Combat;
+using AutoPvpSeriesGrind.Core.LimitBreak;
 using AutoPvpSeriesGrind.Core.Modes;
 using AutoPvpSeriesGrind.Core.Shopping;
 using Dalamud.Configuration;
@@ -55,6 +56,8 @@ public sealed class Configuration : IPluginConfiguration
     public CustomStrategyProfile CustomStrategy { get; set; } = new();
     public PvpStrategy FrontlineStrategy { get; set; } = PvpStrategy.Moderate;
     public CustomFrontlineProfile CustomFrontline { get; set; } = new();
+
+    public LimitBreakOptions LimitBreak { get; set; } = new();
 
     public HumanizeLevel Humanize { get; set; } = HumanizeLevel.Realistic;
 

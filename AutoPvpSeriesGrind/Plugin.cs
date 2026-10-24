@@ -1,5 +1,6 @@
 using AutoPvpSeriesGrind.Core;
 using AutoPvpSeriesGrind.Core.Debug;
+using AutoPvpSeriesGrind.Core.LimitBreak;
 using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Stats;
 using AutoPvpSeriesGrind.Core.Tasks;
@@ -31,6 +32,7 @@ public sealed class Plugin : IDalamudPlugin
     internal WindowSystem WindowSystem { get; } = new("AutoPvpSeriesGrind");
     internal RunHistory History { get; }
     internal AutoPvpSeriesController Controller { get; }
+    internal LimitBreakController LimitBreak { get; }
 
     private readonly AppWindow appWindow;
 
@@ -55,6 +57,8 @@ public sealed class Plugin : IDalamudPlugin
         Cfg = Configuration;
         History = new RunHistory();
         Controller = new AutoPvpSeriesController();
+        LegacyLbImport.RunOnce(Configuration);
+        LimitBreak = new LimitBreakController();
 
         InitializeLocalization();
         Fonts.Initialize(PluginInterface.UiBuilder, PluginDirectory);
@@ -167,6 +171,7 @@ public sealed class Plugin : IDalamudPlugin
         CommandManager.RemoveHandler(ApsgConstants.AliasCommand);
 
         Controller.Stop();
+        LimitBreak.Dispose();
 
         CLibMain.Dispose();
         ECommonsMain.Dispose();

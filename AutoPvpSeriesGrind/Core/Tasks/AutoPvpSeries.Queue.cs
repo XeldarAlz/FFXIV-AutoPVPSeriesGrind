@@ -1,5 +1,4 @@
 using AutoPvpSeriesGrind.Core.Game;
-using AutoPvpSeriesGrind.Core.Ipc;
 using AutoPvpSeriesGrind.Core.Util;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
@@ -17,8 +16,6 @@ internal sealed partial class AutoPvpSeries
     private async Task Startup()
     {
         await DelayMs(StartupSettleMs);
-
-        PvpAutoLbIpc.Instance.PushPresetsIfNeeded();
 
         SetPhase(AutoPhase.Queueing);
     }

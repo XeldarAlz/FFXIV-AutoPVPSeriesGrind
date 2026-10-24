@@ -275,7 +275,6 @@ internal static class L
 
         public static readonly LocString PurposeVnavmesh = new("plugins.purpose.vnavmesh", "Pathfinding and movement to the objective during a match.");
         public static readonly LocString PurposeLifestream = new("plugins.purpose.lifestream", "Optional: only for the return-to-the-inn action when the goal is reached; travels to the inn and enters your room.");
-        public static readonly LocString PurposeAutoLb = new("plugins.purpose.autoLb", "Fires your PvP Limit Break. This plugin pushes proven per-class settings to it automatically.");
     }
 
     internal static class Log
@@ -499,6 +498,8 @@ internal static class L
         public static readonly LocString CatSessionSub = new("settings.cat.sessionSub", "Pacing between matches, and the breaks a person would take.");
         public static readonly LocString CatCombat = new("settings.cat.combat", "Combat");
         public static readonly LocString CatCombatSub = new("settings.cat.combatSub", "How the bot positions itself and picks its fights.");
+        public static readonly LocString CatLimitBreak = new("settings.cat.limitBreak", "Limit Break");
+        public static readonly LocString CatLimitBreakSub = new("settings.cat.limitBreakSub", "Fires your PvP Limit Break in any PvP match, run or not.");
         public static readonly LocString CatMatch = new("settings.cat.match", "In match");
         public static readonly LocString CatMatchSub = new("settings.cat.matchSub", "The social touches the bot performs during each match.");
         public static readonly LocString CatShopping = new("settings.cat.shopping", "Shopping");
@@ -524,7 +525,7 @@ internal static class L
         public static readonly LocString PostRunCaption = new("settings.postRun.caption", "Lines that do not start with a slash are skipped, so nothing is ever said in chat. Try /li home to head home or /ays m to hand off to AutoRetainer.");
 
         public static readonly LocString CombatIntroMovement = new("settings.combat.introMovement", "Behavior controls movement only: where to stand and when to back off. ");
-        public static readonly LocString CombatIntroRotation = new("settings.combat.introRotation", "The built-in rotation presses your skills, Guard, Purify, Recuperate and Elixir; the required Auto PVP LB plugin fires the Limit Break, auto-configured for your class.");
+        public static readonly LocString CombatIntroRotation = new("settings.combat.introRotation", "The built-in rotation presses your skills, Guard, Purify, Recuperate and Elixir; the Limit Break fires on its own too, tuned for your class in the Limit Break tab.");
         public static readonly LocString GroupCombat = new("settings.combat.group", "Combat");
         public static readonly LocString RotationPlugin = new("settings.combat.rotationPlugin", "Rotation");
         public static readonly LocString RotationPluginHelp = new("settings.combat.rotationPluginHelp", "What presses your combat skills during matches.");
@@ -775,6 +776,87 @@ internal static class L
         public static readonly LocString RoleHealer = new("brain.role.healer", "healer");
         public static readonly LocString RoleUnknown = new("brain.role.unknown", "unknown role");
         public static readonly LocString Steering = new("brain.steering", "You steer");
+    }
+
+    internal static class LimitBreak
+    {
+        public static readonly LocString Group = new("limitBreak.group", "Limit Break");
+        public static readonly LocString Enabled = new("limitBreak.enabled", "Fire the Limit Break for me");
+        public static readonly LocString EnabledHelp = new("limitBreak.enabledHelp", "Fires your job's PvP Limit Break when the rule below is met, in any PvP match, whether or not a run is going. It also works when you press your own skills or steer yourself.");
+        public static readonly LocString LegacyLoaded = new("limitBreak.legacyLoaded", "The old Auto PVP LB plugin is still loaded, so the built-in Limit Break stays off to avoid firing twice. Its settings were copied here; disable it to switch over.");
+        public static readonly LocString LegacyRow = new("limitBreak.legacyRow", "Auto PVP LB");
+        public static readonly LocString LegacyDisable = new("limitBreak.legacyDisable", "Disable");
+        public static readonly LocString JobGroupEmpty = new("limitBreak.jobGroupEmpty", "Current job");
+        public static readonly LocString JobGroup = new("limitBreak.jobGroup", "Rule for {0}");
+        public static readonly LocString NoJob = new("limitBreak.noJob", "Log into a job to set a per-job rule. The rule you set here applies only while that job is active.");
+        public static readonly LocString PresetNote = new("limitBreak.presetNote", "This is the tuned preset for {0}. Change anything below to make it your own rule.");
+        public static readonly LocString CustomNote = new("limitBreak.customNote", "You changed this rule. Reset to preset puts the tuned values back.");
+        public static readonly LocString Reset = new("limitBreak.reset", "Reset to preset");
+        public static readonly LocString Mode = new("limitBreak.mode", "LB mode");
+        public static readonly LocString ModeHelp = new("limitBreak.modeHelp", "Offensive LBs fire on a low enemy. Defensive and utility LBs are self-cast and fire on team conditions instead.");
+        public static readonly LocString ModeOffensive = new("limitBreak.modeOffensive", "Offensive");
+        public static readonly LocString ModeDefensive = new("limitBreak.modeDefensive", "Defensive");
+        public static readonly LocString ModeUtility = new("limitBreak.modeUtility", "Utility");
+        public static readonly LocString OffensiveBlurb = new("limitBreak.offensiveBlurb", "Fires on a hostile below an HP threshold.");
+        public static readonly LocString DefensiveBlurb = new("limitBreak.defensiveBlurb", "Fires (self-cast) when your team is pressured: enough hurt allies nearby and enemies present.");
+        public static readonly LocString UtilityBlurb = new("limitBreak.utilityBlurb", "Fires (self-cast) in a committed teamfight: enough allies and enemies clustered, regardless of HP.");
+        public static readonly LocString ThresholdType = new("limitBreak.thresholdType", "Threshold type");
+        public static readonly LocString ThresholdTypeHelp = new("limitBreak.thresholdTypeHelp", "Percent scales with every target's max HP. Absolute fires below a fixed amount of HP, whatever the target's max.");
+        public static readonly LocString ModePercent = new("limitBreak.modePercent", "Percent of max");
+        public static readonly LocString ModeAbsolute = new("limitBreak.modeAbsolute", "Absolute HP");
+        public static readonly LocString FireBelow = new("limitBreak.fireBelow", "Fire below");
+        public static readonly LocString FireBelowPercentHelp = new("limitBreak.fireBelowPercentHelp", "The LB fires once a target's HP, shields included, drops below this share of its max HP.");
+        public static readonly LocString FireBelowAbsoluteHelp = new("limitBreak.fireBelowAbsoluteHelp", "The LB fires once a target's HP, shields included, drops below this many points.");
+        public static readonly LocString PercentFormat = new("limitBreak.percentFormat", "%.0f%% of max HP");
+        public static readonly LocString AbsoluteFormat = new("limitBreak.absoluteFormat", "%d HP");
+        public static readonly LocString PreviewEmpty = new("limitBreak.previewEmpty", "Empty");
+        public static readonly LocString PreviewFull = new("limitBreak.previewFull", "Full");
+        public static readonly LocString PreviewPercent = new("limitBreak.previewPercent", "Fires when the target drops below {0}% of its max HP.");
+        public static readonly LocString PreviewAbsolute = new("limitBreak.previewAbsolute", "Fires when the target drops below {0} HP.");
+        public static readonly LocString AllyHp = new("limitBreak.allyHp", "Ally HP");
+        public static readonly LocString AllyHpHelp = new("limitBreak.allyHpHelp", "An ally counts as hurt below this share of max HP.");
+        public static readonly LocString AllyHpFormat = new("limitBreak.allyHpFormat", "%.0f%%");
+        public static readonly LocString HurtAllies = new("limitBreak.hurtAllies", "Hurt allies");
+        public static readonly LocString HurtAlliesHelp = new("limitBreak.hurtAlliesHelp", "Fire when at least this many hurt allies are nearby.");
+        public static readonly LocString AlliesNear = new("limitBreak.alliesNear", "Allies near");
+        public static readonly LocString AlliesNearHelp = new("limitBreak.alliesNearHelp", "Fire when at least this many allies are clustered nearby.");
+        public static readonly LocString AllyRadius = new("limitBreak.allyRadius", "Ally radius");
+        public static readonly LocString AllyRadiusHelp = new("limitBreak.allyRadiusHelp", "How close an ally must be to count.");
+        public static readonly LocString EnemiesNear = new("limitBreak.enemiesNear", "Enemies near");
+        public static readonly LocString EnemiesNearHelp = new("limitBreak.enemiesNearHelp", "Also require this many enemies within range.");
+        public static readonly LocString EnemyRadius = new("limitBreak.enemyRadius", "Enemy radius");
+        public static readonly LocString EnemyRadiusHelp = new("limitBreak.enemyRadiusHelp", "How close an enemy must be to count.");
+        public static readonly LocString RangeFormat = new("limitBreak.rangeFormat", "%.0f y");
+        public static readonly LocString SkipGroup = new("limitBreak.skipGroup", "Skip targets");
+        public static readonly LocString SkipDoomed = new("limitBreak.skipDoomed", "Skip targets that will die first");
+        public static readonly LocString SkipDoomedHelp = new("limitBreak.skipDoomedHelp", "If an enemy is losing HP fast enough to die before the LB lands (about a 1.2 s cast lock), skip it so the charge isn't wasted on a kill someone else gets.");
+        public static readonly LocString SkipGuarded = new("limitBreak.skipGuarded", "Skip targets using Guard");
+        public static readonly LocString SkipGuardedHelp = new("limitBreak.skipGuardedHelp", "Guard reduces incoming damage by 90% for 5 s. The LB would land for about 10% and waste the charge, so guarded targets are skipped.");
+        public static readonly LocString SkipInvulnerable = new("limitBreak.skipInvulnerable", "Skip targets immune to your LB");
+        public static readonly LocString SkipInvulnerableHelp = new("limitBreak.skipInvulnerableHelp", "Paladin's Phalanx LB (Hallowed Ground) and Dark Knight's Eventide LB (Undead Redemption) make the target immune to damage for 10 s. The LB can't kill them, so these targets are skipped.");
+        public static readonly LocString DutyGroup = new("limitBreak.dutyGroup", "Allowed duties");
+        public static readonly LocString DutyFootnote = new("limitBreak.dutyFootnote", "Auto-fire only runs in the PvP modes switched on here.");
+        public static readonly LocString DutyCrystallineConflict = new("limitBreak.dutyCrystallineConflict", "Crystalline Conflict");
+        public static readonly LocString DutyFrontline = new("limitBreak.dutyFrontline", "Frontline");
+        public static readonly LocString DutyRivalWings = new("limitBreak.dutyRivalWings", "Rival Wings");
+        public static readonly LocString DutyOther = new("limitBreak.dutyOther", "Other PvP");
+        public static readonly LocString BlocklistGroup = new("limitBreak.blocklistGroup", "Blocklist");
+        public static readonly LocString BlocklistAdd = new("limitBreak.blocklistAdd", "Player name");
+        public static readonly LocString BlocklistAddHelp = new("limitBreak.blocklistAddHelp", "Type an exact player name and press Enter. Blocked players are never auto-targeted.");
+        public static readonly LocString BlocklistHint = new("limitBreak.blocklistHint", "Player name, then Enter");
+        public static readonly LocString BlocklistEmpty = new("limitBreak.blocklistEmpty", "No names blocked.");
+        public static readonly LocString NotificationGroup = new("limitBreak.notificationGroup", "Notifications");
+        public static readonly LocString PlaySound = new("limitBreak.playSound", "Play sound on fire");
+        public static readonly LocString PlaySoundHelp = new("limitBreak.playSoundHelp", "Plays a chat sound effect (the same set as /se1 to /se16) each time the LB fires.");
+        public static readonly LocString SoundEffect = new("limitBreak.soundEffect", "Sound effect");
+        public static readonly LocString SoundEffectHelp = new("limitBreak.soundEffectHelp", "Which of the sixteen chat sound effects to play.");
+        public static readonly LocString SoundEffectFormat = new("limitBreak.soundEffectFormat", "<se.%d>");
+        public static readonly LocString SoundPreview = new("limitBreak.soundPreview", "Preview");
+        public static readonly LocString SoundPreviewHelp = new("limitBreak.soundPreviewHelp", "Play the selected sound once.");
+        public static readonly LocString Test = new("limitBreak.test", "Test");
+        public static readonly LocString LogToChat = new("limitBreak.logToChat", "Log to chat on fire");
+        public static readonly LocString LogToChatHelp = new("limitBreak.logToChatHelp", "Prints a line to chat when an LB fires, for example \"fired Seiton Tenchu on Striking Dummy\".");
+        public static readonly LocString ChatFired = new("limitBreak.chatFired", "fired {0} on {1}");
     }
 
     internal static class Plugin

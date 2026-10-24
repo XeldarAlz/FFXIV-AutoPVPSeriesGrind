@@ -20,6 +20,9 @@ internal static unsafe class ActionOps
     public static bool IsReady(uint actionId)
         => ActionManager.Instance()->GetActionStatus(ActionType.Action, actionId) == ReadyStatus;
 
+    public static bool IsReady(uint actionId, ulong targetId)
+        => ActionManager.Instance()->GetActionStatus(ActionType.Action, actionId, targetId) == ReadyStatus;
+
     public static bool IsReadyIgnoringRecast(uint actionId)
         => ActionManager.Instance()->GetActionStatus(ActionType.Action, actionId, checkRecastActive: false, checkCastingActive: false) == ReadyStatus;
 

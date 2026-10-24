@@ -83,14 +83,8 @@ internal static class ApsgConstants
 
         public const string LifestreamExecuteCommand = "Lifestream.ExecuteCommand";
         public const string LifestreamIsBusy = "Lifestream.IsBusy";
-
-        public const string PvpAutoLbApiVersion = "PvpAutoLb.Presets.ApiVersion";
-        public const string PvpAutoLbGetVersion = "PvpAutoLb.Presets.GetVersion";
-        public const string PvpAutoLbApply = "PvpAutoLb.Presets.Apply";
     }
 
     // Type-name fragment identifying vnavmesh's IPC provider in faulted-task exception text.
     public const string VnavmeshIpcProviderMarker = "Navmesh.IPCProvider";
-
-    public const int PvpAutoLbPresetApiVersion = 1;
 }

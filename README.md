@@ -40,7 +40,7 @@ Grinds the **PvP Series Malmstones** by looping Crystalline Conflict Casual or R
 - **Goals**: run N matches, reach a Series rank, run for a set time, or go endless until you press Stop.
 - **Two ways to stop**: **Stop** ends the run at once; **Finish, then stop** lets the match in progress play out first, so nobody gets abandoned.
 - **Spawn-aware movement**: leaves the spawn pen toward the right side and contests the objective, holding the point when it's contested instead of re-pathing.
-- **Auto Limit Break**: fires the correct PvP LB for your job through Auto PVP LB, with per-job presets pushed to it automatically.
+- **Auto Limit Break**: fires the correct PvP LB for your job in any PvP match, run or not, from tuned per-job presets you can edit under Settings, Limit Break, along with skip filters, allowed duties, a name blocklist and an optional fire sound. It replaces the old Auto PVP LB plugin and copies its settings on first load.
 - **Social touches**: optional `Hello` during portraits and `Good Match` on results.
 - **Run history**: matches, deaths, and time tracked per session.
 - **After the run**: stay where you are, return to the inn via Lifestream, log out, or close the game.
@@ -69,7 +69,7 @@ https://raw.githubusercontent.com/XeldarAlz/DalamudPlugins/main/repo.json
 
 Tick **Enabled**, click **+**, then **Save and Close**. Open `/xlplugins` → **All Plugins**, search for **Auto PVP Series Grind**, and install.
 
-Two helper plugins are required: [vnavmesh](https://github.com/awgil/ffxiv_navmesh) for movement and [Auto PVP LB](https://github.com/XeldarAlz/FFXIV-AutoPVPLimitBreak) for the Limit Break. [Lifestream](https://github.com/NightmareXIV/Lifestream) is optional and only used by the return-to-the-inn after-run action. Combat needs nothing extra. Open `/apsg deps` after install to see the list and one-click each missing one.
+One helper plugin is required: [vnavmesh](https://github.com/awgil/ffxiv_navmesh) for movement. [Lifestream](https://github.com/NightmareXIV/Lifestream) is optional and only used by the return-to-the-inn after-run action. Combat and the Limit Break need nothing extra; if you still have Auto PVP LB installed, disable or uninstall it, since this plugin now fires the Limit Break itself. Open `/apsg deps` after install to see the list and one-click each missing one.
 
 ## Commands
 

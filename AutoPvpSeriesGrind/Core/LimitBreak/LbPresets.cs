@@ -1,44 +1,7 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+namespace AutoPvpSeriesGrind.Core.LimitBreak;
 
-namespace AutoPvpSeriesGrind.Core.Lb;
-
-public enum LbFireMode
+internal static class LbPresets
 {
-    Offensive,
-    Defensive,
-    Utility,
-}
-
-public enum ThresholdMode
-{
-    Percent,
-    Absolute,
-}
-
-// Wire DTO pushed to PvpAutoLb over IPC. Property names and string-enum values must match
-// PvpAutoLb.Core.LbRule exactly. Source is intentionally omitted; the receiver stamps it.
-public sealed class LbRulePreset
-{
-    [JsonConverter(typeof(StringEnumConverter))] public LbFireMode Mode { get; set; } = LbFireMode.Offensive;
-
-    [JsonConverter(typeof(StringEnumConverter))] public ThresholdMode EnemyHpMode { get; set; } = ThresholdMode.Percent;
-    public float EnemyHpPercent { get; set; } = 30f;
-    public uint EnemyHpAbsolute { get; set; } = 7000;
-    public int MinEnemiesInAoe { get; set; } = 1;
-
-    public float AllyHpPercent { get; set; } = 50f;
-    public int AllyCountNear { get; set; } = 2;
-    public float AllyRadiusYalms { get; set; } = 15f;
-    public int EnemyCountNear { get; set; } = 1;
-    public float EnemyRadiusYalms { get; set; } = 20f;
-}
-
-public static class LbPresets
-{
-    // Bump whenever the table changes so already-configured clients receive the update.
-    public const int Version = 2;
-
     private static class JobId
     {
         public const uint Paladin = 19;
@@ -64,24 +27,26 @@ public static class LbPresets
         public const uint Pictomancer = 42;
     }
 
+    private static readonly LbRule Fallback = new();
+
     // Offensive: fire when an enemy is low enough that the LB's burst secures the kill.
     // Absolute threshold ≈ LB damage minus a buffer for in-flight heals/shields.
-    private static LbRulePreset OffensiveAbsolute(uint absolute)
+    private static LbRule OffensiveAbsolute(uint absolute)
         => new() { Mode = LbFireMode.Offensive, EnemyHpMode = ThresholdMode.Absolute, EnemyHpAbsolute = absolute };
 
-    private static LbRulePreset OffensivePercent(float percent)
+    private static LbRule OffensivePercent(float percent)
         => new() { Mode = LbFireMode.Offensive, EnemyHpMode = ThresholdMode.Percent, EnemyHpPercent = percent };
 
     // Defensive: team heal/shield/mitigation; fire when allies (self included) are hurt AND enemies are present.
-    private static LbRulePreset Defensive(float allyHp, int allies, float allyRadius, int enemies, float enemyRadius)
+    private static LbRule Defensive(float allyHp, int allies, float allyRadius, int enemies, float enemyRadius)
         => new() { Mode = LbFireMode.Defensive, AllyHpPercent = allyHp, AllyCountNear = allies, AllyRadiusYalms = allyRadius, EnemyCountNear = enemies, EnemyRadiusYalms = enemyRadius };
 
     // Utility: team buff or self-centered AoE setup/CC; fire in a teamfight. allies=1 means "self only",
     // i.e. the trigger reduces to "enough enemies clustered" for LBs that don't need teammates in range.
-    private static LbRulePreset Utility(int allies, float allyRadius, int enemies, float enemyRadius)
+    private static LbRule Utility(int allies, float allyRadius, int enemies, float enemyRadius)
         => new() { Mode = LbFireMode.Utility, AllyCountNear = allies, AllyRadiusYalms = allyRadius, EnemyCountNear = enemies, EnemyRadiusYalms = enemyRadius };
 
-    private static readonly IReadOnlyDictionary<uint, LbRulePreset> Rules = new Dictionary<uint, LbRulePreset>
+    private static readonly Dictionary<uint, LbRule> Rules = new()
     {
         [JobId.Machinist] = OffensiveAbsolute(33_500),
         [JobId.Samurai] = OffensiveAbsolute(20_000),
@@ -108,5 +73,5 @@ public static class LbPresets
         [JobId.Reaper] = Utility(allies: 1, allyRadius: 20f, enemies: 2, enemyRadius: 10f),
     };
 
-    public static string ToJson() => JsonConvert.SerializeObject(Rules);
+    public static LbRule For(uint jobId) => Rules.TryGetValue(jobId, out var rule) ? rule : Fallback;
 }

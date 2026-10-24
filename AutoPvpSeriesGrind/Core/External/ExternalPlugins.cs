@@ -20,12 +20,6 @@ internal static class ExternalPlugins
             RepoUrl: "https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json",
             Purpose: L.Plugins.PurposeLifestream,
             Required: false),
-        [ExternalPlugin.PvpAutoLb] = new(
-            InternalName: "PvpAutoLb",
-            DisplayName: "Auto PVP LB",
-            RepoUrl: "https://raw.githubusercontent.com/XeldarAlz/DalamudPlugins/main/repo.json",
-            Purpose: L.Plugins.PurposeAutoLb,
-            Required: true),
     };
 
     private static readonly ExternalPlugin[] AllSnapshot = CreateAllSnapshot();

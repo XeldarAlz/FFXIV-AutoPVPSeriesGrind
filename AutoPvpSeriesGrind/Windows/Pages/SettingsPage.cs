@@ -11,7 +11,7 @@ namespace AutoPvpSeriesGrind.Windows.Pages;
 
 internal sealed class SettingsPage
 {
-    private enum Tab { Session, Combat, Match, Shopping }
+    private enum Tab { Session, Combat, LimitBreak, Match, Shopping }
 
     private readonly record struct Entry(Tab Tab, LocString Label, FontAwesomeIcon Icon, LocString Subtitle);
 
@@ -19,6 +19,7 @@ internal sealed class SettingsPage
     [
         new(Tab.Session, L.Settings.CatSession, FontAwesomeIcon.Flag,        L.Settings.CatSessionSub),
         new(Tab.Combat,  L.Settings.CatCombat,  FontAwesomeIcon.Brain,       L.Settings.CatCombatSub),
+        new(Tab.LimitBreak, L.Settings.CatLimitBreak, FontAwesomeIcon.Bolt,   L.Settings.CatLimitBreakSub),
         new(Tab.Match,   L.Settings.CatMatch,   FontAwesomeIcon.CommentDots, L.Settings.CatMatchSub),
         new(Tab.Shopping, L.Settings.CatShopping, FontAwesomeIcon.ShoppingCart, L.Settings.CatShoppingSub),
     ];
@@ -26,7 +27,7 @@ internal sealed class SettingsPage
     private Tab activeTab = Tab.Session;
     private bool resetScroll;
 
-    private static readonly Segmented.Item[] tabs = new Segmented.Item[4];
+    private static readonly Segmented.Item[] tabs = new Segmented.Item[entries.Length];
 
     public void ShowCombat()
     {
@@ -73,6 +74,7 @@ internal sealed class SettingsPage
         {
             case Tab.Session: GeneralSettings.Draw(cfg); break;
             case Tab.Combat: CombatSettings.Draw(cfg, running); break;
+            case Tab.LimitBreak: LimitBreakSettings.Draw(cfg); break;
             case Tab.Match: MatchSettings.Draw(cfg); break;
             case Tab.Shopping: ShoppingSettings.Draw(cfg); break;
         }
