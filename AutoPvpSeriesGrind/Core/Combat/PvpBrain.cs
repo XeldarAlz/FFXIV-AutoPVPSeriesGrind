@@ -36,6 +36,7 @@ internal sealed class PvpBrain(PvpStrategy strategy)
     private const float HoldDriftYalmsPerSec = 0.5f;
     private const int HoldSlotMinMs = 3500;
     private const int HoldSlotMaxMs = 9000;
+    private const long CalmBeforeReengageMs = 1500;
     private const float MinFidgetYalms = 0.6f;
     private const float FidgetSpreadYalms = 2.4f;
 
@@ -147,7 +148,8 @@ internal sealed class PvpBrain(PvpStrategy strategy)
                 retreating = true;
             }
         }
-        else if (snapshot.SelfHp >= profile.ReengageHp && headcountForce >= 0 && focus < profile.FocusRetreatCount)
+        else if (snapshot.SelfHp >= profile.ReengageHp && headcountForce >= 0 && focus < profile.FocusRetreatCount
+                 && burst.MsSinceLastHit >= CalmBeforeReengageMs)
         {
             retreating = false;
         }

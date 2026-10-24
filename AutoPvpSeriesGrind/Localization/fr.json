@@ -426,7 +426,8 @@
       "12": "Correction : la session s'arrêtait quand le jeu ignorait la commande de sortie après un match ; le plugin réessaie maintenant, passe par la sortie de l'écran des résultats en Crystalline Conflict et, si rien ne marche, vous demande de quitter à la main puis reprend une fois dehors",
       "13": "Amélioration de Démarrer : quand une session ne peut pas encore démarrer (déconnecté, dans une autre mission ou déjà inscrit), la carte d'état et le bouton Démarrer en donnent la raison avant le clic, au lieu d'une erreur générique dans le chat après coup",
       "14": "Ajout de l'esquive des AoE en Frontline et Rival Wings : le bot sort désormais des attaques ennemies signalées et garde sa place dans la formation hors de leur portée, comme il le faisait déjà en Crystalline Conflict ; les sorts des PNJ de votre camp ne comptent plus comme un danger",
-      "15": "Amélioration du suivi de l'équipe en Frontline et Rival Wings : le bot ne traverse plus la carte pour un groupe à peine plus grand que le sien, tient compte de la distance d'un groupe avant de le rejoindre et se place là où l'équipe est vraiment groupée, plutôt qu'au milieu d'une colonne étirée"
+      "15": "Amélioration du suivi de l'équipe en Frontline et Rival Wings : le bot ne traverse plus la carte pour un groupe à peine plus grand que le sien, tient compte de la distance d'un groupe avant de le rejoindre et se place là où l'équipe est vraiment groupée, plutôt qu'au milieu d'une colonne étirée",
+      "16": "Amélioration du repli en Crystalline Conflict : après s'être replié, le bot attend un instant sans subir de dégâts avant d'y retourner, au lieu de revenir dans le combat dès que ses PV remontent"
     }
   },
   "about": {

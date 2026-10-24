@@ -4,14 +4,30 @@ internal sealed class BurstMeter
 {
     private const long WindowMs = 1000;
     private const float WindowSeconds = WindowMs / 1000f;
+    private const float HitThreshold = 0.001f;
 
     private readonly Queue<(long Tick, float Hp)> samples = new();
+    private float? lastHp;
+    private long lastHitAtMs;
 
-    public void Reset() => samples.Clear();
+    public long MsSinceLastHit => Environment.TickCount64 - lastHitAtMs;
+
+    public void Reset()
+    {
+        samples.Clear();
+        lastHp = null;
+        lastHitAtMs = 0;
+    }
 
     public float DropPerSecond(float hp)
     {
         var now = Environment.TickCount64;
+        if (lastHp is { } previous && hp < previous - HitThreshold)
+        {
+            lastHitAtMs = now;
+        }
+        lastHp = hp;
+
         while (samples.Count > 0 && now - samples.Peek().Tick > WindowMs)
         {
             samples.Dequeue();
