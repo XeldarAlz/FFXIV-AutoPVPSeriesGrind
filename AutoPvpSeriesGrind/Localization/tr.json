@@ -433,7 +433,8 @@
       "19": "Düzeltildi: Maç sayacı okunamadığında, örneğin bir oyun yamasından hemen sonra, bot bütün bir Crystalline Conflict maçı boyunca başlangıç noktasında bekliyordu; bir dakika boyunca sayaç okunamazsa artık maça yine de başlıyor",
       "20": "Düzeltildi: PvP profiliniz yüklenmeden başlayan bir çalışmada kazanılan Seri EXP'si toplam Seri EXP'nizin tamamını gösteriyordu",
       "21": "Bloodbath ve Swift iyileştirildi: Bloodbath iyileştirmesi vuruşlarından geldiği için artık yakın mesafede bir düşman bekliyor, Swift ise hedefin yanındayken değil, hedefle aradaki mesafeyi kapatmak için kullanılıyor",
-      "22": "Hata raporları iyileştirildi: konsoldan kopyalanan bir rapor artık oyun istemcisinin dilini, eklenti dilini, Dalamud kanalını, maç modunu ve vnavmesh ile Lifestream sürümlerini de içeriyor"
+      "22": "Hata raporları iyileştirildi: konsoldan kopyalanan bir rapor artık oyun istemcisinin dilini, eklenti dilini, Dalamud kanalını, maç modunu ve vnavmesh ile Lifestream sürümlerini de içeriyor",
+      "23": "Düzeltildi: Üç sıraya girme denemesi kaydolmadığı anda çalışma duruyordu; eklenti artık bir dakika bekleyip yeniden deniyor ve ancak üç turdan sonra vazgeçiyor"
     }
   },
   "about": {

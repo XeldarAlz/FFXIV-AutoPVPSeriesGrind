@@ -359,6 +359,7 @@ internal static class L
             new("changelog.r21300.20", "Fixed Series EXP gained showing your entire Series total when a run started before your PvP profile had loaded"),
             new("changelog.r21300.21", "Improved Bloodbath and Swift: Bloodbath now waits for an enemy in melee range, since its healing comes from your hits, and Swift is used to close the gap to your target instead of while already next to it"),
             new("changelog.r21300.22", "Improved bug reports: a report copied from the console now also lists your game client language, the plugin language, the Dalamud track, the match mode and the vnavmesh and Lifestream versions"),
+            new("changelog.r21300.23", "Fixed a run stopping as soon as three queue attempts did not register: the plugin now waits a minute and tries again, and gives up only after three rounds"),
         ];
 
         public static readonly LocString[] Release21200 =

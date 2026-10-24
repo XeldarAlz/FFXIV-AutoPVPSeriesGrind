@@ -19,18 +19,49 @@ public sealed class RunLifecycleTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void SubmissionFailuresAreSpacedAndBounded(bool dispatched)
+    public void SubmissionFailuresBackOffBetweenRoundsAndAreBounded(bool dispatched)
     {
         var queue = new QueueSubmission();
-        for (var attempt = 0; attempt < 3; attempt++)
+        long now = 0;
+        for (var cycle = 0; cycle < QueueSubmission.MaxCycles; cycle++)
         {
-            var now = attempt * QueueSubmission.RegistrationTimeoutMs;
-            Assert.Equal(QueueDecision.Submit, queue.Observe(QueueState.Idle, now));
-            queue.Submitted(now, dispatched);
-            Assert.Equal(QueueDecision.Wait, queue.Observe(QueueState.Idle, now + 500));
+            for (var attempt = 0; attempt < QueueSubmission.MaxAttempts; attempt++)
+            {
+                Assert.Equal(QueueDecision.Submit, queue.Observe(QueueState.Idle, now));
+                queue.Submitted(now, dispatched);
+                Assert.Equal(QueueDecision.Wait, queue.Observe(QueueState.Idle, now + 500));
+                now += QueueSubmission.RegistrationTimeoutMs;
+            }
+            if (cycle == QueueSubmission.MaxCycles - 1)
+            {
+                break;
+            }
+
+            Assert.Equal(QueueDecision.Backoff, queue.Observe(QueueState.Idle, now));
+            Assert.Equal(QueueSubmission.CycleBackoffMs, queue.BackoffRemainingMs(now));
+            Assert.Equal(QueueDecision.Backoff, queue.Observe(QueueState.Idle, now + QueueSubmission.CycleBackoffMs - 1));
+            now += QueueSubmission.CycleBackoffMs;
         }
-        Assert.Equal(QueueDecision.Failed, queue.Observe(QueueState.Idle, 30_000));
+        Assert.Equal(QueueDecision.Failed, queue.Observe(QueueState.Idle, now));
         Assert.Equal(dispatched, queue.HasSubmitted);
+    }
+
+    [Fact]
+    public void RegistrationClearsEarlierFailedRounds()
+    {
+        var queue = new QueueSubmission();
+        long now = 0;
+        for (var attempt = 0; attempt < QueueSubmission.MaxAttempts; attempt++)
+        {
+            queue.Observe(QueueState.Idle, now);
+            queue.Submitted(now, true);
+            now += QueueSubmission.RegistrationTimeoutMs;
+        }
+        Assert.Equal(QueueDecision.Backoff, queue.Observe(QueueState.Idle, now));
+
+        Assert.Equal(QueueDecision.InFlight, queue.Observe(QueueState.Queued, now + 1));
+        Assert.Equal(0, queue.BackoffRemainingMs(now + 1));
+        Assert.Equal(QueueDecision.Submit, queue.Observe(QueueState.Idle, now + 2));
     }
 
     [Theory]

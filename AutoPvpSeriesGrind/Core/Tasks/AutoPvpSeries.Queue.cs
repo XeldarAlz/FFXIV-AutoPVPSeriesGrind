@@ -55,7 +55,7 @@ internal sealed partial class AutoPvpSeries
         if (decision == QueueDecision.Failed)
         {
             session.StopReason = state == QueueState.Unknown ? "Queue state remained unavailable; run stopped."
-                : "Queue registration failed or timed out; run stopped.";
+                : "Queue registration kept failing or timed out; run stopped.";
             Warn(session.StopReason);
             return true;
         }
@@ -65,6 +65,19 @@ internal sealed partial class AutoPvpSeries
             await DelayMs(MainLoopIdleMs);
             return false;
         }
+        if (decision == QueueDecision.Backoff)
+        {
+            var remainingMs = queueSubmission.BackoffRemainingMs(Environment.TickCount64);
+            if (!queueBackoffAnnounced)
+            {
+                queueBackoffAnnounced = true;
+                Warn($"queue did not register after {QueueSubmission.MaxAttempts} attempts -> retrying in {FormatRemaining(remainingMs)}");
+            }
+            Status = $"Queue did not register; retrying in {FormatRemaining(remainingMs)}";
+            await DelayMs(MainLoopIdleMs);
+            return false;
+        }
+        queueBackoffAnnounced = false;
         if (queued && !OwnsQueue())
         {
             session.StopReason = "Another queue or duty is in flight; run stopped without changing it.";

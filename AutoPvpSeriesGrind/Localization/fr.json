@@ -433,7 +433,8 @@
       "19": "Correction : le bot restait au point de départ pendant tout un match de Crystalline Conflict quand le minuteur du match était illisible, par exemple juste après un patch du jeu ; après une minute sans minuteur lisible, il lance quand même le match",
       "20": "Correction : l'EXP de série gagnée affichait toute votre EXP de série quand une session démarrait avant le chargement de votre profil JcJ",
       "21": "Amélioration de Bloodbath et Swift : Bloodbath attend désormais un ennemi au corps à corps, car ses soins viennent de vos coups, et Swift sert à combler la distance avec votre cible au lieu d'être lancé quand vous êtes déjà à côté",
-      "22": "Amélioration des rapports de bug : un rapport copié depuis la console indique désormais aussi la langue du client du jeu, la langue du plugin, la branche de Dalamud, le mode de match et les versions de vnavmesh et Lifestream"
+      "22": "Amélioration des rapports de bug : un rapport copié depuis la console indique désormais aussi la langue du client du jeu, la langue du plugin, la branche de Dalamud, le mode de match et les versions de vnavmesh et Lifestream",
+      "23": "Correction : une session s'arrêtait dès que trois tentatives d'inscription échouaient ; le plugin attend désormais une minute avant de réessayer et n'abandonne qu'après trois séries"
     }
   },
   "about": {
