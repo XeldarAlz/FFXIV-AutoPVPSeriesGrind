@@ -53,7 +53,7 @@ internal sealed class AutoPvpSeriesController
         if (!CanStartAutomation()) return;
 
         if (!Enum.IsDefined(Plugin.Cfg.MatchType) || !ECommons.DalamudServices.Svc.ClientState.IsLoggedIn
-            || (MatchState.InDuty() ? !PvpDuty.Contains(Plugin.Cfg.MatchType, ECommons.DalamudServices.Svc.ClientState.TerritoryType) : DutyOps.HasDutyInFlight()))
+            || (MatchState.InDuty() ? PvpTerritory.Current() != Plugin.Cfg.MatchType : DutyOps.HasDutyInFlight()))
         {
             ApsgChat.PrintError("Cannot start: settle the character and clear any unrelated queue or duty first.");
             return;
@@ -176,10 +176,14 @@ internal sealed class AutoPvpSeriesController
         return namesBuilder.ToString();
     }
 
-    public void Stop()
+    public void Stop(bool withdrawQueue = true)
     {
         var ending = session;
         if (ending is not null) ending.CompletedByGoal = false;
+        if (withdrawQueue)
+        {
+            series?.WithdrawOwnQueue();
+        }
         series?.StopAutomation();
         Svc.Automation.Stop();
         FinalizeRun(ending);

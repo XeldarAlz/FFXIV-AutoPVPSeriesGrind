@@ -61,7 +61,7 @@
     "theArena": "the arena",
     "finish": {
       "inMatch": "this match plays out first",
-      "queued": "the queued match plays out first",
+      "queued": "leaves the queue, then ends",
       "idle": "nothing in progress, ends right away",
       "armed": "Stopping after this match",
       "keepGoing": "click to keep going"
@@ -201,7 +201,7 @@
     "stopAfterMatchesHelp": "Counts matches that reach the results screen, so a match you abandon does not count.",
     "reachRank": "Reach rank",
     "reachRankHelp": "You are rank {0} now. The run finishes the match it is in before stopping.",
-    "stopAfterTimeHelp": "The timer stops queueing new matches; the one in progress still plays out.",
+    "stopAfterTimeHelp": "When time runs out, a queue that has not popped is withdrawn; a match already underway still plays out.",
     "modeFrontline": "Frontline",
     "modeRivalWings": "Rival Wings"
   },
@@ -401,7 +401,10 @@
       "6": "Fixed Bard's Warden's Paean, White Mage's Aquaveil and Samurai's Meikyo Shisui never cleansing while Purify was ready; they now go first, and Purify is kept for Stun, Silence, Deep Freeze and Miracle of Nature",
       "7": "Fixed Viper spending Rattling Coil while Uncoiled Fury and Snake Scales were still ready, which wasted the reset",
       "8": "Fixed Pictomancer keeping Subtractive Palette on while moving, where its spells need a cast; it now drops the palette on the move and picks it back up to cast",
-      "9": "Added a conflict check: the grind will not start, and a running grind stops, while a conflicting rotation plugin is loaded"
+      "9": "Added a conflict check: the grind will not start, and a running grind stops, while a conflicting rotation plugin is loaded",
+      "10": "Fixed Finish, then stop and a reached time limit still accepting the next queue pop and playing one more match: a queue that has not popped is now withdrawn and the run ends right away, and Stop withdraws the run's queue too",
+      "11": "Fixed a Crystalline Conflict, Frontline or Rival Wings map the plugin did not list yet ending the run as an unrecognized duty: arenas are now also recognized by the game's own content type, so a new map on patch day keeps the grind going",
+      "12": "Fixed the run stopping when the game ignored the leave command after a match: the plugin now retries, falls back to the results screen's own leave flow in Crystalline Conflict, and if nothing works asks you to leave by hand and carries on once you are out"
     }
   },
   "about": {

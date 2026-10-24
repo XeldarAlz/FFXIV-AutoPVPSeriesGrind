@@ -61,7 +61,7 @@
     "theArena": "竞技场",
     "finish": {
       "inMatch": "先把这场比赛打完",
-      "queued": "先把已排到的比赛打完",
+      "queued": "退出排队后结束",
       "idle": "没有进行中的比赛，立即结束",
       "armed": "这场比赛后停止",
       "keepGoing": "点击继续"
@@ -201,7 +201,7 @@
     "stopAfterMatchesHelp": "只统计进入结算画面的比赛，中途退出的不算。",
     "reachRank": "达到等级",
     "reachRankHelp": "你现在是 {0} 级。刷取会先打完当前这场再停止。",
-    "stopAfterTimeHelp": "计时结束只是不再排新的比赛；正在进行的那场会打完。",
+    "stopAfterTimeHelp": "时间到后，尚未匹配成功的排队会被取消；已经开始的比赛会打完。",
     "modeFrontline": "纷争前线",
     "modeRivalWings": "群翼纷争"
   },
@@ -401,7 +401,10 @@
       "6": "修复：Purify 可用时，诗人的 Warden's Paean、白魔法师的 Aquaveil 和武士的 Meikyo Shisui 从不用于净化的问题。现在优先使用它们，Purify 留给眩晕、沉默、冰冻和 Miracle of Nature",
       "7": "修复：蝰蛇剑士在 Uncoiled Fury 和 Snake Scales 仍可用时使用 Rattling Coil、浪费重置效果的问题",
       "8": "修复：绘灵法师移动时仍保持 Subtractive Palette、而其魔法需要咏唱的问题。现在移动时会解除，需要咏唱时再开启",
-      "9": "新增冲突检查：加载了冲突的循环插件时无法开始，正在运行的也会停止"
+      "9": "新增冲突检查：加载了冲突的循环插件时无法开始，正在运行的也会停止",
+      "10": "修复：“打完再停止”或达到时间上限后，仍会接受下一次匹配再打一场的问题。现在尚未匹配成功的排队会被取消并立即结束，“停止”也会取消本次运行的排队",
+      "11": "修复：插件尚未收录的 Crystalline Conflict、Frontline 或 Rival Wings 地图会被当作无法识别的任务而结束运行的问题。现在也会根据游戏自身的任务类型识别竞技场，补丁当天的新地图不会再中断刷取",
+      "12": "修复：比赛结束后游戏未执行离开指令时运行会停止的问题。现在会重试，在 Crystalline Conflict 中改用结果界面自带的离开流程，仍不行时会提示手动离开，离开后继续运行"
     }
   },
   "about": {

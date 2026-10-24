@@ -16,7 +16,12 @@ internal sealed partial class AutoPvpSeries
     private const int PvpAreaWaitMs = 90_000;
 
     private const int PostQuickChatMs = 500;
-    private const int LeaveDutyTimeoutMs = 10_000;
+    private const int LeaveAttemptWaitMs = 5_000;
+    private const int MaxLeaveAttempts = 3;
+    private const int LeaveRetryIntervalMs = 15_000;
+    private const int ResultsLeaveStepMs = 800;
+    private const int LeavePromptWaitMs = 3_000;
+    private const string ManualLeaveStatus = "Leave the finished duty manually";
     private const int PortraitPhasePollMs = 250;
     private const int GateApproachJitterReactions = 2;
     private const int MillisecondsPerSecond = 1000;
@@ -68,9 +73,81 @@ internal sealed partial class AutoPvpSeries
         LogDiagnostic($"stop condition met ({Plugin.Cfg.ActiveMode.DisplayName}) -> ending the run once out of duty");
     }
 
+    private async Task LingerThenLeave()
+    {
+        if (matchFlow.LeaveAttempts == 0)
+        {
+            await LingerOnResults();
+            LogDiagnostic("match completion confirmed -> leaving duty");
+            ExecuteGameCommand(GameCommands.NavStop);
+        }
+
+        if (matchFlow.LeaveAttempts < MaxLeaveAttempts)
+        {
+            await AttemptLeave();
+            return;
+        }
+
+        await AwaitManualLeave();
+    }
+
+    private async Task AttemptLeave()
+    {
+        matchFlow.LeaveAttempts++;
+        var throughResults = matchFlow.LeaveAttempts > 1 && matchType == MatchType.CrystallineConflict && await LeaveThroughResultsScreen();
+        if (!throughResults)
+        {
+            DutyOps.LeaveCurrentContent();
+        }
+        if (await WaitUntilTimed(() => !InDuty(), LeaveAttemptWaitMs, "left-duty", checkMs: PollMs))
+        {
+            return;
+        }
+
+        if (matchFlow.LeaveAttempts < MaxLeaveAttempts)
+        {
+            Warn($"duty exit did not take (attempt {matchFlow.LeaveAttempts}/{MaxLeaveAttempts}) -> retrying");
+            return;
+        }
+
+        Status = ManualLeaveStatus;
+        matchFlow.NextLeaveRetryAtMs = Environment.TickCount64 + LeaveRetryIntervalMs;
+        ApsgChat.PrintError("The finished duty did not exit. Leave it manually; the run carries on once you are out.");
+    }
+
+    private async Task<bool> LeaveThroughResultsScreen()
+    {
+        if (!DutyOps.OpenResultsLeave())
+        {
+            return false;
+        }
+
+        await DelayMs(ResultsLeaveStepMs);
+        if (!DutyOps.RequestResultsLeave())
+        {
+            return false;
+        }
+
+        LogDiagnostic("leaving through the results screen");
+        return await WaitUntilTimed(() => !InDuty() || DutyOps.TryConfirmLeavePrompt(), LeavePromptWaitMs, "leave-prompt", checkMs: PollMs);
+    }
+
+    private async Task AwaitManualLeave()
+    {
+        Status = ManualLeaveStatus;
+        var now = Environment.TickCount64;
+        if (now >= matchFlow.NextLeaveRetryAtMs)
+        {
+            matchFlow.NextLeaveRetryAtMs = now + LeaveRetryIntervalMs;
+            DutyOps.LeaveCurrentContent();
+        }
+
+        await DelayMs(MainLoopIdleMs);
+    }
+
     // The leave delay is how long we sit on the results screen before bailing. "Good Match" is sent only if
     // its random delay lands inside that window; a short leave delay means we just leave early without it.
-    private async Task LingerThenLeave()
+    private async Task LingerOnResults()
     {
         var lingerMs = Math.Max(0, settings.LeaveDutyDelayMs);
         var waitedMs = 0;
@@ -92,12 +169,6 @@ internal sealed partial class AutoPvpSeries
 
         if (waitedMs < lingerMs)
             await DelayMs(lingerMs - waitedMs);
-
-        LogDiagnostic("match completion confirmed -> leaving duty");
-        ExecuteGameCommand(GameCommands.NavStop);
-        DutyOps.LeaveCurrentContent();
-        if (!await WaitUntilTimed(() => !InDuty(), LeaveDutyTimeoutMs, "left-duty", checkMs: PollMs))
-            throw new InvalidOperationException("The completed duty did not exit. Run stopped; leave the duty manually.");
     }
 
     private async Task CaptureBaseline()

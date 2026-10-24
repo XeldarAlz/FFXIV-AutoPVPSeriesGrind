@@ -1,5 +1,7 @@
 using ECommons.DalamudServices;
 using Lumina.Excel.Sheets;
+using System.Globalization;
+using System.Text;
 
 namespace AutoPvpSeriesGrind.Core.Game;
 
@@ -14,11 +16,73 @@ internal static class GameText
     private const string QuickChatHelloEnglish = "Hello";
     private const string QuickChatGoodMatchEnglish = "Good Match";
 
+    private const uint AddonLeavePartyAndDutyRowId = 108;
+    private const uint AddonAbandonDutyRowId = 109;
+
+    private static readonly uint[] LeaveDutyPromptRowIds = [AddonLeavePartyAndDutyRowId, AddonAbandonDutyRowId];
+    private static string[]? leaveDutyPrompts;
+
     public static string QuickChatHello()
         => QuickChatCommand(QuickChatHelloRowId, QuickChatHelloEnglish);
 
     public static string QuickChatGoodMatch()
         => QuickChatCommand(QuickChatGoodMatchRowId, QuickChatGoodMatchEnglish);
+
+    public static bool IsLeaveDutyPrompt(string prompt)
+    {
+        var known = leaveDutyPrompts ??= LoadLeaveDutyPrompts();
+        var compact = Compact(prompt);
+        for (var index = 0; index < known.Length; index++)
+        {
+            if (string.Equals(known[index], compact, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static string[] LoadLeaveDutyPrompts()
+    {
+        var prompts = new List<string>(LeaveDutyPromptRowIds.Length);
+        for (var index = 0; index < LeaveDutyPromptRowIds.Length; index++)
+        {
+            if (AddonText(LeaveDutyPromptRowIds[index]) is { } text)
+            {
+                prompts.Add(Compact(text));
+            }
+        }
+        return prompts.ToArray();
+    }
+
+    private static string? AddonText(uint rowId)
+    {
+        try
+        {
+            var text = Svc.Data.GetExcelSheet<Addon>()?.GetRowOrDefault(rowId)?.Text.ExtractText();
+            return string.IsNullOrWhiteSpace(text) ? null : text;
+        }
+        catch (Exception exception)
+        {
+            RunLog.Warning($"addon row {rowId} lookup failed: {exception.Message}");
+            return null;
+        }
+    }
+
+    private static string Compact(string text)
+    {
+        var builder = new StringBuilder(text.Length);
+        for (var index = 0; index < text.Length; index++)
+        {
+            var character = text[index];
+            if (char.IsWhiteSpace(character) || char.GetUnicodeCategory(character) == UnicodeCategory.Format)
+            {
+                continue;
+            }
+            builder.Append(character);
+        }
+        return builder.ToString();
+    }
 
     private static string QuickChatCommand(uint rowId, string englishFallback)
     {

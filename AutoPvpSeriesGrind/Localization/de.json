@@ -61,7 +61,7 @@
     "theArena": "die Arena",
     "finish": {
       "inMatch": "dieses Match wird erst zu Ende gespielt",
-      "queued": "das angemeldete Match wird erst zu Ende gespielt",
+      "queued": "zieht die Anmeldung zurück und endet",
       "idle": "nichts läuft gerade, endet sofort",
       "armed": "Stoppt nach diesem Match",
       "keepGoing": "klicken, um weiterzumachen"
@@ -201,7 +201,7 @@
     "stopAfterMatchesHelp": "Zählt Matches, die den Ergebnisbildschirm erreichen; ein abgebrochenes Match zählt also nicht.",
     "reachRank": "Rang erreichen",
     "reachRankHelp": "Du bist jetzt Rang {0}. Der Lauf beendet erst das laufende Match, bevor er stoppt.",
-    "stopAfterTimeHelp": "Der Timer stoppt neue Anmeldungen; das laufende Match wird noch zu Ende gespielt.",
+    "stopAfterTimeHelp": "Läuft die Zeit ab, wird eine noch wartende Anmeldung zurückgezogen; ein laufendes Match wird noch zu Ende gespielt.",
     "modeFrontline": "Frontline",
     "modeRivalWings": "Rival Wings"
   },
@@ -401,7 +401,10 @@
       "6": "Behoben: Warden's Paean des Barden, Aquaveil des Weißmagiers und Meikyo Shisui des Samurai reinigten nie, solange Purify bereit war; sie kommen jetzt zuerst, und Purify wird für Stun, Silence, Deep Freeze und Miracle of Nature aufgehoben",
       "7": "Behoben: Viper setzte Rattling Coil ein, während Uncoiled Fury und Snake Scales noch bereit waren, und verschenkte so das Zurücksetzen",
       "8": "Behoben: Piktomant behielt Subtractive Palette in der Bewegung bei, obwohl deren Zauber gewirkt werden müssen; die Palette wird jetzt in der Bewegung abgelegt und zum Wirken wieder aufgenommen",
-      "9": "Konfliktprüfung hinzugefügt: Der Grind startet nicht, und ein laufender Grind stoppt, solange ein kollidierendes Rotations-Plugin geladen ist"
+      "9": "Konfliktprüfung hinzugefügt: Der Grind startet nicht, und ein laufender Grind stoppt, solange ein kollidierendes Rotations-Plugin geladen ist",
+      "10": "Behoben: Zu Ende spielen, dann stoppen und ein abgelaufenes Zeitlimit nahmen den nächsten bereiten Inhalt noch an und spielten ein weiteres Match; eine noch wartende Anmeldung wird jetzt zurückgezogen und der Lauf endet sofort, und Stopp zieht die Anmeldung des Laufs ebenfalls zurück",
+      "11": "Behoben: Eine noch nicht hinterlegte Karte von Crystalline Conflict, Frontline oder Rival Wings beendete den Lauf als unbekannter Inhalt; Arenen werden jetzt auch über den Inhaltstyp des Spiels erkannt, sodass eine neue Karte am Patch-Tag den Grind nicht mehr stoppt",
+      "12": "Behoben: Der Lauf stoppte, wenn das Spiel den Verlassen-Befehl nach einem Match ignorierte; das Plugin versucht es jetzt erneut, nutzt in Crystalline Conflict den Verlassen-Ablauf des Ergebnisbildschirms und bittet, wenn nichts hilft, um manuelles Verlassen und macht danach weiter"
     }
   },
   "about": {

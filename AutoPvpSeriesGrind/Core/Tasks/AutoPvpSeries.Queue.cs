@@ -12,6 +12,7 @@ internal sealed partial class AutoPvpSeries
     private const int StartupSettleMs = 1000;
     private const int MillisecondsPerMinute = 60_000;
     private const int BreakJitterSpreadDivisor = 5;
+    private const int WithdrawRetryMs = 3000;
 
     private async Task Startup()
     {
@@ -43,20 +44,9 @@ internal sealed partial class AutoPvpSeries
         var state = DutyOps.ReadQueueState();
         var decision = queueSubmission.Observe(state, Environment.TickCount64);
         var queued = decision == QueueDecision.InFlight;
-        if (state == QueueState.Idle)
+        if (Finishing && state == QueueState.Idle && decision != QueueDecision.Wait)
         {
-            EvaluateStopCondition();
-        }
-
-        if (stopAfterCurrentMatch && state == QueueState.Idle)
-        {
-            LogDiagnostic("stop condition reached -> ending run");
-            return true;
-        }
-
-        if (stopRequested && state == QueueState.Idle && decision != QueueDecision.Wait)
-        {
-            LogDiagnostic("stop requested and nothing in flight -> ending run");
+            LogDiagnostic(stopAfterCurrentMatch ? "stop condition reached -> ending run" : "stop requested and nothing in flight -> ending run");
             return true;
         }
 
@@ -75,11 +65,15 @@ internal sealed partial class AutoPvpSeries
             await DelayMs(MainLoopIdleMs);
             return false;
         }
-        if (queued && (!queueSubmission.HasSubmitted || !DutyOps.IsQueuedFor(queueRoute)))
+        if (queued && !OwnsQueue())
         {
             session.StopReason = "Another queue or duty is in flight; run stopped without changing it.";
             Warn(session.StopReason);
             return true;
+        }
+        if (queued && Finishing && await TryWithdrawQueue(state))
+        {
+            return false;
         }
 
         if (queued) Status = $"Queued for {queueLabel}";
@@ -122,6 +116,46 @@ internal sealed partial class AutoPvpSeries
 
         await DelayMs(MainLoopIdleMs);
         return false;
+    }
+
+    private bool Finishing => stopRequested || stopAfterCurrentMatch;
+
+    private bool OwnsQueue() => queueSubmission.HasSubmitted && DutyOps.IsQueuedFor(queueRoute);
+
+    private static bool CanWithdraw(QueueState state) => state is QueueState.Queued or QueueState.Ready;
+
+    private async Task<bool> TryWithdrawQueue(QueueState state)
+    {
+        if (state is not (QueueState.Registering or QueueState.Queued or QueueState.Ready))
+        {
+            return false;
+        }
+
+        Status = "Leaving the queue";
+        var now = Environment.TickCount64;
+        if (CanWithdraw(state) && now >= nextWithdrawAtMs)
+        {
+            nextWithdrawAtMs = now + WithdrawRetryMs;
+            LogDiagnostic(DutyOps.WithdrawQueue()
+                ? $"finishing -> withdrawing the {queueLabel} queue ({state})"
+                : "finishing -> queue withdrawal failed; retrying");
+        }
+
+        await DelayMs(MainLoopIdleMs);
+        return true;
+    }
+
+    public void WithdrawOwnQueue()
+    {
+        var state = DutyOps.ReadQueueState();
+        if (!CanWithdraw(state) || !OwnsQueue())
+        {
+            return;
+        }
+
+        LogDiagnostic(DutyOps.WithdrawQueue()
+            ? $"stopped -> withdrew the {queueLabel} queue ({state})"
+            : "stopped -> queue withdrawal failed");
     }
 
     private void ScheduleNextQueue()

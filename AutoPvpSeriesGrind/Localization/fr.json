@@ -61,7 +61,7 @@
     "theArena": "l'arène",
     "finish": {
       "inMatch": "ce match se joue d'abord jusqu'au bout",
-      "queued": "le match en file se joue d'abord jusqu'au bout",
+      "queued": "quitte la file, puis s'arrête",
       "idle": "rien en cours, s'arrête tout de suite",
       "armed": "Arrêt après ce match",
       "keepGoing": "cliquez pour continuer"
@@ -201,7 +201,7 @@
     "stopAfterMatchesHelp": "Compte les matchs qui atteignent l'écran de résultats ; un match abandonné ne compte donc pas.",
     "reachRank": "Atteindre le rang",
     "reachRankHelp": "Vous êtes au rang {0}. La session termine le match en cours avant de s'arrêter.",
-    "stopAfterTimeHelp": "Le minuteur arrête les nouvelles inscriptions ; le match en cours se joue jusqu'au bout.",
+    "stopAfterTimeHelp": "Quand le temps est écoulé, une inscription encore en attente est annulée ; le match déjà commencé se joue jusqu'au bout.",
     "modeFrontline": "Frontline",
     "modeRivalWings": "Rival Wings"
   },
@@ -401,7 +401,10 @@
       "6": "Correction : Warden's Paean du barde, Aquaveil du mage blanc et Meikyo Shisui du samouraï ne purifiaient jamais tant que Purification était prête ; ils passent maintenant en premier, et Purification est gardée pour Étourdissement, Silence, Gel et Miracle de la nature",
       "7": "Correction : Viper utilisait Rattling Coil alors qu'Uncoiled Fury et Snake Scales étaient encore prêts, gaspillant la réinitialisation",
       "8": "Correction : Pictomancien gardait Subtractive Palette en mouvement alors que ses sorts demandent une incantation ; la palette est maintenant relâchée en mouvement et reprise pour incanter",
-      "9": "Ajout d'une vérification des conflits : le grind ne démarre pas, et une session en cours s'arrête, tant qu'un plugin de rotation incompatible est chargé"
+      "9": "Ajout d'une vérification des conflits : le grind ne démarre pas, et une session en cours s'arrête, tant qu'un plugin de rotation incompatible est chargé",
+      "10": "Correction : Finir, puis arrêter et une limite de temps atteinte acceptaient encore la prochaine mission prête et jouaient un match de plus ; une inscription encore en attente est maintenant annulée et la session s'arrête aussitôt, et Arrêter annule aussi l'inscription de la session",
+      "11": "Correction : une carte de Crystalline Conflict, Frontline ou Rival Wings que le plugin ne listait pas encore arrêtait la session comme mission inconnue ; les arènes sont désormais aussi reconnues par le type de contenu du jeu, donc une nouvelle carte le jour d'un patch n'arrête plus le grind",
+      "12": "Correction : la session s'arrêtait quand le jeu ignorait la commande de sortie après un match ; le plugin réessaie maintenant, passe par la sortie de l'écran des résultats en Crystalline Conflict et, si rien ne marche, vous demande de quitter à la main puis reprend une fois dehors"
     }
   },
   "about": {

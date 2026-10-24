@@ -61,7 +61,7 @@
     "theArena": "la arena",
     "finish": {
       "inMatch": "esta partida se juega hasta el final primero",
-      "queued": "la partida en cola se juega hasta el final primero",
+      "queued": "sale de la cola y termina",
       "idle": "nada en curso, termina de inmediato",
       "armed": "Parará tras esta partida",
       "keepGoing": "haz clic para seguir"
@@ -201,7 +201,7 @@
     "stopAfterMatchesHelp": "Cuenta las partidas que llegan a la pantalla de resultados, así que una partida abandonada no cuenta.",
     "reachRank": "Alcanzar rango",
     "reachRankHelp": "Ahora estás en el rango {0}. La sesión termina la partida en curso antes de parar.",
-    "stopAfterTimeHelp": "El temporizador deja de encolar partidas nuevas; la que está en curso se juega hasta el final.",
+    "stopAfterTimeHelp": "Cuando se acaba el tiempo, se abandona una cola que aún no ha saltado; la partida que ya está en curso se juega hasta el final.",
     "modeFrontline": "Frontline",
     "modeRivalWings": "Rival Wings"
   },
@@ -401,7 +401,10 @@
       "6": "Corregido: Warden's Paean del bardo, Aquaveil del mago blanco y Meikyo Shisui del samurái nunca purificaban mientras Purificar estaba listo; ahora van primero, y Purificar se guarda para Aturdimiento, Silencio, Congelación y Milagro de la naturaleza",
       "7": "Corregido: Viper usaba Rattling Coil con Uncoiled Fury y Snake Scales todavía listos, desperdiciando el reinicio",
       "8": "Corregido: Pictomante mantenía Subtractive Palette en movimiento, aunque sus hechizos necesitan lanzamiento; ahora suelta la paleta al moverse y la recupera para lanzar",
-      "9": "Se añadió una comprobación de conflictos: el grind no empieza, y una sesión en curso se detiene, mientras haya cargado un plugin de rotación incompatible"
+      "9": "Se añadió una comprobación de conflictos: el grind no empieza, y una sesión en curso se detiene, mientras haya cargado un plugin de rotación incompatible",
+      "10": "Corregido: Terminar y luego parar y un límite de tiempo cumplido aún aceptaban el siguiente aviso de cola y jugaban otra partida; ahora se abandona la cola que aún no ha saltado y la sesión termina al momento, y Detener también abandona la cola de la sesión",
+      "11": "Corregido: un mapa de Crystalline Conflict, Frontline o Rival Wings que el plugin aún no tenía en su lista terminaba la sesión como contenido no reconocido; ahora las arenas también se reconocen por el tipo de contenido del propio juego, así que un mapa nuevo el día del parche ya no detiene el grind",
+      "12": "Corregido: la sesión se detenía cuando el juego ignoraba la orden de salir tras una partida; ahora el plugin lo reintenta, en Crystalline Conflict usa la salida de la propia pantalla de resultados y, si nada funciona, te pide salir a mano y sigue en cuanto estás fuera"
     }
   },
   "about": {

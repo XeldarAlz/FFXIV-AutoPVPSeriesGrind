@@ -173,7 +173,7 @@ public sealed class Plugin : IDalamudPlugin
         CommandManager.RemoveHandler(ApsgConstants.PrimaryCommand);
         CommandManager.RemoveHandler(ApsgConstants.AliasCommand);
 
-        Controller.Stop();
+        Controller.Stop(withdrawQueue: false);
         LimitBreak.Dispose();
 
         CLibMain.Dispose();

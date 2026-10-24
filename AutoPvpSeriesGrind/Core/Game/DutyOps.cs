@@ -2,7 +2,9 @@ using AutoPvpSeriesGrind.Core.Util;
 using AutoPvpSeriesGrind.Core.Tasks;
 using clib.Extensions;
 using Dalamud.Game.ClientState.Conditions;
+using ECommons.Automation;
 using ECommons.DalamudServices;
+using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
@@ -19,6 +21,9 @@ internal static unsafe class DutyOps
 
     private const byte DutyFinderPenaltyIndex = 0;
     private const byte InactivityPenaltyIndex = 1;
+
+    private const int ResultsLeaveOpenEvent = -1;
+    private const int ResultsLeaveRequestEvent = -2;
 
     public static bool QueueMatch(PvpQueueRoute route) => Safe.Try("QueueMatch failed", () =>
     {
@@ -106,11 +111,60 @@ internal static unsafe class DutyOps
         return (int)Math.Max(dutyFinderMinutes, inactivityMinutes);
     }, fallback: 0);
 
+    public static bool WithdrawQueue() => Safe.Try("WithdrawQueue failed", () =>
+    {
+        var contentsFinder = ContentsFinder.Instance();
+        if (contentsFinder == null)
+        {
+            return false;
+        }
+        var queueInfo = contentsFinder->GetQueueInfo();
+        if (queueInfo == null)
+        {
+            return false;
+        }
+
+        queueInfo->CancelQueue();
+        return true;
+    }, fallback: false);
+
     public static void LeaveCurrentContent() => Safe.Try("LeaveCurrentContent failed", () =>
     {
         GameMain.ExecuteCommand((int)clib.Enums.CommandFlag.LeaveDuty,
             NoCommandArgument, NoCommandArgument, NoCommandArgument, NoCommandArgument);
     });
+
+    public static bool OpenResultsLeave() => FireResultsEvent(ResultsLeaveOpenEvent);
+
+    public static bool RequestResultsLeave() => FireResultsEvent(ResultsLeaveRequestEvent);
+
+    private static bool FireResultsEvent(int eventId) => Safe.Try("results screen leave failed", () =>
+    {
+        if (!AddonProbe.TryGetReady(ApsgConstants.AddonNames.MatchResults, out var addon))
+        {
+            return false;
+        }
+
+        Callback.Fire(addon, true, eventId);
+        return true;
+    }, fallback: false);
+
+    public static bool TryConfirmLeavePrompt() => Safe.Try("leave prompt confirm failed", () =>
+    {
+        if (!AddonProbe.TryGetReady(ApsgConstants.AddonNames.SelectYesno, out var addon))
+        {
+            return false;
+        }
+
+        var prompt = new AddonMaster.SelectYesno((nint)addon);
+        if (!GameText.IsLeaveDutyPrompt(prompt.Text))
+        {
+            return false;
+        }
+
+        prompt.Yes();
+        return true;
+    }, fallback: false);
 
     public static int ContentTimeLeft() => Safe.TrySilent(() =>
     {

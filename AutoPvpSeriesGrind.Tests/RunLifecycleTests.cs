@@ -110,17 +110,44 @@ public sealed class RunLifecycleTests
     [InlineData(MatchType.RivalWings, 791u, "ManeuversRecord")]
     public void EachModeHasExplicitTerritoryAndResults(MatchType mode, uint territory, string addon)
     {
-        Assert.True(PvpDuty.Contains(mode, territory));
+        Assert.True(PvpDuty.Contains(mode, territory, UnknownIntendedUse));
         Assert.Equal(addon, PvpDuty.ResultsAddon(mode));
-        Assert.False(PvpDuty.Contains(mode, 0));
+        Assert.False(PvpDuty.Contains(mode, 0, UnknownIntendedUse));
     }
 
     [Fact]
     public void RivalWingsAndInvalidModesCannotFallBackToCc()
     {
-        Assert.False(PvpDuty.Contains(MatchType.RivalWings, 1032));
-        Assert.False(PvpDuty.Contains(MatchType.CrystallineConflict, 791));
-        Assert.False(PvpDuty.Contains((MatchType)99, 1032));
+        Assert.False(PvpDuty.Contains(MatchType.RivalWings, 1032, UnknownIntendedUse));
+        Assert.False(PvpDuty.Contains(MatchType.CrystallineConflict, 791, UnknownIntendedUse));
+        Assert.False(PvpDuty.Contains((MatchType)99, 1032, UnknownIntendedUse));
         Assert.Throws<ArgumentOutOfRangeException>(() => PvpDuty.ResultsAddon((MatchType)99));
     }
+
+    [Theory]
+    [InlineData(MatchType.CrystallineConflict, 28u)]
+    [InlineData(MatchType.CrystallineConflict, 37u)]
+    [InlineData(MatchType.Frontline, 18u)]
+    [InlineData(MatchType.RivalWings, 39u)]
+    public void UnlistedArenaIsRecognizedByIntendedUse(MatchType mode, uint intendedUse)
+    {
+        Assert.True(PvpDuty.Contains(mode, UnlistedTerritory, intendedUse));
+        Assert.Equal(mode, PvpDuty.ModeOf(UnlistedTerritory, intendedUse));
+    }
+
+    [Fact]
+    public void NonPvpIntendedUseIsNotAnArena()
+    {
+        Assert.Null(PvpDuty.ModeOf(UnlistedTerritory, UnknownIntendedUse));
+        Assert.Null(PvpDuty.ModeOf(UnlistedTerritory, 41));
+    }
+
+    [Fact]
+    public void ListedTerritoryWinsOverIntendedUse()
+    {
+        Assert.Equal(MatchType.RivalWings, PvpDuty.ModeOf(PvpDuty.HiddenGorgeTerritoryId, 18));
+    }
+
+    private const uint UnknownIntendedUse = 0;
+    private const uint UnlistedTerritory = 65000;
 }

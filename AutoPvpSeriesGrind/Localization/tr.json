@@ -61,7 +61,7 @@
     "theArena": "arena",
     "finish": {
       "inMatch": "önce bu maç sonuna kadar oynanır",
-      "queued": "önce sıradaki maç sonuna kadar oynanır",
+      "queued": "sıradan çıkar, sonra biter",
       "idle": "devam eden bir şey yok, hemen biter",
       "armed": "Bu maçtan sonra duracak",
       "keepGoing": "devam etmek için tıkla"
@@ -201,7 +201,7 @@
     "stopAfterMatchesHelp": "Sonuç ekranına ulaşan maçları sayar, yani terk ettiğin maç sayılmaz.",
     "reachRank": "Şu rütbeye ulaş",
     "reachRankHelp": "Şu an {0}. rütbedesin. Koşu, durmadan önce içinde bulunduğu maçı bitirir.",
-    "stopAfterTimeHelp": "Sayaç yeni maçlara sıraya girmeyi durdurur; devam eden maç sonuna kadar oynanır.",
+    "stopAfterTimeHelp": "Süre dolduğunda henüz eşleşmemiş sıra iptal edilir; zaten başlamış maç sonuna kadar oynanır.",
     "modeFrontline": "Frontline",
     "modeRivalWings": "Rival Wings"
   },
@@ -401,7 +401,10 @@
       "6": "Düzeltildi: Purify hazırken Bard'ın Warden's Paean'ı, White Mage'in Aquaveil'i ve Samurai'nin Meikyo Shisui'si hiç temizlemiyordu; artık önce onlar kullanılıyor ve Purify, Stun, Silence, Deep Freeze ve Miracle of Nature için saklanıyor",
       "7": "Düzeltildi: Viper, Uncoiled Fury ve Snake Scales hâlâ hazırken Rattling Coil kullanıp sıfırlamayı boşa harcıyordu",
       "8": "Düzeltildi: Pictomancer, büyüleri döküm süresi istediği halde hareket ederken Subtractive Palette'i açık tutuyordu; artık hareket ederken paleti bırakıyor ve büyü yapmak için geri alıyor",
-      "9": "Çakışma kontrolü eklendi: çakışan bir rotasyon eklentisi yüklüyken grind başlamıyor ve süren bir çalışma duruyor"
+      "9": "Çakışma kontrolü eklendi: çakışan bir rotasyon eklentisi yüklüyken grind başlamıyor ve süren bir çalışma duruyor",
+      "10": "Düzeltildi: Bitir, sonra dur ve dolan süre sınırı sıradaki eşleşmeyi yine kabul edip bir maç daha oynatıyordu; artık henüz eşleşmemiş sıra iptal ediliyor ve çalışma hemen bitiyor, Durdur da çalışmanın sırasını iptal ediyor",
+      "11": "Düzeltildi: Eklentinin henüz listesinde olmayan bir Crystalline Conflict, Frontline veya Rival Wings haritası çalışmayı tanınmayan içerik olarak bitiriyordu; arenalar artık oyunun kendi içerik türünden de tanınıyor, böylece yama günü gelen yeni bir harita grind'i durdurmuyor",
+      "12": "Düzeltildi: Oyun maçtan sonra çıkış komutunu almadığında çalışma duruyordu; eklenti artık yeniden deniyor, Crystalline Conflict'te sonuç ekranının kendi çıkışını kullanıyor ve hiçbiri işe yaramazsa elle çıkmanızı isteyip çıktıktan sonra devam ediyor"
     }
   },
   "about": {

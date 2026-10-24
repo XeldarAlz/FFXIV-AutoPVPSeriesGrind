@@ -61,7 +61,7 @@
     "theArena": "a arena",
     "finish": {
       "inMatch": "esta partida é jogada até o fim primeiro",
-      "queued": "a partida na fila é jogada até o fim primeiro",
+      "queued": "sai da fila e termina",
       "idle": "nada em andamento, termina na hora",
       "armed": "Parando após esta partida",
       "keepGoing": "clique para continuar"
@@ -201,7 +201,7 @@
     "stopAfterMatchesHelp": "Conta as partidas que chegam à tela de resultados, então uma partida abandonada não conta.",
     "reachRank": "Chegar ao rank",
     "reachRankHelp": "Você está no rank {0} agora. A sessão termina a partida em andamento antes de parar.",
-    "stopAfterTimeHelp": "O cronômetro para de entrar em novas partidas; a que está em andamento é jogada até o fim.",
+    "stopAfterTimeHelp": "Quando o tempo acaba, uma fila ainda em espera é cancelada; a partida que já está em andamento é jogada até o fim.",
     "modeFrontline": "Frontline",
     "modeRivalWings": "Rival Wings"
   },
@@ -401,7 +401,10 @@
       "6": "Corrigido: Warden's Paean do bardo, Aquaveil do mago branco e Meikyo Shisui do samurai nunca limpavam enquanto o Purify estava pronto; agora eles vêm primeiro, e o Purify fica guardado para Stun, Silence, Deep Freeze e Miracle of Nature",
       "7": "Corrigido: Viper usava Rattling Coil com Uncoiled Fury e Snake Scales ainda prontos, desperdiçando o reset",
       "8": "Corrigido: Pictomante mantinha a Subtractive Palette em movimento, embora seus feitiços precisem de conjuração; agora ele solta a paleta ao se mover e a retoma para conjurar",
-      "9": "Adicionada uma verificação de conflitos: o grind não começa, e uma sessão em andamento para, enquanto um plugin de rotação conflitante estiver carregado"
+      "9": "Adicionada uma verificação de conflitos: o grind não começa, e uma sessão em andamento para, enquanto um plugin de rotação conflitante estiver carregado",
+      "10": "Corrigido: Terminar e depois parar e um limite de tempo atingido ainda aceitavam a próxima partida encontrada e jogavam mais uma; agora uma fila ainda em espera é cancelada e a sessão termina na hora, e Parar também cancela a fila da sessão",
+      "11": "Corrigido: um mapa de Crystalline Conflict, Frontline ou Rival Wings que o plugin ainda não listava encerrava a sessão como conteúdo não reconhecido; agora as arenas também são reconhecidas pelo tipo de conteúdo do próprio jogo, então um mapa novo no dia do patch não para mais o grind",
+      "12": "Corrigido: a sessão parava quando o jogo ignorava o comando de sair após uma partida; agora o plugin tenta de novo, usa a saída da própria tela de resultados no Crystalline Conflict e, se nada der certo, pede para você sair manualmente e continua assim que você sai"
     }
   },
   "about": {

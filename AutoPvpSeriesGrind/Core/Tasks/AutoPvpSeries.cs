@@ -53,6 +53,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
     private int matchesSinceBreak;
     private bool onBreak;
     private bool queuePenaltyAnnounced;
+    private long nextWithdrawAtMs;
 
     private MatchFlowState matchFlow;
 
@@ -87,6 +88,8 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         public TeamBases? Bases;
         public bool FrontlineBaseChecked;
         public Vector3? FrontlineDeathSpot;
+        public int LeaveAttempts;
+        public long NextLeaveRetryAtMs;
 
         public void Reset() => this = default;
     }
@@ -99,7 +102,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
 
     private bool ResultsScreenVisible() => AddonProbe.IsReady(PvpDuty.ResultsAddon(matchType));
 
-    private bool InExpectedDuty() => InDuty() && PvpDuty.Contains(matchType, Svc.ClientState.TerritoryType);
+    private bool InExpectedDuty() => InDuty() && PvpTerritory.Current() == matchType;
 
     private void OnDutyCompleted(IDutyStateEventArgs args)
     {
@@ -127,7 +130,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
 
         stopRequested = value;
         LogDiagnostic(value
-            ? "stop requested -> nothing new is queued; the run ends once out of duty and out of the queue"
+            ? "stop requested -> nothing new is queued; a queue that has not popped is withdrawn, a match in progress plays out"
             : "stop request withdrawn -> queueing continues");
     }
 
@@ -228,7 +231,8 @@ internal sealed partial class AutoPvpSeries : AutoCommon
 
     private async Task<bool> HandleOutOfDuty()
     {
-        if (queueSubmission.HasSubmitted && DutyOps.IsQueuedFor(queueRoute) && TryCommenceDuty())
+        EvaluateStopCondition();
+        if (!Finishing && OwnsQueue() && TryCommenceDuty())
         {
             LogDiagnostic("duty ready popup -> commenced");
             await DelayMs(DutyCommencedSettleMs);

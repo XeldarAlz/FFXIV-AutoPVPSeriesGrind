@@ -73,7 +73,7 @@ internal static class L
         public static readonly LocString MatchTimeLeft = new("shell.matchTimeLeft", "{0} left  ·  {1}");
         public static readonly LocString TheArena = new("shell.theArena", "the arena");
         public static readonly LocString FinishInMatch = new("shell.finish.inMatch", "this match plays out first");
-        public static readonly LocString FinishQueued = new("shell.finish.queued", "the queued match plays out first");
+        public static readonly LocString FinishQueued = new("shell.finish.queued", "leaves the queue, then ends");
         public static readonly LocString FinishIdle = new("shell.finish.idle", "nothing in progress, ends right away");
         public static readonly LocString FinishArmed = new("shell.finish.armed", "Stopping after this match");
         public static readonly LocString FinishKeepGoing = new("shell.finish.keepGoing", "click to keep going");
@@ -192,7 +192,7 @@ internal static class L
         public static readonly LocString StopAfterMatchesHelp = new("plan.stopAfterMatchesHelp", "Counts matches that reach the results screen, so a match you abandon does not count.");
         public static readonly LocString ReachRank = new("plan.reachRank", "Reach rank");
         public static readonly LocString ReachRankHelp = new("plan.reachRankHelp", "You are rank {0} now. The run finishes the match it is in before stopping.");
-        public static readonly LocString StopAfterTimeHelp = new("plan.stopAfterTimeHelp", "The timer stops queueing new matches; the one in progress still plays out.");
+        public static readonly LocString StopAfterTimeHelp = new("plan.stopAfterTimeHelp", "When time runs out, a queue that has not popped is withdrawn; a match already underway still plays out.");
     }
 
     internal static class Run
@@ -336,6 +336,9 @@ internal static class L
             new("changelog.r21300.7", "Fixed Viper spending Rattling Coil while Uncoiled Fury and Snake Scales were still ready, which wasted the reset"),
             new("changelog.r21300.8", "Fixed Pictomancer keeping Subtractive Palette on while moving, where its spells need a cast; it now drops the palette on the move and picks it back up to cast"),
             new("changelog.r21300.9", "Added a conflict check: the grind will not start, and a running grind stops, while a conflicting rotation plugin is loaded"),
+            new("changelog.r21300.10", "Fixed Finish, then stop and a reached time limit still accepting the next queue pop and playing one more match: a queue that has not popped is now withdrawn and the run ends right away, and Stop withdraws the run's queue too"),
+            new("changelog.r21300.11", "Fixed a Crystalline Conflict, Frontline or Rival Wings map the plugin did not list yet ending the run as an unrecognized duty: arenas are now also recognized by the game's own content type, so a new map on patch day keeps the grind going"),
+            new("changelog.r21300.12", "Fixed the run stopping when the game ignored the leave command after a match: the plugin now retries, falls back to the results screen's own leave flow in Crystalline Conflict, and if nothing works asks you to leave by hand and carries on once you are out"),
         ];
 
         public static readonly LocString[] Release21200 =
