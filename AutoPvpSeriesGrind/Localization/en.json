@@ -428,7 +428,8 @@
       "14": "Added AoE dodging to Frontline and Rival Wings: the bot now steps out of telegraphed enemy attacks and keeps its spot in the formation clear of them, as it already did in Crystalline Conflict; casts from your own side's NPCs no longer count as danger",
       "15": "Improved Frontline and Rival Wings team following: the bot no longer crosses the map for a group only slightly bigger than the one it is with, weighs how far a group is before joining it, and stands where the team is actually packed instead of the middle of a stretched-out column",
       "16": "Improved retreating in Crystalline Conflict: after falling back, the bot waits until it has gone a moment without taking damage before going back in, instead of walking straight back into the fight the instant its HP recovers",
-      "17": "Fixed lifetime stats being wiped when the history file got damaged, for example by a crash mid-save: history is now saved safely, and an unreadable file is kept as run-history.corrupt.json instead of being overwritten"
+      "17": "Fixed lifetime stats being wiped when the history file got damaged, for example by a crash mid-save: history is now saved safely, and an unreadable file is kept as run-history.corrupt.json instead of being overwritten",
+      "18": "Added /apsg start, stop, finish and status, so a macro can start a run, end it, finish after the current match or print where it stands"
     }
   },
   "about": {
@@ -512,6 +513,10 @@
     "window": "Window",
     "dragAnywhere": "Drag from anywhere",
     "dragAnywhereHelp": "Move the window by dragging anywhere inside it. When off, only the top bar moves it.",
+    "glassWindow": "Glass window",
+    "glassWindowHelp": "Draws the window as frosted glass over the game. When off, the window is solid navy.",
+    "glassAmount": "Glass tint",
+    "glassAmountHelp": "How strongly the glass tints and frosts what is behind it, from clear glass to a dark pane that keeps text easiest to read.",
     "cat": {
       "session": "Session",
       "sessionSub": "Pacing between matches, and the breaks a person would take.",
@@ -812,10 +817,19 @@
     "steering": "You steer"
   },
   "plugin": {
-    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
     "commandHelpAlias": "Alias for /apsg.",
     "steerOn": "You steer now. The plugin keeps targeting and fighting.",
-    "steerOff": "The plugin steers again."
+    "steerOff": "The plugin steers again.",
+    "noRun": "No run in progress.",
+    "stopped": "Run stopped.",
+    "finishOn": "Finishing: the run ends after this match, or leaves the queue if it has not popped.",
+    "finishOff": "Finish cancelled; the run keeps going.",
+    "statusRunning": {
+      "one": "Running: 1 match in {1}. {2}",
+      "other": "Running: {0} matches in {1}. {2}"
+    },
+    "statusIdle": "Not running: {0}"
   },
   "setup": {
     "chooseMode": "Choose your battleground",

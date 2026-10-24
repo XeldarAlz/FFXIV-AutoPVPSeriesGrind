@@ -428,7 +428,8 @@
       "14": "新增纷争前线和群翼纷争中的 AoE 躲避：机器人现在会像在 Crystalline Conflict 中一样，走出有预兆的敌方攻击范围，并让自己在阵型中的位置避开它们；己方 NPC 的咏唱不再被视为危险",
       "15": "改进纷争前线和群翼纷争中的跟随队伍：机器人不再为了一个只比当前大一点的队伍横穿地图，加入前会考虑距离，并站在队伍真正密集的位置，而不是拉长队列的中间",
       "16": "改进 Crystalline Conflict 中的撤退：撤退后，机器人会等到一段时间不再受到伤害才重新上前，而不是 HP 一恢复就立刻冲回战斗",
-      "17": "修复：历史文件损坏时（例如保存时崩溃）累计统计会被清空的问题。现在会安全地保存历史，无法读取的文件会保留为 run-history.corrupt.json，而不是被覆盖"
+      "17": "修复：历史文件损坏时（例如保存时崩溃）累计统计会被清空的问题。现在会安全地保存历史，无法读取的文件会保留为 run-history.corrupt.json，而不是被覆盖",
+      "18": "新增 /apsg start、stop、finish 和 status：宏可以开始运行、停止运行、在本场比赛后结束，或显示当前状态"
     }
   },
   "about": {
@@ -512,6 +513,10 @@
     "window": "窗口",
     "dragAnywhere": "任意位置拖动",
     "dragAnywhereHelp": "在窗口内任意位置拖动即可移动窗口。关闭后只能通过顶部栏移动。",
+    "glassWindow": "玻璃窗口",
+    "glassWindowHelp": "将窗口显示为覆盖在游戏上的磨砂玻璃。关闭后窗口为不透明的深蓝色。",
+    "glassAmount": "玻璃色调",
+    "glassAmountHelp": "玻璃对背后画面的着色与磨砂程度，从透明玻璃到最便于阅读文字的深色玻璃。",
     "cat": {
       "session": "会话",
       "sessionSub": "比赛之间的节奏，以及真人会有的休息。",
@@ -812,10 +817,19 @@
     "steering": "手动移动"
   },
   "plugin": {
-    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg config | stats | deps | log | changelog | about | target | objects | steer。",
+    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer。",
     "commandHelpAlias": "/apsg 的别名。",
     "steerOn": "现在由你移动。插件继续选择目标并战斗。",
-    "steerOff": "插件重新接管移动。"
+    "steerOff": "插件重新接管移动。",
+    "noRun": "当前没有运行。",
+    "stopped": "已停止运行。",
+    "finishOn": "即将结束：本场比赛后结束运行；若尚未匹配成功则退出排队。",
+    "finishOff": "已取消结束，继续运行。",
+    "statusRunning": {
+      "one": "运行中：{1} 内完成 1 场。{2}",
+      "other": "运行中：{1} 内完成 {0} 场。{2}"
+    },
+    "statusIdle": "未在运行：{0}"
   },
   "setup": {
     "chooseMode": "选择战场",

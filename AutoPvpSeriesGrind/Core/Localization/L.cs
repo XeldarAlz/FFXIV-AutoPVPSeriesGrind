@@ -354,6 +354,7 @@ internal static class L
             new("changelog.r21300.15", "Improved Frontline and Rival Wings team following: the bot no longer crosses the map for a group only slightly bigger than the one it is with, weighs how far a group is before joining it, and stands where the team is actually packed instead of the middle of a stretched-out column"),
             new("changelog.r21300.16", "Improved retreating in Crystalline Conflict: after falling back, the bot waits until it has gone a moment without taking damage before going back in, instead of walking straight back into the fight the instant its HP recovers"),
             new("changelog.r21300.17", "Fixed lifetime stats being wiped when the history file got damaged, for example by a crash mid-save: history is now saved safely, and an unreadable file is kept as run-history.corrupt.json instead of being overwritten"),
+            new("changelog.r21300.18", "Added /apsg start, stop, finish and status, so a macro can start a run, end it, finish after the current match or print where it stands"),
         ];
 
         public static readonly LocString[] Release21200 =
@@ -524,6 +525,10 @@ internal static class L
         public static readonly LocString GroupWindow = new("settings.window", "Window");
         public static readonly LocString DragAnywhere = new("settings.dragAnywhere", "Drag from anywhere");
         public static readonly LocString DragAnywhereHelp = new("settings.dragAnywhereHelp", "Move the window by dragging anywhere inside it. When off, only the top bar moves it.");
+        public static readonly LocString GlassWindow = new("settings.glassWindow", "Glass window");
+        public static readonly LocString GlassWindowHelp = new("settings.glassWindowHelp", "Draws the window as frosted glass over the game. When off, the window is solid navy.");
+        public static readonly LocString GlassAmount = new("settings.glassAmount", "Glass tint");
+        public static readonly LocString GlassAmountHelp = new("settings.glassAmountHelp", "How strongly the glass tints and frosts what is behind it, from clear glass to a dark pane that keeps text easiest to read.");
 
         public static readonly LocString CatSession = new("settings.cat.session", "Session");
         public static readonly LocString CatSessionSub = new("settings.cat.sessionSub", "Pacing between matches, and the breaks a person would take.");
@@ -909,9 +914,15 @@ internal static class L
 
     internal static class Plugin
     {
-        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg config | stats | deps | log | changelog | about | target | objects | steer.");
+        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.");
         public static readonly LocString CommandHelpAlias = new("plugin.commandHelpAlias", "Alias for /apsg.");
         public static readonly LocString SteerOn = new("plugin.steerOn", "You steer now. The plugin keeps targeting and fighting.");
         public static readonly LocString SteerOff = new("plugin.steerOff", "The plugin steers again.");
+        public static readonly LocString NoRun = new("plugin.noRun", "No run in progress.");
+        public static readonly LocString Stopped = new("plugin.stopped", "Run stopped.");
+        public static readonly LocString FinishOn = new("plugin.finishOn", "Finishing: the run ends after this match, or leaves the queue if it has not popped.");
+        public static readonly LocString FinishOff = new("plugin.finishOff", "Finish cancelled; the run keeps going.");
+        public static readonly LocPlural StatusRunning = new("plugin.statusRunning", "Running: 1 match in {1}. {2}", "Running: {0} matches in {1}. {2}");
+        public static readonly LocString StatusIdle = new("plugin.statusIdle", "Not running: {0}");
     }
 }

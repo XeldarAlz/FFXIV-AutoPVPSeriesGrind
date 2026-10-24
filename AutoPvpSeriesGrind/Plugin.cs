@@ -125,6 +125,10 @@ public sealed class Plugin : IDalamudPlugin
         ["target"] = TargetDumper.Dump,
         ["objects"] = TargetDumper.DumpObjects,
         ["steer"] = ToggleSteering,
+        ["start"] = Controller.Start,
+        ["stop"] = StopRun,
+        ["finish"] = ToggleFinish,
+        ["status"] = PrintStatus,
     };
 
     private static void ToggleSteering()
@@ -132,6 +136,58 @@ public sealed class Plugin : IDalamudPlugin
         Cfg.ManualMovement = !Cfg.ManualMovement;
         Cfg.Save();
         ApsgChat.Print(Loc.T(Cfg.ManualMovement ? L.Plugin.SteerOn : L.Plugin.SteerOff));
+    }
+
+    private void StopRun()
+    {
+        if (!Controller.Running)
+        {
+            ApsgChat.Print(Loc.T(L.Plugin.NoRun));
+            return;
+        }
+
+        Controller.Stop();
+        ApsgChat.Print(Loc.T(L.Plugin.Stopped));
+    }
+
+    private void ToggleFinish()
+    {
+        if (!Controller.StopAfterMatchAvailable)
+        {
+            ApsgChat.Print(Loc.T(L.Plugin.NoRun));
+            return;
+        }
+
+        Controller.ToggleStopAfterMatch();
+        ApsgChat.Print(Loc.T(Controller.StopAfterMatchRequested ? L.Plugin.FinishOn : L.Plugin.FinishOff));
+    }
+
+    private void PrintStatus()
+    {
+        if (!Controller.Running)
+        {
+            ApsgChat.Print(Loc.T(L.Plugin.StatusIdle, IdleReason()));
+            return;
+        }
+
+        ApsgChat.Print(Controller.SessionSnapshot is { } session
+            ? Loc.Plural(L.Plugin.StatusRunning, session.MatchesCompleted, Formatting.Elapsed(session.Elapsed), Controller.Status).TrimEnd()
+            : Controller.Status);
+    }
+
+    private static string IdleReason()
+    {
+        if (PluginConflicts.Read() is { Blocked: true } conflict)
+        {
+            return PluginConflicts.Reason(conflict);
+        }
+        if (!ExternalPlugins.AllRequiredInstalled())
+        {
+            return Loc.T(L.Shell.InstallRequired);
+        }
+
+        var blocker = AutoPvpSeriesController.CheckStart();
+        return Loc.T(blocker == StartBlocker.None ? L.Grind.TitleReady : StartBlockerText.Title(blocker));
     }
 
     private void RegisterCommands()

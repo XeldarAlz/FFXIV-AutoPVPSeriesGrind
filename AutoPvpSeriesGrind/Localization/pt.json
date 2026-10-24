@@ -428,7 +428,8 @@
       "14": "Adicionada a esquiva de AoE em Frontline e Rival Wings: o bot agora sai dos ataques inimigos marcados e mantém seu lugar na formação longe deles, como já fazia no Crystalline Conflict; conjurações de NPCs do seu lado não contam mais como perigo",
       "15": "Seguimento do time melhorado em Frontline e Rival Wings: o bot não atravessa mais o mapa por um grupo só um pouco maior que o seu, considera a distância de um grupo antes de se juntar a ele e fica onde o time está de fato agrupado, em vez do meio de uma coluna esticada",
       "16": "Recuo melhorado no Crystalline Conflict: depois de recuar, o bot espera um momento sem levar dano antes de voltar, em vez de entrar de novo na luta assim que o HP se recupera",
-      "17": "Corrigido: as estatísticas totais eram apagadas quando o arquivo de histórico era danificado, por exemplo por uma queda durante o salvamento; agora o histórico é salvo com segurança e um arquivo ilegível é mantido como run-history.corrupt.json em vez de ser sobrescrito"
+      "17": "Corrigido: as estatísticas totais eram apagadas quando o arquivo de histórico era danificado, por exemplo por uma queda durante o salvamento; agora o histórico é salvo com segurança e um arquivo ilegível é mantido como run-history.corrupt.json em vez de ser sobrescrito",
+      "18": "Adicionados /apsg start, stop, finish e status, para que uma macro possa iniciar uma sessão, pará-la, encerrar após a partida atual ou mostrar como ela está"
     }
   },
   "about": {
@@ -512,6 +513,10 @@
     "window": "Janela",
     "dragAnywhere": "Arrastar de qualquer lugar",
     "dragAnywhereHelp": "Move a janela ao arrastar de qualquer ponto dentro dela. Desativado, só a barra superior a move.",
+    "glassWindow": "Janela de vidro",
+    "glassWindowHelp": "Mostra a janela como vidro fosco sobre o jogo. Desativado, a janela fica azul-marinho opaca.",
+    "glassAmount": "Tonalidade do vidro",
+    "glassAmountHelp": "Quanto o vidro tinge e desfoca o que está atrás, do vidro transparente a um painel escuro onde o texto fica mais legível.",
     "cat": {
       "session": "Sessão",
       "sessionSub": "O ritmo entre partidas e as pausas que uma pessoa faria.",
@@ -812,10 +817,19 @@
     "steering": "Você move"
   },
   "plugin": {
-    "commandHelp": "Abre ou fecha a janela do Auto PVP Series Grind. /apsg config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Abre ou fecha a janela do Auto PVP Series Grind. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
     "commandHelpAlias": "Atalho para /apsg.",
     "steerOn": "Agora você move. O plugin continua escolhendo alvos e lutando.",
-    "steerOff": "O plugin volta a mover o personagem."
+    "steerOff": "O plugin volta a mover o personagem.",
+    "noRun": "Nenhuma sessão em andamento.",
+    "stopped": "Sessão parada.",
+    "finishOn": "Encerrando: a sessão termina após esta partida ou sai da fila se ela ainda estiver em espera.",
+    "finishOff": "Encerramento cancelado; a sessão continua.",
+    "statusRunning": {
+      "one": "Em andamento: 1 partida em {1}. {2}",
+      "other": "Em andamento: {0} partidas em {1}. {2}"
+    },
+    "statusIdle": "Parado: {0}"
   },
   "setup": {
     "chooseMode": "Escolha seu campo de batalha",

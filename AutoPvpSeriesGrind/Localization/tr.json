@@ -428,7 +428,8 @@
       "14": "Frontline ve Rival Wings için AoE'den kaçma eklendi: bot artık işaretli düşman saldırılarından çıkıyor ve formasyondaki yerini onların dışında tutuyor, tıpkı Crystalline Conflict'te yaptığı gibi; kendi tarafının NPC büyüleri artık tehlike sayılmıyor",
       "15": "Frontline ve Rival Wings'te takımı takip etme iyileştirildi: bot artık kendi grubundan yalnızca biraz büyük bir grup için haritayı boydan boya geçmiyor, katılmadan önce grubun uzaklığını da hesaba katıyor ve uzamış bir kolonun ortası yerine takımın gerçekten toplandığı yerde duruyor",
       "16": "Crystalline Conflict'te geri çekilme iyileştirildi: bot geri çekildikten sonra, HP'si toparlanır toparlanmaz kavgaya geri dalmak yerine bir süre hasar almayana kadar bekliyor",
-      "17": "Düzeltildi: Geçmiş dosyası, örneğin kayıt sırasında bir çökmeyle bozulduğunda toplam istatistikler siliniyordu; geçmiş artık güvenli şekilde kaydediliyor ve okunamayan dosya üzerine yazılmak yerine run-history.corrupt.json olarak saklanıyor"
+      "17": "Düzeltildi: Geçmiş dosyası, örneğin kayıt sırasında bir çökmeyle bozulduğunda toplam istatistikler siliniyordu; geçmiş artık güvenli şekilde kaydediliyor ve okunamayan dosya üzerine yazılmak yerine run-history.corrupt.json olarak saklanıyor",
+      "18": "/apsg start, stop, finish ve status eklendi: bir makro artık çalışmayı başlatabilir, durdurabilir, mevcut maçtan sonra bitirebilir ya da durumunu yazdırabilir"
     }
   },
   "about": {
@@ -512,6 +513,10 @@
     "window": "Pencere",
     "dragAnywhere": "Her yerden sürükle",
     "dragAnywhereHelp": "Pencereyi içinde herhangi bir yerden sürükleyerek taşır. Kapalıyken yalnızca üst çubuk taşır.",
+    "glassWindow": "Cam pencere",
+    "glassWindowHelp": "Pencereyi oyunun üzerinde buzlu cam olarak gösterir. Kapalıyken pencere düz lacivert olur.",
+    "glassAmount": "Cam tonu",
+    "glassAmountHelp": "Camın arkasındakini ne kadar renklendirip buzlandıracağı; şeffaf camdan yazının en kolay okunduğu koyu bir cama kadar.",
     "cat": {
       "session": "Seans",
       "sessionSub": "Maçlar arasındaki tempo ve bir insanın vereceği molalar.",
@@ -812,10 +817,19 @@
     "steering": "Sen yönetiyorsun"
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
     "commandHelpAlias": "/apsg için kısayol.",
     "steerOn": "Artık sen yönetiyorsun. Eklenti hedef seçmeye ve savaşmaya devam ediyor.",
-    "steerOff": "Eklenti yeniden yönetiyor."
+    "steerOff": "Eklenti yeniden yönetiyor.",
+    "noRun": "Devam eden bir çalışma yok.",
+    "stopped": "Çalışma durduruldu.",
+    "finishOn": "Bitiriliyor: çalışma bu maçtan sonra biter ya da henüz eşleşmediyse sıradan çıkar.",
+    "finishOff": "Bitirme iptal edildi; çalışma devam ediyor.",
+    "statusRunning": {
+      "one": "Çalışıyor: {1} içinde 1 maç. {2}",
+      "other": "Çalışıyor: {1} içinde {0} maç. {2}"
+    },
+    "statusIdle": "Çalışmıyor: {0}"
   },
   "setup": {
     "chooseMode": "Savaş alanını seç",

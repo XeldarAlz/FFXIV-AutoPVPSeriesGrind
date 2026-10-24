@@ -81,6 +81,10 @@ Validate this in-game with RSR loaded at startup, enabled during a run, and disa
 |---|---|
 | `/apsg` | Toggle the main window |
 | `/pvpseries` | Alias for `/apsg` |
+| `/apsg start` | Start a run with the current plan |
+| `/apsg stop` | Stop the run now (leaves a queue the run made) |
+| `/apsg finish` | Finish the current match, then stop (run again to cancel) |
+| `/apsg status` | Print the run's progress, or why it cannot start, to chat |
 | `/apsg config` | Open settings |
 | `/apsg deps` | Open dependencies window (alias: `dependencies`) |
 | `/apsg about` | Open credits / links |

@@ -428,7 +428,8 @@
       "14": "AoE-Ausweichen für Frontline und Rival Wings hinzugefügt: Der Bot tritt jetzt aus angekündigten gegnerischen Angriffen heraus und hält seinen Platz in der Formation davon frei, wie schon in Crystalline Conflict; Zauber von NPCs der eigenen Seite gelten nicht mehr als Gefahr",
       "15": "Teamfolgen in Frontline und Rival Wings verbessert: Der Bot läuft nicht mehr quer über die Karte zu einer nur wenig größeren Gruppe, berücksichtigt die Entfernung einer Gruppe, bevor er sich ihr anschließt, und steht dort, wo das Team wirklich dicht ist, statt in der Mitte einer langgezogenen Kolonne",
       "16": "Rückzug in Crystalline Conflict verbessert: Nach dem Zurückfallen wartet der Bot, bis er einen Moment lang keinen Schaden mehr nimmt, bevor er wieder angreift, statt sofort zurück in den Kampf zu laufen, sobald seine HP wieder reichen",
-      "17": "Behoben: Die Gesamtstatistik wurde gelöscht, wenn die Verlaufsdatei beschädigt war, etwa durch einen Absturz beim Speichern; der Verlauf wird jetzt sicher gespeichert, und eine unlesbare Datei bleibt als run-history.corrupt.json erhalten, statt überschrieben zu werden"
+      "17": "Behoben: Die Gesamtstatistik wurde gelöscht, wenn die Verlaufsdatei beschädigt war, etwa durch einen Absturz beim Speichern; der Verlauf wird jetzt sicher gespeichert, und eine unlesbare Datei bleibt als run-history.corrupt.json erhalten, statt überschrieben zu werden",
+      "18": "/apsg start, stop, finish und status hinzugefügt: Ein Makro kann damit einen Lauf starten, beenden, nach dem aktuellen Match beenden oder den Stand ausgeben"
     }
   },
   "about": {
@@ -512,6 +513,10 @@
     "window": "Fenster",
     "dragAnywhere": "Überall ziehen",
     "dragAnywhereHelp": "Verschiebt das Fenster beim Ziehen an einer beliebigen Stelle. Ist das aus, verschiebt nur die obere Leiste das Fenster.",
+    "glassWindow": "Glasfenster",
+    "glassWindowHelp": "Zeigt das Fenster als Milchglas über dem Spiel. Ist das aus, ist das Fenster durchgehend dunkelblau.",
+    "glassAmount": "Glastönung",
+    "glassAmountHelp": "Wie stark das Glas den Hintergrund tönt und mattiert, von klarem Glas bis zu einer dunklen Scheibe, auf der Text am besten lesbar bleibt.",
     "cat": {
       "session": "Sitzung",
       "sessionSub": "Das Tempo zwischen Matches und die Pausen, die ein Mensch machen würde.",
@@ -812,10 +817,19 @@
     "steering": "Du steuerst"
   },
   "plugin": {
-    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
     "commandHelpAlias": "Alias für /apsg.",
     "steerOn": "Du steuerst jetzt. Das Plugin wählt weiter Ziele und kämpft.",
-    "steerOff": "Das Plugin steuert wieder."
+    "steerOff": "Das Plugin steuert wieder.",
+    "noRun": "Kein Lauf aktiv.",
+    "stopped": "Lauf gestoppt.",
+    "finishOn": "Wird beendet: Der Lauf endet nach diesem Match oder zieht eine noch wartende Anmeldung zurück.",
+    "finishOff": "Beenden abgebrochen; der Lauf geht weiter.",
+    "statusRunning": {
+      "one": "Läuft: 1 Match in {1}. {2}",
+      "other": "Läuft: {0} Matches in {1}. {2}"
+    },
+    "statusIdle": "Läuft nicht: {0}"
   },
   "setup": {
     "chooseMode": "Wähle dein Schlachtfeld",
