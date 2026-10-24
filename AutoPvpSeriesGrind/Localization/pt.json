@@ -425,7 +425,8 @@
       "11": "Corrigido: um mapa de Crystalline Conflict, Frontline ou Rival Wings que o plugin ainda não listava encerrava a sessão como conteúdo não reconhecido; agora as arenas também são reconhecidas pelo tipo de conteúdo do próprio jogo, então um mapa novo no dia do patch não para mais o grind",
       "12": "Corrigido: a sessão parava quando o jogo ignorava o comando de sair após uma partida; agora o plugin tenta de novo, usa a saída da própria tela de resultados no Crystalline Conflict e, se nada der certo, pede para você sair manualmente e continua assim que você sai",
       "13": "Iniciar melhorado: quando uma sessão ainda não pode começar (sem personagem conectado, dentro de outro conteúdo ou já em uma fila), o cartão de status e o botão Iniciar dizem o motivo antes do clique, em vez de um erro genérico no chat depois",
-      "14": "Adicionada a esquiva de AoE em Frontline e Rival Wings: o bot agora sai dos ataques inimigos marcados e mantém seu lugar na formação longe deles, como já fazia no Crystalline Conflict; conjurações de NPCs do seu lado não contam mais como perigo"
+      "14": "Adicionada a esquiva de AoE em Frontline e Rival Wings: o bot agora sai dos ataques inimigos marcados e mantém seu lugar na formação longe deles, como já fazia no Crystalline Conflict; conjurações de NPCs do seu lado não contam mais como perigo",
+      "15": "Seguimento do time melhorado em Frontline e Rival Wings: o bot não atravessa mais o mapa por um grupo só um pouco maior que o seu, considera a distância de um grupo antes de se juntar a ele e fica onde o time está de fato agrupado, em vez do meio de uma coluna esticada"
     }
   },
   "about": {

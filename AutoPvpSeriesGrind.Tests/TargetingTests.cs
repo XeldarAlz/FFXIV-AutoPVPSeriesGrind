@@ -46,7 +46,7 @@ public sealed class TargetingTests
         var snapshot = Snapshot([], [], [Actor(1, 80, canAttack: false), Actor(2, 85, canAttack: false), Actor(3, 90, canAttack: false)]);
         var picker = new CrowdPicker();
         picker.MarkBase(Vector3.Zero);
-        var group = picker.Pick(snapshot, null);
+        var group = picker.Pick(snapshot, null, 10_000);
         Assert.NotNull(group);
         Assert.Equal(3, group.Value.Size);
         Assert.Equal(85f, group.Value.Centroid.X);

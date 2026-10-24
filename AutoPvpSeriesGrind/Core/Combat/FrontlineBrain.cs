@@ -78,10 +78,10 @@ internal class FrontlineBrain
         UnderBurst = burst.DropPerSecond(snapshot.SelfHp) >= profile.BurstDropPerSec;
         UpdateHurt(snapshot);
 
-        var cluster = crowdPicker.Pick(snapshot, crowdTracker.Position);
+        var cluster = crowdPicker.Pick(snapshot, crowdTracker.Position, Environment.TickCount64);
         if (cluster is { } picked)
         {
-            crowdTracker.Update(picked.Centroid);
+            crowdTracker.Update(picked.Densest);
         }
         else
         {

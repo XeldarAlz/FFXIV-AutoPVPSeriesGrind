@@ -425,7 +425,8 @@
       "11": "Behoben: Eine noch nicht hinterlegte Karte von Crystalline Conflict, Frontline oder Rival Wings beendete den Lauf als unbekannter Inhalt; Arenen werden jetzt auch über den Inhaltstyp des Spiels erkannt, sodass eine neue Karte am Patch-Tag den Grind nicht mehr stoppt",
       "12": "Behoben: Der Lauf stoppte, wenn das Spiel den Verlassen-Befehl nach einem Match ignorierte; das Plugin versucht es jetzt erneut, nutzt in Crystalline Conflict den Verlassen-Ablauf des Ergebnisbildschirms und bittet, wenn nichts hilft, um manuelles Verlassen und macht danach weiter",
       "13": "Start verbessert: Kann ein Lauf noch nicht starten (abgemeldet, in einem anderen Inhalt oder bereits angemeldet), sagen die Statuskarte und der Start-Knopf jetzt schon vor dem Klick, warum, statt hinterher eine allgemeine Chat-Fehlermeldung zu zeigen",
-      "14": "AoE-Ausweichen für Frontline und Rival Wings hinzugefügt: Der Bot tritt jetzt aus angekündigten gegnerischen Angriffen heraus und hält seinen Platz in der Formation davon frei, wie schon in Crystalline Conflict; Zauber von NPCs der eigenen Seite gelten nicht mehr als Gefahr"
+      "14": "AoE-Ausweichen für Frontline und Rival Wings hinzugefügt: Der Bot tritt jetzt aus angekündigten gegnerischen Angriffen heraus und hält seinen Platz in der Formation davon frei, wie schon in Crystalline Conflict; Zauber von NPCs der eigenen Seite gelten nicht mehr als Gefahr",
+      "15": "Teamfolgen in Frontline und Rival Wings verbessert: Der Bot läuft nicht mehr quer über die Karte zu einer nur wenig größeren Gruppe, berücksichtigt die Entfernung einer Gruppe, bevor er sich ihr anschließt, und steht dort, wo das Team wirklich dicht ist, statt in der Mitte einer langgezogenen Kolonne"
     }
   },
   "about": {

@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace AutoPvpSeriesGrind.Core.Combat;
 
-internal readonly record struct AllyCluster(Vector3 Centroid, int Size, int MountedCount)
+internal readonly record struct AllyCluster(Vector3 Centroid, int Size, int MountedCount, Vector3 Densest)
 {
     public bool IsRiding => MountedCount * 2 > Size;
 }
@@ -10,6 +10,9 @@ internal readonly record struct AllyCluster(Vector3 Centroid, int Size, int Moun
 internal sealed class PvpSnapshot
 {
     private const float ClusterLinkRadius = 15f; // allies within this of each other count as one fighting group
+    private const float DensityKernelYalms = 24f;
+    private const float DensestCoreYalms = 12f;
+    private const int StackScratchLimit = 64;
 
     public required Vector3 Self { get; init; }
     public required float SelfRotation { get; init; }
@@ -108,12 +111,22 @@ internal sealed class PvpSnapshot
     public static List<AllyCluster> Clusters(IReadOnlyList<PvpActor> allies)
     {
         var clusters = new List<AllyCluster>();
-        if (allies.Count == 0)
+        var count = allies.Count;
+        if (count == 0)
         {
             return clusters;
         }
 
-        var groupIds = new int[allies.Count];
+        var onStack = count <= StackScratchLimit;
+        Span<int> groupIds = onStack ? stackalloc int[count] : new int[count];
+        Span<Vector3> sums = onStack ? stackalloc Vector3[count] : new Vector3[count];
+        Span<int> counts = onStack ? stackalloc int[count] : new int[count];
+        Span<int> mountedCounts = onStack ? stackalloc int[count] : new int[count];
+        Span<float> densities = onStack ? stackalloc float[count] : new float[count];
+        sums.Clear();
+        counts.Clear();
+        mountedCounts.Clear();
+        densities.Clear();
         for (var allyIndex = 0; allyIndex < allies.Count; allyIndex++)
         {
             groupIds[allyIndex] = allyIndex;
@@ -138,9 +151,6 @@ internal sealed class PvpSnapshot
             }
         }
 
-        var sums = new Vector3[allies.Count];
-        var counts = new int[allies.Count];
-        var mountedCounts = new int[allies.Count];
         for (var allyIndex = 0; allyIndex < allies.Count; allyIndex++)
         {
             sums[groupIds[allyIndex]] += allies[allyIndex].Position;
@@ -151,14 +161,63 @@ internal sealed class PvpSnapshot
             }
         }
 
+        AccumulateDensities(allies, groupIds, densities);
         for (var label = 0; label < allies.Count; label++)
         {
             if (counts[label] > 0)
             {
-                clusters.Add(new AllyCluster(sums[label] / counts[label], counts[label], mountedCounts[label]));
+                clusters.Add(new AllyCluster(sums[label] / counts[label], counts[label], mountedCounts[label],
+                    DensestPoint(allies, groupIds, densities, label)));
             }
         }
         return clusters;
+    }
+
+    private static void AccumulateDensities(IReadOnlyList<PvpActor> allies, ReadOnlySpan<int> groupIds, Span<float> densities)
+    {
+        for (var firstIndex = 0; firstIndex < allies.Count; firstIndex++)
+        {
+            densities[firstIndex] += 1f;
+            for (var secondIndex = firstIndex + 1; secondIndex < allies.Count; secondIndex++)
+            {
+                if (groupIds[firstIndex] != groupIds[secondIndex])
+                {
+                    continue;
+                }
+
+                var weight = 1f - Vector3.Distance(allies[firstIndex].Position, allies[secondIndex].Position) / DensityKernelYalms;
+                if (weight > 0f)
+                {
+                    densities[firstIndex] += weight;
+                    densities[secondIndex] += weight;
+                }
+            }
+        }
+    }
+
+    private static Vector3 DensestPoint(IReadOnlyList<PvpActor> allies, ReadOnlySpan<int> groupIds, ReadOnlySpan<float> densities, int label)
+    {
+        var peakIndex = -1;
+        for (var allyIndex = 0; allyIndex < allies.Count; allyIndex++)
+        {
+            if (groupIds[allyIndex] == label && (peakIndex < 0 || densities[allyIndex] > densities[peakIndex]))
+            {
+                peakIndex = allyIndex;
+            }
+        }
+
+        var peak = allies[peakIndex].Position;
+        var sum = Vector3.Zero;
+        var members = 0;
+        for (var allyIndex = 0; allyIndex < allies.Count; allyIndex++)
+        {
+            if (groupIds[allyIndex] == label && Vector3.Distance(allies[allyIndex].Position, peak) <= DensestCoreYalms)
+            {
+                sum += allies[allyIndex].Position;
+                members++;
+            }
+        }
+        return sum / members;
     }
 
     public static AllyCluster? Largest(List<AllyCluster> clusters, Vector3 self)
