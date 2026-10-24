@@ -435,6 +435,9 @@
       "21": "Bloodbath und Swift verbessert: Bloodbath wartet jetzt auf einen Gegner in Nahkampfreichweite, weil die Heilung aus deinen Treffern kommt, und Swift wird eingesetzt, um zum Ziel aufzuschließen, statt wenn du schon daneben stehst",
       "22": "Fehlerberichte verbessert: Ein aus der Konsole kopierter Bericht nennt jetzt auch die Sprache deines Spielclients, die Plugin-Sprache, den Dalamud-Track, den Spielmodus und die Versionen von vnavmesh und Lifestream",
       "23": "Behoben: Ein Lauf stoppte, sobald drei Anmeldeversuche nicht durchgingen; das Plugin wartet jetzt eine Minute und versucht es erneut und gibt erst nach drei Runden auf"
+    },
+    "r21310": {
+      "1": "Behoben: Die Schalter LB-Modus und Schwellenwerttyp in den Limitrausch-Einstellungen schnitten in längeren Sprachen ihre Beschriftung ab; sie werden jetzt breit genug für den Text"
     }
   },
   "about": {

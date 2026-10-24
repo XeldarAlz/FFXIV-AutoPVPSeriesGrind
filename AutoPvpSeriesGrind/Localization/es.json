@@ -435,6 +435,9 @@
       "21": "Mejorados Bloodbath y Swift: Bloodbath espera ahora a tener un enemigo a distancia cuerpo a cuerpo, porque su curación sale de tus golpes, y Swift se usa para acortar distancia con tu objetivo en lugar de cuando ya estás a su lado",
       "22": "Mejorados los informes de errores: un informe copiado de la consola ahora incluye también el idioma del cliente del juego, el idioma del plugin, la rama de Dalamud, el modo de partida y las versiones de vnavmesh y Lifestream",
       "23": "Corregido: una sesión se detenía en cuanto tres intentos de entrar en cola no se registraban; ahora el plugin espera un minuto y lo vuelve a intentar, y solo se rinde tras tres rondas"
+    },
+    "r21310": {
+      "1": "Corregido: los botones Modo del LB y Tipo de umbral de los ajustes del Límite cortaban sus etiquetas en idiomas más largos; ahora se ensanchan para que quepa el texto"
     }
   },
   "about": {

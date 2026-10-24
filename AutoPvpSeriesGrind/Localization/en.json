@@ -435,6 +435,9 @@
       "21": "Improved Bloodbath and Swift: Bloodbath now waits for an enemy in melee range, since its healing comes from your hits, and Swift is used to close the gap to your target instead of while already next to it",
       "22": "Improved bug reports: a report copied from the console now also lists your game client language, the plugin language, the Dalamud track, the match mode and the vnavmesh and Lifestream versions",
       "23": "Fixed a run stopping as soon as three queue attempts did not register: the plugin now waits a minute and tries again, and gives up only after three rounds"
+    },
+    "r21310": {
+      "1": "Fixed the LB mode and Threshold type buttons in the Limit Break settings cutting off their labels in longer languages: they now widen to fit"
     }
   },
   "about": {

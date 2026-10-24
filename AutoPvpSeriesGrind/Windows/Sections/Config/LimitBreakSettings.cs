@@ -12,7 +12,7 @@ namespace AutoPvpSeriesGrind.Windows.Sections.Config;
 
 internal static class LimitBreakSettings
 {
-    private const float SegmentWidth = 300f;
+    private const float MinimumSegmentWidth = 300f;
     private const float MinimumPercent = 1f;
     private const float MaximumPercent = 99f;
     private const int MinimumAbsolute = 1;
@@ -369,10 +369,13 @@ internal static class LimitBreakSettings
         Func<int> getter, Action<int> setter)
     {
         var height = Layout.SegmentHeight * 0.8f;
-        SettingsRow.Draw(Loc.T(label), Loc.T(help), SegmentWidth, () =>
+        var scale = ImGuiHelpers.GlobalScale;
+        var rowWidth = SettingsGroup.ContentRightEdge - ImGui.GetCursorScreenPos().X;
+        var width = MathF.Min(MathF.Max(MinimumSegmentWidth * scale, Segmented.PreferredWidth(items)), rowWidth);
+        SettingsRow.Draw(Loc.T(label), Loc.T(help), width / scale, () =>
         {
             var selected = getter();
-            if (Segmented.Draw(id, items, ref selected, true, height, SegmentWidth * ImGuiHelpers.GlobalScale) && selected != getter())
+            if (Segmented.Draw(id, items, ref selected, true, height, width) && selected != getter())
             {
                 setter(selected);
                 cfg.Save();

@@ -335,6 +335,11 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release21310 =
+        [
+            new("changelog.r21310.1", "Fixed the LB mode and Threshold type buttons in the Limit Break settings cutting off their labels in longer languages: they now widen to fit"),
+        ];
+
         public static readonly LocString[] Release21300 =
         [
             new("changelog.r21300.1", "Added the Limit Break to the plugin itself, so Auto PVP LB is no longer needed: your Auto PVP LB settings carry over the first time this version loads, and the new Limit Break tab in the settings holds the per-job rules, skip filters, allowed duties, blocklist and fire sound"),

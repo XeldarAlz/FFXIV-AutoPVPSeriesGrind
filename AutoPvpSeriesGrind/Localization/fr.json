@@ -435,6 +435,9 @@
       "21": "Amélioration de Bloodbath et Swift : Bloodbath attend désormais un ennemi au corps à corps, car ses soins viennent de vos coups, et Swift sert à combler la distance avec votre cible au lieu d'être lancé quand vous êtes déjà à côté",
       "22": "Amélioration des rapports de bug : un rapport copié depuis la console indique désormais aussi la langue du client du jeu, la langue du plugin, la branche de Dalamud, le mode de match et les versions de vnavmesh et Lifestream",
       "23": "Correction : une session s'arrêtait dès que trois tentatives d'inscription échouaient ; le plugin attend désormais une minute avant de réessayer et n'abandonne qu'après trois séries"
+    },
+    "r21310": {
+      "1": "Correction : les boutons Mode de LB et Type de seuil des réglages de la Transcendance coupaient leurs libellés dans les langues plus longues ; ils s'élargissent désormais pour que le texte tienne"
     }
   },
   "about": {

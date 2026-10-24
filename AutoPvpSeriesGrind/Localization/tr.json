@@ -435,6 +435,9 @@
       "21": "Bloodbath ve Swift iyileştirildi: Bloodbath iyileştirmesi vuruşlarından geldiği için artık yakın mesafede bir düşman bekliyor, Swift ise hedefin yanındayken değil, hedefle aradaki mesafeyi kapatmak için kullanılıyor",
       "22": "Hata raporları iyileştirildi: konsoldan kopyalanan bir rapor artık oyun istemcisinin dilini, eklenti dilini, Dalamud kanalını, maç modunu ve vnavmesh ile Lifestream sürümlerini de içeriyor",
       "23": "Düzeltildi: Üç sıraya girme denemesi kaydolmadığı anda çalışma duruyordu; eklenti artık bir dakika bekleyip yeniden deniyor ve ancak üç turdan sonra vazgeçiyor"
+    },
+    "r21310": {
+      "1": "Düzeltildi: Limit Break ayarlarındaki LB modu ve Eşik türü düğmeleri uzun dillerde etiketlerini kesiyordu; artık metne sığacak kadar genişliyorlar"
     }
   },
   "about": {
