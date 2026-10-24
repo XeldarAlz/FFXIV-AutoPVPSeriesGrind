@@ -119,7 +119,26 @@
       "wrappingUp": "Toparlanıyor",
       "ready": "Hazır",
       "setupNeeded": "Kurulum gerekli",
-      "idle": "Boşta"
+      "idle": "Boşta",
+      "waiting": "Hazır değil"
+    },
+    "blocked": {
+      "mode": {
+        "title": "Bir maç türü seç",
+        "detail": "Planda Crystalline Conflict, Frontline veya Rival Wings seç."
+      },
+      "loggedOut": {
+        "title": "Karakter bekleniyor",
+        "detail": "Bir karakterle giriş yap, sonra Başlat'a bas."
+      },
+      "otherDuty": {
+        "title": "Önce bu içerikten çık",
+        "detail": "Çalışma herhangi bir içeriğin dışında ya da seçtiğin moddaki bir maçın içinde başlar."
+      },
+      "queue": {
+        "title": "Zaten sıradasın",
+        "detail": "Önce mevcut sıradan çık. Çalışma kendi açmadığı bir sıraya asla dokunmaz."
+      }
     },
     "stops": {
       "matches": "{0} maç sonra durur",
@@ -404,7 +423,8 @@
       "9": "Çakışma kontrolü eklendi: çakışan bir rotasyon eklentisi yüklüyken grind başlamıyor ve süren bir çalışma duruyor",
       "10": "Düzeltildi: Bitir, sonra dur ve dolan süre sınırı sıradaki eşleşmeyi yine kabul edip bir maç daha oynatıyordu; artık henüz eşleşmemiş sıra iptal ediliyor ve çalışma hemen bitiyor, Durdur da çalışmanın sırasını iptal ediyor",
       "11": "Düzeltildi: Eklentinin henüz listesinde olmayan bir Crystalline Conflict, Frontline veya Rival Wings haritası çalışmayı tanınmayan içerik olarak bitiriyordu; arenalar artık oyunun kendi içerik türünden de tanınıyor, böylece yama günü gelen yeni bir harita grind'i durdurmuyor",
-      "12": "Düzeltildi: Oyun maçtan sonra çıkış komutunu almadığında çalışma duruyordu; eklenti artık yeniden deniyor, Crystalline Conflict'te sonuç ekranının kendi çıkışını kullanıyor ve hiçbiri işe yaramazsa elle çıkmanızı isteyip çıktıktan sonra devam ediyor"
+      "12": "Düzeltildi: Oyun maçtan sonra çıkış komutunu almadığında çalışma duruyordu; eklenti artık yeniden deniyor, Crystalline Conflict'te sonuç ekranının kendi çıkışını kullanıyor ve hiçbiri işe yaramazsa elle çıkmanızı isteyip çıktıktan sonra devam ediyor",
+      "13": "Başlat iyileştirildi: çalışma henüz başlayamıyorsa (giriş yapılmamış, başka bir içerikte ya da zaten sırada), durum kartı ve Başlat düğmesi nedenini sonradan sohbette genel bir hata yerine tıklamadan önce gösteriyor"
     }
   },
   "about": {

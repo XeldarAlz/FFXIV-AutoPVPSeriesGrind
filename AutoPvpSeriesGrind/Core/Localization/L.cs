@@ -124,6 +124,16 @@ internal static class L
         public static readonly LocString StatusReady = new("grind.status.ready", "Ready");
         public static readonly LocString StatusSetupNeeded = new("grind.status.setupNeeded", "Setup needed");
         public static readonly LocString StatusIdle = new("grind.status.idle", "Idle");
+        public static readonly LocString StatusWaiting = new("grind.status.waiting", "Not ready");
+
+        public static readonly LocString BlockedModeTitle = new("grind.blocked.mode.title", "Pick a match type");
+        public static readonly LocString BlockedModeDetail = new("grind.blocked.mode.detail", "Choose Crystalline Conflict, Frontline or Rival Wings in the plan.");
+        public static readonly LocString BlockedLoggedOutTitle = new("grind.blocked.loggedOut.title", "Waiting for a character");
+        public static readonly LocString BlockedLoggedOutDetail = new("grind.blocked.loggedOut.detail", "Log in to a character, then press Start.");
+        public static readonly LocString BlockedOtherDutyTitle = new("grind.blocked.otherDuty.title", "Leave this duty first");
+        public static readonly LocString BlockedOtherDutyDetail = new("grind.blocked.otherDuty.detail", "A run starts outside any duty, or inside a match of the mode you picked.");
+        public static readonly LocString BlockedQueueTitle = new("grind.blocked.queue.title", "Already in a queue");
+        public static readonly LocString BlockedQueueDetail = new("grind.blocked.queue.detail", "Withdraw from the current queue first. The run never touches a queue it did not make.");
 
         public static readonly LocString StopsAfterMatches = new("grind.stops.matches", "stops after {0} matches");
         public static readonly LocString StopsAtRank = new("grind.stops.rank", "stops at rank {0}");
@@ -339,6 +349,7 @@ internal static class L
             new("changelog.r21300.10", "Fixed Finish, then stop and a reached time limit still accepting the next queue pop and playing one more match: a queue that has not popped is now withdrawn and the run ends right away, and Stop withdraws the run's queue too"),
             new("changelog.r21300.11", "Fixed a Crystalline Conflict, Frontline or Rival Wings map the plugin did not list yet ending the run as an unrecognized duty: arenas are now also recognized by the game's own content type, so a new map on patch day keeps the grind going"),
             new("changelog.r21300.12", "Fixed the run stopping when the game ignored the leave command after a match: the plugin now retries, falls back to the results screen's own leave flow in Crystalline Conflict, and if nothing works asks you to leave by hand and carries on once you are out"),
+            new("changelog.r21300.13", "Improved Start: when a run cannot start yet (logged out, inside another duty or already in a queue), the ready card and the Start button now say why before you click, instead of one generic chat error afterwards"),
         ];
 
         public static readonly LocString[] Release21200 =

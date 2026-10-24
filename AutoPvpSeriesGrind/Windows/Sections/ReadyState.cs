@@ -13,7 +13,7 @@ namespace AutoPvpSeriesGrind.Windows.Sections;
 
 internal static class ReadyState
 {
-    public enum Kind { SetupNeeded, Ready, Running, Finishing }
+    public enum Kind { SetupNeeded, Waiting, Ready, Running, Finishing }
 
     public enum Stage { Preparing, Queueing, Portraits, Fighting, InMatch, Shopping, Finishing }
 
@@ -24,6 +24,9 @@ internal static class ReadyState
 
     private static int cachedStageFrame = -1;
     private static Stage cachedStage;
+
+    private static int cachedBlockerFrame = -1;
+    private static StartBlocker cachedBlocker;
 
     public static Info Resolve(Configuration cfg, AutoPvpSeriesController ctrl)
     {
@@ -69,8 +72,25 @@ internal static class ReadyState
                 Loc.T(L.Grind.TitleAlmostThere), Loc.T(L.Grind.DetailAlmostThere));
         }
 
+        var blocker = ResolveStartBlocker();
+        if (blocker != StartBlocker.None)
+        {
+            return new Info(Kind.Waiting, Styling.AccentAmber, Styling.AccentAmberSoft, FontAwesomeIcon.HourglassHalf,
+                Loc.T(StartBlockerText.Title(blocker)), Loc.T(StartBlockerText.Detail(blocker)));
+        }
+
         return new Info(Kind.Ready, Styling.AccentMint, Styling.AccentMintSoft, FontAwesomeIcon.CheckCircle,
             Loc.T(L.Grind.TitleReady), Loc.T(L.Grind.DetailReady));
+    }
+
+    public static StartBlocker ResolveStartBlocker()
+    {
+        var frame = ImGui.GetFrameCount();
+        if (frame == cachedBlockerFrame) return cachedBlocker;
+
+        cachedBlocker = AutoPvpSeriesController.CheckStart();
+        cachedBlockerFrame = frame;
+        return cachedBlocker;
     }
 
     // Several panels ask for the stage in one frame, and each answer costs a handful of game state
@@ -169,6 +189,7 @@ internal static class ReadyState
         Kind.Finishing   => Loc.T(L.Grind.StatusWrappingUp),
         Kind.Ready       => Loc.T(L.Grind.StatusReady),
         Kind.SetupNeeded => Loc.T(L.Grind.StatusSetupNeeded),
+        Kind.Waiting     => Loc.T(L.Grind.StatusWaiting),
         _                => Loc.T(L.Grind.StatusIdle),
     };
 

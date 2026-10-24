@@ -119,7 +119,26 @@
       "wrappingUp": "Finalisation",
       "ready": "Prêt",
       "setupNeeded": "Configuration requise",
-      "idle": "Inactif"
+      "idle": "Inactif",
+      "waiting": "Pas prêt"
+    },
+    "blocked": {
+      "mode": {
+        "title": "Choisissez un type de match",
+        "detail": "Choisissez Crystalline Conflict, Frontline ou Rival Wings dans le plan."
+      },
+      "loggedOut": {
+        "title": "En attente d'un personnage",
+        "detail": "Connectez-vous avec un personnage, puis appuyez sur Démarrer."
+      },
+      "otherDuty": {
+        "title": "Quittez d'abord cette mission",
+        "detail": "Une session démarre hors de toute mission, ou dans un match du mode choisi."
+      },
+      "queue": {
+        "title": "Déjà inscrit",
+        "detail": "Annulez d'abord l'inscription en cours. La session ne touche jamais une inscription qu'elle n'a pas faite."
+      }
     },
     "stops": {
       "matches": "s'arrête après {0} matchs",
@@ -404,7 +423,8 @@
       "9": "Ajout d'une vérification des conflits : le grind ne démarre pas, et une session en cours s'arrête, tant qu'un plugin de rotation incompatible est chargé",
       "10": "Correction : Finir, puis arrêter et une limite de temps atteinte acceptaient encore la prochaine mission prête et jouaient un match de plus ; une inscription encore en attente est maintenant annulée et la session s'arrête aussitôt, et Arrêter annule aussi l'inscription de la session",
       "11": "Correction : une carte de Crystalline Conflict, Frontline ou Rival Wings que le plugin ne listait pas encore arrêtait la session comme mission inconnue ; les arènes sont désormais aussi reconnues par le type de contenu du jeu, donc une nouvelle carte le jour d'un patch n'arrête plus le grind",
-      "12": "Correction : la session s'arrêtait quand le jeu ignorait la commande de sortie après un match ; le plugin réessaie maintenant, passe par la sortie de l'écran des résultats en Crystalline Conflict et, si rien ne marche, vous demande de quitter à la main puis reprend une fois dehors"
+      "12": "Correction : la session s'arrêtait quand le jeu ignorait la commande de sortie après un match ; le plugin réessaie maintenant, passe par la sortie de l'écran des résultats en Crystalline Conflict et, si rien ne marche, vous demande de quitter à la main puis reprend une fois dehors",
+      "13": "Amélioration de Démarrer : quand une session ne peut pas encore démarrer (déconnecté, dans une autre mission ou déjà inscrit), la carte d'état et le bouton Démarrer en donnent la raison avant le clic, au lieu d'une erreur générique dans le chat après coup"
     }
   },
   "about": {

@@ -119,7 +119,26 @@
       "wrappingUp": "Finalizando",
       "ready": "Pronto",
       "setupNeeded": "Falta configurar",
-      "idle": "Inativo"
+      "idle": "Inativo",
+      "waiting": "Não está pronto"
+    },
+    "blocked": {
+      "mode": {
+        "title": "Escolha um tipo de partida",
+        "detail": "Escolha Crystalline Conflict, Frontline ou Rival Wings no plano."
+      },
+      "loggedOut": {
+        "title": "Aguardando um personagem",
+        "detail": "Entre com um personagem e aperte Iniciar."
+      },
+      "otherDuty": {
+        "title": "Saia deste conteúdo primeiro",
+        "detail": "Uma sessão começa fora de qualquer conteúdo ou dentro de uma partida do modo escolhido."
+      },
+      "queue": {
+        "title": "Já está em uma fila",
+        "detail": "Saia da fila atual primeiro. A sessão nunca mexe em uma fila que não criou."
+      }
     },
     "stops": {
       "matches": "para depois de {0} partidas",
@@ -404,7 +423,8 @@
       "9": "Adicionada uma verificação de conflitos: o grind não começa, e uma sessão em andamento para, enquanto um plugin de rotação conflitante estiver carregado",
       "10": "Corrigido: Terminar e depois parar e um limite de tempo atingido ainda aceitavam a próxima partida encontrada e jogavam mais uma; agora uma fila ainda em espera é cancelada e a sessão termina na hora, e Parar também cancela a fila da sessão",
       "11": "Corrigido: um mapa de Crystalline Conflict, Frontline ou Rival Wings que o plugin ainda não listava encerrava a sessão como conteúdo não reconhecido; agora as arenas também são reconhecidas pelo tipo de conteúdo do próprio jogo, então um mapa novo no dia do patch não para mais o grind",
-      "12": "Corrigido: a sessão parava quando o jogo ignorava o comando de sair após uma partida; agora o plugin tenta de novo, usa a saída da própria tela de resultados no Crystalline Conflict e, se nada der certo, pede para você sair manualmente e continua assim que você sai"
+      "12": "Corrigido: a sessão parava quando o jogo ignorava o comando de sair após uma partida; agora o plugin tenta de novo, usa a saída da própria tela de resultados no Crystalline Conflict e, se nada der certo, pede para você sair manualmente e continua assim que você sai",
+      "13": "Iniciar melhorado: quando uma sessão ainda não pode começar (sem personagem conectado, dentro de outro conteúdo ou já em uma fila), o cartão de status e o botão Iniciar dizem o motivo antes do clique, em vez de um erro genérico no chat depois"
     }
   },
   "about": {

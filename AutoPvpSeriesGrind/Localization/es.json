@@ -119,7 +119,26 @@
       "wrappingUp": "Cerrando",
       "ready": "Listo",
       "setupNeeded": "Falta configurar",
-      "idle": "Inactivo"
+      "idle": "Inactivo",
+      "waiting": "No está listo"
+    },
+    "blocked": {
+      "mode": {
+        "title": "Elige un tipo de partida",
+        "detail": "Elige Crystalline Conflict, Frontline o Rival Wings en el plan."
+      },
+      "loggedOut": {
+        "title": "Esperando a un personaje",
+        "detail": "Entra con un personaje y pulsa Iniciar."
+      },
+      "otherDuty": {
+        "title": "Sal primero de este contenido",
+        "detail": "Una sesión empieza fuera de cualquier contenido o dentro de una partida del modo elegido."
+      },
+      "queue": {
+        "title": "Ya estás en una cola",
+        "detail": "Abandona primero la cola actual. La sesión nunca toca una cola que no haya hecho ella."
+      }
     },
     "stops": {
       "matches": "para tras {0} partidas",
@@ -404,7 +423,8 @@
       "9": "Se añadió una comprobación de conflictos: el grind no empieza, y una sesión en curso se detiene, mientras haya cargado un plugin de rotación incompatible",
       "10": "Corregido: Terminar y luego parar y un límite de tiempo cumplido aún aceptaban el siguiente aviso de cola y jugaban otra partida; ahora se abandona la cola que aún no ha saltado y la sesión termina al momento, y Detener también abandona la cola de la sesión",
       "11": "Corregido: un mapa de Crystalline Conflict, Frontline o Rival Wings que el plugin aún no tenía en su lista terminaba la sesión como contenido no reconocido; ahora las arenas también se reconocen por el tipo de contenido del propio juego, así que un mapa nuevo el día del parche ya no detiene el grind",
-      "12": "Corregido: la sesión se detenía cuando el juego ignoraba la orden de salir tras una partida; ahora el plugin lo reintenta, en Crystalline Conflict usa la salida de la propia pantalla de resultados y, si nada funciona, te pide salir a mano y sigue en cuanto estás fuera"
+      "12": "Corregido: la sesión se detenía cuando el juego ignoraba la orden de salir tras una partida; ahora el plugin lo reintenta, en Crystalline Conflict usa la salida de la propia pantalla de resultados y, si nada funciona, te pide salir a mano y sigue en cuanto estás fuera",
+      "13": "Mejorado Iniciar: cuando una sesión aún no puede empezar (sin sesión iniciada, dentro de otro contenido o ya en una cola), la tarjeta de estado y el botón Iniciar dicen el motivo antes de pulsar, en lugar de un error genérico en el chat después"
     }
   },
   "about": {

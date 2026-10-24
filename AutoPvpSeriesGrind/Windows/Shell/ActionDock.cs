@@ -84,9 +84,12 @@ internal static class ActionDock
                 null, Styling.AccentRose, false, width: innerWidth);
             return;
         }
-        var reason = !depsOk ? Loc.T(L.Shell.InstallRequired) : null;
+        var blocker = depsOk ? ReadyState.ResolveStartBlocker() : StartBlocker.None;
+        var enabled = depsOk && blocker == StartBlocker.None;
+        var reason = !depsOk ? Loc.T(L.Shell.InstallRequired)
+            : blocker != StartBlocker.None ? Loc.T(StartBlockerText.Title(blocker)) : null;
         var sub = Loc.T(L.Shell.ModeSummaryDot, Loc.T(ReadyState.ModeName(cfg)), ReadyState.StopSummary(cfg));
 
-        if (StartButton.Draw(sub, depsOk, reason, innerWidth)) ctrl.Start();
+        if (StartButton.Draw(sub, enabled, reason, innerWidth)) ctrl.Start();
     }
 }

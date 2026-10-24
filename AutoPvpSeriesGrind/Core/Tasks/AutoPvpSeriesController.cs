@@ -52,10 +52,12 @@ internal sealed class AutoPvpSeriesController
         if (Running) return;
         if (!CanStartAutomation()) return;
 
-        if (!Enum.IsDefined(Plugin.Cfg.MatchType) || !ECommons.DalamudServices.Svc.ClientState.IsLoggedIn
-            || (MatchState.InDuty() ? PvpTerritory.Current() != Plugin.Cfg.MatchType : DutyOps.HasDutyInFlight()))
+        var blocker = CheckStart();
+        if (blocker != StartBlocker.None)
         {
-            ApsgChat.PrintError("Cannot start: settle the character and clear any unrelated queue or duty first.");
+            var reason = Loc.T(L.Conflicts.StartRefused, Loc.T(StartBlockerText.Detail(blocker)));
+            LogDiagnostic($"Start aborted: {blocker}.");
+            ApsgChat.PrintError(reason);
             return;
         }
 
@@ -80,6 +82,17 @@ internal sealed class AutoPvpSeriesController
         var task = new AutoPvpSeries(stats);
         series = task;
         Svc.Automation.Start(task, OnCompleted: () => EndRun(stats));
+    }
+
+    public static StartBlocker CheckStart()
+    {
+        var inDuty = MatchState.InDuty();
+        return StartPreflight.Evaluate(new StartConditions(
+            ModeValid: Enum.IsDefined(Plugin.Cfg.MatchType),
+            LoggedIn: ECommons.DalamudServices.Svc.ClientState.IsLoggedIn,
+            InDuty: inDuty,
+            InSelectedArena: inDuty && PvpTerritory.Current() == Plugin.Cfg.MatchType,
+            DutyInFlight: !inDuty && DutyOps.HasDutyInFlight()));
     }
 
     public void ToggleStopAfterMatch()

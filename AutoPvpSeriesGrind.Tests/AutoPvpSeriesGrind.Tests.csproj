@@ -17,6 +17,7 @@
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/MatchCompletion.cs" Link="Source/MatchCompletion.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/PreMatchPreparation.cs" Link="Source/PreMatchPreparation.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/QueueSubmission.cs" Link="Source/QueueSubmission.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/StartPreflight.cs" Link="Source/StartPreflight.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/NavigationRequest.cs" Link="Source/NavigationRequest.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/SnagTracker.cs" Link="Source/SnagTracker.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/ChatCommandBlock.cs" Link="Source/ChatCommandBlock.cs" />

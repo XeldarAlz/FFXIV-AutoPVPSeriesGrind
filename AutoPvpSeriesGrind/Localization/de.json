@@ -119,7 +119,26 @@
       "wrappingUp": "Abschluss",
       "ready": "Bereit",
       "setupNeeded": "Einrichtung nötig",
-      "idle": "Inaktiv"
+      "idle": "Inaktiv",
+      "waiting": "Nicht bereit"
+    },
+    "blocked": {
+      "mode": {
+        "title": "Spielmodus wählen",
+        "detail": "Wähle im Plan Crystalline Conflict, Frontline oder Rival Wings."
+      },
+      "loggedOut": {
+        "title": "Warte auf einen Charakter",
+        "detail": "Melde dich mit einem Charakter an und drücke dann Start."
+      },
+      "otherDuty": {
+        "title": "Verlasse zuerst diesen Inhalt",
+        "detail": "Ein Lauf startet außerhalb jedes Inhalts oder in einem Match des gewählten Modus."
+      },
+      "queue": {
+        "title": "Bereits angemeldet",
+        "detail": "Ziehe zuerst die aktuelle Anmeldung zurück. Der Lauf ändert nie eine Anmeldung, die er nicht selbst gemacht hat."
+      }
     },
     "stops": {
       "matches": "stoppt nach {0} Matches",
@@ -404,7 +423,8 @@
       "9": "Konfliktprüfung hinzugefügt: Der Grind startet nicht, und ein laufender Grind stoppt, solange ein kollidierendes Rotations-Plugin geladen ist",
       "10": "Behoben: Zu Ende spielen, dann stoppen und ein abgelaufenes Zeitlimit nahmen den nächsten bereiten Inhalt noch an und spielten ein weiteres Match; eine noch wartende Anmeldung wird jetzt zurückgezogen und der Lauf endet sofort, und Stopp zieht die Anmeldung des Laufs ebenfalls zurück",
       "11": "Behoben: Eine noch nicht hinterlegte Karte von Crystalline Conflict, Frontline oder Rival Wings beendete den Lauf als unbekannter Inhalt; Arenen werden jetzt auch über den Inhaltstyp des Spiels erkannt, sodass eine neue Karte am Patch-Tag den Grind nicht mehr stoppt",
-      "12": "Behoben: Der Lauf stoppte, wenn das Spiel den Verlassen-Befehl nach einem Match ignorierte; das Plugin versucht es jetzt erneut, nutzt in Crystalline Conflict den Verlassen-Ablauf des Ergebnisbildschirms und bittet, wenn nichts hilft, um manuelles Verlassen und macht danach weiter"
+      "12": "Behoben: Der Lauf stoppte, wenn das Spiel den Verlassen-Befehl nach einem Match ignorierte; das Plugin versucht es jetzt erneut, nutzt in Crystalline Conflict den Verlassen-Ablauf des Ergebnisbildschirms und bittet, wenn nichts hilft, um manuelles Verlassen und macht danach weiter",
+      "13": "Start verbessert: Kann ein Lauf noch nicht starten (abgemeldet, in einem anderen Inhalt oder bereits angemeldet), sagen die Statuskarte und der Start-Knopf jetzt schon vor dem Klick, warum, statt hinterher eine allgemeine Chat-Fehlermeldung zu zeigen"
     }
   },
   "about": {
