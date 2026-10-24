@@ -437,7 +437,8 @@
       "23": "修正：申請が3回通らないとすぐに実行が止まっていた問題。1分待って再試行し、3回繰り返しても通らない場合にのみ停止します"
     },
     "r21310": {
-      "1": "修正：リミットブレイク設定の「LBモード」と「しきい値の種類」のボタンで、文字の長い言語だとラベルが切れていた問題。文字が収まる幅に広がるようにしました"
+      "1": "修正：リミットブレイク設定の「LBモード」と「しきい値の種類」のボタンで、文字の長い言語だとラベルが切れていた問題。文字が収まる幅に広がるようにしました",
+      "2": "/apsg resetを追加：ウィンドウが画面外に出たり大きすぎてつかめなくなったりしたとき、既定のサイズで画面内に戻します"
     }
   },
   "about": {
@@ -821,7 +822,7 @@
     "steering": "手動移動"
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grindのウィンドウを開閉します。/apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer。",
+    "commandHelp": "Auto PVP Series Grindのウィンドウを開閉します。/apsg start | stop | finish | status | config | stats | deps | log | changelog | about | reset | target | objects | steer。",
     "commandHelpAlias": "/apsg の別名です。",
     "steerOn": "移動は手動になりました。ターゲットと戦闘は引き続きプラグインが行います。",
     "steerOff": "移動は再びプラグインが行います。",

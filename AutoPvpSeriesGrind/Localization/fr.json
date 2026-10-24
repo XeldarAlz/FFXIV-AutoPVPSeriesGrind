@@ -437,7 +437,8 @@
       "23": "Correction : une session s'arrêtait dès que trois tentatives d'inscription échouaient ; le plugin attend désormais une minute avant de réessayer et n'abandonne qu'après trois séries"
     },
     "r21310": {
-      "1": "Correction : les boutons Mode de LB et Type de seuil des réglages de la Transcendance coupaient leurs libellés dans les langues plus longues ; ils s'élargissent désormais pour que le texte tienne"
+      "1": "Correction : les boutons Mode de LB et Type de seuil des réglages de la Transcendance coupaient leurs libellés dans les langues plus longues ; ils s'élargissent désormais pour que le texte tienne",
+      "2": "Ajout de /apsg reset, qui ramène la fenêtre à l'écran à sa taille par défaut si elle s'est retrouvée hors de l'écran ou trop grande pour être saisie"
     }
   },
   "about": {
@@ -821,7 +822,7 @@
     "steering": "Vous dirigez"
   },
   "plugin": {
-    "commandHelp": "Affiche ou masque la fenêtre Auto PVP Series Grind. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Affiche ou masque la fenêtre Auto PVP Series Grind. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | reset | target | objects | steer.",
     "commandHelpAlias": "Alias de /apsg.",
     "steerOn": "Vous dirigez maintenant. Le plugin continue de cibler et de combattre.",
     "steerOff": "Le plugin reprend les déplacements.",

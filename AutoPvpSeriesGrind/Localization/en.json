@@ -437,7 +437,8 @@
       "23": "Fixed a run stopping as soon as three queue attempts did not register: the plugin now waits a minute and tries again, and gives up only after three rounds"
     },
     "r21310": {
-      "1": "Fixed the LB mode and Threshold type buttons in the Limit Break settings cutting off their labels in longer languages: they now widen to fit"
+      "1": "Fixed the LB mode and Threshold type buttons in the Limit Break settings cutting off their labels in longer languages: they now widen to fit",
+      "2": "Added /apsg reset, which brings the window back on screen at its default size if it ended up off screen or too large to grab"
     }
   },
   "about": {
@@ -821,7 +822,7 @@
     "steering": "You steer"
   },
   "plugin": {
-    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Toggle the Auto PVP Series Grind window. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | reset | target | objects | steer.",
     "commandHelpAlias": "Alias for /apsg.",
     "steerOn": "You steer now. The plugin keeps targeting and fighting.",
     "steerOff": "The plugin steers again.",

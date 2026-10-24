@@ -17,10 +17,12 @@ public sealed class AppWindow : Window, IDisposable
     private const float GripSize = 12f;
     private const float GripInset = 4f;
     private const float MinimumBodyHeight = 260f;
+    private const float PlacementMargin = 40f;
     private const ImGuiWindowFlags BaseFlags =
         ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoCollapse;
 
     private static readonly Vector2 DefaultSize = new(1040, 780);
+    private static readonly Vector2 ExpandedMinimumSize = new(620f, Layout.HeaderHeight + Layout.DockHeight + MinimumBodyHeight);
     private static readonly Vector2 Unbounded = new(float.MaxValue, float.MaxValue);
     private static readonly WindowSizeConstraints CompactConstraints = new()
     {
@@ -29,7 +31,7 @@ public sealed class AppWindow : Window, IDisposable
     };
     private static readonly WindowSizeConstraints ExpandedConstraints = new()
     {
-        MinimumSize = new Vector2(620f, Layout.HeaderHeight + Layout.DockHeight + MinimumBodyHeight),
+        MinimumSize = ExpandedMinimumSize,
         MaximumSize = Unbounded,
     };
 
@@ -51,6 +53,8 @@ public sealed class AppWindow : Window, IDisposable
     private float collapseFrom;
     private long collapseTick;
     private bool sizeDriven;
+    private bool placementReset;
+    private bool forceExpandedSize;
     private Vector2 expandedSize = DefaultSize;
     private IDisposable? chrome;
     private IDisposable? bodyFont;
@@ -96,6 +100,12 @@ public sealed class AppWindow : Window, IDisposable
         else Show(target);
     }
 
+    public void ResetPlacement()
+    {
+        placementReset = true;
+        Show(page);
+    }
+
     public void ToggleCompact()
     {
         compact = !compact;
@@ -110,6 +120,7 @@ public sealed class AppWindow : Window, IDisposable
         bodyFont = Fonts.PushBody();
         chrome = Styling.PushChrome(Vector2.Zero);
         AdvanceCollapse();
+        ApplyPlacement();
 
         var wasSizeDriven = sizeDriven;
         sizeDriven = compact || collapse > 0f;
@@ -129,14 +140,34 @@ public sealed class AppWindow : Window, IDisposable
             return;
         }
 
-        if (wasSizeDriven)
+        if (wasSizeDriven || forceExpandedSize)
         {
+            forceExpandedSize = false;
             Size = expandedSize;
             SizeCondition = ImGuiCond.Always;
             return;
         }
 
         SizeCondition = ImGuiCond.FirstUseEver;
+    }
+
+    private void ApplyPlacement()
+    {
+        if (!placementReset)
+        {
+            Position = null;
+            return;
+        }
+
+        placementReset = false;
+        var viewport = ImGui.GetMainViewport();
+        var scale = ImGuiHelpers.GlobalScale;
+        var margin = new Vector2(PlacementMargin * scale);
+        var room = (viewport.WorkSize - margin * 2f) / scale;
+        expandedSize = Vector2.Clamp(DefaultSize, ExpandedMinimumSize, Vector2.Max(room, ExpandedMinimumSize));
+        forceExpandedSize = true;
+        Position = viewport.WorkPos + margin;
+        PositionCondition = ImGuiCond.Always;
     }
 
     private void AdvanceCollapse()

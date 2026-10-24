@@ -437,7 +437,8 @@
       "23": "Behoben: Ein Lauf stoppte, sobald drei Anmeldeversuche nicht durchgingen; das Plugin wartet jetzt eine Minute und versucht es erneut und gibt erst nach drei Runden auf"
     },
     "r21310": {
-      "1": "Behoben: Die Schalter LB-Modus und Schwellenwerttyp in den Limitrausch-Einstellungen schnitten in längeren Sprachen ihre Beschriftung ab; sie werden jetzt breit genug für den Text"
+      "1": "Behoben: Die Schalter LB-Modus und Schwellenwerttyp in den Limitrausch-Einstellungen schnitten in längeren Sprachen ihre Beschriftung ab; sie werden jetzt breit genug für den Text",
+      "2": "/apsg reset hinzugefügt: Holt das Fenster in Standardgröße zurück auf den Bildschirm, falls es außerhalb gelandet oder zu groß zum Greifen ist"
     }
   },
   "about": {
@@ -821,7 +822,7 @@
     "steering": "Du steuerst"
   },
   "plugin": {
-    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Öffnet oder schließt das Auto PVP Series Grind Fenster. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | reset | target | objects | steer.",
     "commandHelpAlias": "Alias für /apsg.",
     "steerOn": "Du steuerst jetzt. Das Plugin wählt weiter Ziele und kämpft.",
     "steerOff": "Das Plugin steuert wieder.",

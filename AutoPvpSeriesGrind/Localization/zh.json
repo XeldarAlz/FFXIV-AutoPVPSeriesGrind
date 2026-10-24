@@ -437,7 +437,8 @@
       "23": "修复：连续三次排队未成功登记就会立即停止运行的问题。现在会等待一分钟后重试，三轮都失败才会放弃"
     },
     "r21310": {
-      "1": "修复：极限技设置中的“极限技模式”和“阈值类型”按钮在文字较长的语言下会截断标签的问题，现在会加宽以容纳文字"
+      "1": "修复：极限技设置中的“极限技模式”和“阈值类型”按钮在文字较长的语言下会截断标签的问题，现在会加宽以容纳文字",
+      "2": "新增 /apsg reset：窗口跑到屏幕外或大到无法拖动时，以默认大小把它放回屏幕内"
     }
   },
   "about": {
@@ -821,7 +822,7 @@
     "steering": "手动移动"
   },
   "plugin": {
-    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer。",
+    "commandHelp": "开关 Auto PVP Series Grind 窗口。/apsg start | stop | finish | status | config | stats | deps | log | changelog | about | reset | target | objects | steer。",
     "commandHelpAlias": "/apsg 的别名。",
     "steerOn": "现在由你移动。插件继续选择目标并战斗。",
     "steerOff": "插件重新接管移动。",

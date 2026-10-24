@@ -338,6 +338,7 @@ internal static class L
         public static readonly LocString[] Release21310 =
         [
             new("changelog.r21310.1", "Fixed the LB mode and Threshold type buttons in the Limit Break settings cutting off their labels in longer languages: they now widen to fit"),
+            new("changelog.r21310.2", "Added /apsg reset, which brings the window back on screen at its default size if it ended up off screen or too large to grab"),
         ];
 
         public static readonly LocString[] Release21300 =
@@ -920,7 +921,7 @@ internal static class L
 
     internal static class Plugin
     {
-        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.");
+        public static readonly LocString CommandHelp = new("plugin.commandHelp", "Toggle the Auto PVP Series Grind window. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | reset | target | objects | steer.");
         public static readonly LocString CommandHelpAlias = new("plugin.commandHelpAlias", "Alias for /apsg.");
         public static readonly LocString SteerOn = new("plugin.steerOn", "You steer now. The plugin keeps targeting and fighting.");
         public static readonly LocString SteerOff = new("plugin.steerOff", "The plugin steers again.");

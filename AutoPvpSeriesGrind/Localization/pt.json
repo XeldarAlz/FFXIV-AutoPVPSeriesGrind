@@ -437,7 +437,8 @@
       "23": "Corrigido: uma sessão parava assim que três tentativas de entrar na fila não eram registradas; agora o plugin espera um minuto e tenta de novo, e só desiste depois de três rodadas"
     },
     "r21310": {
-      "1": "Corrigido: os botões Modo do LB e Tipo de limite nas configurações do Limit Break cortavam os rótulos em idiomas mais longos; agora eles se alargam para caber o texto"
+      "1": "Corrigido: os botões Modo do LB e Tipo de limite nas configurações do Limit Break cortavam os rótulos em idiomas mais longos; agora eles se alargam para caber o texto",
+      "2": "Adicionado /apsg reset, que traz a janela de volta à tela no tamanho padrão se ela tiver ido para fora da tela ou ficado grande demais para arrastar"
     }
   },
   "about": {
@@ -821,7 +822,7 @@
     "steering": "Você move"
   },
   "plugin": {
-    "commandHelp": "Abre ou fecha a janela do Auto PVP Series Grind. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Abre ou fecha a janela do Auto PVP Series Grind. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | reset | target | objects | steer.",
     "commandHelpAlias": "Atalho para /apsg.",
     "steerOn": "Agora você move. O plugin continua escolhendo alvos e lutando.",
     "steerOff": "O plugin volta a mover o personagem.",

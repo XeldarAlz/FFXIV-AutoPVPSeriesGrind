@@ -437,7 +437,8 @@
       "23": "Düzeltildi: Üç sıraya girme denemesi kaydolmadığı anda çalışma duruyordu; eklenti artık bir dakika bekleyip yeniden deniyor ve ancak üç turdan sonra vazgeçiyor"
     },
     "r21310": {
-      "1": "Düzeltildi: Limit Break ayarlarındaki LB modu ve Eşik türü düğmeleri uzun dillerde etiketlerini kesiyordu; artık metne sığacak kadar genişliyorlar"
+      "1": "Düzeltildi: Limit Break ayarlarındaki LB modu ve Eşik türü düğmeleri uzun dillerde etiketlerini kesiyordu; artık metne sığacak kadar genişliyorlar",
+      "2": "/apsg reset eklendi: pencere ekran dışına çıkarsa ya da tutulamayacak kadar büyürse onu varsayılan boyutunda ekrana geri getiriyor"
     }
   },
   "about": {
@@ -821,7 +822,7 @@
     "steering": "Sen yönetiyorsun"
   },
   "plugin": {
-    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Auto PVP Series Grind penceresini açar veya kapatır. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | reset | target | objects | steer.",
     "commandHelpAlias": "/apsg için kısayol.",
     "steerOn": "Artık sen yönetiyorsun. Eklenti hedef seçmeye ve savaşmaya devam ediyor.",
     "steerOff": "Eklenti yeniden yönetiyor.",

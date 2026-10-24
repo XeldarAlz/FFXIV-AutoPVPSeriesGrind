@@ -437,7 +437,8 @@
       "23": "Corregido: una sesión se detenía en cuanto tres intentos de entrar en cola no se registraban; ahora el plugin espera un minuto y lo vuelve a intentar, y solo se rinde tras tres rondas"
     },
     "r21310": {
-      "1": "Corregido: los botones Modo del LB y Tipo de umbral de los ajustes del Límite cortaban sus etiquetas en idiomas más largos; ahora se ensanchan para que quepa el texto"
+      "1": "Corregido: los botones Modo del LB y Tipo de umbral de los ajustes del Límite cortaban sus etiquetas en idiomas más largos; ahora se ensanchan para que quepa el texto",
+      "2": "Se añadió /apsg reset, que devuelve la ventana a la pantalla con su tamaño por defecto si quedó fuera de la pantalla o demasiado grande para agarrarla"
     }
   },
   "about": {
@@ -821,7 +822,7 @@
     "steering": "Te mueves tú"
   },
   "plugin": {
-    "commandHelp": "Abre o cierra la ventana de Auto PVP Series Grind. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | target | objects | steer.",
+    "commandHelp": "Abre o cierra la ventana de Auto PVP Series Grind. /apsg start | stop | finish | status | config | stats | deps | log | changelog | about | reset | target | objects | steer.",
     "commandHelpAlias": "Alias de /apsg.",
     "steerOn": "Ahora te mueves tú. El plugin sigue eligiendo objetivos y luchando.",
     "steerOff": "El plugin vuelve a moverse solo.",

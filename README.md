@@ -91,6 +91,7 @@ Validate this in-game with RSR loaded at startup, enabled during a run, and disa
 | `/apsg stats` | Open run history (alias: `history`) |
 | `/apsg log` | Open the console |
 | `/apsg changelog` | Open the changelog |
+| `/apsg reset` | Bring the window back on screen at its default size |
 | `/apsg target` | Log targeted object's BaseId (debug helper) |
 | `/apsg objects` | Log the objective object IDs on the current map (debug helper) |
 

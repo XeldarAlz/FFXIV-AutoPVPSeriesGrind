@@ -129,6 +129,7 @@ public sealed class Plugin : IDalamudPlugin
         ["stop"] = StopRun,
         ["finish"] = ToggleFinish,
         ["status"] = PrintStatus,
+        ["reset"] = appWindow.ResetPlacement,
     };
 
     private static void ToggleSteering()
