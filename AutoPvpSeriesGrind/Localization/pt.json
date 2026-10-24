@@ -391,6 +391,12 @@
       "1": "Adicionados Comandos de chat às configurações: liste seus próprios comandos, um por linha (como /li home ou /ays m), e eles rodam quando uma sessão termina sozinha, antes da ação final, nunca depois de Parar ou de uma falha",
       "2": "Textos que faltavam em todos os idiomas foram preenchidos, incluindo as notas da 2.10.0.0 e as configurações de Rival Wings e Evitar Chiten",
       "3": "A janela principal agora só se move ao arrastar a barra superior, então arrastar dentro dela não a move mais sem querer; ative Arrastar de qualquer lugar nas configurações para o comportamento antigo"
+    },
+    "r21300": {
+      "1": "Limit Break integrado ao próprio plugin, então o Auto PVP LB não é mais necessário: suas configurações do Auto PVP LB são trazidas na primeira vez que esta versão carrega, e a nova aba Limit Break nas configurações reúne as regras por job, os filtros, os conteúdos permitidos, a lista de bloqueio e o som ao disparar",
+      "2": "Melhor sincronia do Limit Break: a rotação agora espera enquanto ele sai, para que apertar uma habilidade não o substitua mais. Ele continua disparando em qualquer partida de PvP, com ou sem uma sessão ativa",
+      "3": "Corrigido: os interruptores de Conteúdos permitidos do Limit Break não faziam nada, porque Crystalline Conflict, Frontline e Rival Wings eram lidos como Outro PvP",
+      "4": "Corrigido: um jogador bloqueado impedia o Limit Break por completo; agora ele vai para o próximo inimigo"
     }
   },
   "about": {

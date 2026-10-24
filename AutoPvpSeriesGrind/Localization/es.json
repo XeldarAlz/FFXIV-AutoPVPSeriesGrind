@@ -391,6 +391,12 @@
       "1": "Se añadieron Comandos de chat a los ajustes: escribe tus propios comandos, uno por línea (como /li home o /ays m), y se ejecutan cuando una sesión termina por sí sola, antes de la acción final, nunca tras Detener o un fallo",
       "2": "Se completaron textos que faltaban en todos los idiomas, entre ellos las notas de la 2.10.0.0 y los ajustes de Rival Wings y Evitar Chiten",
       "3": "La ventana principal ahora solo se mueve al arrastrar su barra superior, así que arrastrar dentro de ella ya no la mueve sin querer; activa Arrastrar desde cualquier punto en los ajustes para el comportamiento anterior"
+    },
+    "r21300": {
+      "1": "Se integró el Límite en el propio plugin, así que Auto PVP LB ya no hace falta: tus ajustes de Auto PVP LB se trasladan la primera vez que carga esta versión, y la nueva pestaña Límite de los ajustes reúne las reglas por job, los filtros, los contenidos permitidos, la lista de bloqueo y el sonido al lanzar",
+      "2": "Mejor sincronización del Límite: la rotación ahora espera mientras sale, para que pulsar una habilidad ya no lo sustituya. Sigue lanzándose en cualquier partida de PvP, haya una sesión activa o no",
+      "3": "Corregido: los interruptores de Contenidos permitidos del Límite no hacían nada, porque Crystalline Conflict, Frontline y Rival Wings se leían como Otro PvP",
+      "4": "Corregido: un jugador bloqueado impedía lanzar el Límite; ahora va al siguiente enemigo"
     }
   },
   "about": {

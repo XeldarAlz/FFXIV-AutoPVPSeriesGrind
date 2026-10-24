@@ -391,6 +391,12 @@
       "1": "Ayarlara Sohbet komutları eklendi: kendi komutlarınızı her satıra bir tane yazın (örneğin /li home veya /ays m); bir çalışma kendiliğinden bittiğinde, bitiş eyleminden önce çalışırlar, Durdur'dan veya bir hatadan sonra asla çalışmazlar",
       "2": "Tüm dillerde eksik olan metinler eklendi; 2.10.0.0 notları ile Rival Wings ve Chiten'den kaçın ayarları da dahil",
       "3": "Ana pencere artık yalnızca üst çubuğundan sürüklenince hareket ediyor, böylece içinde sürüklemek onu yanlışlıkla taşımıyor; eski davranış için ayarlardan Her yerden sürükle seçeneğini açın"
+    },
+    "r21300": {
+      "1": "Limit Break doğrudan eklentiye eklendi, artık Auto PVP LB gerekmiyor: Auto PVP LB ayarların bu sürüm ilk yüklendiğinde aktarılır ve ayarlardaki yeni Limit Break sekmesi job başına kuralları, filtreleri, izin verilen içerikleri, engel listesini ve kullanım sesini içerir",
+      "2": "Limit Break zamanlaması iyileştirildi: rotasyon artık o kullanılırken bekliyor, böylece bir yetenek basışı onun yerine geçemiyor. Bir çalışma sürsün ya da sürmesin her PvP maçında kullanılmaya devam ediyor",
+      "3": "Düzeltildi: Crystalline Conflict, Frontline ve Rival Wings'in hepsi Diğer PvP olarak okunduğu için Limit Break'in İzin verilen içerikler anahtarları işe yaramıyordu",
+      "4": "Düzeltildi: Engellenen bir oyuncu Limit Break'i tamamen durduruyordu; artık bir sonraki düşmana kullanılıyor"
     }
   },
   "about": {

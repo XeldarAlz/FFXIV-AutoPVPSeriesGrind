@@ -391,6 +391,12 @@
       "1": "Ajout de Commandes de chat dans les réglages : listez vos propres commandes, une par ligne (comme /li home ou /ays m), elles se lancent quand une session se termine d'elle-même, avant l'action de fin, jamais après Arrêt ou un échec",
       "2": "Ajout des textes qui manquaient dans toutes les langues, dont les notes de la 2.10.0.0 et les réglages Rival Wings et Éviter Chiten",
       "3": "La fenêtre principale ne se déplace plus qu'en faisant glisser sa barre du haut, un glissement à l'intérieur ne la déplace donc plus par accident ; activez Déplacer depuis n'importe où dans les réglages pour retrouver l'ancien comportement"
+    },
+    "r21300": {
+      "1": "Intégration de la Transcendance dans le plugin lui-même, Auto PVP LB n'est plus nécessaire : vos réglages d'Auto PVP LB sont repris au premier chargement de cette version, et le nouvel onglet Transcendance des réglages regroupe les règles par job, les filtres, les missions autorisées, la liste de blocage et le son de déclenchement",
+      "2": "Meilleur timing de la Transcendance : la rotation attend maintenant pendant qu'elle part, pour qu'une compétence ne puisse plus la remplacer. Elle se déclenche toujours dans chaque match JcJ, qu'une session tourne ou non",
+      "3": "Correction : les interrupteurs Missions autorisées de la Transcendance n'avaient aucun effet, car Crystalline Conflict, Frontline et Rival Wings étaient tous lus comme Autre JcJ",
+      "4": "Correction : un joueur bloqué empêchait complètement la Transcendance ; elle vise désormais l'ennemi suivant"
     }
   },
   "about": {

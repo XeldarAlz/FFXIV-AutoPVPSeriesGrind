@@ -325,6 +325,14 @@ internal static class L
         public static readonly LocString New = new("changelog.new", "New");
         public static readonly LocPlural Changes = new("changelog.changes", "{0} change", "{0} changes");
 
+        public static readonly LocString[] Release21300 =
+        [
+            new("changelog.r21300.1", "Added the Limit Break to the plugin itself, so Auto PVP LB is no longer needed: your Auto PVP LB settings carry over the first time this version loads, and the new Limit Break tab in the settings holds the per-job rules, skip filters, allowed duties, blocklist and fire sound"),
+            new("changelog.r21300.2", "Improved Limit Break timing: the rotation now waits while it goes off, so a skill press can no longer replace it. It still fires in any PvP match, run or not"),
+            new("changelog.r21300.3", "Fixed the Limit Break's Allowed duties switches doing nothing: Crystalline Conflict, Frontline and Rival Wings were all read as Other PvP"),
+            new("changelog.r21300.4", "Fixed a blocked player stopping the Limit Break altogether: it now goes to the next enemy instead"),
+        ];
+
         public static readonly LocString[] Release21200 =
         [
             new("changelog.r21200.1", "Added Chat commands to the settings: list your own commands, one per line (such as /li home or /ays m), and they run when a run finishes on its own, before the after-run action, never after Stop or a failure"),

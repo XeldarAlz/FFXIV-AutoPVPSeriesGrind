@@ -391,6 +391,12 @@
       "1": "Added Chat commands to the settings: list your own commands, one per line (such as /li home or /ays m), and they run when a run finishes on its own, before the after-run action, never after Stop or a failure",
       "2": "Filled in text that was missing from every language, including the 2.10.0.0 notes and the Rival Wings and Avoid Chiten settings",
       "3": "The main window now moves only when you drag its top bar, so a drag inside it no longer moves it by accident; turn on Drag from anywhere in the settings for the old behaviour"
+    },
+    "r21300": {
+      "1": "Added the Limit Break to the plugin itself, so Auto PVP LB is no longer needed: your Auto PVP LB settings carry over the first time this version loads, and the new Limit Break tab in the settings holds the per-job rules, skip filters, allowed duties, blocklist and fire sound",
+      "2": "Improved Limit Break timing: the rotation now waits while it goes off, so a skill press can no longer replace it. It still fires in any PvP match, run or not",
+      "3": "Fixed the Limit Break's Allowed duties switches doing nothing: Crystalline Conflict, Frontline and Rival Wings were all read as Other PvP",
+      "4": "Fixed a blocked player stopping the Limit Break altogether: it now goes to the next enemy instead"
     }
   },
   "about": {
