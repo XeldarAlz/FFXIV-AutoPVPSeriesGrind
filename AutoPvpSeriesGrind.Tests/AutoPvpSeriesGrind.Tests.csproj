@@ -39,5 +39,7 @@
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/TargetScoring.cs" Link="Source/TargetScoring.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Combat/CrowdPicker.cs" Link="Source/CrowdPicker.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Util/VectorMath.cs" Link="Source/VectorMath.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Localization/L.cs" Link="Source/L.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/Localization/LocString.cs" Link="Source/LocString.cs" />
   </ItemGroup>
 </Project>
