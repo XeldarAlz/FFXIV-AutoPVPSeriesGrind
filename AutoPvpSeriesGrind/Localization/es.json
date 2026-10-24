@@ -427,7 +427,8 @@
       "13": "Mejorado Iniciar: cuando una sesión aún no puede empezar (sin sesión iniciada, dentro de otro contenido o ya en una cola), la tarjeta de estado y el botón Iniciar dicen el motivo antes de pulsar, en lugar de un error genérico en el chat después",
       "14": "Se añadió esquivar AoE en Frontline y Rival Wings: el bot ahora sale de los ataques enemigos marcados y mantiene su puesto en la formación fuera de ellos, como ya hacía en Crystalline Conflict; los lanzamientos de los NPC de tu propio bando ya no cuentan como peligro",
       "15": "Mejorado el seguimiento del equipo en Frontline y Rival Wings: el bot ya no cruza el mapa por un grupo solo un poco más grande que el suyo, tiene en cuenta lo lejos que está un grupo antes de unirse y se coloca donde el equipo está realmente agrupado, no en medio de una columna estirada",
-      "16": "Mejorada la retirada en Crystalline Conflict: tras replegarse, el bot espera a pasar un momento sin recibir daño antes de volver, en lugar de meterse de nuevo en la pelea en cuanto recupera los PV"
+      "16": "Mejorada la retirada en Crystalline Conflict: tras replegarse, el bot espera a pasar un momento sin recibir daño antes de volver, en lugar de meterse de nuevo en la pelea en cuanto recupera los PV",
+      "17": "Corregido: las estadísticas totales se borraban cuando el archivo de historial se dañaba, por ejemplo por un cierre inesperado al guardar; ahora el historial se guarda de forma segura y un archivo ilegible se conserva como run-history.corrupt.json en lugar de sobrescribirse"
     }
   },
   "about": {

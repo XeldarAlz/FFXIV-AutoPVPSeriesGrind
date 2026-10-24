@@ -427,7 +427,8 @@
       "13": "Başlat iyileştirildi: çalışma henüz başlayamıyorsa (giriş yapılmamış, başka bir içerikte ya da zaten sırada), durum kartı ve Başlat düğmesi nedenini sonradan sohbette genel bir hata yerine tıklamadan önce gösteriyor",
       "14": "Frontline ve Rival Wings için AoE'den kaçma eklendi: bot artık işaretli düşman saldırılarından çıkıyor ve formasyondaki yerini onların dışında tutuyor, tıpkı Crystalline Conflict'te yaptığı gibi; kendi tarafının NPC büyüleri artık tehlike sayılmıyor",
       "15": "Frontline ve Rival Wings'te takımı takip etme iyileştirildi: bot artık kendi grubundan yalnızca biraz büyük bir grup için haritayı boydan boya geçmiyor, katılmadan önce grubun uzaklığını da hesaba katıyor ve uzamış bir kolonun ortası yerine takımın gerçekten toplandığı yerde duruyor",
-      "16": "Crystalline Conflict'te geri çekilme iyileştirildi: bot geri çekildikten sonra, HP'si toparlanır toparlanmaz kavgaya geri dalmak yerine bir süre hasar almayana kadar bekliyor"
+      "16": "Crystalline Conflict'te geri çekilme iyileştirildi: bot geri çekildikten sonra, HP'si toparlanır toparlanmaz kavgaya geri dalmak yerine bir süre hasar almayana kadar bekliyor",
+      "17": "Düzeltildi: Geçmiş dosyası, örneğin kayıt sırasında bir çökmeyle bozulduğunda toplam istatistikler siliniyordu; geçmiş artık güvenli şekilde kaydediliyor ve okunamayan dosya üzerine yazılmak yerine run-history.corrupt.json olarak saklanıyor"
     }
   },
   "about": {

@@ -353,6 +353,7 @@ internal static class L
             new("changelog.r21300.14", "Added AoE dodging to Frontline and Rival Wings: the bot now steps out of telegraphed enemy attacks and keeps its spot in the formation clear of them, as it already did in Crystalline Conflict; casts from your own side's NPCs no longer count as danger"),
             new("changelog.r21300.15", "Improved Frontline and Rival Wings team following: the bot no longer crosses the map for a group only slightly bigger than the one it is with, weighs how far a group is before joining it, and stands where the team is actually packed instead of the middle of a stretched-out column"),
             new("changelog.r21300.16", "Improved retreating in Crystalline Conflict: after falling back, the bot waits until it has gone a moment without taking damage before going back in, instead of walking straight back into the fight the instant its HP recovers"),
+            new("changelog.r21300.17", "Fixed lifetime stats being wiped when the history file got damaged, for example by a crash mid-save: history is now saved safely, and an unreadable file is kept as run-history.corrupt.json instead of being overwritten"),
         ];
 
         public static readonly LocString[] Release21200 =

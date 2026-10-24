@@ -7,6 +7,8 @@ internal sealed class RunHistory
 {
     private const int MaxRecords = 500;
     private const string FileName = "run-history.json";
+    private const string UnreadableExtension = ".corrupt.json";
+    private const string PendingSuffix = ".tmp";
     private const double SecondsPerHour = 3600.0;
 
     public List<RunRecord> Records { get; private set; } = [];
@@ -24,19 +26,35 @@ internal sealed class RunHistory
 
     private void Load()
     {
+        var path = FilePath;
+        if (!File.Exists(path))
+        {
+            return;
+        }
+
         try
         {
-            var path = FilePath;
-            if (File.Exists(path))
-            {
-                var json = File.ReadAllText(path);
-                var records = JsonConvert.DeserializeObject<List<RunRecord>>(json);
-                if (records is not null) Records = records;
-            }
+            var records = JsonConvert.DeserializeObject<List<RunRecord>>(File.ReadAllText(path));
+            if (records is not null) Records = records;
         }
         catch (Exception ex)
         {
             RunLog.Warning(ex, "RunHistory load failed; starting empty");
+            SetAside(path);
+        }
+    }
+
+    private static void SetAside(string path)
+    {
+        var unreadablePath = Path.ChangeExtension(path, UnreadableExtension);
+        try
+        {
+            File.Move(path, unreadablePath, overwrite: true);
+            RunLog.Warning($"RunHistory kept the unreadable file as {Path.GetFileName(unreadablePath)}");
+        }
+        catch (Exception ex)
+        {
+            RunLog.Warning(ex, "RunHistory could not set the unreadable file aside");
         }
     }
 
@@ -84,7 +102,10 @@ internal sealed class RunHistory
         {
             var dir = Plugin.PluginInterface.ConfigDirectory;
             if (!dir.Exists) dir.Create();
-            File.WriteAllText(FilePath, JsonConvert.SerializeObject(Records, Formatting.Indented));
+            var path = FilePath;
+            var pendingPath = path + PendingSuffix;
+            File.WriteAllText(pendingPath, JsonConvert.SerializeObject(Records, Formatting.Indented));
+            File.Move(pendingPath, path, overwrite: true);
         }
         catch (Exception ex)
         {
