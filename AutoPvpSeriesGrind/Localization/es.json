@@ -400,7 +400,8 @@
       "5": "Mejoradas las acciones de rol: cada una se usa solo cuando compensa (Smite sobre un enemigo con el 25 % de PV o menos, Bloodbath por debajo del 75 % de PV, Rampart y Stoneskin II al recibir daño), y por fin se usan Comet de los lanzadores y Haelan y Stoneskin II de los sanadores",
       "6": "Corregido: Warden's Paean del bardo, Aquaveil del mago blanco y Meikyo Shisui del samurái nunca purificaban mientras Purificar estaba listo; ahora van primero, y Purificar se guarda para Aturdimiento, Silencio, Congelación y Milagro de la naturaleza",
       "7": "Corregido: Viper usaba Rattling Coil con Uncoiled Fury y Snake Scales todavía listos, desperdiciando el reinicio",
-      "8": "Corregido: Pictomante mantenía Subtractive Palette en movimiento, aunque sus hechizos necesitan lanzamiento; ahora suelta la paleta al moverse y la recupera para lanzar"
+      "8": "Corregido: Pictomante mantenía Subtractive Palette en movimiento, aunque sus hechizos necesitan lanzamiento; ahora suelta la paleta al moverse y la recupera para lanzar",
+      "9": "Se añadió una comprobación de conflictos: el grind no empieza, y una sesión en curso se detiene, mientras haya cargado un plugin de rotación incompatible"
     }
   },
   "about": {
@@ -898,5 +899,20 @@
     "logToChat": "Avisar en el chat al disparar",
     "logToChatHelp": "Escribe una línea en el chat cuando se dispara un LB, por ejemplo «Seiton Tenchu disparado a Striking Dummy».",
     "chatFired": "{0} disparado a {1}"
+  },
+  "conflicts": {
+    "title": "Rotation Solver Reborn detectado",
+    "detail": "Rotation Solver Reborn (RSR) entra en conflicto con nuestra lógica de combate PvP. Desactívalo en Dalamud para continuar.",
+    "checkFailedTitle": "Comprobación de compatibilidad no disponible",
+    "checkFailed": "No se pudo leer el estado de los plugins de Dalamud. La automatización está bloqueada. Revisa el registro y vuelve a cargar el plugin.",
+    "blocked": "AUTOMATIZACIÓN BLOQUEADA",
+    "startReason": "Desactiva RSR para continuar",
+    "disable": "Desactivar RSR",
+    "disabling": "Esperando a Dalamud...",
+    "disablePending": "Esperando a que RSR se descargue.",
+    "disableFailed": "RSR sigue cargado. Desactívalo en los plugins de Dalamud o en sus colecciones.",
+    "openPlugins": "Abrir plugins de Dalamud",
+    "startRefused": "No se puede iniciar: {0}",
+    "runStopped": "Automatización detenida: {0}"
   }
 }

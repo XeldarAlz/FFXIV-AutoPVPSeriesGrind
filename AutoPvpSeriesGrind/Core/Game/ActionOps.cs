@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.External;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -31,7 +32,10 @@ internal static unsafe class ActionOps
 
     public static bool HasQueuedAction => ActionManager.Instance()->QueuedActionId != 0;
 
-    public static void CancelCast() => UIState.Instance()->Hotbar.CancelCast();
+    public static void CancelCast()
+    {
+        if (!PluginConflicts.Blocked) UIState.Instance()->Hotbar.CancelCast();
+    }
 
     public static bool InRangeAndSight(uint actionId, IGameObject target)
         => ActionManager.GetActionInRangeOrLoS(actionId, Player.GameObject, (GameObject*)target.Address) is InRangeAndInSight or InRangeButNotFacing;
@@ -49,14 +53,18 @@ internal static unsafe class ActionOps
     public static uint CurrentCharges(uint actionId) => ActionManager.Instance()->GetCurrentCharges(actionId);
 
     public static void UseAction(uint actionId)
-        => ActionManager.Instance()->UseAction(ActionType.Action, actionId);
+    {
+        if (!PluginConflicts.Blocked) ActionManager.Instance()->UseAction(ActionType.Action, actionId);
+    }
 
     public static void UseGeneralAction(uint generalActionId)
-        => ActionManager.Instance()->UseAction(ActionType.GeneralAction, generalActionId);
+    {
+        if (!PluginConflicts.Blocked) ActionManager.Instance()->UseAction(ActionType.GeneralAction, generalActionId);
+    }
 
     public static bool UseAction(uint actionId, ulong targetId)
-        => ActionManager.Instance()->UseAction(ActionType.Action, actionId, targetId);
+        => !PluginConflicts.Blocked && ActionManager.Instance()->UseAction(ActionType.Action, actionId, targetId);
 
     public static bool UseActionAt(uint actionId, ulong selfId, Vector3 location)
-        => ActionManager.Instance()->UseActionLocation(ActionType.Action, actionId, selfId, &location);
+        => !PluginConflicts.Blocked && ActionManager.Instance()->UseActionLocation(ActionType.Action, actionId, selfId, &location);
 }

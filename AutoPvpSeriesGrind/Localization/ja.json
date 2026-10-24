@@ -400,7 +400,8 @@
       "5": "ロールアクションを改善：効果的な場面でのみ使うようになりました（HP25%以下の敵へのSmite、HP75%未満でのBloodbath、被弾時のRampartとStoneskin II）。キャスターのCometとヒーラーのHaelan、Stoneskin IIも使うようになりました",
       "6": "修正：Purifyが使える間、吟遊詩人のWarden's Paean、白魔道士のAquaveil、侍のMeikyo Shisuiで解除されなかった問題。これらを優先し、Purifyはスタン、沈黙、氷結、ミラクル・オブ・ネイチャー用に温存します",
       "7": "修正：Uncoiled FuryとSnake Scalesがまだ使える状態でヴァイパーがRattling Coilを使い、リセットを無駄にしていた問題",
-      "8": "修正：ピクトマンサーが移動中もSubtractive Paletteを維持し、詠唱が必要な魔法しか残らなかった問題。移動中は解除し、詠唱するときに戻すようになりました"
+      "8": "修正：ピクトマンサーが移動中もSubtractive Paletteを維持し、詠唱が必要な魔法しか残らなかった問題。移動中は解除し、詠唱するときに戻すようになりました",
+      "9": "競合チェックを追加：競合するローテーションプラグインが読み込まれている間は開始できず、実行中の場合は停止します"
     }
   },
   "about": {
@@ -898,5 +899,20 @@
     "logToChat": "発動時にチャットへ出力",
     "logToChatHelp": "LBが発動したときにチャットへ1行出力します。例：「木人に星遁天誅を発動」。",
     "chatFired": "{1}に{0}を発動"
+  },
+  "conflicts": {
+    "title": "Rotation Solver Reborn を検出",
+    "detail": "Rotation Solver Reborn（RSR）は本プラグインのPvP戦闘ロジックと競合します。続行するにはDalamudで無効にしてください。",
+    "checkFailedTitle": "互換性を確認できません",
+    "checkFailed": "Dalamudのプラグイン状態を読み取れないため、自動化を停止しています。ログを確認し、本プラグインを再読み込みしてください。",
+    "blocked": "自動化は停止中",
+    "startReason": "続行するにはRSRを無効化",
+    "disable": "RSRを無効化",
+    "disabling": "Dalamudを待機中...",
+    "disablePending": "RSRのアンロードを待機中。",
+    "disableFailed": "RSRはまだ読み込まれています。Dalamudのプラグイン一覧または所属コレクションで無効にしてください。",
+    "openPlugins": "Dalamudのプラグインを開く",
+    "startRefused": "開始できません：{0}",
+    "runStopped": "自動化を停止しました：{0}"
   }
 }

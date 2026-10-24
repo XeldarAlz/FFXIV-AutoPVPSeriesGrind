@@ -76,7 +76,15 @@ internal static class ActionDock
         var cfg = plugin.Configuration;
         var ctrl = plugin.Controller;
         var depsOk = ExternalPlugins.AllRequiredInstalled();
-        var reason = depsOk ? null : Loc.T(L.Shell.InstallRequired);
+        var conflict = PluginConflicts.Read();
+        if (conflict.Blocked)
+        {
+            HeroButton.Draw(FontAwesomeIcon.Lock,
+                Loc.T(conflict.PluginLoaded ? L.Conflicts.StartReason : L.Conflicts.CheckFailedTitle),
+                null, Styling.AccentRose, false, width: innerWidth);
+            return;
+        }
+        var reason = !depsOk ? Loc.T(L.Shell.InstallRequired) : null;
         var sub = Loc.T(L.Shell.ModeSummaryDot, Loc.T(ReadyState.ModeName(cfg)), ReadyState.StopSummary(cfg));
 
         if (StartButton.Draw(sub, depsOk, reason, innerWidth)) ctrl.Start();

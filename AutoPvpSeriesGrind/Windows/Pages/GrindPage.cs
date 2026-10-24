@@ -22,6 +22,7 @@ internal sealed class GrindPage
         var cfg = plugin.Configuration;
         var ctrl = plugin.Controller;
 
+        if (ConflictWarning.Draw()) return;
         if (DrawPayoff(ctrl)) return;
 
         var running = ctrl.Running;

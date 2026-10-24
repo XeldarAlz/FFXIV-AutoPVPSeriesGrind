@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.External;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin;
@@ -101,7 +102,7 @@ internal sealed class LimitBreakController : IDisposable
         nextTickAtMs = now + TickIntervalMs;
         var settings = Plugin.Cfg.LimitBreak;
         if (!settings.Enabled || LegacyPluginLoaded || !Svc.ClientState.IsPvP || Svc.Objects.LocalPlayer is not { } self
-            || !LbDuty.IsAllowed(settings.EnabledDuties))
+            || !LbDuty.IsAllowed(settings.EnabledDuties) || PluginConflicts.Blocked)
         {
             return;
         }

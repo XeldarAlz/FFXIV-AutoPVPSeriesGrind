@@ -400,7 +400,8 @@
       "5": "Rol aksiyonları iyileştirildi: her biri artık yalnızca işe yaradığında kullanılıyor (HP'si %25 veya altındaki düşmana Smite, %75 HP'nin altında Bloodbath, hasar alırken Rampart ve Stoneskin II) ve büyücülerin Comet'i ile şifacıların Haelan ve Stoneskin II'si artık kullanılıyor",
       "6": "Düzeltildi: Purify hazırken Bard'ın Warden's Paean'ı, White Mage'in Aquaveil'i ve Samurai'nin Meikyo Shisui'si hiç temizlemiyordu; artık önce onlar kullanılıyor ve Purify, Stun, Silence, Deep Freeze ve Miracle of Nature için saklanıyor",
       "7": "Düzeltildi: Viper, Uncoiled Fury ve Snake Scales hâlâ hazırken Rattling Coil kullanıp sıfırlamayı boşa harcıyordu",
-      "8": "Düzeltildi: Pictomancer, büyüleri döküm süresi istediği halde hareket ederken Subtractive Palette'i açık tutuyordu; artık hareket ederken paleti bırakıyor ve büyü yapmak için geri alıyor"
+      "8": "Düzeltildi: Pictomancer, büyüleri döküm süresi istediği halde hareket ederken Subtractive Palette'i açık tutuyordu; artık hareket ederken paleti bırakıyor ve büyü yapmak için geri alıyor",
+      "9": "Çakışma kontrolü eklendi: çakışan bir rotasyon eklentisi yüklüyken grind başlamıyor ve süren bir çalışma duruyor"
     }
   },
   "about": {
@@ -898,5 +899,20 @@
     "logToChat": "Ateşlemede sohbete yaz",
     "logToChatHelp": "Bir LB ateşlendiğinde sohbete bir satır yazar, örneğin “Seiton Tenchu, Striking Dummy hedefine ateşlendi”.",
     "chatFired": "{0}, {1} hedefine ateşlendi"
+  },
+  "conflicts": {
+    "title": "Rotation Solver Reborn algılandı",
+    "detail": "Rotation Solver Reborn (RSR), PvP savaş mantığımızla çakışıyor. Devam etmek için Dalamud'da devre dışı bırakın.",
+    "checkFailedTitle": "Uyumluluk kontrolü yapılamıyor",
+    "checkFailed": "Dalamud eklentilerinin durumu okunamadı. Otomasyon engellendi. Günlük sayfasını kontrol edip eklentiyi yeniden yükleyin.",
+    "blocked": "OTOMASYON ENGELLENDİ",
+    "startReason": "Devam etmek için RSR'yi kapatın",
+    "disable": "RSR'yi devre dışı bırak",
+    "disabling": "Dalamud bekleniyor...",
+    "disablePending": "RSR'nin kapanması bekleniyor.",
+    "disableFailed": "RSR hâlâ yüklü. Dalamud eklentilerinden veya bulunduğu koleksiyonlardan devre dışı bırakın.",
+    "openPlugins": "Dalamud eklentilerini aç",
+    "startRefused": "Başlatılamıyor: {0}",
+    "runStopped": "Otomasyon durduruldu: {0}"
   }
 }

@@ -50,6 +50,7 @@ internal sealed class AutoPvpSeriesController
     public void Start()
     {
         if (Running) return;
+        if (!CanStartAutomation()) return;
 
         if (!Enum.IsDefined(Plugin.Cfg.MatchType) || !ECommons.DalamudServices.Svc.ClientState.IsLoggedIn
             || (MatchState.InDuty() ? !PvpDuty.Contains(Plugin.Cfg.MatchType, ECommons.DalamudServices.Svc.ClientState.TerritoryType) : DutyOps.HasDutyInFlight()))
@@ -97,6 +98,7 @@ internal sealed class AutoPvpSeriesController
         {
             return;
         }
+        if (!CanStartAutomation()) return;
 
         var skippedItemIds = new HashSet<uint>();
         var plan = ShoppingList.PlanTrip(ShopTrigger.Always, skippedItemIds);
@@ -109,6 +111,27 @@ internal sealed class AutoPvpSeriesController
         LogDiagnostic("Shop now: starting a shopping trip.");
         Phase = AutoPhase.Shopping;
         Svc.Automation.Start(new ShopTrip(plan, skippedItemIds), OnCompleted: () => Phase = AutoPhase.Idle);
+    }
+
+    private static bool CanStartAutomation()
+    {
+        var conflict = PluginConflicts.Read();
+        if (!conflict.Blocked) return true;
+        var reason = Loc.T(L.Conflicts.StartRefused, PluginConflicts.Reason(conflict));
+        LogDiagnostic(reason);
+        ApsgChat.PrintError(reason);
+        return false;
+    }
+
+    public void StopForConflict(PluginConflictState conflict)
+    {
+        if (!Running) return;
+        var reason = Loc.T(L.Conflicts.RunStopped, PluginConflicts.Reason(conflict));
+        if (session is not null) session.StopReason = reason;
+        Stop();
+        lastStopReason = reason;
+        LogDiagnostic(reason);
+        ApsgChat.PrintError(reason);
     }
 
     private static void LiftRankTargetAboveCurrentRank()
@@ -178,6 +201,7 @@ internal sealed class AutoPvpSeriesController
     private void MaybeRunAfterAction(SessionStats stats)
     {
         if (!stats.CompletedByGoal || stats.AfterActionDispatched || stats.StopReason.Length > 0) return;
+        if (PluginConflicts.Blocked) return;
         stats.AfterActionDispatched = true;
 
         var action = Plugin.Cfg.AfterRun;

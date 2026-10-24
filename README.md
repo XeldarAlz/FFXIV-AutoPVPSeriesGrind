@@ -71,6 +71,10 @@ Tick **Enabled**, click **+**, then **Save and Close**. Open `/xlplugins` → **
 
 One helper plugin is required: [vnavmesh](https://github.com/awgil/ffxiv_navmesh) for movement. [Lifestream](https://github.com/NightmareXIV/Lifestream) is optional and only used by the return-to-the-inn after-run action. Combat and the Limit Break need nothing extra; if you still have Auto PVP LB installed, disable or uninstall it, since this plugin now fires the Limit Break itself. Open `/apsg deps` after install to see the list and one-click each missing one.
 
+Rotation Solver Reborn (RSR) must be disabled in Dalamud before automation can run. Its repository can stay enabled. The home page offers **Disable RSR** and shows **Disable RSR to continue** on the blocked Start button. Loading RSR during a run stops automation; shopping and automatic limit breaks are also guarded. A disable request only clears the block once Dalamud reports RSR unloaded. If the button cannot disable it, use `/xlplugins` or manage its collections.
+
+Validate this in-game with RSR loaded at startup, enabled during a run, and disabled again with its repository still enabled. Also check automatic limit breaks while idle, Shop now, multiple Dalamud collections, and the warning at the minimum window width and larger UI scales. The automated tests cover detection, state changes, failed reads, and command validation; they do not exercise Dalamud's unload operation or render the game UI.
+
 ## Commands
 
 | Command | Action |

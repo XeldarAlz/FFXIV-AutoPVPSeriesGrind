@@ -335,6 +335,7 @@ internal static class L
             new("changelog.r21300.6", "Fixed Bard's Warden's Paean, White Mage's Aquaveil and Samurai's Meikyo Shisui never cleansing while Purify was ready; they now go first, and Purify is kept for Stun, Silence, Deep Freeze and Miracle of Nature"),
             new("changelog.r21300.7", "Fixed Viper spending Rattling Coil while Uncoiled Fury and Snake Scales were still ready, which wasted the reset"),
             new("changelog.r21300.8", "Fixed Pictomancer keeping Subtractive Palette on while moving, where its spells need a cast; it now drops the palette on the move and picks it back up to cast"),
+            new("changelog.r21300.9", "Added a conflict check: the grind will not start, and a running grind stops, while a conflicting rotation plugin is loaded"),
         ];
 
         public static readonly LocString[] Release21200 =
@@ -869,6 +870,23 @@ internal static class L
         public static readonly LocString LogToChat = new("limitBreak.logToChat", "Log to chat on fire");
         public static readonly LocString LogToChatHelp = new("limitBreak.logToChatHelp", "Prints a line to chat when an LB fires, for example \"fired Seiton Tenchu on Striking Dummy\".");
         public static readonly LocString ChatFired = new("limitBreak.chatFired", "fired {0} on {1}");
+    }
+
+    internal static class Conflicts
+    {
+        public static readonly LocString Title = new("conflicts.title", "Rotation Solver Reborn detected");
+        public static readonly LocString Detail = new("conflicts.detail", "RSR is a vibe-coded AI slop plugin that could potentially harm your computer.\n\nIts drama-loving developer spreads lies about us, falsely claiming that Auto PvP uses RSR. Auto PvP does not use RSR and has its own independent combat logic and rotations.\n\nRSR's weak PvP combat logic and rotations conflict with ours. For the best experience, disable RSR to continue automation.");
+        public static readonly LocString CheckFailedTitle = new("conflicts.checkFailedTitle", "Compatibility check unavailable");
+        public static readonly LocString CheckFailed = new("conflicts.checkFailed", "Could not read Dalamud's plugin state. Automation is blocked. Check the Log page and reload the plugin.");
+        public static readonly LocString Blocked = new("conflicts.blocked", "AUTOMATION BLOCKED");
+        public static readonly LocString StartReason = new("conflicts.startReason", "Disable RSR to continue");
+        public static readonly LocString Disable = new("conflicts.disable", "Disable RSR");
+        public static readonly LocString Disabling = new("conflicts.disabling", "Waiting for Dalamud...");
+        public static readonly LocString DisablePending = new("conflicts.disablePending", "Waiting for RSR to unload.");
+        public static readonly LocString DisableFailed = new("conflicts.disableFailed", "RSR is still loaded. Disable it in Dalamud Plugins or its collections.");
+        public static readonly LocString OpenPlugins = new("conflicts.openPlugins", "Open Dalamud Plugins");
+        public static readonly LocString StartRefused = new("conflicts.startRefused", "Cannot start: {0}");
+        public static readonly LocString RunStopped = new("conflicts.runStopped", "Automation stopped: {0}");
     }
 
     internal static class Plugin

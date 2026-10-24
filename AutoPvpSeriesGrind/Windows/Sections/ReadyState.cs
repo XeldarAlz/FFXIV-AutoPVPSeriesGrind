@@ -37,6 +37,13 @@ internal static class ReadyState
 
     private static Info Compute(Configuration cfg, AutoPvpSeriesController ctrl)
     {
+        if (PluginConflicts.Read() is { Blocked: true } conflict)
+        {
+            return new Info(Kind.SetupNeeded, Styling.AccentRose, Styling.AccentRoseSoft, FontAwesomeIcon.Ban,
+                Loc.T(conflict.PluginLoaded ? L.Conflicts.Title : L.Conflicts.CheckFailedTitle),
+                PluginConflicts.Reason(conflict));
+        }
+
         if (ctrl.Running)
         {
             if (ctrl.Phase == AutoPhase.Finishing)

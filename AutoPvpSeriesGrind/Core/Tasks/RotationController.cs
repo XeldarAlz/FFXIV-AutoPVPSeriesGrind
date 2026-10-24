@@ -1,4 +1,5 @@
 using AutoPvpSeriesGrind.Core.Combat;
+using AutoPvpSeriesGrind.Core.External;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Rotation;
 using System.Numerics;
@@ -60,7 +61,7 @@ internal sealed class RotationController(PvpBrain brain)
     }
 
     public RotationOutcome Drive(PvpSnapshot snapshot, ulong targetId, Posture posture, Vector3 moveDestination, bool underBurst, Action holdStill)
-        => Enabled && !Plugin.Instance.LimitBreak.Firing
+        => Enabled && !PluginConflicts.Blocked && !Plugin.Instance.LimitBreak.Firing
             ? driver.Tick(snapshot, targetId, underBurst, posture, moveDestination, holdStill)
             : RotationOutcome.None;
 }

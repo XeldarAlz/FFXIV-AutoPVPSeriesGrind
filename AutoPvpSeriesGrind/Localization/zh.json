@@ -400,7 +400,8 @@
       "5": "改进职能技能：现在只在划算时使用（对 HP 25% 及以下的敌人使用 Smite，HP 低于 75% 时使用 Bloodbath，受伤时使用 Rampart 和 Stoneskin II），并且终于会使用法系的 Comet 以及治疗的 Haelan 和 Stoneskin II",
       "6": "修复：Purify 可用时，诗人的 Warden's Paean、白魔法师的 Aquaveil 和武士的 Meikyo Shisui 从不用于净化的问题。现在优先使用它们，Purify 留给眩晕、沉默、冰冻和 Miracle of Nature",
       "7": "修复：蝰蛇剑士在 Uncoiled Fury 和 Snake Scales 仍可用时使用 Rattling Coil、浪费重置效果的问题",
-      "8": "修复：绘灵法师移动时仍保持 Subtractive Palette、而其魔法需要咏唱的问题。现在移动时会解除，需要咏唱时再开启"
+      "8": "修复：绘灵法师移动时仍保持 Subtractive Palette、而其魔法需要咏唱的问题。现在移动时会解除，需要咏唱时再开启",
+      "9": "新增冲突检查：加载了冲突的循环插件时无法开始，正在运行的也会停止"
     }
   },
   "about": {
@@ -898,5 +899,20 @@
     "logToChat": "释放时输出到聊天",
     "logToChatHelp": "释放极限技时在聊天中输出一行，例如“对木人释放了星遁天诛”。",
     "chatFired": "对{1}释放了{0}"
+  },
+  "conflicts": {
+    "title": "检测到 Rotation Solver Reborn",
+    "detail": "Rotation Solver Reborn（RSR）与本插件的PvP战斗逻辑冲突。请在Dalamud中停用它后继续。",
+    "checkFailedTitle": "无法检查兼容性",
+    "checkFailed": "无法读取Dalamud的插件状态，自动化已被阻止。请查看日志并重新加载本插件。",
+    "blocked": "自动化已被阻止",
+    "startReason": "停用RSR后继续",
+    "disable": "停用RSR",
+    "disabling": "等待Dalamud...",
+    "disablePending": "等待RSR从内存中卸载。",
+    "disableFailed": "RSR仍在运行。请在Dalamud插件列表或其所属合集里停用它。",
+    "openPlugins": "打开Dalamud插件",
+    "startRefused": "无法开始：{0}",
+    "runStopped": "自动化已停止：{0}"
   }
 }

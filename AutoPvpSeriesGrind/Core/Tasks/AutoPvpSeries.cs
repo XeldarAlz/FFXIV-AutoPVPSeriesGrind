@@ -1,7 +1,9 @@
 using AutoPvpSeriesGrind.Core.Combat;
 using AutoPvpSeriesGrind.Core.Debug;
+using AutoPvpSeriesGrind.Core.External;
 using AutoPvpSeriesGrind.Core.Game;
 using AutoPvpSeriesGrind.Core.Humanize;
+using AutoPvpSeriesGrind.Core.Localization;
 using AutoPvpSeriesGrind.Core.Rotation;
 using AutoPvpSeriesGrind.Core.Stats;
 using ECommons.Automation;
@@ -174,6 +176,12 @@ internal sealed partial class AutoPvpSeries : AutoCommon
             if (!Svc.ClientState.IsLoggedIn)
             {
                 session.StopReason = "Character logged out; run stopped.";
+                return;
+            }
+            if (PluginConflicts.Read() is { Blocked: true } conflict)
+            {
+                session.StopReason = Loc.T(L.Conflicts.RunStopped, PluginConflicts.Reason(conflict));
+                ApsgChat.PrintError(session.StopReason);
                 return;
             }
             if (Svc.Objects.LocalPlayer is null || Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])

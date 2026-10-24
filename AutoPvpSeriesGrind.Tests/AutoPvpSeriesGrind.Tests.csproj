@@ -20,6 +20,10 @@
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/NavigationRequest.cs" Link="Source/NavigationRequest.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/SnagTracker.cs" Link="Source/SnagTracker.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Tasks/ChatCommandBlock.cs" Link="Source/ChatCommandBlock.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/External/ConflictingPluginName.cs" Link="Source/ConflictingPluginName.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/External/ConflictingPluginSource.cs" Link="Source/ConflictingPluginSource.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/External/PluginConflictCheck.cs" Link="Source/PluginConflictCheck.cs" />
+    <Compile Include="../AutoPvpSeriesGrind/Core/External/PluginDisableCommand.cs" Link="Source/PluginDisableCommand.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Game/PvpDuty.cs" Link="Source/PvpDuty.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Game/PvpQueueRoute.cs" Link="Source/PvpQueueRoute.cs" />
     <Compile Include="../AutoPvpSeriesGrind/Core/Game/FrontlineMaps.cs" Link="Source/FrontlineMaps.cs" />

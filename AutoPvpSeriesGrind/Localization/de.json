@@ -400,7 +400,8 @@
       "5": "Rollenaktionen verbessert: Jede wird jetzt nur eingesetzt, wenn sie sich lohnt (Smite auf einen Gegner mit 25 % LP oder weniger, Bloodbath unter 75 % LP, Rampart und Stoneskin II wenn du verletzt bist), und Comet der Zauberer sowie Haelan und Stoneskin II der Heiler werden überhaupt erst benutzt",
       "6": "Behoben: Warden's Paean des Barden, Aquaveil des Weißmagiers und Meikyo Shisui des Samurai reinigten nie, solange Purify bereit war; sie kommen jetzt zuerst, und Purify wird für Stun, Silence, Deep Freeze und Miracle of Nature aufgehoben",
       "7": "Behoben: Viper setzte Rattling Coil ein, während Uncoiled Fury und Snake Scales noch bereit waren, und verschenkte so das Zurücksetzen",
-      "8": "Behoben: Piktomant behielt Subtractive Palette in der Bewegung bei, obwohl deren Zauber gewirkt werden müssen; die Palette wird jetzt in der Bewegung abgelegt und zum Wirken wieder aufgenommen"
+      "8": "Behoben: Piktomant behielt Subtractive Palette in der Bewegung bei, obwohl deren Zauber gewirkt werden müssen; die Palette wird jetzt in der Bewegung abgelegt und zum Wirken wieder aufgenommen",
+      "9": "Konfliktprüfung hinzugefügt: Der Grind startet nicht, und ein laufender Grind stoppt, solange ein kollidierendes Rotations-Plugin geladen ist"
     }
   },
   "about": {
@@ -898,5 +899,20 @@
     "logToChat": "Beim Auslösen im Chat melden",
     "logToChatHelp": "Schreibt eine Zeile in den Chat, wenn ein LB auslöst, zum Beispiel „Seiton Tenchu auf Trainingspuppe ausgelöst“.",
     "chatFired": "{0} auf {1} ausgelöst"
+  },
+  "conflicts": {
+    "title": "Rotation Solver Reborn erkannt",
+    "detail": "Rotation Solver Reborn (RSR) steht mit unserer PvP-Kampflogik in Konflikt. Deaktiviere es in Dalamud, um fortzufahren.",
+    "checkFailedTitle": "Kompatibilitätsprüfung nicht verfügbar",
+    "checkFailed": "Der Plugin-Status von Dalamud konnte nicht gelesen werden. Die Automatisierung ist gesperrt. Prüfe die Log-Seite und lade das Plugin neu.",
+    "blocked": "AUTOMATISIERUNG GESPERRT",
+    "startReason": "RSR deaktivieren, um fortzufahren",
+    "disable": "RSR deaktivieren",
+    "disabling": "Warte auf Dalamud...",
+    "disablePending": "Warte, bis RSR entladen ist.",
+    "disableFailed": "RSR ist noch geladen. Deaktiviere es in Dalamud Plugins oder seinen Sammlungen.",
+    "openPlugins": "Dalamud Plugins öffnen",
+    "startRefused": "Start nicht möglich: {0}",
+    "runStopped": "Automatisierung gestoppt: {0}"
   }
 }

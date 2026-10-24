@@ -400,7 +400,8 @@
       "5": "Improved role actions: each now fires only when it pays off (Smite on an enemy at 25% HP or lower, Bloodbath below 75% HP, Rampart and Stoneskin II when hurt), and casters' Comet and healers' Haelan and Stoneskin II are used at all",
       "6": "Fixed Bard's Warden's Paean, White Mage's Aquaveil and Samurai's Meikyo Shisui never cleansing while Purify was ready; they now go first, and Purify is kept for Stun, Silence, Deep Freeze and Miracle of Nature",
       "7": "Fixed Viper spending Rattling Coil while Uncoiled Fury and Snake Scales were still ready, which wasted the reset",
-      "8": "Fixed Pictomancer keeping Subtractive Palette on while moving, where its spells need a cast; it now drops the palette on the move and picks it back up to cast"
+      "8": "Fixed Pictomancer keeping Subtractive Palette on while moving, where its spells need a cast; it now drops the palette on the move and picks it back up to cast",
+      "9": "Added a conflict check: the grind will not start, and a running grind stops, while a conflicting rotation plugin is loaded"
     }
   },
   "about": {
@@ -898,5 +899,20 @@
     "logToChat": "Log to chat on fire",
     "logToChatHelp": "Prints a line to chat when an LB fires, for example \"fired Seiton Tenchu on Striking Dummy\".",
     "chatFired": "fired {0} on {1}"
+  },
+  "conflicts": {
+    "title": "Rotation Solver Reborn detected",
+    "detail": "RSR is a vibe-coded AI slop plugin that could potentially harm your computer.\n\nIts drama-loving developer spreads lies about us, falsely claiming that Auto PvP uses RSR. Auto PvP does not use RSR and has its own independent combat logic and rotations.\n\nRSR's weak PvP combat logic and rotations conflict with ours. For the best experience, disable RSR to continue automation.",
+    "checkFailedTitle": "Compatibility check unavailable",
+    "checkFailed": "Could not read Dalamud's plugin state. Automation is blocked. Check the Log page and reload the plugin.",
+    "blocked": "AUTOMATION BLOCKED",
+    "startReason": "Disable RSR to continue",
+    "disable": "Disable RSR",
+    "disabling": "Waiting for Dalamud...",
+    "disablePending": "Waiting for RSR to unload.",
+    "disableFailed": "RSR is still loaded. Disable it in Dalamud Plugins or its collections.",
+    "openPlugins": "Open Dalamud Plugins",
+    "startRefused": "Cannot start: {0}",
+    "runStopped": "Automation stopped: {0}"
   }
 }

@@ -1,0 +1,4 @@
+Rotation Solver Reborn icon, used to identify the conflicting plugin in the compatibility warning.
+Source: https://raw.githubusercontent.com/FFXIV-CombatReborn/RebornAssets/main/IconAssets/RSR_Icon.png
+Upstream: https://github.com/FFXIV-CombatReborn/RebornAssets
+The icon belongs to its respective owners. Its use does not imply affiliation or endorsement.
