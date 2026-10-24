@@ -1,3 +1,4 @@
+using AutoPvpSeriesGrind.Core.External;
 using Dalamud.Plugin;
 using ECommons.DalamudServices;
 using System.Globalization;
@@ -10,6 +11,8 @@ public static class RunLogReport
     private const int MaxSourceWidth = 24;
     private const string DetailIndent = "    ";
     private const string Separator = " | ";
+    private const string UnknownValue = "unknown";
+    private const string NotLoadedValue = "not loaded";
 
     private static readonly string[] levelNames = ["Verbose", "Debug", "Info", "Warning", "Error"];
 
@@ -40,7 +43,32 @@ public static class RunLogReport
                .Append(Separator).Append(now.ToString("yyyy-MM-dd HH:mm:ss 'UTC'zzz", CultureInfo.InvariantCulture))
                .Append(Separator).Append("Territory ").Append(Svc.ClientState.TerritoryType)
                .AppendLine();
+
+        var cfg = Plugin.Cfg;
+        builder.Append("Client ").Append(Svc.ClientState.ClientLanguage)
+               .Append(Separator).Append("UI ").Append(cfg.Language)
+               .Append(Separator).Append("Track ").Append(DalamudTrack())
+               .Append(Separator).Append("Mode ").Append(cfg.MatchType).Append(cfg.RankedCrystallineConflict ? " ranked" : string.Empty)
+               .Append(Separator).Append("vnavmesh ").Append(PluginVersion(ExternalPlugin.Vnavmesh))
+               .Append(Separator).Append("Lifestream ").Append(PluginVersion(ExternalPlugin.Lifestream))
+               .AppendLine();
     }
+
+    private static string DalamudTrack()
+    {
+        try
+        {
+            var track = Svc.PluginInterface.GetDalamudVersion().BetaTrack;
+            return string.IsNullOrWhiteSpace(track) ? UnknownValue : track.Trim();
+        }
+        catch (Exception)
+        {
+            return UnknownValue;
+        }
+    }
+
+    private static string PluginVersion(ExternalPlugin plugin)
+        => ExternalPlugins.LoadedVersion(plugin)?.ToString() ?? NotLoadedValue;
 
     private static void AppendScope(StringBuilder builder, int shown, in RunLogFilter filter, int bufferedCount)
     {

@@ -45,6 +45,19 @@ internal static class ExternalPlugins
     public static bool IsInstalledButDisabled(ExternalPlugin plugin)
         => !IsInstalled(plugin) && HasInstalledCopy(plugin, requireLoaded: false);
 
+    public static Version? LoadedVersion(ExternalPlugin plugin)
+    {
+        var info = Catalog[plugin];
+        foreach (var installedPlugin in Svc.PluginInterface.InstalledPlugins)
+        {
+            if (installedPlugin.IsLoaded && installedPlugin.InternalName == info.InternalName)
+            {
+                return installedPlugin.Version;
+            }
+        }
+        return null;
+    }
+
     private static bool HasInstalledCopy(ExternalPlugin plugin, bool requireLoaded)
     {
         var info = Catalog[plugin];

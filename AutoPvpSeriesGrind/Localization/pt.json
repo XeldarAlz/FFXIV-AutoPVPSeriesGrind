@@ -432,7 +432,8 @@
       "18": "Adicionados /apsg start, stop, finish e status, para que uma macro possa iniciar uma sessão, pará-la, encerrar após a partida atual ou mostrar como ela está",
       "19": "Corrigido: o bot ficava parado no ponto de partida a partida inteira de Crystalline Conflict quando o cronômetro não podia ser lido, por exemplo logo após um patch do jogo; depois de um minuto sem cronômetro legível, ele começa a partida mesmo assim",
       "20": "Corrigido: a EXP de série ganha mostrava toda a sua EXP de série quando uma sessão começava antes de o seu perfil de PvP carregar",
-      "21": "Bloodbath e Swift melhorados: o Bloodbath agora espera um inimigo no alcance corpo a corpo, já que a cura vem dos seus golpes, e o Swift é usado para encurtar a distância até o alvo em vez de quando você já está ao lado dele"
+      "21": "Bloodbath e Swift melhorados: o Bloodbath agora espera um inimigo no alcance corpo a corpo, já que a cura vem dos seus golpes, e o Swift é usado para encurtar a distância até o alvo em vez de quando você já está ao lado dele",
+      "22": "Relatórios de erro melhorados: um relatório copiado do console agora também traz o idioma do cliente do jogo, o idioma do plugin, o canal do Dalamud, o modo de partida e as versões do vnavmesh e do Lifestream"
     }
   },
   "about": {
