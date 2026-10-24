@@ -355,6 +355,8 @@ internal static class L
             new("changelog.r21300.16", "Improved retreating in Crystalline Conflict: after falling back, the bot waits until it has gone a moment without taking damage before going back in, instead of walking straight back into the fight the instant its HP recovers"),
             new("changelog.r21300.17", "Fixed lifetime stats being wiped when the history file got damaged, for example by a crash mid-save: history is now saved safely, and an unreadable file is kept as run-history.corrupt.json instead of being overwritten"),
             new("changelog.r21300.18", "Added /apsg start, stop, finish and status, so a macro can start a run, end it, finish after the current match or print where it stands"),
+            new("changelog.r21300.19", "Fixed the bot standing in spawn for a whole Crystalline Conflict match when the match timer could not be read, for example right after a game patch: after a minute without a readable timer it starts the match anyway"),
+            new("changelog.r21300.20", "Fixed Series EXP gained showing your entire Series total when a run started before your PvP profile had loaded"),
         ];
 
         public static readonly LocString[] Release21200 =

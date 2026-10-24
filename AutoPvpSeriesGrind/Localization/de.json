@@ -429,7 +429,9 @@
       "15": "Teamfolgen in Frontline und Rival Wings verbessert: Der Bot läuft nicht mehr quer über die Karte zu einer nur wenig größeren Gruppe, berücksichtigt die Entfernung einer Gruppe, bevor er sich ihr anschließt, und steht dort, wo das Team wirklich dicht ist, statt in der Mitte einer langgezogenen Kolonne",
       "16": "Rückzug in Crystalline Conflict verbessert: Nach dem Zurückfallen wartet der Bot, bis er einen Moment lang keinen Schaden mehr nimmt, bevor er wieder angreift, statt sofort zurück in den Kampf zu laufen, sobald seine HP wieder reichen",
       "17": "Behoben: Die Gesamtstatistik wurde gelöscht, wenn die Verlaufsdatei beschädigt war, etwa durch einen Absturz beim Speichern; der Verlauf wird jetzt sicher gespeichert, und eine unlesbare Datei bleibt als run-history.corrupt.json erhalten, statt überschrieben zu werden",
-      "18": "/apsg start, stop, finish und status hinzugefügt: Ein Makro kann damit einen Lauf starten, beenden, nach dem aktuellen Match beenden oder den Stand ausgeben"
+      "18": "/apsg start, stop, finish und status hinzugefügt: Ein Makro kann damit einen Lauf starten, beenden, nach dem aktuellen Match beenden oder den Stand ausgeben",
+      "19": "Behoben: Der Bot stand ein ganzes Crystalline-Conflict-Match lang im Startbereich, wenn der Match-Timer nicht lesbar war, etwa direkt nach einem Spiel-Patch; nach einer Minute ohne lesbaren Timer startet er das Match jetzt trotzdem",
+      "20": "Behoben: Die gewonnene Serien-EP zeigte deine gesamte Serien-EP an, wenn ein Lauf startete, bevor dein PvP-Profil geladen war"
     }
   },
   "about": {

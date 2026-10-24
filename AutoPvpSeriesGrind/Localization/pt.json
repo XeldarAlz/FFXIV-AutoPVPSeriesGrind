@@ -429,7 +429,9 @@
       "15": "Seguimento do time melhorado em Frontline e Rival Wings: o bot não atravessa mais o mapa por um grupo só um pouco maior que o seu, considera a distância de um grupo antes de se juntar a ele e fica onde o time está de fato agrupado, em vez do meio de uma coluna esticada",
       "16": "Recuo melhorado no Crystalline Conflict: depois de recuar, o bot espera um momento sem levar dano antes de voltar, em vez de entrar de novo na luta assim que o HP se recupera",
       "17": "Corrigido: as estatísticas totais eram apagadas quando o arquivo de histórico era danificado, por exemplo por uma queda durante o salvamento; agora o histórico é salvo com segurança e um arquivo ilegível é mantido como run-history.corrupt.json em vez de ser sobrescrito",
-      "18": "Adicionados /apsg start, stop, finish e status, para que uma macro possa iniciar uma sessão, pará-la, encerrar após a partida atual ou mostrar como ela está"
+      "18": "Adicionados /apsg start, stop, finish e status, para que uma macro possa iniciar uma sessão, pará-la, encerrar após a partida atual ou mostrar como ela está",
+      "19": "Corrigido: o bot ficava parado no ponto de partida a partida inteira de Crystalline Conflict quando o cronômetro não podia ser lido, por exemplo logo após um patch do jogo; depois de um minuto sem cronômetro legível, ele começa a partida mesmo assim",
+      "20": "Corrigido: a EXP de série ganha mostrava toda a sua EXP de série quando uma sessão começava antes de o seu perfil de PvP carregar"
     }
   },
   "about": {

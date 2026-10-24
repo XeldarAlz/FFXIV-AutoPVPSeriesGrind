@@ -14,10 +14,17 @@ internal sealed class SessionStats
 
     public long SeriesExpStart { get; private set; }
 
+    private bool seriesBaselineKnown;
+
     public long SeriesExpGained
     {
         get
         {
+            if (!seriesBaselineKnown)
+            {
+                return 0;
+            }
+
             var now = PvpProfileReader.SeriesTotalExperience();
             return now > SeriesExpStart ? now - SeriesExpStart : 0;
         }
@@ -48,5 +55,13 @@ internal sealed class SessionStats
     }
 
     public void CaptureSeriesBaseline()
-        => SeriesExpStart = PvpProfileReader.SeriesTotalExperience();
+    {
+        if (seriesBaselineKnown || PvpProfileReader.SeriesCurrentRank() < 1)
+        {
+            return;
+        }
+
+        SeriesExpStart = PvpProfileReader.SeriesTotalExperience();
+        seriesBaselineKnown = true;
+    }
 }

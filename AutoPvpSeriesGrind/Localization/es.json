@@ -429,7 +429,9 @@
       "15": "Mejorado el seguimiento del equipo en Frontline y Rival Wings: el bot ya no cruza el mapa por un grupo solo un poco más grande que el suyo, tiene en cuenta lo lejos que está un grupo antes de unirse y se coloca donde el equipo está realmente agrupado, no en medio de una columna estirada",
       "16": "Mejorada la retirada en Crystalline Conflict: tras replegarse, el bot espera a pasar un momento sin recibir daño antes de volver, en lugar de meterse de nuevo en la pelea en cuanto recupera los PV",
       "17": "Corregido: las estadísticas totales se borraban cuando el archivo de historial se dañaba, por ejemplo por un cierre inesperado al guardar; ahora el historial se guarda de forma segura y un archivo ilegible se conserva como run-history.corrupt.json en lugar de sobrescribirse",
-      "18": "Se añadieron /apsg start, stop, finish y status, para que una macro pueda iniciar una sesión, detenerla, terminar tras la partida actual o mostrar cómo va"
+      "18": "Se añadieron /apsg start, stop, finish y status, para que una macro pueda iniciar una sesión, detenerla, terminar tras la partida actual o mostrar cómo va",
+      "19": "Corregido: el bot se quedaba en la zona de salida toda la partida de Crystalline Conflict cuando no podía leer el temporizador, por ejemplo justo después de un parche del juego; tras un minuto sin temporizador legible empieza la partida igualmente",
+      "20": "Corregido: la EXP de serie ganada mostraba toda tu EXP de serie cuando una sesión empezaba antes de que se cargara tu perfil JcJ"
     }
   },
   "about": {

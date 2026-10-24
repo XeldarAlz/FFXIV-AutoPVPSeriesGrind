@@ -90,6 +90,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
         public Vector3? FrontlineDeathSpot;
         public int LeaveAttempts;
         public long NextLeaveRetryAtMs;
+        public long TimerZeroSinceMs;
 
         public void Reset() => this = default;
     }
@@ -231,6 +232,7 @@ internal sealed partial class AutoPvpSeries : AutoCommon
 
     private async Task<bool> HandleOutOfDuty()
     {
+        session.CaptureSeriesBaseline();
         EvaluateStopCondition();
         if (!Finishing && OwnsQueue() && TryCommenceDuty())
         {

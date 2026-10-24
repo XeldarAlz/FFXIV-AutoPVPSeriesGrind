@@ -429,7 +429,9 @@
       "15": "Frontline ve Rival Wings'te takımı takip etme iyileştirildi: bot artık kendi grubundan yalnızca biraz büyük bir grup için haritayı boydan boya geçmiyor, katılmadan önce grubun uzaklığını da hesaba katıyor ve uzamış bir kolonun ortası yerine takımın gerçekten toplandığı yerde duruyor",
       "16": "Crystalline Conflict'te geri çekilme iyileştirildi: bot geri çekildikten sonra, HP'si toparlanır toparlanmaz kavgaya geri dalmak yerine bir süre hasar almayana kadar bekliyor",
       "17": "Düzeltildi: Geçmiş dosyası, örneğin kayıt sırasında bir çökmeyle bozulduğunda toplam istatistikler siliniyordu; geçmiş artık güvenli şekilde kaydediliyor ve okunamayan dosya üzerine yazılmak yerine run-history.corrupt.json olarak saklanıyor",
-      "18": "/apsg start, stop, finish ve status eklendi: bir makro artık çalışmayı başlatabilir, durdurabilir, mevcut maçtan sonra bitirebilir ya da durumunu yazdırabilir"
+      "18": "/apsg start, stop, finish ve status eklendi: bir makro artık çalışmayı başlatabilir, durdurabilir, mevcut maçtan sonra bitirebilir ya da durumunu yazdırabilir",
+      "19": "Düzeltildi: Maç sayacı okunamadığında, örneğin bir oyun yamasından hemen sonra, bot bütün bir Crystalline Conflict maçı boyunca başlangıç noktasında bekliyordu; bir dakika boyunca sayaç okunamazsa artık maça yine de başlıyor",
+      "20": "Düzeltildi: PvP profiliniz yüklenmeden başlayan bir çalışmada kazanılan Seri EXP'si toplam Seri EXP'nizin tamamını gösteriyordu"
     }
   },
   "about": {

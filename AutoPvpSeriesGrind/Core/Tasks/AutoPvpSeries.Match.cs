@@ -22,6 +22,7 @@ internal sealed partial class AutoPvpSeries
     private const int ResultsLeaveStepMs = 800;
     private const int LeavePromptWaitMs = 3_000;
     private const string ManualLeaveStatus = "Leave the finished duty manually";
+    private const int UnreadableTimerFallbackMs = 60_000;
     private const int PortraitPhasePollMs = 250;
     private const int GateApproachJitterReactions = 2;
     private const int MillisecondsPerSecond = 1000;
@@ -330,12 +331,19 @@ internal sealed partial class AutoPvpSeries
     private async Task<bool> TryStartLiveMatch(int timeLeftSeconds)
     {
         var gateOpen = timeLeftSeconds > GateOpenSec && (matchFlow.SawIntroBand || matchFlow.TimerMovedFromBaseline);
-        if (!gateOpen)
+        if (gateOpen)
+        {
+            LogDiagnostic($"gate open detected by ContentTimeLeft -> {timeLeftSeconds}");
+        }
+        else if (TimerUnreadableTooLong(timeLeftSeconds))
+        {
+            Warn($"match timer unreadable for {UnreadableTimerFallbackMs / MillisecondsPerSecond}s -> starting the match without it");
+        }
+        else
         {
             return false;
         }
 
-        LogDiagnostic($"gate open detected by ContentTimeLeft -> {timeLeftSeconds}");
         WarnIfNavmeshNotReady();
         if (persona.Gate == GateStyle.Late)
         {
@@ -343,6 +351,22 @@ internal sealed partial class AutoPvpSeries
         }
         BeginLiveMatch();
         return true;
+    }
+
+    private bool TimerUnreadableTooLong(int timeLeftSeconds)
+    {
+        if (timeLeftSeconds > 0)
+        {
+            matchFlow.TimerZeroSinceMs = 0;
+            return false;
+        }
+
+        var now = Environment.TickCount64;
+        if (matchFlow.TimerZeroSinceMs == 0)
+        {
+            matchFlow.TimerZeroSinceMs = now;
+        }
+        return now - matchFlow.TimerZeroSinceMs >= UnreadableTimerFallbackMs;
     }
 
     private void BeginLiveMatch()

@@ -429,7 +429,9 @@
       "15": "Improved Frontline and Rival Wings team following: the bot no longer crosses the map for a group only slightly bigger than the one it is with, weighs how far a group is before joining it, and stands where the team is actually packed instead of the middle of a stretched-out column",
       "16": "Improved retreating in Crystalline Conflict: after falling back, the bot waits until it has gone a moment without taking damage before going back in, instead of walking straight back into the fight the instant its HP recovers",
       "17": "Fixed lifetime stats being wiped when the history file got damaged, for example by a crash mid-save: history is now saved safely, and an unreadable file is kept as run-history.corrupt.json instead of being overwritten",
-      "18": "Added /apsg start, stop, finish and status, so a macro can start a run, end it, finish after the current match or print where it stands"
+      "18": "Added /apsg start, stop, finish and status, so a macro can start a run, end it, finish after the current match or print where it stands",
+      "19": "Fixed the bot standing in spawn for a whole Crystalline Conflict match when the match timer could not be read, for example right after a game patch: after a minute without a readable timer it starts the match anyway",
+      "20": "Fixed Series EXP gained showing your entire Series total when a run started before your PvP profile had loaded"
     }
   },
   "about": {
