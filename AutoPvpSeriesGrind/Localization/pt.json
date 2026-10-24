@@ -518,10 +518,6 @@
     "window": "Janela",
     "dragAnywhere": "Arrastar de qualquer lugar",
     "dragAnywhereHelp": "Move a janela ao arrastar de qualquer ponto dentro dela. Desativado, só a barra superior a move.",
-    "glassWindow": "Janela de vidro",
-    "glassWindowHelp": "Mostra a janela como vidro fosco sobre o jogo. Desativado, a janela fica azul-marinho opaca.",
-    "glassAmount": "Tonalidade do vidro",
-    "glassAmountHelp": "Quanto o vidro tinge e desfoca o que está atrás, do vidro transparente a um painel escuro onde o texto fica mais legível.",
     "cat": {
       "session": "Sessão",
       "sessionSub": "O ritmo entre partidas e as pausas que uma pessoa faria.",

@@ -518,10 +518,6 @@
     "window": "Ventana",
     "dragAnywhere": "Arrastrar desde cualquier punto",
     "dragAnywhereHelp": "Mueve la ventana arrastrando desde cualquier punto de su interior. Si está desactivado, solo la barra superior la mueve.",
-    "glassWindow": "Ventana de cristal",
-    "glassWindowHelp": "Muestra la ventana como cristal esmerilado sobre el juego. Si está desactivado, la ventana es azul marino opaca.",
-    "glassAmount": "Tono del cristal",
-    "glassAmountHelp": "Cuánto tiñe y esmerila el cristal lo que hay detrás, desde cristal transparente hasta un panel oscuro donde el texto se lee mejor.",
     "cat": {
       "session": "Sesión",
       "sessionSub": "El ritmo entre partidas y los descansos que tomaría una persona.",

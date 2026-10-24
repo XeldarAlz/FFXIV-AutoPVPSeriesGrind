@@ -518,10 +518,6 @@
     "window": "Fenster",
     "dragAnywhere": "Überall ziehen",
     "dragAnywhereHelp": "Verschiebt das Fenster beim Ziehen an einer beliebigen Stelle. Ist das aus, verschiebt nur die obere Leiste das Fenster.",
-    "glassWindow": "Glasfenster",
-    "glassWindowHelp": "Zeigt das Fenster als Milchglas über dem Spiel. Ist das aus, ist das Fenster durchgehend dunkelblau.",
-    "glassAmount": "Glastönung",
-    "glassAmountHelp": "Wie stark das Glas den Hintergrund tönt und mattiert, von klarem Glas bis zu einer dunklen Scheibe, auf der Text am besten lesbar bleibt.",
     "cat": {
       "session": "Sitzung",
       "sessionSub": "Das Tempo zwischen Matches und die Pausen, die ein Mensch machen würde.",

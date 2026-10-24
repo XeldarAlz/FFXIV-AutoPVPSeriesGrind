@@ -518,10 +518,6 @@
     "window": "窗口",
     "dragAnywhere": "任意位置拖动",
     "dragAnywhereHelp": "在窗口内任意位置拖动即可移动窗口。关闭后只能通过顶部栏移动。",
-    "glassWindow": "玻璃窗口",
-    "glassWindowHelp": "将窗口显示为覆盖在游戏上的磨砂玻璃。关闭后窗口为不透明的深蓝色。",
-    "glassAmount": "玻璃色调",
-    "glassAmountHelp": "玻璃对背后画面的着色与磨砂程度，从透明玻璃到最便于阅读文字的深色玻璃。",
     "cat": {
       "session": "会话",
       "sessionSub": "比赛之间的节奏，以及真人会有的休息。",

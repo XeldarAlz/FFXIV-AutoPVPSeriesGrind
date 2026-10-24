@@ -518,10 +518,6 @@
     "window": "Pencere",
     "dragAnywhere": "Her yerden sürükle",
     "dragAnywhereHelp": "Pencereyi içinde herhangi bir yerden sürükleyerek taşır. Kapalıyken yalnızca üst çubuk taşır.",
-    "glassWindow": "Cam pencere",
-    "glassWindowHelp": "Pencereyi oyunun üzerinde buzlu cam olarak gösterir. Kapalıyken pencere düz lacivert olur.",
-    "glassAmount": "Cam tonu",
-    "glassAmountHelp": "Camın arkasındakini ne kadar renklendirip buzlandıracağı; şeffaf camdan yazının en kolay okunduğu koyu bir cama kadar.",
     "cat": {
       "session": "Seans",
       "sessionSub": "Maçlar arasındaki tempo ve bir insanın vereceği molalar.",

@@ -518,10 +518,6 @@
     "window": "Fenêtre",
     "dragAnywhere": "Déplacer depuis n'importe où",
     "dragAnywhereHelp": "Déplace la fenêtre en la faisant glisser depuis n'importe quel point. Désactivé, seule la barre du haut la déplace.",
-    "glassWindow": "Fenêtre en verre",
-    "glassWindowHelp": "Affiche la fenêtre en verre dépoli par-dessus le jeu. Désactivé, la fenêtre est bleu marine opaque.",
-    "glassAmount": "Teinte du verre",
-    "glassAmountHelp": "À quel point le verre teinte et dépolit ce qui se trouve derrière, du verre clair à une vitre sombre où le texte reste le plus lisible.",
     "cat": {
       "session": "Session",
       "sessionSub": "Le rythme entre les matchs, et les pauses qu'une personne prendrait.",

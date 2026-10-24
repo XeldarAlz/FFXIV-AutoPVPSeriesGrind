@@ -530,10 +530,6 @@ internal static class L
         public static readonly LocString GroupWindow = new("settings.window", "Window");
         public static readonly LocString DragAnywhere = new("settings.dragAnywhere", "Drag from anywhere");
         public static readonly LocString DragAnywhereHelp = new("settings.dragAnywhereHelp", "Move the window by dragging anywhere inside it. When off, only the top bar moves it.");
-        public static readonly LocString GlassWindow = new("settings.glassWindow", "Glass window");
-        public static readonly LocString GlassWindowHelp = new("settings.glassWindowHelp", "Draws the window as frosted glass over the game. When off, the window is solid navy.");
-        public static readonly LocString GlassAmount = new("settings.glassAmount", "Glass tint");
-        public static readonly LocString GlassAmountHelp = new("settings.glassAmountHelp", "How strongly the glass tints and frosts what is behind it, from clear glass to a dark pane that keeps text easiest to read.");
 
         public static readonly LocString CatSession = new("settings.cat.session", "Session");
         public static readonly LocString CatSessionSub = new("settings.cat.sessionSub", "Pacing between matches, and the breaks a person would take.");
